@@ -19,9 +19,11 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.2",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "redis": "^5.10.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
