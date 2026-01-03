@@ -4,6 +4,7 @@ import http from "http";
 import dotenv from "dotenv";
 import { userRoutes } from "./framework/routes/user/userRoutes";
 import redis from "./framework/redis/redisClient";
+import cors from "cors";
 
 export class App {
   private app: Express;
@@ -13,13 +14,21 @@ export class App {
     dotenv.config();
     this.app = express();
     this.database = new connectDB();
-
     this.setMiddlewares();
-
     this.setUserRoutes();
   }
   private setMiddlewares(): void {
     this.app.use(express.json());
+
+    this.app.use(
+      cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      })
+    );
+
     this.app.use((req, res, next) => {
       console.log(req.method, req.url);
       next();
@@ -29,7 +38,7 @@ export class App {
     this.app.use("/api", new userRoutes().userRouter);
   }
   public async listen(): Promise<void> {
-    const port = process.env.PORT || 1111;
+    const port = process.env.PORT || 5000;
     try {
       await this.database.connect();
       this.app.listen(port, () =>

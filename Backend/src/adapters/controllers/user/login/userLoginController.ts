@@ -6,7 +6,6 @@ export class userLoginController {
   async login(req: Request, res: Response) {
     try {
       const userInput = req.body;
-      console.log(userInput);
       const result = await this._userLoginUseCase.loginUser(userInput);
 
       res.status(200).json({
