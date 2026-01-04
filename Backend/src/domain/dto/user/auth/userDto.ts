@@ -4,4 +4,6 @@ export interface UserDto {
   phone?:string
   email: string;
   password: string;
+  provider?: "local" | "google";
+
 }

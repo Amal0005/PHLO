@@ -37,8 +37,7 @@ export default function Login() {
   }
 
   function handleGoogleLogin() {
-    // Uncomment for your OAuth:
-    // window.location.href = "YOUR_BACKEND_URL/auth/google";
+  window.location.href = "http://localhost:5000/api/user/google";
   toast.info("Google login coming soon!");
   }
 

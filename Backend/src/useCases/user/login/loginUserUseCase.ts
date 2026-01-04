@@ -13,13 +13,12 @@ export class userLoginUserUseCase implements IuserLoginUseCase {
   async loginUser(user: loginDto): Promise<UserDto> {
 
     const existingUser = await this._userRepo.findByEmail(user.email);
-
     if (!existingUser) throw new Error("Email not found");
+    if(!existingUser.password)throw new Error("Google Login to continue")
     const isPasswordMatch = await this._passwordService.compare(
       user.password,
       existingUser.password
     )
-
     if (!isPasswordMatch) throw new Error("Password does not match");
     const { password, ...safeUser } = existingUser;
 

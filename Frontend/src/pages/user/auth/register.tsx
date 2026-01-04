@@ -70,7 +70,6 @@ export default function Register() {
   function handleGoogleLogin() {
     // Uncomment for your OAuth:
     // window.location.href = "YOUR_BACKEND_URL/auth/google";
-    alert("Google login clicked! (Demo mode)");
   }
 
   function handleLogin() {

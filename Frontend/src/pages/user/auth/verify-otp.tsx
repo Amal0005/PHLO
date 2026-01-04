@@ -38,7 +38,6 @@ export default function VerifyOtp() {
       localStorage.setItem("accessToken", res.data.accessToken);
           toast.success("OTP Verified Successfully!");
       navigate("/login");
-      alert("OTP Verified Successfully! (Demo mode)");
     } catch (error) {
       console.error("Verification error:", error);
     toast.error("Invalid OTP. Please try again.");
