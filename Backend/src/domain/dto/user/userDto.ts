@@ -1,9 +1,8 @@
-export interface User {
+export interface UserDto {
   _id?: string;
   name: string;
-  email: string;
   phone?: string;
-  password?: string;
+  email: string;
   status: "active" | "blocked";
   role: "user" | "creator" | "admin";
   googleVerified: boolean;

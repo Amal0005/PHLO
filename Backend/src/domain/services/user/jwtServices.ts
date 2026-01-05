@@ -1,16 +1,29 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 import { IjwtServices } from "../../interface/service/IjwtServices";
 
 export class JwtServices implements IjwtServices {
-  sign(payload: object): string {
+  private getSecret(): string {
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET is missing");
+    return secret;
+  }
 
-    const expiresIn =
-      process.env.JWT_EXPIRES
-        ? Number(process.env.JWT_EXPIRES)
-        : 60 * 60 * 24 * 7;
+  generateAccessToken(payload: object): string {
+    const secret = this.getSecret();
+    const expiresIn = Number(process.env.JWT_ACCESS_EXPIRE);
+    return jwt.sign(payload, secret, {
+      expiresIn: isNaN(expiresIn) ? "15m" : expiresIn,
+    });
+  }
 
-    return jwt.sign(payload, secret as jwt.Secret, { expiresIn });
+  generateRefreshToken(payload: object): string {
+    const secret = this.getSecret();
+    const expiresIn = Number(process.env.JWT_REFRESH_EXPIRES);
+    return jwt.sign(payload, secret, { expiresIn });
+  }
+
+  verifyToken(token: string): string | JwtPayload {
+    const secret = this.getSecret();
+    return jwt.verify(token, secret);
   }
 }

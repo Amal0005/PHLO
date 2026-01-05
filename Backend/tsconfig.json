@@ -4,6 +4,8 @@
     "module": "commonjs",
     "rootDir": "./src",
     "outDir": "./dist",
+    "moduleResolution": "node",
+
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,

@@ -1,6 +1,6 @@
-import { User } from "../../../entities/userEntities";
+import { RegisterDto } from "../../../dto/user/auth/registerDto";
 
 export interface IuserRegisterUseCase {
-    registerUser(user:User):Promise<void>
+    registerUser(user:RegisterDto):Promise<void>
 
 }

@@ -1,3 +1,5 @@
+import { RegisterDto } from "../../../domain/dto/user/auth/registerDto";
+import { UserDto } from "../../../domain/dto/user/userDto";
 import { User } from "../../../domain/entities/userEntities";
 import { IOTPService } from "../../../domain/interface/service/IotpServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
@@ -13,7 +15,7 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
 
   ) {}
 
-  async registerUser(user: User): Promise<void> {
+  async registerUser(user: RegisterDto): Promise<void> {
         const email = user.email.trim().toLowerCase();
     const existingUser = await this._userRepo.findByEmail(email);
     if (existingUser) throw new Error("User already exists");

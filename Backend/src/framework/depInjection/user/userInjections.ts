@@ -12,11 +12,12 @@ import { verifyRegisterOtpUseCase } from "../../../useCases/user/register/verify
 const userRepo = new userRepository();
 const passwordServices = new passwordService();
 const otpServices=new OtpServices()
-// const jwtServices=new JwtServices()
 const pendingService=new PendingUserService()
+const jwtService=new JwtServices()
+
 
 const registerUseCase = new userRegisterUseCase(userRepo,passwordServices,otpServices);
-const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices);
+const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices,jwtService);
 const verifyOtpUseCase=new verifyRegisterOtpUseCase(userRepo,otpServices,pendingService)
 
 export const registerController = new userRegisterController(registerUseCase,verifyOtpUseCase);
