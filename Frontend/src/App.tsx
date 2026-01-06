@@ -1,12 +1,30 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import Register from "./pages/user/auth/register";
 import Login from "./pages/user/auth/login";
 import VerifyOtp from "./pages/user/auth/verify-otp";
 import LandingPage from "./pages/user/home/landing";
-// import AuthSuccess from "./pages/user/auth/authSuccess";
+import { ToastContainer } from "react-toastify";
+import { setUserFromSession } from "./store/user/authSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 export default function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    const savedToken = localStorage.getItem("token");
+
+    if (savedUser && savedToken) {
+      dispatch(
+        setUserFromSession({
+          user: JSON.parse(savedUser),
+          token: savedToken,
+        })
+      );
+    }
+  }, []);
+
   return (
     <>
       <BrowserRouter>
@@ -15,8 +33,6 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/home" element={<LandingPage />} />
-          {/* <Route path="/auth-success" element={<AuthSuccess />} /> */}
-
         </Routes>
       </BrowserRouter>
       <ToastContainer position="top-right" theme="dark" />

@@ -1,59 +1,81 @@
 import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { Image, Calendar, Eye, EyeOff, Sparkles } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { Image, Calendar, Sparkles, CameraOff, Camera } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import api from "../../../axios/axiosConfig";
 import LogoWhite from "../../../assets/images/Logo_white.png";
+import { loginUserSchema } from "../../../validation/loginUserSchema";
+import { useDispatch } from "react-redux";
+import { login } from "@/store/user/authSlice";
 
+interface loginForm {
+  email: string;
+  password: string;
+}
 
 export default function Login() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [form, setForm] = useState<loginForm>({
+    email: "",
+    password: "",
+  });
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
+
+    const result = loginUserSchema.safeParse(form);
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors;
+
+      if (errors.email) toast.error(errors.email[0]);
+      if (errors.password) toast.error(errors.password[0]);
+      return;
+    }
 
     setIsLoading(true);
 
     try {
-      const res = await api.post("/login", {
-        email,
-        password,
-      });
-      localStorage.setItem("accessToken", res.data.accessToken);
-    toast.success("Login Successful");
-      navigate("/home");
+    const res = await api.post("/login", form);
 
+dispatch(
+  login({
+    user: res.data.user,
+    token: res.data.accessToken,
+  })
+);
+
+localStorage.setItem("user", JSON.stringify(res.data.user));
+localStorage.setItem("token", res.data.accessToken);
+
+toast.success("Login Successful");
+navigate("/home");
     } catch (error) {
       console.error("Login error:", error);
-    toast.error("Invalid email or password");
+      toast.error("Invalid email or password");
     } finally {
       setIsLoading(false);
     }
   }
 
   function handleGoogleLogin() {
-  window.location.href = "http://localhost:5000/api/user/google";
-  toast.info("Google login coming soon!");
+    window.location.href = "http://localhost:5000/api/user/google";
+    toast.info("Google login coming soon!");
   }
 
   function handleRegister() {
     navigate("/register");
   }
 
-  function handleForgotPassword() {
-    // Uncomment for your navigation:
-    // navigate("/forgot-password");
-    alert("Navigate to forgot password page");
-  }
-
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Background Image - Visible on all screens */}
       <div className="absolute inset-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -67,33 +89,28 @@ export default function Login() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-        {/* Left Side - Branding */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
-          {/* Logo */}
-              <div className="flex items-center gap-3 mb-6 lg:mb-15">
-            
-           <img
-  src={LogoWhite}
-  alt="Logo"
-className="h-19 lg:h-29 object-contain"
-/>
-
+          <div className="flex items-center gap-3 mb-6 lg:mb-15">
+            <img
+              src={LogoWhite}
+              alt="Logo"
+              className="h-19 lg:h-29 object-contain"
+            />
           </div>
 
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-light mb-2 lg:mb-4 leading-relaxed text-white">
-  Capture moments.
-  <br />
-  Book sessions.
-  <br />
-  <span className="text-gray-400">Download beauty.</span>
-</h2>
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-light mb-2 lg:mb-4 leading-relaxed text-white">
+            Capture moments.
+            <br />
+            Book sessions.
+            <br />
+            <span className="text-gray-400">Download beauty.</span>
+          </h2>
 
           <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
             Log in to access your photography sessions, download premium
             wallpapers, and manage your bookings.
           </p>
 
-          {/* Features - Hidden on small mobile, visible from sm breakpoint */}
           <div className="hidden sm:flex flex-col gap-4 lg:gap-6">
             <div className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
               <div className="w-12 h-12 rounded-full bg-zinc-800/80 backdrop-blur-sm border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-300">
@@ -139,7 +156,6 @@ className="h-19 lg:h-29 object-contain"
           </div>
         </div>
 
-        {/* Right Side - Login Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
           <div className="w-full max-w-md">
             <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
@@ -153,31 +169,25 @@ className="h-19 lg:h-29 object-contain"
               </div>
 
               <div className="space-y-4">
-                {/* Email Input */}
                 <div>
                   <input
                     type="email"
+                    name="email"
                     placeholder="Email"
                     className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
-                    value={email}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      setEmail(e.target.value)
-                    }
-                    required
+                    value={form.email}
+                    onChange={handleChange}
                   />
                 </div>
 
-                {/* Password Input */}
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
+                    name="password"
                     placeholder="Password"
                     className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
-                    value={password}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      setPassword(e.target.value)
-                    }
-                    required
+                    value={form.password}
+                    onChange={handleChange}
                   />
                   <button
                     type="button"
@@ -185,30 +195,27 @@ className="h-19 lg:h-29 object-contain"
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                   >
                     {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <CameraOff className="w-5 h-5" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <Camera className="w-5 h-5" />
                     )}
                   </button>
                 </div>
 
-                {/* Forgot Password */}
                 <div className="flex justify-end">
                   <button
                     type="button"
-                    onClick={handleForgotPassword}
                     className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
                   >
                     Forgot password?
                   </button>
                 </div>
 
-                {/* Login Button */}
                 <div>
                   <button
                     type="button"
                     onClick={handleLogin}
-                    disabled={isLoading || !email || !password}
+                    disabled={isLoading || !form.email || !form.password}
                     className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
                   >
                     {isLoading ? (
@@ -222,7 +229,6 @@ className="h-19 lg:h-29 object-contain"
                   </button>
                 </div>
 
-                {/* Divider */}
                 <div className="relative py-2">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-zinc-700"></div>
@@ -234,7 +240,6 @@ className="h-19 lg:h-29 object-contain"
                   </div>
                 </div>
 
-                {/* Google Login Button */}
                 <div>
                   <button
                     type="button"
@@ -275,7 +280,6 @@ className="h-19 lg:h-29 object-contain"
               </div>
             </div>
 
-            {/* Footer */}
             <p className="text-center text-gray-600 text-xs mt-6 px-4">
               Protected by industry-standard encryption
             </p>

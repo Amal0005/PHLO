@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { userRoutes } from "./framework/routes/user/userRoutes";
 import redis from "./framework/redis/redisClient";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 export class App {
   private app: Express;
@@ -27,7 +28,7 @@ export class App {
         allowedHeaders: ["Content-Type", "Authorization"],
       })
     );
-
+ this.app.use(cookieParser()); 
     this.app.use((req, res, next) => {
       console.log(req.method, req.url);
       next();

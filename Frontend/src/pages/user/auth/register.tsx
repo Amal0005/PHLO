@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent, MouseEvent } from "react";
-import { Image, Calendar, Eye, EyeOff, Sparkles } from "lucide-react";
+import { Image, Calendar,Sparkles, CameraOff, CameraIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import api from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
@@ -67,10 +67,7 @@ export default function Register() {
     }
   }
 
-  function handleGoogleLogin() {
-    // Uncomment for your OAuth:
-    // window.location.href = "YOUR_BACKEND_URL/auth/google";
-  }
+
 
   function handleLogin() {
     navigate("/login");
@@ -78,7 +75,6 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Background Image - Visible on all screens */}
       <div className="absolute inset-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -92,9 +88,7 @@ export default function Register() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-        {/* Left Side - Branding */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
-          {/* Logo */}
           <div className="flex items-center gap-3 mb-6 lg:mb-15">
             <img
               src={LogoWhite}
@@ -116,7 +110,6 @@ export default function Register() {
             stunning wallpapers.
           </p>
 
-          {/* Features - Hidden on small mobile, visible from sm breakpoint */}
           <div className="hidden sm:flex flex-col gap-4 lg:gap-6">
             <div className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
               <div className="w-12 h-12 rounded-full bg-zinc-800/80 backdrop-blur-sm border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-300">
@@ -162,7 +155,6 @@ export default function Register() {
           </div>
         </div>
 
-        {/* Right Side - Registration Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
           <div className="w-full max-w-md">
             <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
@@ -176,7 +168,6 @@ export default function Register() {
               </div>
 
               <div className="space-y-4">
-                {/* Name Input */}
                 <div>
                   <input
                     type="text"
@@ -189,7 +180,6 @@ export default function Register() {
                   />
                 </div>
 
-                {/* Email Input */}
                 <div>
                   <input
                     type="email"
@@ -204,14 +194,13 @@ export default function Register() {
                 <input
                   type="text"
                   name="phone"
-                  placeholder="Phone Number"
-                  className="w-full p-3.5 rounded-lg bg-zinc-800/50 border border-zinc-700 text-white"
+                  placeholder="Phone"
+                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
                   value={form.phone}
                   onChange={handleChange}
                   required
                 />
 
-                {/* Password Input */}
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -228,14 +217,13 @@ export default function Register() {
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                   >
                     {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <CameraOff className="w-5 h-5" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <CameraIcon className="w-5 h-5" />
                     )}
                   </button>
                 </div>
 
-                {/* Terms Checkbox */}
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"
@@ -261,7 +249,6 @@ export default function Register() {
                   </label>
                 </div>
 
-                {/* Submit Button */}
                 <div>
                   <button
                     type="button"
@@ -280,7 +267,6 @@ export default function Register() {
                   </button>
                 </div>
 
-                {/* Divider */}
                 <div className="relative py-2">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-zinc-700"></div>
@@ -292,11 +278,10 @@ export default function Register() {
                   </div>
                 </div>
 
-                {/* Google Login Button */}
                 <div>
                   <button
                     type="button"
-                    onClick={handleGoogleLogin}
+                    // onClick={handleGoogleLogin}
                     className="w-full py-3.5 px-4 bg-zinc-800/50 hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 rounded-lg text-white font-medium transition-all duration-300 flex items-center justify-center gap-3 text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -333,7 +318,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Footer */}
             <p className="text-center text-gray-600 text-xs mt-6 px-4">
               By creating an account, you agree to our terms and privacy policy
             </p>

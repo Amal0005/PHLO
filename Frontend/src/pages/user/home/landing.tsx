@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 import {
   Camera,
@@ -17,10 +19,15 @@ import {
   ArrowRight,
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
+import { logout } from "@/store/user/authSlice";
 
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  console.log(user, "reduxe");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,9 +36,14 @@ export default function LandingPage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-const navigate= useNavigate()
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
 
-  // Demo data
+    dispatch(logout());
+    navigate("/login");
+  };
   const packages = [
     {
       id: 1,
@@ -39,7 +51,8 @@ const navigate= useNavigate()
       price: "$1,299",
       duration: "Full Day",
       photos: "300+ Photos",
-      image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800",
+      image:
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800",
       features: [
         "Pre-wedding Shoot",
         "Full Day Coverage",
@@ -55,7 +68,8 @@ const navigate= useNavigate()
       price: "$299",
       duration: "3 Hours",
       photos: "80 Photos",
-      image: "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800",
+      image:
+        "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800",
       features: [
         "Event Coverage",
         "Candid Shots",
@@ -71,7 +85,8 @@ const navigate= useNavigate()
       price: "$599",
       duration: "Half Day",
       photos: "150 Photos",
-      image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800",
+      image:
+        "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800",
       features: [
         "Professional Coverage",
         "Headshots Available",
@@ -87,7 +102,8 @@ const navigate= useNavigate()
       price: "$399",
       duration: "2 Hours",
       photos: "60 Photos",
-      image: "https://images.unsplash.com/photo-1493894473891-10fc1e5dbd22?w=800",
+      image:
+        "https://images.unsplash.com/photo-1493894473891-10fc1e5dbd22?w=800",
       features: [
         "Indoor/Outdoor Options",
         "Wardrobe Assistance",
@@ -103,7 +119,8 @@ const navigate= useNavigate()
       price: "$199",
       duration: "1.5 Hours",
       photos: "40 Photos",
-      image: "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800",
+      image:
+        "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800",
       features: [
         "Multiple Locations",
         "All Ages Welcome",
@@ -119,7 +136,8 @@ const navigate= useNavigate()
       price: "$149",
       duration: "1 Hour",
       photos: "30 Photos",
-      image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
+      image:
+        "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
       features: [
         "Cap & Gown Photos",
         "Campus Locations",
@@ -130,8 +148,6 @@ const navigate= useNavigate()
       popular: false,
     },
   ];
-
-
 
   const wallpapers = [
     {
@@ -212,11 +228,11 @@ const navigate= useNavigate()
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-              <img
-                src={LogoWhite}
-                alt="Logo"
-                className="h-10 lg:h-19 object-contain"
-              />
+            <img
+              src={LogoWhite}
+              alt="Logo"
+              className="h-10 lg:h-19 object-contain"
+            />
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
@@ -238,13 +254,28 @@ const navigate= useNavigate()
               >
                 Creators
               </button>
-              <button className="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105" onClick={()=>navigate("/register")}>
-                Sign In
-          
-              </button>
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-white font-semibold">
+                    {user.name || user.email}
+                  </span>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105"
+                  onClick={() => navigate("/login")}
+                >
+                  Sign In
+                </button>
+              )}
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden text-white"
@@ -364,11 +395,10 @@ const navigate= useNavigate()
                   </div>
                 )}
                 <img
-  src={pkg.image}
-  alt={pkg.name}
-  className="w-full h-48 object-cover rounded-xl mb-6"
-/>
-
+                  src={pkg.image}
+                  alt={pkg.name}
+                  className="w-full h-48 object-cover rounded-xl mb-6"
+                />
 
                 <div className="text-center mb-6">
                   <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
@@ -529,11 +559,12 @@ const navigate= useNavigate()
                     );
                   }}
                 />
-  <img
-                src={LogoWhite}
-                alt="Logo"
-                className="h-10 lg:h-19 object-contain"
-              />              </div>
+                <img
+                  src={LogoWhite}
+                  alt="Logo"
+                  className="h-10 lg:h-19 object-contain"
+                />{" "}
+              </div>
               <p className="text-gray-400 mb-4 max-w-md">
                 Your one-stop destination for professional photography packages,
                 stunning wallpapers, and talented creators.

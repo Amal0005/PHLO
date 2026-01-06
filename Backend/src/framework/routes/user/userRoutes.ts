@@ -22,6 +22,8 @@ export class userRoutes {
       registerController.verifyOtp(req, res);
     });
     this.userRouter.post("/login", (req: Request, res: Response) => {
+            validate(registerUserSchema);
+
       loginController.login(req, res);
     });
     
