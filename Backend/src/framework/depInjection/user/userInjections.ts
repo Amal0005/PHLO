@@ -2,6 +2,7 @@ import { userLoginController } from "../../../adapters/controllers/user/login/us
 import { userRegisterController } from "../../../adapters/controllers/user/register/userRegisterController";
 import { userRepository } from "../../../adapters/repository/user/userRepository";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
+import { MailService } from "../../../domain/services/user/mailServices";
 import { OtpServices } from "../../../domain/services/user/otpServices";
 import { passwordService } from "../../../domain/services/user/passwordService";
 import { PendingUserService } from "../../../domain/services/user/pedingUserService";
@@ -14,9 +15,10 @@ const passwordServices = new passwordService();
 const otpServices=new OtpServices()
 const pendingService=new PendingUserService()
 const jwtService=new JwtServices()
+const mailService=new MailService()
 
 
-const registerUseCase = new userRegisterUseCase(userRepo,passwordServices,otpServices);
+const registerUseCase = new userRegisterUseCase(userRepo,passwordServices,otpServices,mailService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices,jwtService);
 const verifyOtpUseCase=new verifyRegisterOtpUseCase(userRepo,otpServices,pendingService)
 

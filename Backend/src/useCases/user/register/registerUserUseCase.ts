@@ -1,6 +1,7 @@
 import { RegisterDto } from "../../../domain/dto/user/auth/registerDto";
 import { UserDto } from "../../../domain/dto/user/userDto";
 import { User } from "../../../domain/entities/userEntities";
+import { IMailService } from "../../../domain/interface/service/ImailServices";
 import { IOTPService } from "../../../domain/interface/service/IotpServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
@@ -11,7 +12,8 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
   constructor(
     private _userRepo: IuserRepository,
     private _passwordService: IpasswordService,
-    private _otpService:IOTPService
+    private _otpService:IOTPService,
+    private _mailService:IMailService
 
   ) {}
 
@@ -32,6 +34,16 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
 
     const otp=await this._otpService.generateOtp(email)
     console.log("OTP ",otp);
+    await this._mailService.sendMail(
+      email,
+          "Verify your account",
+    `
+      <h2>Welcome to Our App</h2>
+      <p>Your OTP is:</p>
+      <h1>${otp}</h1>
+      <p>This code expires in 5 minutes.</p>
+    `
+    )
   }
   
 }

@@ -12,13 +12,13 @@ export class userRegisterController {
     try {
       const userInput = req.body;
 
-      const result = await this._userRegisterUseCase.registerUser(userInput);
+      await this._userRegisterUseCase.registerUser(userInput);
 
       return res.status(200).json({
         success: true,
         message: "OTP sent to email. Please verify to complete registration.",
-        result,
       });
+
     } catch (error: any) {
       return res.status(500).json({
         success: false,
@@ -26,19 +26,27 @@ export class userRegisterController {
       });
     }
   }
+
   async verifyOtp(req: Request, res: Response) {
     try {
       const email = req.body.email.trim().toLowerCase();
       const otp = String(req.body.otp);
 
-      const user = await this._verifyOtpUseCase.verifyUser(email.trim().toLowerCase(), String(otp));
-      return res
-        .status(200)
-        .json({ success: true, message: "User Verified Successfully", user });
+      const user = await this._verifyOtpUseCase.verifyUser(
+        email,
+        otp
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "User Verified Successfully",
+        user
+      });
+
     } catch (error: any) {
-      return res
-        .status(400)
-        .json({ message: error?.message || "OTP Verification Failed" });
+      return res.status(400).json({
+        message: error?.message || "OTP Verification Failed"
+      });
     }
   }
 }

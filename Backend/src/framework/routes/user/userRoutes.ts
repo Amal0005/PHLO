@@ -14,18 +14,22 @@ export class userRoutes {
     this.setRoutes();
   }
   private setRoutes(): void {
-    this.userRouter.post("/register", (req: Request, res: Response) => {
-      validate(registerUserSchema);
-      registerController.register(req, res);
-    });
+    this.userRouter.post(
+      "/register",
+      validate(registerUserSchema),
+      (req: Request, res: Response) => {
+
+        registerController.register(req, res);
+      }
+    );
+
     this.userRouter.post("/verify-otp", (req: Request, res: Response) => {
       registerController.verifyOtp(req, res);
     });
     this.userRouter.post("/login", (req: Request, res: Response) => {
-            validate(registerUserSchema);
+      validate(registerUserSchema);
 
       loginController.login(req, res);
     });
-    
   }
 }
