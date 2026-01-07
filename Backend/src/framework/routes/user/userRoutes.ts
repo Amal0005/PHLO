@@ -18,7 +18,6 @@ export class userRoutes {
       "/register",
       validate(registerUserSchema),
       (req: Request, res: Response) => {
-
         registerController.register(req, res);
       }
     );
@@ -26,10 +25,16 @@ export class userRoutes {
     this.userRouter.post("/verify-otp", (req: Request, res: Response) => {
       registerController.verifyOtp(req, res);
     });
+    this.userRouter.post("/resend-otp", (req: Request, res: Response) => {
+      registerController.resendOtp(req, res);
+    });
     this.userRouter.post("/login", (req: Request, res: Response) => {
       validate(registerUserSchema);
 
       loginController.login(req, res);
     });
+    this.userRouter.post("/forgot-password",(req: Request, res: Response)=>{
+      loginController.forgotPassword(req,res)
+    })
   }
 }

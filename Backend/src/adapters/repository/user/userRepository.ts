@@ -17,5 +17,8 @@ async createUser(user: Omit<User, "_id">): Promise<User> {
   const created = await UserModel.create(user);
    return this.toDomain(created.toObject());
 }
+async updatePassword(email: string, hashedPassword: string): Promise<void> {
+  await UserModel.updateOne({email},{$set:{password:hashedPassword}})
+}
 
 }

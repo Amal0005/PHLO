@@ -8,7 +8,8 @@ export class OtpServices implements IOTPService{
     return otp
   }
   async saveOtp(identifier: string, otp: string): Promise<void> {
-    await redis.set(`OTP_${identifier}`, otp, { EX: 120 });
+      // await redis.del(`OTP_${identifier}`)
+    await redis.set(`OTP_${identifier}`, otp, { EX: 60 });
 
   }
   async verifyOtp(identifier: string, otp: string): Promise<"VERIFIED" | "INVALID" | "EXPIRED"> {

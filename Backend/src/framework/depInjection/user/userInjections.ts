@@ -6,6 +6,8 @@ import { MailService } from "../../../domain/services/user/mailServices";
 import { OtpServices } from "../../../domain/services/user/otpServices";
 import { passwordService } from "../../../domain/services/user/passwordService";
 import { PendingUserService } from "../../../domain/services/user/pedingUserService";
+import { ForgotPasswordUseCase } from "../../../useCases/user/auth/forgotPasswordUseCase";
+import { ResendOtpUseCase } from "../../../useCases/user/auth/resendOtpUseCase";
 import { userLoginUserUseCase } from "../../../useCases/user/login/loginUserUseCase";
 import { userRegisterUseCase } from "../../../useCases/user/register/registerUserUseCase";
 import { verifyRegisterOtpUseCase } from "../../../useCases/user/register/verifyRegisterOtpUseCase";
@@ -21,6 +23,8 @@ const mailService=new MailService()
 const registerUseCase = new userRegisterUseCase(userRepo,passwordServices,otpServices,mailService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices,jwtService);
 const verifyOtpUseCase=new verifyRegisterOtpUseCase(userRepo,otpServices,pendingService)
+const resendOtpUsecase=new ResendOtpUseCase(otpServices,mailService)
+const forgotPasswordUseCase=new ForgotPasswordUseCase(userRepo,otpServices,mailService)
 
-export const registerController = new userRegisterController(registerUseCase,verifyOtpUseCase);
-export const loginController = new userLoginController(loginUseCase);
+export const registerController = new userRegisterController(registerUseCase,verifyOtpUseCase,resendOtpUsecase);
+export const loginController = new userLoginController(loginUseCase,forgotPasswordUseCase);

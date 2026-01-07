@@ -3,12 +3,11 @@ import type { ChangeEvent, FormEvent } from "react";
 import { Image, Calendar, Sparkles, CameraOff, Camera } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
-import api from "../../../axios/axiosConfig";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { loginUserSchema } from "../../../validation/loginUserSchema";
 import { useDispatch } from "react-redux";
 import { login } from "@/store/user/authSlice";
+import { authService } from "@/services/user/loginService";
 
 interface loginForm {
   email: string;
@@ -20,7 +19,6 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [form, setForm] = useState<loginForm>({
     email: "",
     password: "",
@@ -42,31 +40,32 @@ export default function Login() {
 
     setIsLoading(true);
 
-    try {
-    const res = await api.post("/login", form);
+   try {
+  const data = await authService.login(form);
 
-dispatch(
-  login({
-    user: res.data.user,
-    token: res.data.accessToken,
-  })
-);
+  dispatch(
+    login({
+      user: data.user,
+      token: data.accessToken,
+    })
+  );
 
-localStorage.setItem("user", JSON.stringify(res.data.user));
-localStorage.setItem("token", res.data.accessToken);
+  localStorage.setItem("user", JSON.stringify(data.user));
+  localStorage.setItem("token", data.accessToken);
 
-toast.success("Login Successful");
-navigate("/home");
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Invalid email or password");
-    } finally {
-      setIsLoading(false);
-    }
+  toast.success("Login Successful");
+  navigate("/home");
+} catch (error) {
+  console.error("Login error:", error);
+  toast.error("Invalid email or password");
+} finally {
+  setIsLoading(false);
+}
+
   }
 
   function handleGoogleLogin() {
-    window.location.href = "http://localhost:5000/api/user/google";
+window.location.href = authService.googleLoginUrl;
     toast.info("Google login coming soon!");
   }
 
@@ -205,6 +204,7 @@ navigate("/home");
                 <div className="flex justify-end">
                   <button
                     type="button"
+                    onClick={()=>navigate("/forgot-password")}
                     className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
                   >
                     Forgot password?

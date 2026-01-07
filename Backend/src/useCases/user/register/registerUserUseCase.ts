@@ -30,7 +30,6 @@
 //       password:hashedPassword
 //     }
 //     await redis.set(`PENDING_USER_${email}`, JSON.stringify(pendingUser), { EX: 300 })
-   
 
 //     const otp=await this._otpService.generateOtp(email)
 //     console.log("OTP ",otp);
@@ -45,12 +44,8 @@
 //     `
 //     )
 //   }
-  
+
 // }
-
-
-
-
 
 import { RegisterDto } from "../../../domain/dto/user/auth/registerDto";
 import { IMailService } from "../../../domain/interface/service/ImailServices";
@@ -86,17 +81,12 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
       password: hashedPassword,
     };
 
-    await redis.set(
-      `PENDING_USER_${email}`,
-      JSON.stringify(pendingUser),
-      { EX: 300 }
-    );
-
-    // Generate OTP
+    await redis.set(`PENDING_USER_${email}`, JSON.stringify(pendingUser), {
+      EX: 300,
+    });
     const otp = await this._otpService.generateOtp(email);
     console.log("OTP: ", otp);
 
-    // -------- Read HTML Template --------
     const templatePath = path.join(
       __dirname,
       "../../../templates/user/otp.html"
@@ -104,10 +94,8 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
 
     let htmlTemplate = fs.readFileSync(templatePath, "utf8");
 
-    // Replace placeholder
     htmlTemplate = htmlTemplate.replace("{{OTP_CODE}}", otp.toString());
 
-    // -------- Send Email --------
     await this._mailService.sendMail(
       email,
       "Verify your account",

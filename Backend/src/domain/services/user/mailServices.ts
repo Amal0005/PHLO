@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import { IMailService } from "../../interface/service/ImailServices";
-import path from "path";
 
 export class MailService implements IMailService {
 private transporter: nodemailer.Transporter;
@@ -22,13 +21,6 @@ async sendMail(to: string, subject: string, html: string): Promise<void> {
     to,
     subject,
     html,
-    attachments: [
-      {
-        filename: "Logo_white.png",
-        path: path.join(__dirname, "../../../templates/user/Logo_white.png"),
-        cid: "app-logo"
-      }
-    ]
   });
 }
 

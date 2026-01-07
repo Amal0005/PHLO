@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { setUserFromSession } from "./store/user/authSlice";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import ForgotPassword from "./pages/user/auth/forgotPassword";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/home" element={<LandingPage />} />
         </Routes>
       </BrowserRouter>
