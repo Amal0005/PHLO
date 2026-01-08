@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {loginController,registerController,userAuthController,} from "../../depInjection/user/userInjections";
+import {loginController,registerController,userAuthController, userGoogleController,} from "../../depInjection/user/userInjections";
 import { Request, Response } from "express";
 import { validate } from "../../../adapters/middlewares/zodValidator";
 import { registerUserSchema } from "../../../adapters/validation/userSchemas";
@@ -40,6 +40,9 @@ export class userRoutes {
     this.userRouter.post("/reset-password",(req: Request, res: Response)=>{
       userAuthController.resetPassword(req,res)
     })
+    this.userRouter.post("/auth/google", (req: Request, res: Response) => {
+      userGoogleController.googleLogin(req, res);
+});
   }
 }
 

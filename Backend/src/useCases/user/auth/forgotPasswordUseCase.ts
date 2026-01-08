@@ -29,7 +29,7 @@ console.log(otp);
       "Reset Your Password",
       `<h2>Password Reset OTP</h2>
        <p style="font-size:18px;font-weight:bold">${otp}</p>
-       <p>This OTP expires in 2 minutes.</p>`
+       <p>This OTP expires in 1 minutes.</p>`
     );
     await redis.set(cooldownKey,"1",{EX:60})
   }

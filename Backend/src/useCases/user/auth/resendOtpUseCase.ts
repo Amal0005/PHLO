@@ -34,11 +34,10 @@ export class ResendOtpUseCase implements IresendOtpUseCase {
       "Verify Your Account",
       `<h2>Your OTP Code</h2>
        <p style="font-size:18px;font-weight:bold">${otp}</p>
-       <p>This OTP expires in 2 minutes.</p>`
+       <p>This OTP expires in 1 minutes.</p>`
     );
 
-    // Set Cooldown & Count
-    await redis.set(resendKey, "1", { EX: 60 });      // 60 seconds cooldown
-    await redis.set(countKey, (count + 1).toString(), { EX: 600 }); // resets after 10 mins
+    await redis.set(resendKey, "1", { EX: 60 });
+    await redis.set(countKey, (count + 1).toString(), { EX: 600 });
   }
 }

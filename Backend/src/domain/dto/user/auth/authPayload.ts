@@ -1,5 +1,5 @@
 export interface AuthPayload {
   userId: string;
-  role: "user" | "creator" | "admin";
+  role: "user" | "admin" | "creator";
   email: string;
 }

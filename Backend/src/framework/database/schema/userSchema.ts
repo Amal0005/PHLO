@@ -6,8 +6,7 @@ export const userSchema = new Schema(
     email: { type: String, required: true, unique: true },
     phone: { type: Number },
     password: { type: String },
-    imageUrl: { type: String },
-    createdAt: { type: Date },
+    image: { type: String },
     status: {
       type: String,
       enum: ["active", "blocked"],

@@ -1,4 +1,5 @@
 import { UserAuthController } from "../../../adapters/controllers/user/auth/authController";
+import { GoogleAuthController } from "../../../adapters/controllers/user/auth/googleAuthController";
 import { userLoginController } from "../../../adapters/controllers/user/login/userLoginController";
 import { userRegisterController } from "../../../adapters/controllers/user/register/userRegisterController";
 import { userRepository } from "../../../adapters/repository/user/userRepository";
@@ -8,6 +9,7 @@ import { OtpServices } from "../../../domain/services/user/otpServices";
 import { passwordService } from "../../../domain/services/user/passwordService";
 import { PendingUserService } from "../../../domain/services/user/pedingUserService";
 import { ForgotPasswordUseCase } from "../../../useCases/user/auth/forgotPasswordUseCase";
+import { GoogleLoginUseCase } from "../../../useCases/user/auth/googleLoginUseCase";
 import { ResendOtpUseCase } from "../../../useCases/user/auth/resendOtpUseCase";
 import { ResetPasswordUseCase } from "../../../useCases/user/auth/resetPasswordUseCase";
 import { VerifyForgotOtpUseCase } from "../../../useCases/user/auth/verifyForgotOtpUseCase";
@@ -30,7 +32,9 @@ const resendOtpUsecase=new ResendOtpUseCase(otpServices,mailService)
 const forgotPasswordUseCase=new ForgotPasswordUseCase(userRepo,otpServices,mailService)
 const verifyForgotOtpUseCase=new VerifyForgotOtpUseCase(otpServices)
 const resetPasswordUseCase=new ResetPasswordUseCase(userRepo,passwordServices)
+const googleLoginUseCase=new GoogleLoginUseCase(userRepo,jwtService)
 
 export const registerController = new userRegisterController(registerUseCase,verifyOtpUseCase,resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
 export const userAuthController=new UserAuthController(forgotPasswordUseCase,verifyForgotOtpUseCase,resetPasswordUseCase)
+export const userGoogleController=new GoogleAuthController(googleLoginUseCase)

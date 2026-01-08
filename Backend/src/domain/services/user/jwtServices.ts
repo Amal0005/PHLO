@@ -1,5 +1,6 @@
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 import { IjwtServices } from "../../interface/service/IjwtServices";
+import { AuthPayload } from "../../dto/user/auth/authPayload";
 
 export class JwtServices implements IjwtServices {
   private getSecret(): string {
@@ -8,7 +9,7 @@ export class JwtServices implements IjwtServices {
     return secret;
   }
 
-  generateAccessToken(payload: object): string {
+  generateAccessToken(payload: AuthPayload): string {
     const secret = this.getSecret();
     const expiresIn = Number(process.env.JWT_ACCESS_EXPIRE);
     return jwt.sign(payload, secret, {
@@ -16,14 +17,14 @@ export class JwtServices implements IjwtServices {
     });
   }
 
-  generateRefreshToken(payload: object): string {
+  generateRefreshToken(payload: AuthPayload): string {
     const secret = this.getSecret();
     const expiresIn = Number(process.env.JWT_REFRESH_EXPIRES);
     return jwt.sign(payload, secret, { expiresIn });
   }
 
-  verifyToken(token: string): string | JwtPayload {
-    const secret = this.getSecret();
-    return jwt.verify(token, secret);
-  }
+verifyToken(token: string): AuthPayload {
+  const secret = this.getSecret();
+  return jwt.verify(token, secret) as AuthPayload;
+}
 }

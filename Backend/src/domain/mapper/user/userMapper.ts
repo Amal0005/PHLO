@@ -11,9 +11,7 @@ export class UserMapper{
       status: user.status,
       role: user.role,
       googleVerified: user.googleVerified,
-      lastLogin: user.lastLogin,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt
         }
     }
 }
