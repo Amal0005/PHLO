@@ -102,6 +102,7 @@ export default function ForgotPassword() {
       await passwordService.resetPassword(email, passwords.newPassword);
 
       toast.success("Password reset successful!");
+      navigate("/login")
     } catch (error) {
       console.error(error);
       toast.error("Failed to reset password");

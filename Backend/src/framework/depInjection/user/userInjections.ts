@@ -1,3 +1,4 @@
+import { UserAuthController } from "../../../adapters/controllers/user/auth/authController";
 import { userLoginController } from "../../../adapters/controllers/user/login/userLoginController";
 import { userRegisterController } from "../../../adapters/controllers/user/register/userRegisterController";
 import { userRepository } from "../../../adapters/repository/user/userRepository";
@@ -8,6 +9,8 @@ import { passwordService } from "../../../domain/services/user/passwordService";
 import { PendingUserService } from "../../../domain/services/user/pedingUserService";
 import { ForgotPasswordUseCase } from "../../../useCases/user/auth/forgotPasswordUseCase";
 import { ResendOtpUseCase } from "../../../useCases/user/auth/resendOtpUseCase";
+import { ResetPasswordUseCase } from "../../../useCases/user/auth/resetPasswordUseCase";
+import { VerifyForgotOtpUseCase } from "../../../useCases/user/auth/verifyForgotOtpUseCase";
 import { userLoginUserUseCase } from "../../../useCases/user/login/loginUserUseCase";
 import { userRegisterUseCase } from "../../../useCases/user/register/registerUserUseCase";
 import { verifyRegisterOtpUseCase } from "../../../useCases/user/register/verifyRegisterOtpUseCase";
@@ -25,6 +28,9 @@ const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices,jwtServ
 const verifyOtpUseCase=new verifyRegisterOtpUseCase(userRepo,otpServices,pendingService)
 const resendOtpUsecase=new ResendOtpUseCase(otpServices,mailService)
 const forgotPasswordUseCase=new ForgotPasswordUseCase(userRepo,otpServices,mailService)
+const verifyForgotOtpUseCase=new VerifyForgotOtpUseCase(otpServices)
+const resetPasswordUseCase=new ResetPasswordUseCase(userRepo,passwordServices)
 
 export const registerController = new userRegisterController(registerUseCase,verifyOtpUseCase,resendOtpUsecase);
-export const loginController = new userLoginController(loginUseCase,forgotPasswordUseCase);
+export const loginController = new userLoginController(loginUseCase);
+export const userAuthController=new UserAuthController(forgotPasswordUseCase,verifyForgotOtpUseCase,resetPasswordUseCase)

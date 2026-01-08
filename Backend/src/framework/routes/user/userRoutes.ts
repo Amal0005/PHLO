@@ -1,14 +1,12 @@
 import { Router } from "express";
-import {
-  loginController,
-  registerController,
-} from "../../depInjection/user/userInjections";
+import {loginController,registerController,userAuthController,} from "../../depInjection/user/userInjections";
 import { Request, Response } from "express";
 import { validate } from "../../../adapters/middlewares/zodValidator";
 import { registerUserSchema } from "../../../adapters/validation/userSchemas";
+
+
 export class userRoutes {
   public userRouter: Router;
-
   constructor() {
     this.userRouter = Router();
     this.setRoutes();
@@ -34,7 +32,14 @@ export class userRoutes {
       loginController.login(req, res);
     });
     this.userRouter.post("/forgot-password",(req: Request, res: Response)=>{
-      loginController.forgotPassword(req,res)
+      userAuthController.forgotPassword(req,res)
+    })
+    this.userRouter.post("/verify-forgot-otp",(req: Request, res: Response)=>{
+      userAuthController.verifyForgotOtp(req,res)
+    })
+    this.userRouter.post("/reset-password",(req: Request, res: Response)=>{
+      userAuthController.resetPassword(req,res)
     })
   }
 }
+

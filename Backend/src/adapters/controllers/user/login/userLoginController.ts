@@ -5,7 +5,6 @@ import { Request, Response } from "express";
 export class userLoginController {
   constructor(
     private _userLoginUseCase: IuserLoginUseCase,
-    private _forgotPasswordUseCase:IforgotPasswordUseCase
   ) {}
 
   async login(req: Request, res: Response) {
@@ -36,26 +35,6 @@ export class userLoginController {
       res.status(400).json({
         message: "Error occurs while login",
       });
-    }
-  }
-
-  async forgotPassword(req: Request, res: Response){
-    try {
-      const email=req.body.email?.trim().toLowerCase()
-       if (!email) {
-      return res.status(400).json({ message: "Email required" });
-
-    }
-    await this._forgotPasswordUseCase.sendOtp(email)
-        return res.status(200).json({
-      success: true,
-      message: "OTP sent successfully",
-    });
-    } catch (error) {
-         return res.status(400).json({
-      success: false,
-      message:  "Failed to send OTP",
-    });
     }
   }
 }
