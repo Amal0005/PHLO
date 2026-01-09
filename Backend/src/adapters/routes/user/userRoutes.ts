@@ -1,8 +1,8 @@
 import { Router } from "express";
-import {loginController,registerController,userAuthController, userGoogleController,} from "../../depInjection/user/userInjections";
 import { Request, Response } from "express";
 import { validate } from "../../../adapters/middlewares/zodValidator";
 import { registerUserSchema } from "../../../adapters/validation/userSchemas";
+import { loginController, registerController, userAuthController, userGoogleController } from "../../../framework/depInjection/user/userInjections";
 
 
 export class userRoutes {
@@ -28,7 +28,6 @@ export class userRoutes {
     });
     this.userRouter.post("/login", (req: Request, res: Response) => {
       validate(registerUserSchema);
-
       loginController.login(req, res);
     });
     this.userRouter.post("/forgot-password",(req: Request, res: Response)=>{
