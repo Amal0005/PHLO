@@ -4,7 +4,7 @@ export interface UserResponseDto {
   phone?: string;
   email: string;
   status: "active" | "blocked";
-  role: "user" | "creator" | "admin";
+  role: "user"  | "admin";
   googleVerified: boolean;
   lastLogin?: Date;
   createdAt?: Date;

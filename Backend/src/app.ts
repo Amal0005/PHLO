@@ -2,10 +2,11 @@ import { connectDB } from "./framework/database/connectDB/connectDB";
 import express, { Express } from "express";
 import http from "http";
 import dotenv from "dotenv";
-import { userRoutes } from "./framework/routes/user/userRoutes";
 import redis from "./framework/redis/redisClient";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { userRoutes } from "./adapters/routes/user/userRoutes";
+import { CreatorRoutes } from "./adapters/routes/creator/creatorRoutes";
 
 export class App {
   private app: Express;
@@ -17,6 +18,7 @@ export class App {
     this.database = new connectDB();
     this.setMiddlewares();
     this.setUserRoutes();
+    this.setCreatorRoutes()
   }
   private setMiddlewares(): void {
     this.app.use(express.json());
@@ -35,6 +37,10 @@ export class App {
   }
   private setUserRoutes(): void {
     this.app.use("/api", new userRoutes().userRouter);
+  }
+  private setCreatorRoutes():void{
+        this.app.use("/api/creator", new CreatorRoutes().creatorRouter);
+
   }
   public async listen(): Promise<void> {
     const port = process.env.PORT || 5000;
