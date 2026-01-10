@@ -30,8 +30,7 @@ export const registerCreatorSchema = z.object({
   bio: z
     .string()
     .min(50, "Bio must be at least 100 characters")
-    .max(300, "Bio cannot exceed 300 characters"),
-
+,
   portfolioLink: z
     .string()
     .url("Portfolio must be a valid URL")
@@ -39,13 +38,10 @@ export const registerCreatorSchema = z.object({
 
   profilePhoto: z
     .string()
-    .url("Profile photo must be a valid URL")
     .optional(),
 
   governmentId: z
-    .string()
-    .url("Government ID must be a valid image URL"),
-
+    .string(),
   specialties: z
     .array(z.string().min(2))
     .optional(),

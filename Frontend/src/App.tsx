@@ -10,6 +10,8 @@ import { useDispatch } from "react-redux";
 import ForgotPassword from "./pages/user/auth/forgotPassword";
 import LandingPage from "./pages/landing";
 import CreatorLogin from "./pages/creator/auth/login";
+import CreatorSignup from "./pages/creator/auth/register";
+import ForgotPasswordd from "./pages/creator/auth/forgotPassword";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -40,6 +42,9 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
 
           <Route path="/creator/login" element={<CreatorLogin />} />
+          <Route path="/creator/register" element={<CreatorSignup />} />
+          <Route path="/creator/forgott" element={<ForgotPasswordd />} />
+
 
         </Routes>
       </BrowserRouter>

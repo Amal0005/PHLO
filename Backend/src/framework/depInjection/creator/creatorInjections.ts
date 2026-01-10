@@ -4,7 +4,6 @@ import { RegisterCreatorUseCase } from "../../../useCases/creator/register/regis
 
 const creatorRepository=new CreatorRepository
 
-
 const creatorRegisterUseCase=new RegisterCreatorUseCase(creatorRepository)
 
 export const creatorRegisterController=new CreatorRegisterController(creatorRegisterUseCase)

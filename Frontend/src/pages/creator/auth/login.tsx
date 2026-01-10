@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Camera, CameraOff, Image, Users, Award } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function CreatorLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +14,7 @@ export default function CreatorLogin() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
+  const navigate=useNavigate()
   function handleLogin(e) {
     e.preventDefault();
     setIsLoading(true);
@@ -46,7 +48,7 @@ export default function CreatorLogin() {
                   <Camera className="w-8 h-8 text-white" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-                  Creator Portal
+                  Creator Login
                 </h2>
                 <p className="text-sm sm:text-base text-gray-400">
                   Access your photography dashboard
@@ -115,9 +117,9 @@ export default function CreatorLogin() {
                 </div>
 
                 <p className="text-gray-400 text-xs sm:text-sm text-center pt-2">
-                  Need creator access?{" "}
-                  <span className="text-white cursor-pointer hover:underline font-medium hover:scale-105 inline-block transition-transform">
-                    Contact admin
+                  Haven't Account? {" "}
+                  <span onClick={()=>navigate("creator/register")} className="text-white cursor-pointer hover:underline font-medium hover:scale-105 inline-block transition-transform">
+                    Signup
                   </span>
                 </p>
               </div>
