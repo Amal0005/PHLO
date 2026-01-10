@@ -1,4 +1,4 @@
-import { RegisterDto } from "../../../domain/dto/user/auth/registerDto";
+import { RegisterDto } from "../../../domain/dto/user/registerDto";
 import { IMailService } from "../../../domain/interface/service/ImailServices";
 import { IOTPService } from "../../../domain/interface/service/IotpServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";

@@ -1,6 +1,6 @@
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
 import { IjwtServices } from "../../interface/service/IjwtServices";
-import { AuthPayload } from "../../dto/user/auth/authPayload";
+import { AuthPayload } from "../../dto/user/authPayload";
 
 export class JwtServices implements IjwtServices {
   private getSecret(): string {

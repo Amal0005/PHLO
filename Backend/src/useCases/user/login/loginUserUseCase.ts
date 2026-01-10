@@ -1,4 +1,4 @@
-import { loginDto } from "../../../domain/dto/user/auth/loginDto";
+import { loginDto } from "../../../domain/dto/user/loginDto";
 import { IjwtServices } from "../../../domain/interface/service/IjwtServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";

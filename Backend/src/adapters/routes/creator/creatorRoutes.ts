@@ -16,5 +16,6 @@ export class CreatorRoutes {
       validate(registerCreatorSchema),
       (req: Request, res: Response) => creatorRegisterController.register(req, res)
     )
+    this.creatorRouter
   }
 }

@@ -1,4 +1,4 @@
-import { loginDto } from "../../../dto/user/auth/loginDto";
+import { loginDto } from "../../../dto/user/loginDto";
 import { UserDto } from "../../../dto/user/userDto";
 
 export interface IuserLoginUseCase {
