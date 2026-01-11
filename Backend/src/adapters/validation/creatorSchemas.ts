@@ -46,5 +46,16 @@ export const registerCreatorSchema = z.object({
     .array(z.string().min(2))
     .optional(),
 });
+export const loginCreatorSchema = z.object({
+    email: z
+    .string()
+    .email("Invalid email format"),
 
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters"),
+
+})
+
+export type LoginCreatorDTO=z.infer<typeof loginCreatorSchema>
 export type RegisterCreatorDTO = z.infer<typeof registerCreatorSchema>;

@@ -8,7 +8,7 @@ import LogoWhite from "../../../assets/images/Logo_white.png";
 import { registerUserSchema } from "../../../validation/userSchema";
 import GoogleLoginButton from "@/compoents/user/googleButton";
 import { useDispatch } from "react-redux";
-import { login } from "@/store/user/authSlice";
+import { setUser } from "@/store/user/userSlice";
 
 interface RegisterForm {
   name: string;
@@ -281,28 +281,21 @@ export default function Register() {
                   </div>
                 </div>
 
-               <GoogleLoginButton
-  onSuccess={async (idToken:string) => {
+<GoogleLoginButton
+  onSuccess={async (idToken: string) => {
     try {
       const res = await api.post("/auth/google", { idToken });
 
-      dispatch(
-        login({
-          user: res.data.user,
-          token: res.data.accessToken,
-        })
-      );
-
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("token", res.data.accessToken);
+      dispatch(setUser(res.data.user));
 
       navigate("/home");
     } catch (err) {
       toast.error("Google login failed");
-      console.log(err)
+      console.log(err);
     }
   }}
 />
+
 
                 <p className="text-gray-400 text-xs sm:text-sm text-center pt-2">
                   Already have an account?{" "}

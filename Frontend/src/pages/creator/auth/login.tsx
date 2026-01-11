@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Camera, CameraOff, Image, Users, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "@/axios/axiosConfig";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/store/store";
+
+import { setCreator } from "@/store/creator/creatorSlice";
+import { setAuth } from "@/store/tokenSlice";
 
 export default function CreatorLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,21 +15,43 @@ export default function CreatorLogin() {
     email: "",
     password: ""
   });
+  const dispatch = useDispatch<AppDispatch>();
 
-  function handleChange(e) {
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
+async function handleLogin(e: React.FormEvent) {
+  e.preventDefault();
+
+  try {
+    setIsLoading(true);
+
+    const res = await api.post("/creator/login", {
+      email: form.email,
+      password: form.password,
+    });
+
+    dispatch(setCreator(res.data.creator));
+    dispatch(
+      setAuth({
+        token: res.data.token,
+        role: "creator",
+      })
+    );
+
+    navigate("/creator/dashboard");
+  } catch (error) {
+    console.error(error);
+    alert("Invalid email or password");
+  } finally {
+    setIsLoading(false);
+  }
+}
+
 
   const navigate=useNavigate()
-  function handleLogin(e) {
-    e.preventDefault();
-    setIsLoading(true);
-    // Simulate login
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Login functionality would go here");
-    }, 1500);
-  }
+  
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -56,6 +84,7 @@ export default function CreatorLogin() {
               </div>
 
               <div className="space-y-4">
+                 <form action="" onSubmit={handleLogin}>
                 <div>
                   <input
                     type="email"
@@ -88,6 +117,7 @@ export default function CreatorLogin() {
                     )}
                   </button>
                 </div>
+               
 
                 <div className="flex justify-end">
                   <button
@@ -100,8 +130,7 @@ export default function CreatorLogin() {
 
                 <div>
                   <button
-                    type="button"
-                    onClick={handleLogin}
+                    type="submit"
                     disabled={isLoading || !form.email || !form.password}
                     className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
                   >
@@ -115,10 +144,11 @@ export default function CreatorLogin() {
                     )}
                   </button>
                 </div>
+                  </form>
 
                 <p className="text-gray-400 text-xs sm:text-sm text-center pt-2">
                   Haven't Account? {" "}
-                  <span onClick={()=>navigate("creator/register")} className="text-white cursor-pointer hover:underline font-medium hover:scale-105 inline-block transition-transform">
+                  <span onClick={() => navigate("/creator/register")} className="text-white cursor-pointer hover:underline font-medium hover:scale-105 inline-block transition-transform">
                     Signup
                   </span>
                 </p>

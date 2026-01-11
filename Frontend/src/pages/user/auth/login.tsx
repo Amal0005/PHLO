@@ -6,12 +6,12 @@ import { toast } from "react-toastify";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { loginUserSchema } from "../../../validation/loginUserSchema";
 import { useDispatch } from "react-redux";
-import { login } from "@/store/user/authSlice";
+import { setUser } from "@/store/user/userSlice";
 import { authService } from "@/services/user/loginService";
 import GoogleLoginButton from "../../../compoents/user/googleButton";
 import api from "@/axios/axiosConfig";
-
-
+import { setAuth } from "@/store/tokenSlice";
+import { AppDispatch } from "@/store/store";
 
 interface loginForm {
   email: string;
@@ -22,10 +22,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+const dispatch = useDispatch<AppDispatch>();
   const [form, setForm] = useState<loginForm>({
     email: "",
-    password: ""});
+    password: "",
+  });
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -43,30 +44,27 @@ export default function Login() {
 
     setIsLoading(true);
 
-   try {
-  const data = await authService.login(form);
+    try {
+      const data = await authService.login(form);
 
-  dispatch(
-    login({
-      user: data.user,
-      token: data.accessToken,
-    })
-  );
+      dispatch(setUser(data.user));
 
-  localStorage.setItem("user", JSON.stringify(data.user));
-  localStorage.setItem("token", data.accessToken);
+      dispatch(
+        setAuth({
+          token: data.accessToken,
+          role: data.user.role,
+        })
+      );
 
-  toast.success("Login Successful");
-  navigate("/home");
-} catch (error) {
-  console.error("Login error:", error);
-  toast.error("Invalid email or password");
-} finally {
-  setIsLoading(false);
-}
-
+      toast.success("Login Successful");
+      navigate("/home");
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Invalid email or password");
+    } finally {
+      setIsLoading(false);
+    }
   }
-
 
   function handleRegister() {
     navigate("/register");
@@ -203,7 +201,7 @@ export default function Login() {
                 <div className="flex justify-end">
                   <button
                     type="button"
-                    onClick={()=>navigate("/forgot-password")}
+                    onClick={() => navigate("/forgot-password")}
                     className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
                   >
                     Forgot password?
@@ -239,28 +237,26 @@ export default function Login() {
                   </div>
                 </div>
 
-<GoogleLoginButton
-  onSuccess={async (idToken:string) => {
-    try {
-      const res = await api.post("/auth/google", { idToken });
+                <GoogleLoginButton
+                  onSuccess={async (idToken: string) => {
+                    try {
+                      const res = await api.post("/auth/google", { idToken });
 
-      dispatch(
-        login({
-          user: res.data.user,
-          token: res.data.accessToken,
-        })
-      );
+                      dispatch(setUser(res.data.user));
+                      dispatch(
+                        setAuth({
+                          token: res.data.accessToken,
+                          role: res.data.user.role,
+                        })
+                      );
 
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("token", res.data.accessToken);
-
-      navigate("/home");
-    } catch (err) {
-      toast.error("Google login failed");
-      console.log(err)
-    }
-  }}
-/>
+                      navigate("/home");
+                    } catch (err) {
+                      toast.error("Google login failed");
+                      console.log(err);
+                    }
+                  }}
+                />
 
                 <p className="text-gray-400 text-xs sm:text-sm text-center pt-2">
                   Don't have an account?{" "}

@@ -23,7 +23,6 @@ export class userLoginUserUseCase implements IuserLoginUseCase {
       user.password,
       existingUser.password
     );
-
     if (!isPasswordMatch)
       throw new Error("Password does not match");
 

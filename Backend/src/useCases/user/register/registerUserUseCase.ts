@@ -25,7 +25,7 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
     if (!user.password) throw new Error("Password is required");
 
     const hashedPassword = await this._passwordService.hash(user.password);
-
+    
     const pendingUser = {
       ...user,
       email,

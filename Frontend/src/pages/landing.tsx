@@ -151,14 +151,14 @@ const LandingPage = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8 animate-fade-in" style={{animationDelay: '0.6s'}}>
-              <button onClick={()=>navigate("/login")} className="group relative px-10 py-5 bg-white text-black rounded-full font-semibold text-lg overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-white/30 hover:scale-110 w-full sm:w-auto">
+              <button onClick={()=>navigate("/register")} className="group relative px-10 py-5 bg-white text-black rounded-full font-semibold text-lg overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-white/30 hover:scale-110 w-full sm:w-auto">
                 <span className="relative z-10 flex items-center justify-center space-x-3">
                   <span>Join as Client</span>
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
                 </span>
               </button>
 
-              <button onClick={()=>navigate("/creator/login")} className="relative px-10 py-5 border-2 border-white text-white rounded-full font-semibold text-lg overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:shadow-white/20 hover:scale-110 w-full sm:w-auto">
+              <button onClick={()=>navigate("/creator/register")} className="relative px-10 py-5 border-2 border-white text-white rounded-full font-semibold text-lg overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:shadow-white/20 hover:scale-110 w-full sm:w-auto">
                 <span className="relative z-10 flex items-center justify-center space-x-3 group-hover:text-black transition-colors duration-500">
                   <Camera className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
                   <span>Become a Creator</span>
