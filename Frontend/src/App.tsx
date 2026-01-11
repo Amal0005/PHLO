@@ -9,6 +9,7 @@ import LandingPage from "./pages/landing";
 import CreatorLogin from "./pages/creator/auth/login";
 import CreatorSignup from "./pages/creator/auth/register";
 import ForgotPasswordd from "./pages/creator/auth/forgotPassword";
+import AdminLogin from "./pages/admin/adminLogin";
 
 export default function App() {
   return (
@@ -26,6 +27,9 @@ export default function App() {
           <Route path="/creator/login" element={<CreatorLogin />} />
           <Route path="/creator/register" element={<CreatorSignup />} />
           <Route path="/creator/forgot" element={<ForgotPasswordd />} />
+
+
+          <Route path="/admin/login" element={<AdminLogin />} />
         </Routes>
       </BrowserRouter>
 

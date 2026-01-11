@@ -10,7 +10,8 @@ export class userLoginController {
   async login(req: Request, res: Response) {
     try {
       const result = await this._userLoginUseCase.loginUser(req.body);
-      const { user, accessToken, refreshToken } = result;
+      console.log(result)
+      const { user ,accessToken,refreshToken } = result;
 
       const cookieOptions = {
         httpOnly: true,

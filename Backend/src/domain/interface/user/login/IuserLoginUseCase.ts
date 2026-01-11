@@ -1,9 +1,9 @@
 import { loginDto } from "../../../dto/user/loginDto";
-import { UserDto } from "../../../dto/user/userDto";
+import { UserResponseDto } from "../../../dto/user/userResponseDto";
 
 export interface IuserLoginUseCase {
   loginUser(user: loginDto): Promise<{
-    user: UserDto;
+    user: UserResponseDto;
     accessToken: string;
     refreshToken: string;
   }>;

@@ -10,6 +10,7 @@ import { userRoutes } from "./adapters/routes/user/userRoutes";
 import { CreatorRoutes } from "./adapters/routes/creator/creatorRoutes";
 import { UploadRoutes } from "./adapters/routes/uploadRoutes";
 import { ViewRoutes } from "./adapters/routes/viewRoutes";
+import { AdminRoutes } from "./adapters/routes/admin/adminRoutes";
 
 export class App {
   private app: Express;
@@ -24,6 +25,7 @@ export class App {
     this.setUploadRouter();
     this.setCreatorRoutes()
     this.setViewRouter()
+    this.setAdminRouter()
   }
   private setMiddlewares(): void {
     this.app.use(express.json());
@@ -54,7 +56,9 @@ export class App {
   private setViewRouter(){
     this.app.use("/api/upload",new ViewRoutes().viewRoutes)
   }
-
+private setAdminRouter(){
+  this.app.use("/api/admin",new AdminRoutes().adminRouter)
+}
 
   public async listen(): Promise<void> {
     const port = process.env.PORT || 5000;
