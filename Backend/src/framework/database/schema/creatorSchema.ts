@@ -13,7 +13,7 @@ export const creatorSchema = new Schema(
 
     phone: { type: String, required: true },
 
-    password: { type: String, required: true, select: false },
+    password: { type: String, required: true },
 
     profilePhoto: { type: String },
 

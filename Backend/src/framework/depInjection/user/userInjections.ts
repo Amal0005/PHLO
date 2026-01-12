@@ -6,7 +6,7 @@ import { userRepository } from "../../../adapters/repository/user/userRepository
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { MailService } from "../../../domain/services/user/mailServices";
 import { OtpServices } from "../../../domain/services/user/otpServices";
-import { passwordService } from "../../../domain/services/user/passwordService";
+import { PasswordService } from "../../../domain/services/user/passwordService";
 import { PendingUserService } from "../../../domain/services/user/pedingUserService";
 import { ForgotPasswordUseCase } from "../../../useCases/user/auth/forgotPasswordUseCase";
 import { GoogleLoginUseCase } from "../../../useCases/user/auth/googleLoginUseCase";
@@ -18,7 +18,7 @@ import { userRegisterUseCase } from "../../../useCases/user/register/registerUse
 import { verifyRegisterOtpUseCase } from "../../../useCases/user/register/verifyRegisterOtpUseCase";
 
 const userRepo = new userRepository();
-const passwordServices = new passwordService();
+const passwordServices = new PasswordService();
 const otpServices=new OtpServices()
 const pendingService=new PendingUserService()
 const jwtService=new JwtServices()

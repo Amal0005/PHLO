@@ -1,4 +1,4 @@
-import { RegisterDto } from "../../../domain/dto/user/auth/registerDto";
+import { RegisterDto } from "../../../domain/dto/user/registerDto";
 import { IMailService } from "../../../domain/interface/service/ImailServices";
 import { IOTPService } from "../../../domain/interface/service/IotpServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
@@ -25,7 +25,7 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
     if (!user.password) throw new Error("Password is required");
 
     const hashedPassword = await this._passwordService.hash(user.password);
-
+    
     const pendingUser = {
       ...user,
       email,

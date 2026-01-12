@@ -1,4 +1,4 @@
-import { UserResponseDto } from "../../dto/user/auth/userResponseDto";
+import { UserResponseDto } from "../../dto/user/userResponseDto";
 import { User } from "../../entities/userEntities";
 
 export class UserMapper{

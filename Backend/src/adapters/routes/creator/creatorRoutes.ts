@@ -1,8 +1,7 @@
 import { Router, Request, Response } from "express";
-import { creatorRegisterController } from "../../../framework/depInjection/creator/creatorInjections";
+import {creatorLoginController,creatorRegisterController,} from "../../../framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "../../../adapters/validation/creatorSchemas";
 import { validate } from "../../middlewares/zodValidator";
-
 
 export class CreatorRoutes {
   public creatorRouter: Router;
@@ -14,7 +13,13 @@ export class CreatorRoutes {
     this.creatorRouter.post(
       "/register",
       validate(registerCreatorSchema),
-      (req: Request, res: Response) => creatorRegisterController.register(req, res)
-    )
+      (req: Request, res: Response) =>
+        creatorRegisterController.register(req, res)
+    );
+    this.creatorRouter.post(
+      "/login",
+      // validate(registerCreatorSchema),
+      (req: Request, res: Response) => creatorLoginController.login(req, res)
+    );
   }
 }

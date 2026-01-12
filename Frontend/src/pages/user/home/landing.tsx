@@ -19,13 +19,15 @@ import {
   ArrowRight,
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
-import { logout } from "@/store/user/authSlice";
+import type { AppDispatch } from "@/store/store";
+import { clearUser } from "@/store/user/userSlice";
 
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user);
+
+const dispatch = useDispatch<AppDispatch>(); 
+ const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,13 +37,10 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-
-    dispatch(logout());
-    navigate("/login");
-  };
+const handleLogout = () => {
+  dispatch(clearUser());
+  navigate("/login");
+};
   const packages = [
     {
       id: 1,
