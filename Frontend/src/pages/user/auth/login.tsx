@@ -8,7 +8,7 @@ import { loginUserSchema } from "../../../validation/loginUserSchema";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/user/userSlice";
 import { authService } from "@/services/user/loginService";
-import GoogleLoginButton from "../../../compoents/user/googleButton";
+import GoogleLoginButton from "../../../compoents/reusable/googleButton";
 import api from "@/axios/axiosConfig";
 import { setAuth } from "@/store/tokenSlice";
 import { AppDispatch } from "@/store/store";

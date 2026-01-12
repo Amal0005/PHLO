@@ -6,7 +6,7 @@ import api from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { registerUserSchema } from "../../../validation/userSchema";
-import GoogleLoginButton from "@/compoents/user/googleButton";
+import GoogleLoginButton from "@/compoents/reusable/googleButton";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/user/userSlice";
 

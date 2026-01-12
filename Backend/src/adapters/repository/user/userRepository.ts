@@ -38,4 +38,11 @@ export class userRepository implements IuserRepository {
       { $set: { password: hashedPassword } }
     );
   }
+    async findAllUsers(): Promise<User[]> {
+    const users = await UserModel.find({role:"user"})
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    return users.map(user => this.toDomain(user));
+  }
 }

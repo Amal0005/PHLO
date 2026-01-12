@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { adminLoginController } from "../../../framework/depInjection/admin/adminInjections";
+import { adminLoginController, adminUserController } from "../../../framework/depInjection/admin/adminInjections";
 
 export class AdminRoutes {
   public adminRouter: Router;
@@ -10,9 +10,20 @@ export class AdminRoutes {
   }
 
   private setRoutes(): void {
-    this.adminRouter.post(
+      this.adminRouter.post(
       "/login",
-      adminLoginController.login.bind(adminLoginController)
+      (req: Request, res: Response) =>
+        adminLoginController.login(req, res)
     );
+
+    this.adminRouter.get(
+      "/users",
+      (req: Request, res: Response) =>
+        adminUserController.getUsers(req, res)
+    );
+    this.adminRouter.get(
+      "/creators",
+      (req:Request,res:Response)=>adminUserController.getCreators(req,res)
+    )
   }
 }
