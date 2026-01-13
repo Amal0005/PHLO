@@ -1,19 +1,28 @@
 import api from "@/axios/axiosConfig";
+import { Creator } from "@/interface/admin/creatorInterface";
 
-// GET all creators
-export const fetchAdminCreators = async () => {
+export const fetchAdminCreators = async (): Promise<Creator[]> => {
   const res = await api.get("/admin/creators");
-  console.log("ADMIN CREATORS RESPONSE:", res.data);
-
-  return res.data;
+  if (Array.isArray(res.data)) {
+    return res.data;
+  }
+  if (Array.isArray(res.data.creators)) {
+    return res.data.creators;
+  }
+  if (Array.isArray(res.data.data)) {
+    return res.data.data;
+  }
+  return [];
 };
 
-// APPROVE creator
-export const approveCreator = async (creatorId: string) => {
+export const approveCreator = async (
+  creatorId: string
+): Promise<void> => {
   await api.patch(`/admin/creators/${creatorId}/approve`);
 };
 
-// REJECT creator
-export const rejectCreator = async (creatorId: string) => {
+export const rejectCreator = async (
+  creatorId: string
+): Promise<void> => {
   await api.patch(`/admin/creators/${creatorId}/reject`);
 };

@@ -6,7 +6,7 @@ function A() {
     async function fetchImage() {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/upload/view?email=amal@gmail.com`
+          `http://localhost:5000/api/upload/view?email=ama242nt31@gmail.com`
         );
 
         if (!res.ok) {

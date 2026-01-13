@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from "react";
 import {
   Camera,
   ArrowRight,
@@ -10,26 +10,24 @@ import {
   Award,
   Eye,
   EyeOff,
-} from "lucide-react"
+} from "lucide-react";
 
 import { uploadToS3 as fileUploader } from "@/utils/uploadToS3";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-// Mock S3 upload function - replace with your actual implementation
 async function uploadToS3(file: File, type: "profile" | "id"): Promise<string> {
-    const url = await fileUploader(file, type);
-    return url;
+  const url = await fileUploader(file, type);
+  return url;
 }
 
 export default function CreatorSignup() {
-  const [currentStep, setCurrentStep] = useState(1)
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [currentStep, setCurrentStep] = useState(1);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-
-const [profilePreview, setProfilePreview] = useState<string | null>(null);
-const [idPreview, setIdPreview] = useState<string | null>(null);
-
-
+  const [profilePreview, setProfilePreview] = useState<string | null>(null);
+  const [idPreview, setIdPreview] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -43,13 +41,24 @@ const [idPreview, setIdPreview] = useState<string | null>(null);
     specialties: [] as string[],
     profilePhoto: null as File | null,
     governmentId: null as File | null,
-  })
+  });
 
-  const specialtyOptions = ["Wedding", "Portrait", "Event", "Fashion", "Product", "Landscape", "Wildlife", "Commercial"]
+  const specialtyOptions = [
+    "Wedding",
+    "Portrait",
+    "Event",
+    "Fashion",
+    "Product",
+    "Landscape",
+    "Wildlife",
+    "Commercial",
+  ];
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   }
 
   function handleSpecialtyToggle(specialty: string) {
@@ -58,51 +67,53 @@ const [idPreview, setIdPreview] = useState<string | null>(null);
       specialties: prev.specialties.includes(specialty)
         ? prev.specialties.filter((s) => s !== specialty)
         : [...prev.specialties, specialty],
-    }))
+    }));
   }
 
-function handleFileChange(
-  e: React.ChangeEvent<HTMLInputElement>,
-  fieldName: "profilePhoto" | "governmentId"
-) {
-  const file = e.target.files?.[0];
-  if (!file) return;
+  function handleFileChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+    fieldName: "profilePhoto" | "governmentId"
+  ) {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  setFormData({ ...formData, [fieldName]: file });
+    setFormData({ ...formData, [fieldName]: file });
 
-  const previewUrl = URL.createObjectURL(file);
+    const previewUrl = URL.createObjectURL(file);
 
-  if (fieldName === "profilePhoto") {
-    setProfilePreview(previewUrl);
-  } else {
-    setIdPreview(previewUrl);
+    if (fieldName === "profilePhoto") {
+      setProfilePreview(previewUrl);
+    } else {
+      setIdPreview(previewUrl);
+    }
   }
-}
-
 
   function handleNext() {
     if (currentStep < 4) {
-      setCurrentStep(currentStep + 1)
+      setCurrentStep(currentStep + 1);
     }
   }
 
   function handleBack() {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      setCurrentStep(currentStep - 1);
     }
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
     try {
       if (!formData.profilePhoto || !formData.governmentId) {
-        throw new Error("Please upload all required documents")
+        throw new Error("Please upload all required documents");
       }
 
-      const profilePhotoUrl = await uploadToS3(formData.profilePhoto, "profile")
-      const governmentIdUrl = await uploadToS3(formData.governmentId, "id")
+      const profilePhotoUrl = await uploadToS3(
+        formData.profilePhoto,
+        "profile"
+      );
+      const governmentIdUrl = await uploadToS3(formData.governmentId, "id");
 
       const payload = {
         fullName: formData.fullName,
@@ -116,21 +127,21 @@ function handleFileChange(
         specialties: formData.specialties,
         profilePhoto: profilePhotoUrl,
         governmentId: governmentIdUrl,
-      }
+      };
 
       const res = await fetch("http://localhost:5000/api/creator/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      })
+      });
 
       if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.message || "Registration failed")
+        const err = await res.json();
+        throw new Error(err.message || "Registration failed");
       }
 
-      alert("Creator registered successfully. Await admin approval.")
-      
+      toast.success("Creator registered successfully. Await admin approval.");
+
       setFormData({
         fullName: "",
         email: "",
@@ -143,28 +154,31 @@ function handleFileChange(
         specialties: [],
         profilePhoto: null,
         governmentId: null,
-      })
-      setCurrentStep(1)
+      });
+      setCurrentStep(1);
     } catch (error) {
-      console.error(error)
-      alert(error instanceof Error ? error.message : "Something went wrong")
+      console.error(error);
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
-  const isStep1Valid = formData.fullName && formData.email && formData.password && formData.phone
-  const isStep2Valid = formData.city && formData.yearsOfExperience
-  const isStep3Valid = formData.bio && formData.portfolioLink && formData.specialties.length > 0
-  const isStep4Valid = formData.profilePhoto && formData.governmentId
-
+  const isStep1Valid =
+    formData.fullName && formData.email && formData.password && formData.phone;
+  const isStep2Valid = formData.city && formData.yearsOfExperience;
+  const isStep3Valid =
+    formData.bio && formData.portfolioLink && formData.specialties.length > 0;
+  const isStep4Valid = formData.profilePhoto && formData.governmentId;
+const navigate=useNavigate()
   return (
     <div className="h-screen bg-black relative overflow-hidden">
       <div className="absolute inset-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2074')",
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2074')",
             filter: "grayscale(100%)",
           }}
         />
@@ -185,7 +199,11 @@ function handleFileChange(
                           : "bg-zinc-800/50 border-zinc-700 text-gray-500"
                       }`}
                     >
-                      {currentStep > step ? <Check className="w-4 h-4" /> : step}
+                      {currentStep > step ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        step
+                      )}
                     </div>
                     {step < 4 && (
                       <div
@@ -212,13 +230,19 @@ function handleFileChange(
                     <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
                       <Camera className="w-6 h-6 text-white" />
                     </div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Join as a Creator</h2>
-                    <p className="text-sm text-gray-400">Let's start with your basic information</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
+                      Join as a Creator
+                    </h2>
+                    <p className="text-sm text-gray-400">
+                      Let's start with your basic information
+                    </p>
                   </div>
 
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Full Name</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Full Name
+                      </label>
                       <input
                         type="text"
                         name="fullName"
@@ -230,7 +254,9 @@ function handleFileChange(
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Email
+                      </label>
                       <input
                         type="email"
                         name="email"
@@ -242,7 +268,9 @@ function handleFileChange(
                     </div>
 
                     <div className="relative">
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Password
+                      </label>
                       <input
                         type={showPassword ? "text" : "password"}
                         name="password"
@@ -256,12 +284,18 @@ function handleFileChange(
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-[38px] text-gray-500 hover:text-white transition-colors"
                       >
-                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        {showPassword ? (
+                          <EyeOff className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
                       </button>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Phone Number</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Phone Number
+                      </label>
                       <input
                         type="tel"
                         name="phone"
@@ -287,13 +321,19 @@ function handleFileChange(
               {currentStep === 2 && (
                 <div className="space-y-4">
                   <div className="text-center mb-4">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Location & Experience</h2>
-                    <p className="text-sm text-gray-400">Tell us about your professional background</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
+                      Location & Experience
+                    </h2>
+                    <p className="text-sm text-gray-400">
+                      Tell us about your professional background
+                    </p>
                   </div>
 
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">City</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        City
+                      </label>
                       <input
                         type="text"
                         name="city"
@@ -305,7 +345,9 @@ function handleFileChange(
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Years of Experience</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Years of Experience
+                      </label>
                       <input
                         type="number"
                         name="yearsOfExperience"
@@ -341,13 +383,19 @@ function handleFileChange(
               {currentStep === 3 && (
                 <div className="space-y-4">
                   <div className="text-center mb-4">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Professional Details</h2>
-                    <p className="text-sm text-gray-400">Showcase your expertise and portfolio</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
+                      Professional Details
+                    </h2>
+                    <p className="text-sm text-gray-400">
+                      Showcase your expertise and portfolio
+                    </p>
                   </div>
 
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Bio</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Bio
+                      </label>
                       <textarea
                         name="bio"
                         placeholder="Tell us about yourself and your photography journey..."
@@ -359,7 +407,9 @@ function handleFileChange(
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Portfolio Link</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Portfolio Link
+                      </label>
                       <div className="relative">
                         <input
                           type="url"
@@ -374,7 +424,9 @@ function handleFileChange(
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Specialties</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Specialties
+                      </label>
                       <div className="flex flex-wrap gap-1.5">
                         {specialtyOptions.map((specialty) => (
                           <button
@@ -392,7 +444,9 @@ function handleFileChange(
                         ))}
                       </div>
                       {formData.specialties.length > 0 && (
-                        <p className="text-xs text-gray-500 mt-1.5">Selected: {formData.specialties.join(", ")}</p>
+                        <p className="text-xs text-gray-500 mt-1.5">
+                          Selected: {formData.specialties.join(", ")}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -420,13 +474,19 @@ function handleFileChange(
               {currentStep === 4 && (
                 <div className="space-y-4">
                   <div className="text-center mb-4">
-                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">Upload Documents</h2>
-                    <p className="text-sm text-gray-400">Final step - verify your identity</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">
+                      Upload Documents
+                    </h2>
+                    <p className="text-sm text-gray-400">
+                      Final step - verify your identity
+                    </p>
                   </div>
 
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Profile Photo</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Profile Photo
+                      </label>
                       <div className="relative">
                         <input
                           type="file"
@@ -444,23 +504,21 @@ function handleFileChange(
                             {formData.profilePhoto ? formData.profilePhoto.name : "Click to upload profile photo"}
                           </span> */}
 
+                          {profilePreview ? (
+                            <img
+                              src={profilePreview}
+                              alt="Profile Preview"
+                              className="w-20 h-20 rounded-full object-cover mb-2"
+                            />
+                          ) : (
+                            <Upload className="w-6 h-6 text-gray-400" />
+                          )}
 
-{profilePreview ? (
-  <img
-    src={profilePreview}
-    alt="Profile Preview"
-    className="w-20 h-20 rounded-full object-cover mb-2"
-  />
-) : (
-  <Upload className="w-6 h-6 text-gray-400" />
-)}
-
-<span className="text-gray-400 text-xs">
-  {formData.profilePhoto ? "Profile photo selected" : "Click to upload profile photo"}
-</span>
-
-
-
+                          <span className="text-gray-400 text-xs">
+                            {formData.profilePhoto
+                              ? "Profile photo selected"
+                              : "Click to upload profile photo"}
+                          </span>
 
                           {formData.profilePhoto && (
                             <span className="text-xs text-green-400 flex items-center gap-1">
@@ -472,7 +530,9 @@ function handleFileChange(
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-1.5">Government ID</label>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Government ID
+                      </label>
                       <div className="relative">
                         <input
                           type="file"
@@ -485,19 +545,21 @@ function handleFileChange(
                           htmlFor="governmentId"
                           className="w-full p-5 text-sm rounded-lg bg-zinc-800/50 border-2 border-dashed border-zinc-700 text-white cursor-pointer hover:border-white hover:bg-zinc-700/50 transition-all duration-300 flex flex-col items-center justify-center gap-1.5"
                         >
-                         {idPreview ? (
-  <img
-    src={idPreview}
-    alt="ID Preview"
-    className="w-24 h-16 rounded-md object-cover mb-2 border border-zinc-700"
-  />
-) : (
-  <Upload className="w-6 h-6 text-gray-400" />
-)}
+                          {idPreview ? (
+                            <img
+                              src={idPreview}
+                              alt="ID Preview"
+                              className="w-24 h-16 rounded-md object-cover mb-2 border border-zinc-700"
+                            />
+                          ) : (
+                            <Upload className="w-6 h-6 text-gray-400" />
+                          )}
 
-<span className="text-gray-400 text-xs">
-  {formData.governmentId ? "Government ID selected" : "Click to upload government ID"}
-</span>
+                          <span className="text-gray-400 text-xs">
+                            {formData.governmentId
+                              ? "Government ID selected"
+                              : "Click to upload government ID"}
+                          </span>
 
                           {formData.governmentId && (
                             <span className="text-xs text-green-400 flex items-center gap-1">
@@ -509,7 +571,8 @@ function handleFileChange(
                     </div>
 
                     <p className="text-xs text-gray-500 bg-zinc-800/30 p-2.5 rounded-lg border border-zinc-700/50">
-                      Your documents will be securely stored and used only for verification purposes.
+                      Your documents will be securely stored and used only for
+                      verification purposes.
                     </p>
                   </div>
 
@@ -544,7 +607,9 @@ function handleFileChange(
 
               <p className="text-gray-400 text-xs text-center mt-4">
                 Already have an account?{" "}
-                <span className="text-white cursor-pointer hover:underline font-medium">Log in</span>
+                <span onClick={()=>navigate("/creator/login")} className="text-white cursor-pointer hover:underline font-medium">
+                  Log in
+                </span>
               </p>
             </div>
 
@@ -564,7 +629,8 @@ function handleFileChange(
           </h2>
 
           <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-6 lg:mb-8 leading-relaxed max-w-md">
-            Access your creator dashboard to manage bookings, upload galleries, and grow your photography business.
+            Access your creator dashboard to manage bookings, upload galleries,
+            and grow your photography business.
           </p>
 
           <div className="flex flex-col gap-4">
@@ -573,8 +639,12 @@ function handleFileChange(
                 <Users className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-base text-white">Client Management</h3>
-                <p className="text-xs text-gray-400">Track sessions and communicate</p>
+                <h3 className="font-semibold text-base text-white">
+                  Client Management
+                </h3>
+                <p className="text-xs text-gray-400">
+                  Track sessions and communicate
+                </p>
               </div>
             </div>
 
@@ -583,8 +653,12 @@ function handleFileChange(
                 <Camera className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-base text-white">Gallery Upload</h3>
-                <p className="text-xs text-gray-400">Share photos with your clients</p>
+                <h3 className="font-semibold text-base text-white">
+                  Gallery Upload
+                </h3>
+                <p className="text-xs text-gray-400">
+                  Share photos with your clients
+                </p>
               </div>
             </div>
 
@@ -593,7 +667,9 @@ function handleFileChange(
                 <Award className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-base text-white">Portfolio Builder</h3>
+                <h3 className="font-semibold text-base text-white">
+                  Portfolio Builder
+                </h3>
                 <p className="text-xs text-gray-400">Showcase your best work</p>
               </div>
             </div>
@@ -601,5 +677,5 @@ function handleFileChange(
         </div>
       </div>
     </div>
-  )
+  );
 }

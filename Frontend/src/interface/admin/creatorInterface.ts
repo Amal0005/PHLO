@@ -4,4 +4,9 @@ export interface Creator {
   email: string;
   status: "pending" | "approved" | "rejected";
   createdAt?: string;
+    profilePhoto?: string;
+  governmentId?: string;
+  bio?: string;
+  experience?: string;
+  portfolioLink?: string;
 }

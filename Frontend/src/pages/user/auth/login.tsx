@@ -12,6 +12,7 @@ import GoogleLoginButton from "../../../compoents/reusable/googleButton";
 import api from "@/axios/axiosConfig";
 import { setAuth } from "@/store/tokenSlice";
 import { AppDispatch } from "@/store/store";
+import InputError from "@/compoents/reusable/inputErrors";
 
 interface loginForm {
   email: string;
@@ -27,6 +28,8 @@ const dispatch = useDispatch<AppDispatch>();
     email: "",
     password: "",
   });
+    const [errors, setErrors] = useState<FormErrors>({});
+
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -166,14 +169,14 @@ const dispatch = useDispatch<AppDispatch>();
 
               <div className="space-y-4">
                 <div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
-                    value={form.email}
-                    onChange={handleChange}
-                  />
+                   <InputError
+        type="email"
+        name="email"
+        value={form.email}
+        onChange={handleChange}
+        placeholder="Email Address"
+        error={errors.email}
+      />
                 </div>
 
                 <div className="relative">

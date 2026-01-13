@@ -7,6 +7,7 @@ import type { AppDispatch } from "@/store/store";
 
 import { setCreator } from "@/store/creator/creatorSlice";
 import { setAuth } from "@/store/tokenSlice";
+import { toast } from "react-toastify";
 
 export default function CreatorLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -39,11 +40,11 @@ async function handleLogin(e: React.FormEvent) {
         role: "creator",
       })
     );
-
+toast.success("Logged in")
     navigate("/creator/dashboard");
-  } catch (error) {
+  } catch (error:any) {
     console.error(error);
-    alert("Invalid email or password");
+    toast.error(error.message);
   } finally {
     setIsLoading(false);
   }
@@ -95,7 +96,7 @@ async function handleLogin(e: React.FormEvent) {
                     onChange={handleChange}
                   />
                 </div>
-
+<br />
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}

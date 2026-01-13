@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent, MouseEvent } from "react";
-import { Image, Calendar,Sparkles, CameraOff, CameraIcon } from "lucide-react";
+import { Image, Calendar, Sparkles, CameraOff, CameraIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import api from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import { setUser } from "@/store/user/userSlice";
 interface RegisterForm {
   name: string;
   email: string;
-  phone:string;
+  phone: string;
   password: string;
 }
 
@@ -21,7 +21,7 @@ export default function Register() {
   const [form, setForm] = useState<RegisterForm>({
     name: "",
     email: "",
-    phone:"",
+    phone: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -33,7 +33,7 @@ export default function Register() {
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   async function handleSignup(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
@@ -69,8 +69,6 @@ export default function Register() {
       setIsLoading(false);
     }
   }
-
-
 
   function handleLogin() {
     navigate("/login");
@@ -198,7 +196,7 @@ export default function Register() {
                   type="text"
                   name="phone"
                   placeholder="Phone"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                  className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
                   value={form.phone}
                   onChange={handleChange}
                   required
@@ -281,21 +279,20 @@ export default function Register() {
                   </div>
                 </div>
 
-<GoogleLoginButton
-  onSuccess={async (idToken: string) => {
-    try {
-      const res = await api.post("/auth/google", { idToken });
+                <GoogleLoginButton
+                  onSuccess={async (idToken: string) => {
+                    try {
+                      const res = await api.post("/auth/google", { idToken });
 
-      dispatch(setUser(res.data.user));
+                      dispatch(setUser(res.data.user));
 
-      navigate("/home");
-    } catch (err) {
-      toast.error("Google login failed");
-      console.log(err);
-    }
-  }}
-/>
-
+                      navigate("/home");
+                    } catch (err) {
+                      toast.error("Google login failed");
+                      console.log(err);
+                    }
+                  }}
+                />
 
                 <p className="text-gray-400 text-xs sm:text-sm text-center pt-2">
                   Already have an account?{" "}

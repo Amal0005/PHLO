@@ -14,7 +14,15 @@ export default function App() {
           <Route path="/admin/*" element={<AdminRoutes />} />
         </Routes>
       </BrowserRouter>
-      <ToastContainer position="top-right" theme="dark" />
-    </>
+     <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />    </>
   );
 }

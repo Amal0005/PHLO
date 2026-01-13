@@ -48,4 +48,7 @@ export class CreatorRepository implements IcreatorRepository{
 
     return creators.map(c => this.toDomain(c));
   }
+  async findById(id: string): Promise<CreatorEntity | null> {
+  return await CreatorModel.findById(id);
+}
 }

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { adminLoginController, adminUserController } from "../../../framework/depInjection/admin/adminInjections";
+import { adminCreatorController, adminLoginController, adminUserController } from "../../../framework/depInjection/admin/adminInjections";
 
 export class AdminRoutes {
   public adminRouter: Router;
@@ -24,6 +24,14 @@ export class AdminRoutes {
     this.adminRouter.get(
       "/creators",
       (req:Request,res:Response)=>adminUserController.getCreators(req,res)
+    )
+    this.adminRouter.patch(
+      "/creators/:id/approve",
+      (req:Request,res:Response)=>adminCreatorController.approve(req,res)
+    )
+    this.adminRouter.patch(
+      "/creators/:id/reject",
+      (req:Request,res:Response)=>adminCreatorController.reject(req,res)
     )
   }
 }
