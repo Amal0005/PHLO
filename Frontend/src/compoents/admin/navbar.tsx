@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import LogoWhite from "../../assets/images/Logo_white.png";
 import api from "@/axios/axiosConfig";
 import type { RootState } from "@/store/store";
+import { clearUser } from "@/store/user/userSlice";
+import { clearAuth } from "@/store/tokenSlice";
 
 interface AdminNavbarProps {
   onMenuToggle: () => void;
@@ -15,15 +17,18 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
 
   const admin = useSelector((state: RootState) => state.auth.user);
 
-  const handleLogout = async () => {
-    try {
-      await api.post("/admin/logout")
-      dispatch({ type: "admin/logout" });
-      navigate("/admin/login");
-    } catch (err) {
-      console.error("Logout failed",err);
-    }
-  };
+const handleLogout = async () => {
+  try {
+    await api.post("/admin/logout")
+
+    dispatch(clearAuth());
+    dispatch(clearUser());
+
+    navigate("/admin/login", { replace: true });
+  } catch (err) {
+    console.error("Logout failed", err);
+  }
+};
 
   const initials = admin?.name
     ?.split(" ")

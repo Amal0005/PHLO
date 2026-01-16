@@ -15,6 +15,11 @@ export class AdminRoutes {
       (req: Request, res: Response) =>
         adminLoginController.login(req, res)
     );
+    this.adminRouter.post(
+  "/logout",
+  (req: Request, res: Response) =>
+    adminLoginController.logout(req, res)
+);
 
     this.adminRouter.get(
       "/users",

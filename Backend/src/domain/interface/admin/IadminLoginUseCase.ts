@@ -9,4 +9,6 @@ export interface IadminLoginUseCase {
         accessToken: string;
         refreshToken: string;
   }>;
+    logout(adminId: string): Promise<void>;
+
 }

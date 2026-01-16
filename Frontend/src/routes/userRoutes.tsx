@@ -5,6 +5,7 @@ import VerifyOtp from "@/pages/user/auth/verify-otp";
 import ForgotPassword from "@/pages/user/auth/forgotPassword";
 import Home from "@/pages/user/home/landing";
 import LandingPage from "@/pages/landing";
+import ProtectedRoute from "./protectedRoute";
 
 export function UserRoutes() {
   return (
@@ -14,7 +15,10 @@ export function UserRoutes() {
       <Route path="login" element={<Login />} />
       <Route path="verify-otp" element={<VerifyOtp />} />
       <Route path="forgot-password" element={<ForgotPassword />} />
-      <Route path="home" element={<Home />} />
+
+      <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
+        <Route path="home" element={<Home />} />
+      </Route>
     </Routes>
   );
 }

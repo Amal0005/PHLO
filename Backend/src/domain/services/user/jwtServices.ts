@@ -27,4 +27,11 @@ verifyToken(token: string): AuthPayload {
   const secret = this.getSecret();
   return jwt.verify(token, secret) as AuthPayload;
 }
+decodeToken(token: string): AuthPayload | null {
+  try {
+    return jwt.decode(token) as AuthPayload;
+  } catch {
+    return null;
+  }
+}
 }

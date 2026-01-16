@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ChangeEvent, MouseEvent } from "react";
-import { Image, Calendar, Sparkles, CameraOff, CameraIcon } from "lucide-react";
+import { Image, Calendar, Sparkles, CameraOff, Camera } from "lucide-react";
 import { toast } from "react-toastify";
 import api from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
@@ -27,13 +27,15 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [acceptedTerms, setAcceptedTerms] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [focusedField, setFocusedField] = useState<string>("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
-  const dispatch = useDispatch();
+
   async function handleSignup(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
@@ -169,49 +171,96 @@ export default function Register() {
               </div>
 
               <div className="space-y-4">
-                <div>
+                {/* Full Name Input with Floating Label */}
+                <div className="relative">
                   <input
                     type="text"
                     name="name"
-                    placeholder="Full Name"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    className="w-full px-3.5 pt-5 pb-2 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
                     value={form.name}
                     onChange={handleChange}
+                    onFocus={() => setFocusedField("name")}
+                    onBlur={() => setFocusedField("")}
                     required
                   />
+                  <label
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${
+                      form.name || focusedField === "name"
+                        ? "top-1.5 text-[11px] text-gray-400"
+                        : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                    }`}
+                  >
+                    Full Name
+                  </label>
                 </div>
 
-                <div>
+                {/* Email Input with Floating Label */}
+                <div className="relative">
                   <input
                     type="email"
                     name="email"
-                    placeholder="Email"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    className="w-full px-3.5 pt-5 pb-2 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
                     value={form.email}
                     onChange={handleChange}
+                    onFocus={() => setFocusedField("email")}
+                    onBlur={() => setFocusedField("")}
                     required
                   />
+                  <label
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${
+                      form.email || focusedField === "email"
+                        ? "top-1.5 text-[11px] text-gray-400"
+                        : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                    }`}
+                  >
+                    Email
+                  </label>
                 </div>
-                <input
-                  type="text"
-                  name="phone"
-                  placeholder="Phone"
-                  className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
-                  value={form.phone}
-                  onChange={handleChange}
-                  required
-                />
 
+                {/* Phone Input with Floating Label */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="phone"
+                    className="w-full px-3.5 pt-5 pb-2 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    value={form.phone}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField("phone")}
+                    onBlur={() => setFocusedField("")}
+                    required
+                  />
+                  <label
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${
+                      form.phone || focusedField === "phone"
+                        ? "top-1.5 text-[11px] text-gray-400"
+                        : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                    }`}
+                  >
+                    Phone
+                  </label>
+                </div>
+
+                {/* Password Input with Floating Label */}
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    placeholder="Password"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
+                    className="w-full px-3.5 pt-5 pb-2 pr-12 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
                     value={form.password}
                     onChange={handleChange}
+                    onFocus={() => setFocusedField("password")}
+                    onBlur={() => setFocusedField("")}
                     required
                   />
+                  <label
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${
+                      form.password || focusedField === "password"
+                        ? "top-1.5 text-[11px] text-gray-400"
+                        : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                    }`}
+                  >
+                    Password
+                  </label>
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
@@ -220,7 +269,7 @@ export default function Register() {
                     {showPassword ? (
                       <CameraOff className="w-5 h-5" />
                     ) : (
-                      <CameraIcon className="w-5 h-5" />
+                      <Camera className="w-5 h-5" />
                     )}
                   </button>
                 </div>

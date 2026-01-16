@@ -54,6 +54,8 @@ export default function CreatorSignup() {
     "Commercial",
   ];
 
+  const navigate = useNavigate();
+
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
@@ -87,10 +89,159 @@ export default function CreatorSignup() {
       setIdPreview(previewUrl);
     }
   }
+  
+async function checkEmailExists(email: string): Promise<boolean> {
+  const res = await fetch(
+    "http://localhost:5000/api/creator/register",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    }
+  );
 
-  function handleNext() {
+  const data = await res.json();
+  return data.exists;
+}
+
+async function validateStep1(): Promise<boolean> {
+  if (!formData.fullName.trim()) {
+    toast.error("Please enter your full name");
+    return false;
+  }
+
+  if (!formData.email.trim()) {
+    toast.error("Please enter your email address");
+    return false;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.email)) {
+    toast.error("Please enter a valid email address");
+    return false;
+  }
+
+  if (!formData.password) {
+    toast.error("Please enter a password");
+    return false;
+  }
+
+  if (formData.password.length < 6) {
+    toast.error("Password must be at least 6 characters long");
+    return false;
+  }
+
+  if (!formData.phone.trim()) {
+    toast.error("Please enter your phone number");
+    return false;
+  }
+
+  const phoneRegex = /^[0-9]{10}$/;
+  if (!phoneRegex.test(formData.phone.trim())) {
+    toast.error("Please enter a valid 10-digit phone number");
+    return false;
+  }
+  try {
+    const exists = await checkEmailExists(formData.email);
+    if (exists) {
+      toast.error("Email already registered");
+      return false;
+    }
+  } catch {
+    toast.error("Unable to verify email. Please try again.");
+    return false;
+  }
+
+  return true;
+}
+
+  function validateStep2(): boolean {
+    if (!formData.city.trim()) {
+      toast.error("Please enter your city");
+      return false;
+    }
+
+    if (!formData.yearsOfExperience) {
+      toast.error("Please enter your years of experience");
+      return false;
+    }
+
+    const years = Number(formData.yearsOfExperience);
+    if (isNaN(years) || years < 0) {
+      toast.error("Please enter a valid number of years");
+      return false;
+    }
+
+    if (years > 50) {
+      toast.error("Years of experience seems too high. Please check.");
+      return false;
+    }
+
+    return true;
+  }
+
+  function validateStep3(): boolean {
+    if (!formData.bio.trim()) {
+      toast.error("Please write something about yourself");
+      return false;
+    }
+
+    if (formData.bio.trim().length < 20) {
+      toast.error("Bio should be at least 100 characters long");
+      return false;
+    }
+
+    if (!formData.portfolioLink.trim()) {
+      toast.error("Please provide your portfolio link");
+      return false;
+    }
+
+    try {
+      new URL(formData.portfolioLink);
+    } catch {
+      toast.error("Please enter a valid portfolio URL (e.g., https://example.com)");
+      return false;
+    }
+
+    if (formData.specialties.length === 0) {
+      toast.error("Please select at least one specialty");
+      return false;
+    }
+
+    return true;
+  }
+
+  function validateStep4(): boolean {
+    if (!formData.profilePhoto) {
+      toast.error("Please upload your profile photo");
+      return false;
+    }
+
+    if (!formData.governmentId) {
+      toast.error("Please upload your government ID");
+      return false;
+    }
+
+    return true;
+  }
+
+  async function handleNext() {
+   if (currentStep === 1) {
+    const isValid = await validateStep1();
+    if (!isValid) return;
+  }
+
+    if (currentStep === 2 && !validateStep2()) {
+      return;
+    }
+
+    if (currentStep === 3 && !validateStep3()) {
+      return;
+    }
+
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
+      toast.success("Step completed successfully!");
     }
   }
 
@@ -102,6 +253,11 @@ export default function CreatorSignup() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    if (!validateStep4()) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -109,11 +265,15 @@ export default function CreatorSignup() {
         throw new Error("Please upload all required documents");
       }
 
+      toast.info("Uploading documents...");
+
       const profilePhotoUrl = await uploadToS3(
         formData.profilePhoto,
         "profile"
       );
       const governmentIdUrl = await uploadToS3(formData.governmentId, "id");
+
+      toast.info("Submitting your application...");
 
       const payload = {
         fullName: formData.fullName,
@@ -140,7 +300,7 @@ export default function CreatorSignup() {
         throw new Error(err.message || "Registration failed");
       }
 
-      toast.success("Creator registered successfully. Await admin approval.");
+      toast.success("Creator registered successfully! Awaiting admin approval.");
 
       setFormData({
         fullName: "",
@@ -155,10 +315,18 @@ export default function CreatorSignup() {
         profilePhoto: null,
         governmentId: null,
       });
+      setProfilePreview(null);
+      setIdPreview(null);
       setCurrentStep(1);
+
+      setTimeout(() => {
+        navigate("/creator/login");
+      }, 2000);
     } catch (error) {
       console.error(error);
-      toast.error(error instanceof Error ? error.message : "Something went wrong");
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -170,7 +338,7 @@ export default function CreatorSignup() {
   const isStep3Valid =
     formData.bio && formData.portfolioLink && formData.specialties.length > 0;
   const isStep4Valid = formData.profilePhoto && formData.governmentId;
-const navigate=useNavigate()
+
   return (
     <div className="h-screen bg-black relative overflow-hidden">
       <div className="absolute inset-0">
@@ -499,11 +667,6 @@ const navigate=useNavigate()
                           htmlFor="profilePhoto"
                           className="w-full p-5 text-sm rounded-lg bg-zinc-800/50 border-2 border-dashed border-zinc-700 text-white cursor-pointer hover:border-white hover:bg-zinc-700/50 transition-all duration-300 flex flex-col items-center justify-center gap-1.5"
                         >
-                          {/* <Upload className="w-6 h-6 text-gray-400" />
-                          <span className="text-gray-400 text-xs">
-                            {formData.profilePhoto ? formData.profilePhoto.name : "Click to upload profile photo"}
-                          </span> */}
-
                           {profilePreview ? (
                             <img
                               src={profilePreview}
@@ -607,7 +770,10 @@ const navigate=useNavigate()
 
               <p className="text-gray-400 text-xs text-center mt-4">
                 Already have an account?{" "}
-                <span onClick={()=>navigate("/creator/login")} className="text-white cursor-pointer hover:underline font-medium">
+                <span
+                  onClick={() => navigate("/creator/login")}
+                  className="text-white cursor-pointer hover:underline font-medium"
+                >
                   Log in
                 </span>
               </p>
