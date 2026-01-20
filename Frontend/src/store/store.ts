@@ -3,19 +3,19 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import authReducer from "./user/userSlice";
-import tokenReducer from "./tokenSlice";
 import creatorReducer from "./creator/creatorSlice";
+import tokenReducer from "./tokenSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   creator: creatorReducer,
-  token: tokenReducer
+  token: tokenReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "token","creator"],
+  whitelist: ["auth", "creator", "token"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -23,9 +23,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false
-    }),
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export const persistor = persistStore(store);

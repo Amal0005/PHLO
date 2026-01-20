@@ -10,7 +10,10 @@ export const creatorSchema = new Schema(
       unique: true,
       lowercase: true,
     },
-
+    role: {
+      type: String,
+      default: "creator",
+    },
     phone: { type: String, required: true },
 
     password: { type: String, required: true },
@@ -47,5 +50,5 @@ export const creatorSchema = new Schema(
 
     specialties: [{ type: String }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );

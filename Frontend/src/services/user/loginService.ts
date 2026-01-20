@@ -10,6 +10,8 @@ export const authService = {
     const res = await api.post("/login", payload);
     return res.data;
   },
-
-  googleLoginUrl: "http://localhost:5000/api/user/google",
+  googleLogin: async (idToken: string) => {
+  const res = await api.post("/auth/google", { idToken });
+  return res.data;
+}
 };

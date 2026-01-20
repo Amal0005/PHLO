@@ -25,8 +25,20 @@ export class JwtServices implements IjwtServices {
 
 verifyToken(token: string): AuthPayload {
   const secret = this.getSecret();
-  return jwt.verify(token, secret) as AuthPayload;
+  const decoded = jwt.verify(token, secret);
+
+  if (
+    typeof decoded !== "object" ||
+    !("userId" in decoded) ||
+    !("role" in decoded) ||
+    !("email" in decoded)
+  ) {
+    throw new Error("Invalid token payload");
+  }
+
+  return decoded as AuthPayload;
 }
+
 decodeToken(token: string): AuthPayload | null {
   try {
     return jwt.decode(token) as AuthPayload;

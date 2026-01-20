@@ -18,10 +18,7 @@ export const tokenSlice = createSlice({
   name: "token",
   initialState,
   reducers: {
-    setAuth: (
-      state,
-      action: PayloadAction<{ token: string; role: Role }>
-    ) => {
+    setAuth: (state, action: PayloadAction<{ token: string; role: Role }>) => {
       state.token = action.payload.token;
       state.role = action.payload.role;
       state.isAuthenticated = true;
@@ -33,27 +30,17 @@ export const tokenSlice = createSlice({
       state.isAuthenticated = false;
     },
 
-    restoreAuthFromStorage: (
+    hydrateAuth: (
       state,
-      action: PayloadAction<{ token: string | null; role: Role | null }>
+      action: PayloadAction<{ token: string; role: Role }>,
     ) => {
-      if (action.payload.token && action.payload.role) {
-        state.token = action.payload.token;
-        state.role = action.payload.role;
-        state.isAuthenticated = true;
-      } else {
-        state.token = null;
-        state.role = null;
-        state.isAuthenticated = false;
-      }
+      state.token = action.payload.token;
+      state.role = action.payload.role;
+      state.isAuthenticated = true;
     },
   },
 });
 
-export const {
-  setAuth,
-  clearAuth,
-  restoreAuthFromStorage,
-} = tokenSlice.actions;
+export const { setAuth, clearAuth, hydrateAuth } = tokenSlice.actions;
 
 export default tokenSlice.reducer;

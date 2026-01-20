@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/store/user/userSlice";
 import { authService } from "@/services/user/loginService";
 import GoogleLoginButton from "../../../compoents/reusable/googleButton";
-import api from "@/axios/axiosConfig";
 import { setAuth } from "@/store/tokenSlice";
 import { AppDispatch } from "@/store/store";
 import InputError from "@/compoents/reusable/inputErrors";
@@ -23,12 +22,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
   const [form, setForm] = useState<loginForm>({
     email: "",
     password: "",
   });
-    const [errors, setErrors] = useState<FormErrors>({});
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -56,7 +54,7 @@ const dispatch = useDispatch<AppDispatch>();
         setAuth({
           token: data.accessToken,
           role: data.user.role,
-        })
+        }),
       );
 
       toast.success("Login Successful");
@@ -169,14 +167,13 @@ const dispatch = useDispatch<AppDispatch>();
 
               <div className="space-y-4">
                 <div>
-                   <InputError
-        type="email"
-        name="email"
-        value={form.email}
-        onChange={handleChange}
-        placeholder="Email Address"
-        error={errors.email}
-      />
+                  <InputError
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="Email Address"
+                  />
                 </div>
 
                 <div className="relative">
@@ -243,14 +240,14 @@ const dispatch = useDispatch<AppDispatch>();
                 <GoogleLoginButton
                   onSuccess={async (idToken: string) => {
                     try {
-                      const res = await api.post("/auth/google", { idToken });
+                      const data = await authService.googleLogin(idToken);
 
-                      dispatch(setUser(res.data.user));
+                      dispatch(setUser(data.user));
                       dispatch(
                         setAuth({
-                          token: res.data.accessToken,
-                          role: res.data.user.role,
-                        })
+                          token: data.accessToken,
+                          role: data.user.role,
+                        }),
                       );
 
                       navigate("/home");

@@ -6,7 +6,9 @@ import { store, persistor } from "@/store/store";
 import App from "./App";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { PersistGate } from "redux-persist/integration/react";
+import { setUpInterceptors } from "./axios/axiosInterceptors";
 
+setUpInterceptors()
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>

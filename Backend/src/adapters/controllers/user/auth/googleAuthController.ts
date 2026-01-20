@@ -11,7 +11,7 @@ export class GoogleAuthController {
       if (!idToken) {
         return res.status(400).json({ message: "ID token is required" });
       }
-
+      
       const { user, accessToken, refreshToken } =
         await this._googleLoginUseCase.execute(idToken);
 

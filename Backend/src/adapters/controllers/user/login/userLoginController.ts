@@ -11,26 +11,13 @@ export class userLoginController {
     try {
       const result = await this._userLoginUseCase.loginUser(req.body);
       console.log(result)
-      const { user ,accessToken,refreshToken } = result;
+      const {refreshToken } = result;
 
-      const cookieOptions = {
+      res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict" as const,
-        path: "/",
-      }
-      res.cookie("accessToken", accessToken, {
-          ...cookieOptions,
-          maxAge: 15 * 60 * 1000,
-        })
-        .cookie("refreshToken", refreshToken, {
-          ...cookieOptions,
-          maxAge: 7 * 24 * 60 * 60 * 1000,
-        })
-        .status(200)
-        .json({
-          user: result.user
-        });
+        sameSite: "strict",
+      });
     } catch (error) {
       console.log("Login error:", error);
       res.status(400).json({
