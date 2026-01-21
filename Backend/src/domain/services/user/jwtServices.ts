@@ -11,7 +11,7 @@ export class JwtServices implements IjwtServices {
 
   generateAccessToken(payload: AuthPayload): string {
     const secret = this.getSecret();
-    const expiresIn = Number(process.env.JWT_ACCESS_EXPIRE);
+    const expiresIn = Number(process.env.JWT_ACCESS_EXPIRES);
     return jwt.sign(payload, secret, {
       expiresIn: isNaN(expiresIn) ? "15m" : expiresIn,
     });

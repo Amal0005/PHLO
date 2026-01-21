@@ -6,29 +6,36 @@ import {
 } from "../../../framework/depInjection/admin/adminInjections";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
+import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
+import { logoutController } from "../../../framework/depInjection/user/userInjections";
 
 export class AdminRoutes {
   public adminRouter: Router;
-  private jwtServices = new JwtServices();
 
-  constructor() {
+  constructor(
+    private  _jwtService: JwtServices,
+    private  _tokenBlacklistService: TokenBlacklistService
+  ) {
     this.adminRouter = Router();
     this.setRoutes();
   }
 
   private setRoutes(): void {
+    // PUBLIC ROUTE
     this.adminRouter.post(
       "/login",
       (req: Request, res: Response) =>
         adminLoginController.login(req, res)
     );
 
-    this.adminRouter.use(jwtAuthMiddleware(this.jwtServices));
+    // PROTECTED ROUTES
+    this.adminRouter.use(
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService)
+    );
 
     this.adminRouter.post(
       "/logout",
-      (req: Request, res: Response) =>
-        adminLoginController.logout(req, res)
+      logoutController.logout.bind(logoutController)
     );
 
     this.adminRouter.get(

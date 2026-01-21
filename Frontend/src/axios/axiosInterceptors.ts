@@ -10,8 +10,6 @@ config.headers.Authorization = `Bearer ${token}`
         }
         return config
     })
-
-
     api.interceptors.response.use(
         (res)=>res,
         (err)=>{

@@ -7,12 +7,16 @@ import { registerCreatorSchema } from "../../../adapters/validation/creatorSchem
 import { validate } from "../../middlewares/zodValidator";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
+import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
+import { logoutController } from "../../../framework/depInjection/user/userInjections";
 
 export class CreatorRoutes {
   public creatorRouter: Router;
-  private jwtServices = new JwtServices();
 
-  constructor() {
+  constructor(
+    private  _jwtService: JwtServices,
+    private  _tokenBlacklistService: TokenBlacklistService
+  ) {
     this.creatorRouter = Router();
     this.setRoutes();
   }
@@ -33,7 +37,13 @@ export class CreatorRoutes {
     );
 
     // PROTECTED ROUTES
-    this.creatorRouter.use(jwtAuthMiddleware(this.jwtServices));
+    this.creatorRouter.use(
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService)
+    );
 
+    this.creatorRouter.post(
+      "/logout",
+      logoutController.logout.bind(logoutController)
+    );
   }
 }

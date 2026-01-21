@@ -46,13 +46,14 @@ export default function AdminLogin() {
 
     try {
       const data = await authService.login(form);
+console.log(data.data);
 
-      dispatch(setUser(data.user));
+      dispatch(setUser(data.data.user));
 
       dispatch(
         setAuth({
-          token: data.accessToken,
-          role: data.user.role,
+          token: data.data.accessToken,
+          role: data.data.user.role,
         })
       );
 
@@ -68,7 +69,6 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Background with different image for admin */}
       <div className="absolute inset-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -81,10 +81,8 @@ export default function AdminLogin() {
         <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/80 to-black/90" />
       </div>
 
-      {/* Centered Form */}
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-sm">
-          {/* Logo */}
           <div className="flex justify-center mb-4">
             <img
               src={LogoWhite}
@@ -93,9 +91,7 @@ export default function AdminLogin() {
             />
           </div>
 
-          {/* Login Card */}
           <div className="bg-zinc-900/90 backdrop-blur-xl rounded-xl shadow-2xl p-5 sm:p-6 border border-white/10">
-            {/* Header with Admin Badge */}
             <div className="text-center mb-5">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-3">
                 <Shield className="w-6 h-6 text-white" />
@@ -108,7 +104,6 @@ export default function AdminLogin() {
               </p>
             </div>
 
-            {/* Form */}
             <div className="space-y-3.5">
               <div>
                 <label className="block text-xs font-medium text-gray-300 mb-1.5">

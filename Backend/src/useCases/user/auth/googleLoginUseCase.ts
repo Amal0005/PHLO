@@ -13,13 +13,10 @@ import { verifyGoogleIdToken } from "../../../framework/google/verifyGoogleIdTok
 
   async execute(idToken: string): Promise<{ user: User; accessToken: string; refreshToken: string }> {
 
-    // 1️⃣ Verify Google ID token
     const googleUser = await verifyGoogleIdToken(idToken);
 
-    // 2️⃣ Find user by email
     let user = await this._userRepo.findByEmail(googleUser.email);
 
-    // 3️⃣ Create user if not exists
     if (!user) {
       user = await this._userRepo.createUser({
         name: googleUser.name,
@@ -42,9 +39,10 @@ if (user.status === "blocked") {
 }
 
 const payload = {
-  userId: user._id,
+  userId: user._id.toString(),
   role: user.role,
   email: user.email,
+  
 };
 
 const accessToken = this._jwtService.generateAccessToken(payload);

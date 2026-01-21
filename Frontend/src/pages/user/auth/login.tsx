@@ -47,16 +47,17 @@ export default function Login() {
 
     try {
       const data = await authService.login(form);
+      console.log(data.data, "data");
 
-      dispatch(setUser(data.user));
+      dispatch(setUser(data.data.user));
 
       dispatch(
         setAuth({
-          token: data.accessToken,
-          role: data.user.role,
+          token: data.data.accessToken,
+          role: data.data.user.role,
         }),
       );
-
+      console.log("haii");
       toast.success("Login Successful");
       navigate("/home");
     } catch (error) {
