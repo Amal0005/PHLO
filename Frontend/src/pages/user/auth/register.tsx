@@ -64,12 +64,16 @@ export default function Register() {
       navigate("/verify-otp", { state: { email: form.email } });
 
       await new Promise((resolve) => setTimeout(resolve, 1500));
-    } catch (error) {
-      console.error("Registration error:", error);
-      toast.error("Registration failed. Try again!");
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (error:any) {
+  console.error("Registration error:", error);
+
+  const message =
+    error?.response?.data?.message ||
+    "Registration failed. Please try again.";
+
+  toast.error(message);
+  setIsLoading(false)
+}
   }
 
   function handleLogin() {

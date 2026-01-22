@@ -3,7 +3,8 @@ import { UserAuthController } from "../../../adapters/controllers/user/auth/auth
 import { GoogleAuthController } from "../../../adapters/controllers/user/auth/googleAuthController";
 import { userLoginController } from "../../../adapters/controllers/user/login/userLoginController";
 import { userRegisterController } from "../../../adapters/controllers/user/register/userRegisterController";
-import { userRepository } from "../../../adapters/repository/user/userRepository";
+import { CreatorRepository } from "../../../adapters/repository/creator/creatorRepository";
+import { UserRepository } from "../../../adapters/repository/user/userRepository";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { MailService } from "../../../domain/services/user/mailServices";
@@ -21,7 +22,7 @@ import { userLoginUserUseCase } from "../../../useCases/user/login/loginUserUseC
 import { userRegisterUseCase } from "../../../useCases/user/register/registerUserUseCase";
 import { verifyRegisterOtpUseCase } from "../../../useCases/user/register/verifyRegisterOtpUseCase";
 
-const userRepo = new userRepository();
+const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
 const otpServices=new OtpServices()
 const pendingService=new PendingUserService()
@@ -29,9 +30,10 @@ const jwtService=new JwtServices()
 const mailService=new MailService()
 const redisService=new RedisService()
 const tokenBlacklistService=new TokenBlacklistService(redisService)
+const creatorRepository=new CreatorRepository
 
 
-const registerUseCase = new userRegisterUseCase(userRepo,passwordServices,otpServices,mailService);
+const registerUseCase = new userRegisterUseCase(userRepo,creatorRepository,passwordServices,otpServices,mailService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices,jwtService);
 const verifyOtpUseCase=new verifyRegisterOtpUseCase(userRepo,otpServices,pendingService)
 const resendOtpUsecase=new ResendOtpUseCase(otpServices,mailService)

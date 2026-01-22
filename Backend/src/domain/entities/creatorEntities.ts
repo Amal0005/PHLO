@@ -11,6 +11,7 @@ export interface CreatorEntity {
   portfolioLink?: string;
   governmentId: string;
   status: "pending" | "approved" | "rejected";
+   rejectionReason?: string;
   specialties?: string[];
   createdAt?: Date;
   updatedAt?: Date;

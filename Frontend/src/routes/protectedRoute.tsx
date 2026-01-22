@@ -13,12 +13,29 @@ export default function ProtectedRoute({
   );
 
   if (!isAuthenticated) {
+    if (allowedRoles.includes("admin")) {
+      return <Navigate to="/admin/login" replace />;
+    }
+
+    if (allowedRoles.includes("creator")) {
+      return <Navigate to="/creator/login" replace />;
+    }
+
     return <Navigate to="/login" replace />;
   }
 
   if (!role || !allowedRoles.includes(role)) {
-    return <Navigate to="/" replace />;
+    if (role === "admin") {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+
+    if (role === "creator") {
+      return <Navigate to="/creator/dashboard" replace />;
+    }
+
+    return <Navigate to="/home" replace />;
   }
 
+  // Authorized
   return <Outlet />;
 }

@@ -1,13 +1,13 @@
 import { ChangeEvent, useState } from "react";
-import { Camera, CameraOff, Image, Users, Award } from "lucide-react";
+import { Camera, CameraOff, Users, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import api from "@/axios/axiosConfig";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
-
 import { setCreator } from "@/store/creator/creatorSlice";
 import { setAuth } from "@/store/tokenSlice";
 import { toast } from "react-toastify";
+import StatusModal from "./statusModal";
+import { creatorLoginService } from "@/services/creator/creatorAuthService";
 
 export default function CreatorLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,43 +16,87 @@ export default function CreatorLogin() {
     email: "",
     password: ""
   });
-  const dispatch = useDispatch<AppDispatch>();
+  const [status, setStatus] = useState<{
+    status: 'pending' | 'rejected' | null;
+    message: string;
+    reason?: string;
+  } | null>(null);
 
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
+
+
 async function handleLogin(e: React.FormEvent) {
   e.preventDefault();
+  setIsLoading(true);
 
   try {
-    setIsLoading(true);
-
-    const res = await api.post("/creator/login", {
-      email: form.email,
-      password: form.password,
-    });
-
-    dispatch(setCreator(res.data.creator));
-    dispatch(
-      setAuth({
-        token: res.data.token,
-        role: "creator",
-      })
+    const responseData = await creatorLoginService(
+      form.email,
+      form.password
     );
-toast.success("Logged in")
-    navigate("/creator/dashboard");
-  } catch (error:any) {
-    console.error(error);
-    toast.error(error.message);
+        console.log("LOGIN RESPONSE:", responseData);
+
+
+    // PENDING
+    if (responseData.status === "pending") {
+      setStatus({
+        status: "pending",
+        message:
+          responseData.message || "Your application is under review",
+      });
+      return;
+    }
+
+    // REJECTED
+if (responseData.status === "rejected") {
+  setStatus({
+    status: "rejected",
+    message: responseData.message || "Your application was rejected",
+    reason: responseData.reason,
+  });
+  return;
+}
+
+    // APPROVED
+    if (
+      responseData.status === "approved" &&
+      responseData.creator &&
+      responseData.token
+    ) {
+      dispatch(setCreator(responseData.creator));
+      dispatch(
+        setAuth({
+          token: responseData.token,
+          role: "creator",
+        })
+      );
+
+      toast.success("Logged in successfully");
+      navigate("/creator/dashboard");
+    }
+  } catch (error: any) {
+    const data = error?.response?.data;
+
+    if (data?.status) {
+      setStatus({
+        status: data.status,
+        message: data.message || "Authentication failed",
+        reason: data.rejectionReason,
+      });
+      return;
+    }
+
+    toast.error(data?.message || "Login failed");
   } finally {
     setIsLoading(false);
   }
 }
 
-
-  const navigate=useNavigate()
-  
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -85,71 +129,85 @@ toast.success("Logged in")
               </div>
 
               <div className="space-y-4">
-                 <form action="" onSubmit={handleLogin}>
-                <div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
-                    value={form.email}
-                    onChange={handleChange}
-                  />
-                </div>
-<br />
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
-                    value={form.password}
-                    onChange={handleChange}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
-                  >
-                    {showPassword ? (
-                      <CameraOff className="w-5 h-5" />
-                    ) : (
-                      <Camera className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-               
+                <form onSubmit={handleLogin}>
+                  <div>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                      value={form.email}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                    />
+                  </div>
 
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
-                  >
-                    Forgot password?
-                  </button>
-                </div>
+                  <div className="relative mt-4">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Password"
+                      className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
+                      value={form.password}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                      disabled={isLoading}
+                    >
+                      {showPassword ? (
+                        <CameraOff className="w-5 h-5" />
+                      ) : (
+                        <Camera className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
 
-                <div>
-                  <button
-                    type="submit"
-                    disabled={isLoading || !form.email || !form.password}
-                    className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    {isLoading ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                        Logging in...
-                      </span>
-                    ) : (
-                      "Login to Dashboard"
-                    )}
-                  </button>
-                </div>
-                  </form>
+                  <div className="flex justify-end mt-2">
+                    <button
+                      type="button"
+                      className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
+                      disabled={isLoading}
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+
+                  <div className="mt-6">
+                    <button
+                      type="submit"
+                      disabled={isLoading || !form.email || !form.password}
+                      className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      {isLoading ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                          Logging in...
+                        </span>
+                      ) : (
+                        "Login to Dashboard"
+                      )}
+                    </button>
+                  </div>
+
+<StatusModal
+  isOpen={!!status}
+  onClose={() => setStatus(null)}
+  status={status?.status || null}
+  message={status?.message || ""}
+  reason={status?.reason}
+/>
+                </form>
 
                 <p className="text-gray-400 text-xs sm:text-sm text-center pt-2">
-                  Haven't Account? {" "}
-                  <span onClick={() => navigate("/creator/register")} className="text-white cursor-pointer hover:underline font-medium hover:scale-105 inline-block transition-transform">
+                  Haven't Account?{" "}
+                  <span
+                    onClick={() => navigate("/creator/register")}
+                    className="text-white cursor-pointer hover:underline font-medium hover:scale-105 inline-block transition-transform"
+                  >
                     Signup
                   </span>
                 </p>
@@ -185,21 +243,7 @@ toast.success("Logged in")
                   Client Management
                 </h3>
                 <p className="text-xs lg:text-sm text-gray-400">
-                  Track sessions and communicate
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
-              <div className="w-12 h-12 rounded-full bg-zinc-800/80 backdrop-blur-sm border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-300">
-                <Image className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base lg:text-lg text-white">
-                  Gallery Upload
-                </h3>
-                <p className="text-xs lg:text-sm text-gray-400">
-                  Share photos with your clients
+                  Manage your clients and bookings
                 </p>
               </div>
             </div>

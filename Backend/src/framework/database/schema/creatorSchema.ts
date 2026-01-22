@@ -47,7 +47,10 @@ export const creatorSchema = new Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
-
+    rejectionReason: {
+      type: String,
+      default: ''
+    },
     specialties: [{ type: String }],
   },
   { timestamps: true },

@@ -22,7 +22,8 @@ export const approveCreator = async (
 };
 
 export const rejectCreator = async (
-  creatorId: string
+  creatorId: string,
+  reason: string
 ): Promise<void> => {
-  await api.patch(`/admin/creators/${creatorId}/reject`);
+  await api.patch(`/admin/creators/${creatorId}/reject`, { reason });
 };

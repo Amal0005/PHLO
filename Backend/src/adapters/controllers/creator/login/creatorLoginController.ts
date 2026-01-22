@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { IcreatorLoginUseCase } from "../../../../domain/interface/creator/login/IcreatorLoginUseCase";
+import { AuthError } from "../../../../domain/errors/authError";
 
 export class CreatorLoginController{
     constructor(
@@ -16,14 +17,22 @@ export class CreatorLoginController{
         success: true,
         message: "Login successful",
         data: result,
+        
       });
-        } catch (error) {
-             if (error instanceof Error) {
-        return res.status(400).json({
-          success: false,
-          message: error.message,
-        });
-      }
-        }
+        }  catch (error) {
+
+    if (error instanceof AuthError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+        ...error.payload,
+      });
     }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
 }

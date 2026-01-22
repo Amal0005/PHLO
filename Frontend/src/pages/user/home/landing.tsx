@@ -21,6 +21,7 @@ import {
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
 import { clearUser } from "@/store/user/userSlice";
+import { clearAuth } from "@/store/tokenSlice";
 
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,8 +39,10 @@ const dispatch = useDispatch<AppDispatch>();
   }, []);
   const navigate = useNavigate();
 const handleLogout = () => {
-  dispatch(clearUser());
-  navigate("/login");
+ dispatch(clearAuth());
+dispatch(clearUser());
+localStorage.clear();
+navigate("/login");
 };
   const packages = [
     {

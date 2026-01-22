@@ -1,4 +1,5 @@
 import { RegisterDto } from "../../../domain/dto/user/registerDto";
+import { IcreatorRepository } from "../../../domain/interface/creator/IcreatorRepository";
 import { IMailService } from "../../../domain/interface/service/ImailServices";
 import { IOTPService } from "../../../domain/interface/service/IotpServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
@@ -12,6 +13,7 @@ import path from "path";
 export class userRegisterUseCase implements IuserRegisterUseCase {
   constructor(
     private _userRepo: IuserRepository,
+    private _creatorRepo:IcreatorRepository,
     private _passwordService: IpasswordService,
     private _otpService: IOTPService,
     private _mailService: IMailService
@@ -22,6 +24,9 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
 
     const existingUser = await this._userRepo.findByEmail(email);
     if (existingUser) throw new Error("User already exists");
+    const existingCreator=await this._creatorRepo.findByEmail(email)
+    if(existingCreator)throw new Error("This email is already registered as a creator")
+
     if (!user.password) throw new Error("Password is required");
 
     const hashedPassword = await this._passwordService.hash(user.password);

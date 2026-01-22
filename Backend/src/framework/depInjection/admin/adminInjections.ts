@@ -2,7 +2,7 @@ import { AdminCreatorController } from "../../../adapters/controllers/admin/admi
 import { AdminLoginController } from "../../../adapters/controllers/admin/adminLoginController";
 import { AdminUserController } from "../../../adapters/controllers/admin/adminUserController";
 import { CreatorRepository } from "../../../adapters/repository/creator/creatorRepository";
-import { userRepository } from "../../../adapters/repository/user/userRepository";
+import { UserRepository } from "../../../adapters/repository/user/userRepository";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { PasswordService } from "../../../domain/services/user/passwordService";
 import { AdminLoginUseCase } from "../../../useCases/admin/adminLoginUseCase";
@@ -10,7 +10,7 @@ import { AdminUserListingUseCase } from "../../../useCases/admin/adminUserListin
 import { ApproveRejectCreatorUseCase } from "../../../useCases/admin/approveRejectCreatorUseCase";
 import { AdminCreatorListingUseCase } from "../../../useCases/creator/adminCreatorListingUseCase";
 
-const userRepo=new userRepository
+const userRepo=new UserRepository
 const jwtService=new JwtServices
 const passwordService=new PasswordService
 const creatorRepo=new CreatorRepository

@@ -2,7 +2,7 @@ import { User } from "../../../domain/entities/userEntities";
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
 import { UserModel } from "../../../framework/database/model/userModel";
 
-export class userRepository implements IuserRepository {
+export class UserRepository implements IuserRepository {
 
   private toDomain(doc: any): User {
 

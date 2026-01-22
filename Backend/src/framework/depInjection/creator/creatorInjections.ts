@@ -1,6 +1,7 @@
 import { CreatorLoginController } from "../../../adapters/controllers/creator/login/creatorLoginController";
 import { CreatorRegisterController } from "../../../adapters/controllers/creator/register/creatorRegisterController";
 import { CreatorRepository } from "../../../adapters/repository/creator/creatorRepository";
+import { UserRepository } from "../../../adapters/repository/user/userRepository";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { PasswordService } from "../../../domain/services/user/passwordService";
 import { CreatorLoginUseCase } from "../../../useCases/creator/login/creatorLoginUseCase";
@@ -9,8 +10,9 @@ import { RegisterCreatorUseCase } from "../../../useCases/creator/register/regis
 const creatorRepository=new CreatorRepository
 const jwtService=new JwtServices
 const passwordService=new PasswordService
+const userRepository=new UserRepository
 
-const creatorRegisterUseCase=new RegisterCreatorUseCase(creatorRepository,passwordService)
+const creatorRegisterUseCase=new RegisterCreatorUseCase(creatorRepository,passwordService,userRepository)
 const creatorLoginUseCase=new CreatorLoginUseCase(creatorRepository,jwtService,passwordService)
 
 export const creatorRegisterController=new CreatorRegisterController(creatorRegisterUseCase)

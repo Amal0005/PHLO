@@ -21,12 +21,12 @@ export class userRegisterController {
         message: "OTP sent to email. Please verify to complete registration.",
       });
 
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Error occurred during registration",
-      });
-    }
+    }catch (error: any) {
+  return res.status(400).json({
+    success: false,
+    message: error.message || "Registration failed",
+  });
+}
   }
   
 async resendOtp(req:Request,res:Response){

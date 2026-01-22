@@ -13,8 +13,8 @@ export class AdminRoutes {
   public adminRouter: Router;
 
   constructor(
-    private  _jwtService: JwtServices,
-    private  _tokenBlacklistService: TokenBlacklistService
+    private _jwtService: JwtServices,
+    private _tokenBlacklistService: TokenBlacklistService
   ) {
     this.adminRouter = Router();
     this.setRoutes();
