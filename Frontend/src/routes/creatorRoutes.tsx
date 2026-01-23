@@ -8,7 +8,7 @@ export function CreatorRoutes() {
     <Routes>
       <Route path="login" element={<CreatorLogin />} />
       <Route path="register" element={<CreatorSignup />} />
-      <Route path="forgot" element={<ForgotPasswordd />} />
+      <Route path="forgot-password" element={<ForgotPasswordd />} />
     </Routes>
   );
 }

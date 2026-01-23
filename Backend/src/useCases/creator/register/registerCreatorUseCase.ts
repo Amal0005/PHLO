@@ -1,8 +1,9 @@
-import { CreatorEntity } from "../../../domain/entities/creatorEntities";
-import { IcreatorRepository } from "../../../domain/interface/creator/IcreatorRepository";
-import { IregisterCreatorUseCase } from "../../../domain/interface/creator/register/IregisterCreatorUseCase";
-import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
+import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { IregisterCreatorUseCase } from "@/domain/interface/creator/register/IregisterCreatorUseCase";
+import { IpasswordService } from "@/domain/interface/service/IpasswordService";
+import { IuserRepository } from "@/domain/interface/user/IuserRepository";
+
 
 export class RegisterCreatorUseCase implements IregisterCreatorUseCase {
   constructor(

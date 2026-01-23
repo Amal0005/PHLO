@@ -1,10 +1,11 @@
-import { CreatorLoginResponseDto } from "../../../domain/dto/creator/creatorLoginResponseDto";
-import { IcreatorRepository } from "../../../domain/interface/creator/IcreatorRepository";
-import { IcreatorLoginUseCase } from "../../../domain/interface/creator/login/IcreatorLoginUseCase";
-import { IjwtServices } from "../../../domain/interface/service/IjwtServices";
-import { AuthPayload } from "../../../domain/dto/user/authPayload";
-import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
-import { AuthError } from "../../../domain/errors/authError";
+import { CreatorLoginResponseDto } from "@/domain/dto/creator/creatorLoginResponseDto";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { IcreatorLoginUseCase } from "@/domain/interface/creator/login/IcreatorLoginUseCase";
+import { IjwtServices } from "@/domain/interface/service/IjwtServices";
+import { AuthPayload } from "@/domain/dto/user/authPayload";
+import { IpasswordService } from "@/domain/interface/service/IpasswordService";
+import { AuthError } from "@/domain/errors/authError";
+
 
 export class CreatorLoginUseCase implements IcreatorLoginUseCase {
   constructor(

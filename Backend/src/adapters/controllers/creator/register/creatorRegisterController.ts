@@ -1,5 +1,5 @@
 import { Request,Response } from "express";
-import { IregisterCreatorUseCase } from "../../../../domain/interface/creator/register/IregisterCreatorUseCase";
+import { IregisterCreatorUseCase } from "@/domain/interface/creator/register/IregisterCreatorUseCase";
 export class CreatorRegisterController{
     constructor(
         private _registerCreaterUseCase:IregisterCreatorUseCase

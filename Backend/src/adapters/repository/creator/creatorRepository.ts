@@ -1,6 +1,6 @@
-import { CreatorEntity } from "../../../domain/entities/creatorEntities";
-import { IcreatorRepository } from "../../../domain/interface/creator/IcreatorRepository";
-import { CreatorModel } from "../../../framework/database/model/creatorModel";
+import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { CreatorModel } from "@/framework/database/model/creatorModel";
 
 export class CreatorRepository implements IcreatorRepository {
   private toDomain(doc: any): CreatorEntity {
@@ -45,6 +45,10 @@ export class CreatorRepository implements IcreatorRepository {
       { _id: creatorId },
       { $set: { status, rejectionReason: reason } },
     );
+  }
+
+  async updatePassword(email: string, hashedPassword: string): Promise<void> {
+    await CreatorModel.updateOne({ email }, { $set: { password: hashedPassword } });
   }
   async findAllCreators(): Promise<CreatorEntity[]> {
     const creators = await CreatorModel.find()

@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { AuthPayload } from "../../domain/dto/user/authPayload";
-import { IjwtServices } from "../../domain/interface/service/IjwtServices";
-import { ITokenBlacklistService } from "../../domain/interface/service/ItokenBlacklistService";
+import { AuthPayload } from "@/domain/dto/user/authPayload";
+import { IjwtServices } from "@/domain/interface/service/IjwtServices";
+import { ITokenBlacklistService } from "@/domain/interface/service/ItokenBlacklistService";
+
 
 export interface AuthRequest extends Request{
     user?:AuthPayload

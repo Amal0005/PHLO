@@ -1,5 +1,5 @@
 import { Router,Request,Response } from "express";
-import { viewController } from "../../framework/depInjection/s3Injections";
+import { viewController } from "@/framework/depInjection/s3Injections";
 
 export class ViewRoutes{
     public viewRoutes:Router

@@ -1,5 +1,5 @@
+import { uploadController } from "@/framework/depInjection/s3Injections";
 import { Router, Request, Response } from "express";
-import { uploadController } from "../../framework/depInjection/s3Injections";
 
 export class UploadRoutes {
   public uploadRouter: Router;

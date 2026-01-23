@@ -1,18 +1,20 @@
-import { connectDB } from "./framework/database/connectDB/connectDB";
+import { connectDB } from "@/framework/database/connectDB/connectDB";
 import express, { Express } from "express";
 import http from "http";
 import dotenv from "dotenv";
-import redis from "./framework/redis/redisClient";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { UserRoutes } from "./adapters/routes/user/userRoutes";
-import { CreatorRoutes } from "./adapters/routes/creator/creatorRoutes";
-import { UploadRoutes } from "./adapters/routes/uploadRoutes";
-import { ViewRoutes } from "./adapters/routes/viewRoutes";
-import { AdminRoutes } from "./adapters/routes/admin/adminRoutes";
-import { JwtServices } from "./domain/services/user/jwtServices";
-import { RedisService } from "./domain/services/user/redisServices";
-import { TokenBlacklistService } from "./domain/services/tokenBlacklistService";
+import redis from "@/framework/redis/redisClient";
+import { UserRoutes } from "@/adapters/routes/user/userRoutes";
+import { CreatorRoutes } from "@/adapters/routes/creator/creatorRoutes";
+import { UploadRoutes } from "@/adapters/routes/uploadRoutes";
+import { ViewRoutes } from "@/adapters/routes/viewRoutes";
+import { AdminRoutes } from "@/adapters/routes/admin/adminRoutes";
+import { JwtServices } from "@/domain/services/user/jwtServices";
+import { RedisService } from "@/domain/services/user/redisServices";
+import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
+
+
 
 export class App {
   private app: Express;

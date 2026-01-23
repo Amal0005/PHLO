@@ -1,7 +1,6 @@
 import { model, Types } from "mongoose";
-import { CreatorEntity } from "../../../domain/entities/creatorEntities";
+import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { creatorSchema } from "../schema/creatorSchema";
-
 
 export interface ICreatorModel extends Omit<CreatorEntity, "_id">,Document {
   _id: Types.ObjectId;

@@ -1,4 +1,4 @@
-import { AuthPayload } from "../../dto/user/authPayload";
+import { AuthPayload } from "@/domain/dto/user/authPayload";
 
 export interface IjwtServices {
   generateAccessToken(payload: AuthPayload): string;
