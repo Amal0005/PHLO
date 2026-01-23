@@ -77,7 +77,7 @@ export default function Register() {
   }
 
   function handleLogin() {
-    navigate("/login");
+    navigate("/login", { replace: true });
   }
 
   return (
@@ -203,7 +203,7 @@ export default function Register() {
                   <input
                     type="email"
                     name="email"
-                    className="w-full px-3.5 pt-5 pb-2 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    className="w-full px-3.5 pt-5 pb-2 text-sm sm:text-base rounded-lg bg-zinc-1000/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
                     value={form.email}
                     onChange={handleChange}
                     onFocus={() => setFocusedField("email")}

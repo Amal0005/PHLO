@@ -3,6 +3,18 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Role } from "@/store/tokenSlice";
 
+const loginRoute: Record<Role, string> = {
+  user: "/login",
+  creator: "/creator/login",
+  admin: "/admin/login",
+};
+
+const dashboardRoute: Record<Role, string> = {
+  user: "/home",
+  creator: "/creator/dashboard",
+  admin: "/admin/dashboard",
+};
+
 export default function ProtectedRoute({
   allowedRoles,
 }: {
@@ -13,29 +25,13 @@ export default function ProtectedRoute({
   );
 
   if (!isAuthenticated) {
-    if (allowedRoles.includes("admin")) {
-      return <Navigate to="/admin/login" replace />;
-    }
-
-    if (allowedRoles.includes("creator")) {
-      return <Navigate to="/creator/login" replace />;
-    }
-
-    return <Navigate to="/login" replace />;
+    const targetRole = allowedRoles[0];
+    return <Navigate to={loginRoute[targetRole]} replace />;
   }
 
   if (!role || !allowedRoles.includes(role)) {
-    if (role === "admin") {
-      return <Navigate to="/admin/dashboard" replace />;
-    }
-
-    if (role === "creator") {
-      return <Navigate to="/creator/dashboard" replace />;
-    }
-
-    return <Navigate to="/home" replace />;
+    return <Navigate to={dashboardRoute[role!]} replace />;
   }
 
-  // Authorized
   return <Outlet />;
 }

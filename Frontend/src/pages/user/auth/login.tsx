@@ -59,7 +59,8 @@ export default function Login() {
       );
       console.log("haii");
       toast.success("Login Successful");
-      navigate("/home");
+      navigate("/home", { replace: true });
+
     } catch (error) {
       console.error("Login error:", error);
       toast.error("Invalid email or password");

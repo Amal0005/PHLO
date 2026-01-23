@@ -119,7 +119,7 @@ export default function ForgotPassword() {
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2071')",
+              "url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2074')",
               filter: "grayscale(100%)",
             }}
           />
@@ -248,7 +248,7 @@ export default function ForgotPassword() {
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2071')",
+              "url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2074')",
             filter: "grayscale(100%)",
           }}
         />
@@ -256,22 +256,7 @@ export default function ForgotPassword() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-        <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
-          <h2 className="text-lg sm:text-xl lg:text-2xl font-light mb-2 lg:mb-4 leading-relaxed text-white">
-            Forgot your password?
-            <br />
-            Don't worry.
-            <br />
-            <span className="text-gray-400">We've got you covered.</span>
-          </h2>
-
-          <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
-            Enter your email address and we'll send you a verification code to
-            reset your password securely.
-          </p>
-        </div>
-
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
           <div className="w-full max-w-md">
             <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
               <button onClick={() => navigate("/creator/login")} className="mb-4 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm cursor-pointer">
@@ -336,6 +321,22 @@ export default function ForgotPassword() {
             </p>
           </div>
         </div>
+        <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-light mb-2 lg:mb-4 leading-relaxed text-white">
+            Forgot your password?
+            <br />
+            Don't worry.
+            <br />
+            <span className="text-gray-400">We've got you covered.</span>
+          </h2>
+
+          <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
+            Enter your email address and we'll send you a verification code to
+            reset your password securely.
+          </p>
+        </div>
+
+       
       </div>
 
       {showOtpModal && (
