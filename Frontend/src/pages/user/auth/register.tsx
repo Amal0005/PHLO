@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import api from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import LogoWhite from "../../../assets/images/Logo_white.png";
-import { registerUserSchema } from "../../../validation/userSchema";
+import { registerUserSchema } from "../../../validation/registerUserSchema";
 import GoogleLoginButton from "@/compoents/reusable/googleButton";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/user/userSlice";
@@ -15,6 +15,7 @@ interface RegisterForm {
   email: string;
   phone: string;
   password: string;
+  confirmPassword: string;
 }
 
 export default function Register() {
@@ -23,6 +24,7 @@ export default function Register() {
     email: "",
     phone: "",
     password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [acceptedTerms, setAcceptedTerms] = useState<boolean>(false);
@@ -51,29 +53,31 @@ export default function Register() {
       if (errors.email) toast.error(errors.email[0]);
       if (errors.phone) toast.error(errors.phone[0]);
       if (errors.password) toast.error(errors.password[0]);
-
-      return;
+      if (errors.confirmPassword) {
+        toast.error(errors.confirmPassword[0]);
+      } return;
     }
 
     setIsLoading(true);
 
+    const { confirmPassword, ...submitData } = form;
     try {
-      await api.post("/register", form);
+      await api.post("/register", submitData);
       toast.success("OTP sent successfully!");
 
       navigate("/verify-otp", { state: { email: form.email } });
 
       await new Promise((resolve) => setTimeout(resolve, 1500));
-    } catch (error:any) {
-  console.error("Registration error:", error);
+    } catch (error: any) {
+      console.error("Registration error:", error);
 
-  const message =
-    error?.response?.data?.message ||
-    "Registration failed. Please try again.";
+      const message =
+        error?.response?.data?.message ||
+        "Registration failed. Please try again.";
 
-  toast.error(message);
-  setIsLoading(false)
-}
+      toast.error(message);
+      setIsLoading(false);
+    }
   }
 
   function handleLogin() {
@@ -163,8 +167,8 @@ export default function Register() {
         </div>
 
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-md">
-            <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
+          <div className="w-full max-w-lg">
+            <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-4 sm:p-6 border border-white/10">
               <div className="text-center mb-6 sm:mb-8">
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                   Create Account
@@ -174,13 +178,13 @@ export default function Register() {
                 </p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3.5">
                 {/* Full Name Input with Floating Label */}
                 <div className="relative">
                   <input
                     type="text"
                     name="name"
-                    className="w-full px-3.5 pt-5 pb-2 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    className="w-full px-4 pt-5 pb-2 text-sm sm:text-base rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-white outline-none focus:bg-white/10 focus:border-white/30 transition-all duration-300"
                     value={form.name}
                     onChange={handleChange}
                     onFocus={() => setFocusedField("name")}
@@ -188,11 +192,10 @@ export default function Register() {
                     required
                   />
                   <label
-                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${
-                      form.name || focusedField === "name"
-                        ? "top-1.5 text-[11px] text-gray-400"
-                        : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
-                    }`}
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${form.name || focusedField === "name"
+                      ? "top-1.5 text-[11px] text-gray-400"
+                      : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                      }`}
                   >
                     Full Name
                   </label>
@@ -203,7 +206,7 @@ export default function Register() {
                   <input
                     type="email"
                     name="email"
-                    className="w-full px-3.5 pt-5 pb-2 text-sm sm:text-base rounded-lg bg-zinc-1000/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    className="w-full px-4 pt-5 pb-2 text-sm sm:text-base rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-white outline-none focus:bg-white/10 focus:border-white/30 transition-all duration-300"
                     value={form.email}
                     onChange={handleChange}
                     onFocus={() => setFocusedField("email")}
@@ -211,11 +214,10 @@ export default function Register() {
                     required
                   />
                   <label
-                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${
-                      form.email || focusedField === "email"
-                        ? "top-1.5 text-[11px] text-gray-400"
-                        : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
-                    }`}
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${form.email || focusedField === "email"
+                      ? "top-1.5 text-[11px] text-gray-400"
+                      : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                      }`}
                   >
                     Email
                   </label>
@@ -226,7 +228,7 @@ export default function Register() {
                   <input
                     type="text"
                     name="phone"
-                    className="w-full px-3.5 pt-5 pb-2 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    className="w-full px-4 pt-5 pb-2 text-sm sm:text-base rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-white outline-none focus:bg-white/10 focus:border-white/30 transition-all duration-300"
                     value={form.phone}
                     onChange={handleChange}
                     onFocus={() => setFocusedField("phone")}
@@ -234,11 +236,10 @@ export default function Register() {
                     required
                   />
                   <label
-                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${
-                      form.phone || focusedField === "phone"
-                        ? "top-1.5 text-[11px] text-gray-400"
-                        : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
-                    }`}
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${form.phone || focusedField === "phone"
+                      ? "top-1.5 text-[11px] text-gray-400"
+                      : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                      }`}
                   >
                     Phone
                   </label>
@@ -249,7 +250,7 @@ export default function Register() {
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    className="w-full px-3.5 pt-5 pb-2 pr-12 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    className="w-full px-4 pt-5 pb-2 pr-12 text-sm sm:text-base rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-white outline-none focus:bg-white/10 focus:border-white/30 transition-all duration-300"
                     value={form.password}
                     onChange={handleChange}
                     onFocus={() => setFocusedField("password")}
@@ -257,11 +258,10 @@ export default function Register() {
                     required
                   />
                   <label
-                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${
-                      form.password || focusedField === "password"
-                        ? "top-1.5 text-[11px] text-gray-400"
-                        : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
-                    }`}
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${form.password || focusedField === "password"
+                      ? "top-1.5 text-[11px] text-gray-400"
+                      : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                      }`}
                   >
                     Password
                   </label>
@@ -277,7 +277,26 @@ export default function Register() {
                     )}
                   </button>
                 </div>
-
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    className="w-full px-4 pt-5 pb-2 pr-12 text-sm sm:text-base rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 text-white outline-none focus:bg-white/10 focus:border-white/30 transition-all duration-300"
+                    value={form.confirmPassword}
+                    onChange={handleChange}
+                    onFocus={() => setFocusedField("confirmPassword")}
+                    onBlur={() => setFocusedField("")}
+                    required
+                  />
+                  <label
+                    className={`absolute left-3.5 pointer-events-none transition-all duration-300 ${form.confirmPassword || focusedField === "confirmPassword"
+                      ? "top-1.5 text-[11px] text-gray-400"
+                      : "top-1/2 -translate-y-1/2 text-sm sm:text-base text-gray-500"
+                      }`}
+                  >
+                    Confirm Password
+                  </label>
+                </div>
                 <div className="flex items-start gap-3">
                   <input
                     type="checkbox"

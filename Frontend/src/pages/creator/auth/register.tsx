@@ -33,6 +33,7 @@ export default function CreatorSignup() {
     fullName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     phone: "",
     city: "",
     yearsOfExperience: "",
@@ -105,6 +106,10 @@ async function checkEmailExists(email: string): Promise<boolean> {
 }
 
 async function validateStep1(): Promise<boolean> {
+    if (formData.password !== formData.confirmPassword) {
+    toast.error("Passwords do not match");
+    return false;
+  }
   if (!formData.fullName.trim()) {
     toast.error("Please enter your full name");
     return false;
@@ -307,6 +312,7 @@ async function validateStep1(): Promise<boolean> {
         email: "",
         password: "",
         phone: "",
+        confirmPassword: "",
         city: "",
         yearsOfExperience: "",
         bio: "",
@@ -333,7 +339,7 @@ async function validateStep1(): Promise<boolean> {
   }
 
   const isStep1Valid =
-    formData.fullName && formData.email && formData.password && formData.phone;
+    formData.fullName && formData.email && formData.password &&  formData.confirmPassword && formData.phone;
   const isStep2Valid = formData.city && formData.yearsOfExperience;
   const isStep3Valid =
     formData.bio && formData.portfolioLink && formData.specialties.length > 0;
@@ -459,6 +465,19 @@ async function validateStep1(): Promise<boolean> {
                         )}
                       </button>
                     </div>
+                    <div className="relative">
+  <label className="block text-sm font-medium text-gray-300 mb-1.5">
+    Confirm Password
+  </label>
+  <input
+    type={showPassword ? "text" : "password"}
+    name="confirmPassword"
+    placeholder="Repeat your password"
+    className="w-full p-3 text-sm rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
+    value={formData.confirmPassword}
+    onChange={handleChange}
+  />
+</div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-1.5">

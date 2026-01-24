@@ -22,4 +22,10 @@ export class RegisterCreatorUseCase implements IregisterCreatorUseCase {
 
     return this._creatorRepo.createCreator({ ...data,password:hashedPassword, status: "pending" });
   }
+  async checkExists(email: string): Promise<void> {
+    const existing = await this._creatorRepo.findByEmail(email);
+    if(existing){
+      throw new Error("Email already in use")
+  }
+}
 }

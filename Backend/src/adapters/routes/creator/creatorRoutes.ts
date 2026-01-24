@@ -51,6 +51,9 @@ export class CreatorRoutes {
       (req: Request, res: Response) =>
         creatorAuthController.resetPassword(req, res)
     );
+    this.creatorRouter.post("/check-email", (req, res) => 
+  creatorRegisterController.checkExists(req, res)
+);
 
     // PROTECTED ROUTES
     this.creatorRouter.use(

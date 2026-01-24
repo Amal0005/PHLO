@@ -20,36 +20,12 @@ const userRepository = new UserRepository();
 const otpService = new OtpServices();
 const mailService = new MailService();
 
-const creatorRegisterUseCase = new RegisterCreatorUseCase(
-  creatorRepository,
-  passwordService,
-  userRepository,
-);
-const creatorLoginUseCase = new CreatorLoginUseCase(
-  creatorRepository,
-  jwtService,
-  passwordService,
-);
-
-const forgotPasswordUseCase = new ForgotPasswordUseCase(
-  creatorRepository,
-  otpService,
-  mailService,
-);
+const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository,passwordService,userRepository);
+const creatorLoginUseCase = new CreatorLoginUseCase(creatorRepository,jwtService,passwordService);
+const forgotPasswordUseCase = new ForgotPasswordUseCase(creatorRepository,otpService,mailService);
 const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpService);
-const resetPasswordUseCase = new ResetPasswordUseCase(
-  creatorRepository,
-  passwordService,
-);
+const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository,passwordService);
 
-export const creatorRegisterController = new CreatorRegisterController(
-  creatorRegisterUseCase,
-);
-export const creatorLoginController = new CreatorLoginController(
-  creatorLoginUseCase,
-);
-export const creatorAuthController = new CreatorAuthController(
-  forgotPasswordUseCase,
-  verifyForgotOtpUseCase,
-  resetPasswordUseCase,
-);
+export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase);
+export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
+export const creatorAuthController = new CreatorAuthController(forgotPasswordUseCase,verifyForgotOtpUseCase,resetPasswordUseCase,);
