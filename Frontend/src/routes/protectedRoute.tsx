@@ -1,7 +1,8 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { selectAuthByRole } from "@/store/selectors/authSelector";
 import { RootState } from "@/store/store";
-import { Role } from "@/store/tokenSlice";
+import { Role } from "@/types/role";
+import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router-dom";
 
 const loginRoute: Record<Role, string> = {
   user: "/login",
@@ -9,28 +10,21 @@ const loginRoute: Record<Role, string> = {
   admin: "/admin/login",
 };
 
-const dashboardRoute: Record<Role, string> = {
-  user: "/home",
-  creator: "/creator/dashboard",
-  admin: "/admin/dashboard",
-};
-
 export default function ProtectedRoute({
   allowedRoles,
 }: {
   allowedRoles: Role[];
 }) {
-  const { isAuthenticated, role } = useSelector(
-    (state: RootState) => state.token
+  const role = allowedRoles[0];
+
+  const auth = useSelector((state: RootState) =>
+    selectAuthByRole(state, role)
   );
 
-  if (!isAuthenticated) {
-    const targetRole = allowedRoles[0];
-    return <Navigate to={loginRoute[targetRole]} replace />;
-  }
+  const isAuthenticated = auth?.isAuthenticated;
 
-  if (!role || !allowedRoles.includes(role)) {
-    return <Navigate to={dashboardRoute[role!]} replace />;
+  if (!isAuthenticated) {
+    return <Navigate to={loginRoute[role]} replace />;
   }
 
   return <Outlet />;

@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import LogoWhite from "../../assets/images/Logo_white.png";
 import api from "@/axios/axiosConfig";
 import type { RootState } from "@/store/store";
-import { clearUser } from "@/store/user/userSlice";
-import { clearAuth } from "@/store/tokenSlice";
+import { clearAdmin } from "@/store/admin/adminSlice";
+import { clearAdminAuth } from "@/store/admin/adminAuthSlice";
 
 interface AdminNavbarProps {
   onMenuToggle: () => void;
@@ -15,24 +15,25 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const admin = useSelector((state: RootState) => state.auth.user);
+  const admin = useSelector((state: RootState) => state.admin.admin);
 
-const handleLogout = async () => {
-  try {
-    await api.post("/admin/logout")
 
-    dispatch(clearAuth());
-    dispatch(clearUser());
+  const handleLogout = async () => {
+    try {
+      await api.post("/admin/logout");
 
-    navigate("/admin/login", { replace: true });
-  } catch (err) {
-    console.error("Logout failed", err);
-  }
-};
+      dispatch(clearAdminAuth());
+      dispatch(clearAdmin());
+
+      navigate("/admin/login", { replace: true });
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   const initials = admin?.name
     ?.split(" ")
-    .map((n: string) => n[0])
+    .map((n) => n[0])
     .join("")
     .toUpperCase();
 

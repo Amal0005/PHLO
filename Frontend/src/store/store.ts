@@ -1,21 +1,35 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-
-import authReducer from "./user/userSlice";
+import userReducer from "./user/userSlice";
+import userAuthReducer from "./user/userAuthSlice";
 import creatorReducer from "./creator/creatorSlice";
-import tokenReducer from "./tokenSlice";
+import creatorAuthReducer from "./creator/creatorAuthSlice";
+import adminReducer from "./admin/adminSlice";
+import adminAuthReducer from "./admin/adminAuthSlice";
 
 const rootReducer = combineReducers({
-  auth: authReducer,
+  user: userReducer,
+  userAuth: userAuthReducer,
+
   creator: creatorReducer,
-  token: tokenReducer,
+  creatorAuth: creatorAuthReducer,
+
+  admin: adminReducer,
+  adminAuth: adminAuthReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "creator", "token"],
+whitelist: [
+  "user",
+  "userAuth",
+  "creator",
+  "creatorAuth",
+  "admin",
+  "adminAuth",
+],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -23,7 +37,9 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export const persistor = persistStore(store);

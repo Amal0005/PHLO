@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
 import { setCreator } from "@/store/creator/creatorSlice";
-import { setAuth } from "@/store/tokenSlice";
 import { toast } from "react-toastify";
 import StatusModal from "./statusModal";
 import { creatorLoginService } from "@/services/creator/creatorAuthService";
+import { setCreatorAuth } from "@/store/creator/creatorAuthSlice";
 
 export default function CreatorLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -59,13 +59,9 @@ export default function CreatorLogin() {
         responseData.creator &&
         responseData.token
       ) {
-        dispatch(setCreator(responseData.creator));
-        dispatch(
-          setAuth({
-            token: responseData.token,
-            role: "creator",
-          }),
-        );
+  dispatch(setCreator(responseData.creator));
+dispatch(setCreatorAuth(responseData.token));
+
 
         toast.success("Logged in successfully");
         navigate("/creator/dashboard");

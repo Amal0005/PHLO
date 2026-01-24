@@ -1,28 +1,48 @@
 import { store } from "@/store/store";
 import api from "./axiosConfig";
-import { clearAuth } from "@/store/tokenSlice";
+import { clearCreatorAuth } from "@/store/creator/creatorAuthSlice";
+import { clearUserAuth } from "@/store/user/userAuthSlice";
+import { clearAdminAuth } from "@/store/admin/adminAuthSlice";
 
 export const setUpInterceptors = () => {
   api.interceptors.request.use((config) => {
-    const { token } = store.getState().token;
-    if (token && config.headers) {
+    const state = store.getState();
+    const url = config.url || "";
+
+    if (config.headers?.Authorization) return config;
+
+    let token: string | null = null;
+
+    if (url.includes("/admin")) {
+      token = state.adminAuth.adminToken;
+    } else if (url.includes("/creator")) {
+      token = state.creatorAuth.creatorToken;
+    } else {
+      token = state.userAuth.userToken;
+    }
+
+    if (token) {
+      config.headers = config.headers ?? {};
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   });
+
   api.interceptors.response.use(
     (res) => res,
     (err) => {
-      const status = err.response?.status;
-      if (status === 401) {
-        const role = store.getState().token.role;
-        store.dispatch(clearAuth());
+      if (err.response?.status === 401) {
+        const url = err.config?.url || "";
 
-        if (role === "admin") {
+        if (url.includes("/admin")) {
+          store.dispatch(clearAdminAuth());
           window.location.href = "/admin/login";
-        } else if (role === "creator") {
+        } else if (url.includes("/creator")) {
+          store.dispatch(clearCreatorAuth());
           window.location.href = "/creator/login";
-        } else {
+        } else if (!url.includes("/admin") && !url.includes("/creator")) {
+          store.dispatch(clearUserAuth());
           window.location.href = "/login";
         }
       }
