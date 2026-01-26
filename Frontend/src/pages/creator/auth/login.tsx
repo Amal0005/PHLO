@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { Camera, CameraOff, Users, Award } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
 import { setCreator } from "@/store/creator/creatorSlice";
@@ -64,7 +64,7 @@ dispatch(setCreatorAuth(responseData.token));
 
 
         toast.success("Logged in successfully");
-        navigate("/creator/dashboard");
+        navigate("/creator/dashboard", { replace: true });
       }
     } catch (error: any) {
       const data = error?.response?.data;

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* Minimalist Glassmorphism Toast Style */
 :root {
   --toastify-color-dark: rgba(18, 18, 18, 0.8);
   --toastify-toast-width: 320px;
@@ -20,7 +19,7 @@
 }
 
 .Toastify__toast--success {
-  border-left: 3px solid #ffffff !important; /* White accent instead of green */
+  border-left: 3px solid #ffffff !important;
 }
 
 .Toastify__toast--error {
@@ -36,7 +35,6 @@
   padding: 0 !important;
 }
 
-/* Slide in animation override if needed */
 .Toastify__toast-theme--dark {
   color: #fff !important;
 }

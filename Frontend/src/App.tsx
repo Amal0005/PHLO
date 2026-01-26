@@ -10,7 +10,6 @@ export default function App() {
   return (
     <>
       <BrowserRouter>
-        {/* <AuthHydrator /> */}
         <Routes>
           <Route path="/*" element={<UserRoutes />} />
           <Route path="/creator/*" element={<CreatorRoutes />} />
