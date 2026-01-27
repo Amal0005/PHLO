@@ -1,8 +1,9 @@
 import { store } from "@/store/store";
 import api from "./axiosConfig";
-import { clearCreatorAuth } from "@/store/creator/creatorAuthSlice";
-import { clearUserAuth } from "@/store/user/userAuthSlice";
-import { clearAdminAuth } from "@/store/admin/adminAuthSlice";
+import { clearCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
+import { clearUserAuth } from "@/store/slices/user/userAuthSlice";
+import { clearAdminAuth } from "@/store/slices/admin/adminAuthSlice";
+import { clearUser } from "@/store/slices/user/userSlice";
 
 export const setUpInterceptors = () => {
   api.interceptors.request.use((config) => {
@@ -42,10 +43,23 @@ export const setUpInterceptors = () => {
           store.dispatch(clearCreatorAuth());
           window.location.href = "/creator/login";
         } else if (!url.includes("/admin") && !url.includes("/creator")) {
-          store.dispatch(clearUserAuth());
-          window.location.href = "/login";
+
+          const currentPath = window.location.pathname;
+          if (!currentPath.startsWith("/creator") && !currentPath.startsWith("/admin")) {
+            store.dispatch(clearUserAuth());
+            window.location.href = "/login";
+          }
         }
       }
+
+  if (err.response?.status === 403) {
+  alert(err.response.data.message || "Your account has been blocked.");
+
+  store.dispatch(clearUserAuth());
+  store.dispatch(clearUser());
+
+  window.location.href = "/login";
+}
 
       return Promise.reject(err);
     },

@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import LogoWhite from "../../assets/images/Logo_white.png";
 import api from "@/axios/axiosConfig";
 import type { RootState } from "@/store/store";
-import { clearAdmin } from "@/store/admin/adminSlice";
-import { clearAdminAuth } from "@/store/admin/adminAuthSlice";
+import { clearAdmin } from "@/store/slices/admin/adminSlice";
+import { clearAdminAuth } from "@/store/slices/admin/adminAuthSlice";
 
 interface AdminNavbarProps {
   onMenuToggle: () => void;

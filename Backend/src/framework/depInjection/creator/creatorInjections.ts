@@ -9,6 +9,7 @@ import { OtpServices } from "@/domain/services/user/otpServices";
 import { MailService } from "@/domain/services/user/mailServices";
 import { CreatorLoginUseCase } from "@/useCases/creator/login/creatorLoginUseCase";
 import { RegisterCreatorUseCase } from "@/useCases/creator/register/registerCreatorUseCase";
+import { CheckCreatorExistsUseCase } from "@/useCases/creator/register/checkCreatorExistsUseCase";
 import { ForgotPasswordUseCase } from "@/useCases/creator/auth/forgotPasswordUseCase";
 import { VerifyForgotOtpUseCase } from "@/useCases/creator/auth/verifyForgotOtpUseCase";
 import { ResetPasswordUseCase } from "@/useCases/creator/auth/resetPasswordUseCase";
@@ -20,12 +21,13 @@ const userRepository = new UserRepository();
 const otpService = new OtpServices();
 const mailService = new MailService();
 
-const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository,passwordService,userRepository);
-const creatorLoginUseCase = new CreatorLoginUseCase(creatorRepository,jwtService,passwordService);
-const forgotPasswordUseCase = new ForgotPasswordUseCase(creatorRepository,otpService,mailService);
+const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository);
+const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository);
+const creatorLoginUseCase = new CreatorLoginUseCase(creatorRepository, jwtService, passwordService);
+const forgotPasswordUseCase = new ForgotPasswordUseCase(creatorRepository, otpService, mailService);
 const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpService);
-const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository,passwordService);
+const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository, passwordService);
 
-export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase);
+export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
-export const creatorAuthController = new CreatorAuthController(forgotPasswordUseCase,verifyForgotOtpUseCase,resetPasswordUseCase,);
+export const creatorAuthController = new CreatorAuthController(forgotPasswordUseCase, verifyForgotOtpUseCase, resetPasswordUseCase);

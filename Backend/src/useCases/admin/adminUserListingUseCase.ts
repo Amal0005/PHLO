@@ -3,12 +3,12 @@ import { IadminUserListingUseCase } from "../../domain/interface/admin/IadminUse
 import { IuserRepository } from "../../domain/interface/user/IuserRepository";
 
 
-export class AdminUserListingUseCase implements IadminUserListingUseCase{
+export class AdminUserListingUseCase implements IadminUserListingUseCase {
     constructor(
-        private _userRepo:IuserRepository
-    ){}
+        private _userRepo: IuserRepository
+    ) { }
     async getAllUsers(): Promise<User[]> {
-        const users=await this._userRepo.findAllUsers()
+        const users = await this._userRepo.findAllUsers()
         return users
     }
 }

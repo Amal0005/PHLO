@@ -8,8 +8,8 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { loginUserSchema } from "@/validation/loginUserSchema";
 import { AdminAuthService } from "@/services/admin/adminAuthService";
-import { setAdmin } from "@/store/admin/adminSlice";
-import { setAdminAuth } from "@/store/admin/adminAuthSlice";
+import { setAdmin } from "@/store/slices/admin/adminSlice";
+import { setAdminAuth } from "@/store/slices/admin/adminAuthSlice";
 
 interface loginForm {
   email: string;

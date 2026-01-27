@@ -20,9 +20,9 @@ import {
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
-import { clearUser } from "@/store/user/userSlice";
+import { clearUser } from "@/store/slices/user/userSlice";
 
-import { clearUserAuth } from "@/store/user/userAuthSlice";
+import { clearUserAuth } from "@/store/slices/user/userAuthSlice";
 
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);

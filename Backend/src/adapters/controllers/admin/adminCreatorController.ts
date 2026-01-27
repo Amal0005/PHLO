@@ -1,10 +1,29 @@
 import { Request, Response } from "express";
-import { IapproveRejectCreatorUseCase } from "../../../domain/interface/admin/IapproveRejectCreatorUseCase";
+import { IapproveCreatorUseCase } from "../../../domain/interface/admin/IapproveCreatorUseCase";
+import { IrejectCreatorUseCase } from "../../../domain/interface/admin/IrejectCreatorUseCase";
+import { IadminCreatorListingUseCase } from "../../../domain/interface/admin/IadminCreatorListingUseCase";
 
 export class AdminCreatorController {
     constructor(
-        private _approveRejectCreatorUseCase: IapproveRejectCreatorUseCase
+        private _approveCreatorUseCase: IapproveCreatorUseCase,
+        private _rejectCreatorUseCase: IrejectCreatorUseCase,
+        private _adminCreatorListingUseCase: IadminCreatorListingUseCase
     ) { }
+
+    async getCreators(req: Request, res: Response) {
+        try {
+            const data = await this._adminCreatorListingUseCase.getAllCreators()
+            return res.status(200).json({
+                success: true,
+                data
+            })
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: error,
+            });
+        }
+    }
 
     async approve(req: Request, res: Response) {
         try {
@@ -16,7 +35,7 @@ export class AdminCreatorController {
                 });
             }
 
-            await this._approveRejectCreatorUseCase.approveCreator(id);
+            await this._approveCreatorUseCase.approveCreator(id);
 
             return res.status(200).json({
                 success: true,
@@ -34,12 +53,6 @@ export class AdminCreatorController {
     async reject(req: Request, res: Response) {
         try {
             const { id } = req.params;
-
-            // Debug logging
-            console.log('Request body:', req.body);
-            console.log('Request headers:', req.headers);
-
-            // Safe destructuring
             const reason = req.body?.reason;
 
             if (!id) {
@@ -56,7 +69,7 @@ export class AdminCreatorController {
                 });
             }
 
-            await this._approveRejectCreatorUseCase.rejectCreator(id, reason);
+            await this._rejectCreatorUseCase.rejectCreator(id, reason);
 
             return res.status(200).json({
                 success: true,

@@ -8,7 +8,7 @@ import LogoWhite from "../../../assets/images/Logo_white.png";
 import { registerUserSchema } from "../../../validation/registerUserSchema";
 import GoogleLoginButton from "@/compoents/reusable/googleButton";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/store/user/userSlice";
+import { setUser } from "@/store/slices/user/userSlice";
 
 interface RegisterForm {
   name: string;

@@ -262,8 +262,8 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "@/store/store";
 import { LogOut, Camera, BarChart3 } from "lucide-react";
 
-import { clearCreator } from "@/store/creator/creatorSlice";
-import { clearCreatorAuth } from "@/store/creator/creatorAuthSlice";
+import { clearCreator } from "@/store/slices/creator/creatorSlice";
+import { clearCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
 
 export default function CreatorDashboard() {
 

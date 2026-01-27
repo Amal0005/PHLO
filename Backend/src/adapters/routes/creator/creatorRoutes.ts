@@ -1,11 +1,13 @@
 import { Router, Request, Response } from "express";
-import {creatorLoginController,creatorRegisterController,creatorAuthController,} from "@/framework/depInjection/creator/creatorInjections";
+import { creatorLoginController, creatorRegisterController, creatorAuthController, } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
 import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
+import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { JwtServices } from "@/domain/services/user/jwtServices";
 import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
 import { logoutController } from "@/framework/depInjection/user/userInjections";
+import { IuserRepository } from "@/domain/interface/user/IuserRepository";
 
 
 export class CreatorRoutes {
@@ -13,7 +15,8 @@ export class CreatorRoutes {
 
   constructor(
     private _jwtService: JwtServices,
-    private _tokenBlacklistService: TokenBlacklistService
+    private _tokenBlacklistService: TokenBlacklistService,
+    private _userRepo: IuserRepository
   ) {
     this.creatorRouter = Router();
     this.setRoutes();
@@ -51,13 +54,14 @@ export class CreatorRoutes {
       (req: Request, res: Response) =>
         creatorAuthController.resetPassword(req, res)
     );
-    this.creatorRouter.post("/check-email", (req, res) => 
-  creatorRegisterController.checkExists(req, res)
-);
+    this.creatorRouter.post("/check-email", (req, res) =>
+      creatorRegisterController.checkExists(req, res)
+    );
 
     // PROTECTED ROUTES
     this.creatorRouter.use(
-      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService)
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo),
+      authorizeRoles("creator")
     );
 
     this.creatorRouter.post(

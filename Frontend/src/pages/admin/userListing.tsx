@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Edit, Trash2 } from "lucide-react";
-import { fetchAdminUsers } from "@/services/admin/adminUserService";
+// import { Edit, Trash2 } from "lucide-react";
+import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserService";
 import { User } from "@/interface/admin/userInterface";
 
 export default function UserListingPage() {
@@ -22,6 +22,19 @@ export default function UserListingPage() {
 
     loadUsers();
   }, []);
+
+  const handleToggleStatus = async (userId: string, currentStatus: string) => {
+  try {
+    const newStatus = currentStatus === "active" ? "blocked" : "active";
+    await toggleUserStatus(userId, newStatus);
+    
+    setUsers((prev) =>
+      prev.map((u) => (u._id === userId ? { ...u, status: newStatus } : u))
+    );
+  } catch (error) {
+    console.error("Failed to update status", error);
+  }
+};
 
   if (loading) {
     return <p className="p-6 text-white">Loading users...</p>;
@@ -82,11 +95,10 @@ export default function UserListingPage() {
                 {/* Status */}
                 <td className="px-6 py-4">
                   <span
-                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                      user.status === "active"
-                        ? "bg-green-500/10 text-green-400 border border-green-500/20"
-                        : "bg-red-500/10 text-red-400 border border-red-500/20"
-                    }`}
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${user.status === "active"
+                      ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                      : "bg-red-500/10 text-red-400 border border-red-500/20"
+                      }`}
                   >
                     {user.status}
                   </span>
@@ -102,7 +114,11 @@ export default function UserListingPage() {
                 {/* Actions */}
                 <td className="px-6 py-4">
                   <div className="flex justify-end gap-2">
-                    <button
+                    <button onClick={() => user._id && handleToggleStatus(user._id, user.status)}>
+  {user.status === "active" ? "Block" : "Unblock"}
+</button>
+
+                    {/* <button
                       className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition"
                       title="Edit user"
                     >
@@ -113,7 +129,7 @@ export default function UserListingPage() {
                       title="Delete user"
                     >
                       <Trash2 className="w-4 h-4" />
-                    </button>
+                    </button> */}
                   </div>
                 </td>
               </tr>

@@ -22,10 +22,10 @@ export class userLoginController {
           accessToken: result.accessToken,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log("Login error:", error);
       res.status(400).json({
-        message: "Error occurs while login",
+        message: error.message || "Error occurs while login",
       });
     }
   }

@@ -6,12 +6,12 @@ import { toast } from "react-toastify";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { loginUserSchema } from "../../../validation/loginUserSchema";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/store/user/userSlice";
+import { setUser } from "@/store/slices/user/userSlice";
 import { authService } from "@/services/user/loginService";
 import GoogleLoginButton from "../../../compoents/reusable/googleButton";
 import { AppDispatch } from "@/store/store";
 import InputError from "@/compoents/reusable/inputErrors";
-import { setUserAuth } from "@/store/user/userAuthSlice";
+import { setUserAuth } from "@/store/slices/user/userAuthSlice";
 
 interface loginForm {
   email: string;
@@ -59,10 +59,13 @@ export default function Login() {
         console.error("Login failed: Missing token or user data", data);
         toast.error("Login failed: Invalid server response");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Invalid email or password");
-    } finally {
+    }  catch (error: any) {
+  const message =
+    error?.response?.data?.message ||
+    "Invalid email or password";
+
+  toast.error(message);
+} finally {
       setIsLoading(false);
     }
   }

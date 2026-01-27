@@ -3,11 +3,11 @@ import { Camera, CameraOff, Users, Award } from "lucide-react";
 import { replace, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
-import { setCreator } from "@/store/creator/creatorSlice";
+import { setCreator } from "@/store/slices/creator/creatorSlice";
 import { toast } from "react-toastify";
 import StatusModal from "./statusModal";
 import { creatorLoginService } from "@/services/creator/creatorAuthService";
-import { setCreatorAuth } from "@/store/creator/creatorAuthSlice";
+import { setCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
 
 export default function CreatorLogin() {
   const [showPassword, setShowPassword] = useState(false);
