@@ -8,13 +8,17 @@ import ProtectedRoute from "./protectedRoute";
 export function CreatorRoutes() {
   return (
     <Routes>
+
+      <Route element={<ProtectedRoute role="creator" requireAuth={false} />}>
         <Route path="login" element={<CreatorLogin />} />
         <Route path="register" element={<CreatorSignup />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
+      </Route>
 
-      <Route element={<ProtectedRoute allowedRoles={["creator"]} />}>
+      <Route element={<ProtectedRoute role="creator" />}>
+        <Route path="dashboard" element={<CreatorDashboard />} />
+      </Route>
 
-          <Route path="dashboard" element={<CreatorDashboard />} />
-        </Route>
-    </Routes>);
+    </Routes>
+  );
 }
