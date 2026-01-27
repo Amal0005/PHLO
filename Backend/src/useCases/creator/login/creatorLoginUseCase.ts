@@ -35,6 +35,9 @@ export class CreatorLoginUseCase implements IcreatorLoginUseCase {
     };
     
   }
+  if(creator.status==="blocked"){
+    throw new Error("Your account has been blocked by the admin")
+  }
     const isMatch = await this._passwordService.compare(
       password,
       creator.password,

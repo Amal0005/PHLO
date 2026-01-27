@@ -8,6 +8,7 @@ import { JwtServices } from "@/domain/services/user/jwtServices";
 import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
 import { logoutController } from "@/framework/depInjection/user/userInjections";
 import { IuserRepository } from "@/domain/interface/user/IuserRepository";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
 
 
 export class CreatorRoutes {
@@ -16,7 +17,9 @@ export class CreatorRoutes {
   constructor(
     private _jwtService: JwtServices,
     private _tokenBlacklistService: TokenBlacklistService,
-    private _userRepo: IuserRepository
+    private _userRepo: IuserRepository,
+    private _creatorRepo: IcreatorRepository
+
   ) {
     this.creatorRouter = Router();
     this.setRoutes();
@@ -60,7 +63,7 @@ export class CreatorRoutes {
 
     // PROTECTED ROUTES
     this.creatorRouter.use(
-      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo),
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo,this._creatorRepo),
       authorizeRoles("creator")
     );
 

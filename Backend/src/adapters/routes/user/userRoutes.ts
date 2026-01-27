@@ -15,6 +15,7 @@ import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistSe
 
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
 
 export class UserRoutes {
   public userRouter: Router;
@@ -22,7 +23,8 @@ export class UserRoutes {
   constructor(
     private _jwtService: JwtServices,
     private _tokenBlacklistService: TokenBlacklistService,
-    private _userRepo: IuserRepository
+    private _userRepo: IuserRepository,
+    private _creatorRepo:IcreatorRepository
   ) {
     this.userRouter = Router();
     this.setRoutes();
@@ -81,7 +83,7 @@ export class UserRoutes {
 
    this.userRouter.post(
   "/logout",
-  jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo),
+  jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo,this._creatorRepo),
   authorizeRoles("user"),
   logoutController.logout.bind(logoutController)
 );

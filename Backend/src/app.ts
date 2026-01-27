@@ -14,6 +14,7 @@ import { JwtServices } from "@/domain/services/user/jwtServices";
 import { RedisService } from "@/domain/services/user/redisServices";
 import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
 import { UserRepository } from "@/adapters/repository/user/userRepository";
+import { CreatorRepository } from "./adapters/repository/creator/creatorRepository";
 
 
 
@@ -26,6 +27,7 @@ export class App {
   private _redisService: RedisService;
   private _tokenBlacklistService: TokenBlacklistService;
   private _userRepository: UserRepository;
+  private _creatorRepository:CreatorRepository
 
   constructor() {
     dotenv.config();
@@ -36,6 +38,7 @@ export class App {
     this._redisService = new RedisService();
     this._tokenBlacklistService = new TokenBlacklistService(this._redisService);
     this._userRepository = new UserRepository();
+    this._creatorRepository=new CreatorRepository()
 
     this.setMiddlewares();
     this.setUserRoutes();
@@ -59,11 +62,12 @@ export class App {
       next();
     });
   }
-  private setUserRoutes(): void {
+private setUserRoutes(): void {
     const userRoutes = new UserRoutes(
       this._jwtService,
       this._tokenBlacklistService,
       this._userRepository,
+      this._creatorRepository
     );
     this.app.use("/api", userRoutes.userRouter);
   }
@@ -72,6 +76,7 @@ export class App {
       this._jwtService,
       this._tokenBlacklistService,
       this._userRepository,
+      this._creatorRepository
     );
     this.app.use("/api/creator", creatorRoutes.creatorRouter);
   }
@@ -87,6 +92,7 @@ export class App {
       this._jwtService,
       this._tokenBlacklistService,
       this._userRepository,
+      this._creatorRepository
     );
     this.app.use("/api/admin", adminRoutes.adminRouter);
   }

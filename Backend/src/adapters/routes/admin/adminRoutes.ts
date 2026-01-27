@@ -11,6 +11,7 @@ import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistSe
 import { logoutController } from "../../../framework/depInjection/user/userInjections";
 
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
 
 export class AdminRoutes {
   public adminRouter: Router;
@@ -18,7 +19,9 @@ export class AdminRoutes {
   constructor(
     private _jwtService: JwtServices,
     private _tokenBlacklistService: TokenBlacklistService,
-    private _userRepo: IuserRepository
+    private _userRepo: IuserRepository,
+    private _creatorRepo: IcreatorRepository
+    
   ) {
     this.adminRouter = Router();
     this.setRoutes();
@@ -31,7 +34,7 @@ export class AdminRoutes {
         adminLoginController.login(req, res)
     );
     this.adminRouter.use(
-      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo),
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo,this._creatorRepo),
       authorizeRoles("admin")
     );
 
@@ -65,6 +68,9 @@ export class AdminRoutes {
     );
     this.adminRouter.patch("/users/:userId/status", (req: Request, res: Response) => {
       adminUserController.changeUserStatus(req, res)
+    })
+     this.adminRouter.patch("/creators/:creatorId/status", (req: Request, res: Response) => {
+      adminCreatorController.changeCreatorStatus(req, res)
     })
   }
 }

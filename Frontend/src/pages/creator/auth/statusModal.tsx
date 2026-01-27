@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 interface StatusModalProps {
   isOpen: boolean;
   onClose: () => void;
-  status: "pending" | "rejected" | null;
-  message: string;
+  status: "pending" | "rejected" | "blocked" | null;
+    message: string;
   reason?: string;
 }
 export default function StatusModal({
@@ -32,18 +32,19 @@ export default function StatusModal({
               status === "rejected" ? "bg-red-500/10" : "bg-yellow-500/10"
             }`}
           >
-            {status === "rejected" ? (
-              <AlertCircle className="w-8 h-8 text-red-500" />
-            ) : (
-              <Clock className="w-8 h-8 text-yellow-500" />
-            )}
-          </div>
-
-          <h2 className="text-2xl font-bold text-white mb-2">
-            {status === "rejected"
-              ? "Application Rejected"
-              : "Application Pending"}
-          </h2>
+          {status === "rejected" || status === "blocked" ? (
+    <AlertCircle className="w-8 h-8 text-red-500" />
+  ) : (
+    <Clock className="w-8 h-8 text-yellow-500" />
+  )}
+</div>
+<h2 className="text-2xl font-bold text-white mb-2">
+  {status === "rejected"
+    ? "Application Rejected"
+    : status === "blocked"
+      ? "Account Blocked"
+      : "Application Pending"}
+</h2>
           <p className="text-gray-400 text-sm">{message}</p>
         </div>
         {status === "rejected" && (

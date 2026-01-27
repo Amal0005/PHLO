@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
-import { X, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import {
   approveCreator,
   fetchAdminCreators,
   rejectCreator,
+  toggleCreatorStatus,
 } from "@/services/admin/adminCreatorService";
 import { Creator } from "@/interface/admin/creatorInterface";
 import { toast } from "react-toastify";
+import { CreatorDetailModal } from "./components/CreatorDetailModal";
 
 export default function CreatorListingPage() {
+  // ... existing state ...
   const [creators, setCreators] = useState<Creator[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -19,6 +22,7 @@ export default function CreatorListingPage() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedCreator, setSelectedCreator] = useState<Creator | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  // ... existing effects/handlers ...
 
   useEffect(() => {
     async function loadCreators() {
@@ -59,10 +63,8 @@ export default function CreatorListingPage() {
 
   const handleReject = async (id: string, reason: string) => {
     try {
-      // 1. USE THE SERVICE (This will now use PATCH and the correct URL)
       await rejectCreator(id, reason);
 
-      // 2. Update local state
       setCreators((prev) =>
         prev.map((c) => (c._id === id ? { ...c, status: "rejected" } : c))
       );
@@ -73,6 +75,20 @@ export default function CreatorListingPage() {
       setRejectionReason("");
     } catch (error) {
       toast.error("Failed to reject creator");
+    }
+  };
+
+  const handleToggleStatus = async (creatorId: string, currentStatus: string) => {
+    try {
+const newStatus = currentStatus === "approved" ? "blocked" : "approved";
+      await toggleCreatorStatus(creatorId, newStatus);
+      
+      setCreators((prev) =>
+        prev.map((c) => (c._id === creatorId ? { ...c, status: newStatus as any } : c))
+      );
+      toast.success(`Creator ${newStatus} successfully`);
+    } catch (error) {
+      toast.error("Failed to update status");
     }
   };
   if (loading) return <p className="p-6 text-white">Loading creators...</p>;
@@ -153,6 +169,18 @@ export default function CreatorListingPage() {
                     >
                       Details
                     </button>
+                    {creator.status !== "pending" && creator.status !== "rejected" && (
+      <button
+        onClick={() => handleToggleStatus(creator._id, creator.status)}
+        className={`px-3 py-1.5 text-sm rounded-lg border transition-all ${
+          creator.status === "approved"
+            ? "text-red-400 border-red-400/30 hover:bg-red-500/10"
+            : "text-green-400 border-green-400/30 hover:bg-green-500/10"
+        }`}
+      >
+        {creator.status === "approved" ? "Block" : "Unblock"}
+      </button>
+    )}
                   </div>
                 </td>
               </tr>
@@ -171,115 +199,12 @@ export default function CreatorListingPage() {
 
       {/* MAIN DETAILS MODAL */}
       {showDetails && selectedCreator && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-zinc-900 w-full max-w-lg rounded-xl p-6 border border-white/10 relative max-h-[90vh] overflow-y-auto">
-            {/* CLOSE */}
-            <button
-              onClick={() => setShowDetails(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <h2 className="text-xl font-semibold text-white mb-6">
-              Creator Details
-            </h2>
-
-            {/* PROFILE PHOTO & NAME */}
-            <div className="flex items-center gap-4 mb-6">
-              {selectedCreator.profilePhoto && (
-                <img
-                  src={selectedCreator.profilePhoto}
-                  alt="Profile"
-                  className="w-20 h-20 rounded-full object-cover border-2 border-white/10"
-                />
-              )}
-              <div>
-                <h3 className="text-white font-semibold text-lg">
-                  {selectedCreator.fullName}
-                </h3>
-                <p className="text-gray-400 text-sm">
-                  {selectedCreator.email}
-                </p>
-              </div>
-            </div>
-
-            {/* BIO */}
-            <div className="mb-4 bg-zinc-800/50 p-4 rounded-lg">
-              <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
-                Bio
-              </p>
-              <p className="text-white text-sm leading-relaxed">
-                {selectedCreator.bio || "-"}
-              </p>
-            </div>
-
-            {/* EXPERIENCE */}
-            <div className="mb-4 bg-zinc-800/50 p-4 rounded-lg">
-              <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
-                Experience
-              </p>
-              <p className="text-white text-sm">
-                {selectedCreator.experience || "-"}
-              </p>
-            </div>
-
-            {/* PORTFOLIO */}
-            <div className="mb-4 bg-zinc-800/50 p-4 rounded-lg">
-              <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
-                Portfolio
-              </p>
-              {selectedCreator.portfolioLink ? (
-                <a
-                  href={selectedCreator.portfolioLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 underline text-sm transition-colors"
-                >
-                  View Portfolio →
-                </a>
-              ) : (
-                <p className="text-white text-sm">-</p>
-              )}
-            </div>
-
-            {/* GOVERNMENT ID */}
-            <div className="mb-6 bg-zinc-800/50 p-4 rounded-lg">
-              <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">
-                Government ID
-              </p>
-              {selectedCreator.governmentId ? (
-                <a
-                  href={selectedCreator.governmentId}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 underline text-sm transition-colors"
-                >
-                  View Document →
-                </a>
-              ) : (
-                <p className="text-white text-sm">-</p>
-              )}
-            </div>
-
-            {/* ACTIONS */}
-            <div className="flex gap-3 mt-6 pt-4 border-t border-white/10">
-              <button
-                onClick={openRejectModal}
-                className="flex-1 px-4 py-3 text-red-400 border border-red-400/30 rounded-lg hover:bg-red-500/10 transition-all font-medium"
-              >
-                Reject
-              </button>
-
-              <button
-                onClick={() => handleApprove(selectedCreator._id)}
-                className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all font-medium"
-              >
-                Approve
-              </button>
-            </div>
-          </div>
-        </div>
+        <CreatorDetailModal
+          creator={selectedCreator}
+          onClose={() => setShowDetails(false)}
+          onApprove={handleApprove}
+          onReject={openRejectModal}
+        />
       )}
 
       {/* REJECTION REASON MODAL */}

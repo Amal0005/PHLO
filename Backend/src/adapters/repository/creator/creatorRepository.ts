@@ -38,7 +38,7 @@ export class CreatorRepository implements IcreatorRepository {
 
   async updateStatus(
     creatorId: string,
-    status: "approved" | "rejected",
+    status: "approved" | "rejected" | "blocked",
     reason?: string,
   ): Promise<void> {
     await CreatorModel.updateOne(

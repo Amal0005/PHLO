@@ -3,6 +3,7 @@ import { AuthPayload } from "@/domain/dto/user/authPayload";
 import { IjwtServices } from "@/domain/interface/service/IjwtServices";
 import { ITokenBlacklistService } from "@/domain/interface/service/ItokenBlacklistService";
 import { IuserRepository } from "@/domain/interface/user/IuserRepository";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
 
 
 export interface AuthRequest extends Request {
@@ -12,7 +13,8 @@ export const jwtAuthMiddleware =
   (
     jwtService: IjwtServices,
     blacklistService: ITokenBlacklistService,
-    userRepo: IuserRepository
+    userRepo: IuserRepository,
+    creatorRepo: IcreatorRepository
   ) =>
     async (req: AuthRequest, res: Response, next: NextFunction) => {
       try {
@@ -36,7 +38,10 @@ export const jwtAuthMiddleware =
         if (user && user.status === "blocked") {
           return res.status(403).json({ success: false, message: "Your account has been blocked by the admin" });
         }
-
+    const creator = await creatorRepo.findById(decoded.userId);
+      if (creator && creator.status === "blocked") {
+        return res.status(403).json({ success: false, message: "Your account has been blocked by the admin" });
+      }
         req.user = decoded;
 
         next();
