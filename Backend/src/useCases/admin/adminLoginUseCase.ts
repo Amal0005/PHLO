@@ -9,7 +9,7 @@ export class AdminLoginUseCase implements IadminLoginUseCase {
     private _userRepo: IuserRepository,
     private _passwordService: IpasswordService,
     private _jwtService: IjwtServices
-  ) {}
+  ) { }
 
   async login(
     email: string,
@@ -50,8 +50,5 @@ export class AdminLoginUseCase implements IadminLoginUseCase {
         status: user.status,
       },
     };
-  }
-  async logout(adminId: string): Promise<void> {
-    await this._jwtService.decodeToken(adminId)
   }
 }

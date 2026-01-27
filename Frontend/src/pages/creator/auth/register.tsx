@@ -15,6 +15,7 @@ import {
 import { uploadToS3 as fileUploader } from "@/utils/uploadToS3";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { validateStep1, validateStep2, validateStep3, validateStep4 } from "@/validation/registerCreatorValidation";
 
 async function uploadToS3(file: File, type: "profile" | "id"): Promise<string> {
   const url = await fileUploader(file, type);
@@ -33,6 +34,7 @@ export default function CreatorSignup() {
     fullName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     phone: "",
     city: "",
     yearsOfExperience: "",
@@ -89,161 +91,46 @@ export default function CreatorSignup() {
       setIdPreview(previewUrl);
     }
   }
-  
+
 async function checkEmailExists(email: string): Promise<boolean> {
   const res = await fetch(
-    "http://localhost:5000/api/creator/register",
+    "http://localhost:5000/api/creator/check-email",
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     }
   );
-
   const data = await res.json();
-  return data.exists;
+  console.log(data)
+
+  if (!res.ok) {
+    throw new Error(data.message || "Email check failed");
+  }
+
+  return data.exists === true;
 }
 
-async function validateStep1(): Promise<boolean> {
-  if (!formData.fullName.trim()) {
-    toast.error("Please enter your full name");
-    return false;
-  }
 
-  if (!formData.email.trim()) {
-    toast.error("Please enter your email address");
-    return false;
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(formData.email)) {
-    toast.error("Please enter a valid email address");
-    return false;
-  }
-
-  if (!formData.password) {
-    toast.error("Please enter a password");
-    return false;
-  }
-
-  if (formData.password.length < 6) {
-    toast.error("Password must be at least 6 characters long");
-    return false;
-  }
-
-  if (!formData.phone.trim()) {
-    toast.error("Please enter your phone number");
-    return false;
-  }
-
-  const phoneRegex = /^[0-9]{10}$/;
-  if (!phoneRegex.test(formData.phone.trim())) {
-    toast.error("Please enter a valid 10-digit phone number");
-    return false;
-  }
-  try {
-    const exists = await checkEmailExists(formData.email);
-    if (exists) {
-      toast.error("Email already registered");
-      return false;
-    }
-  } catch {
-    toast.error("Unable to verify email. Please try again.");
-    return false;
-  }
-
-  return true;
-}
-
-  function validateStep2(): boolean {
-    if (!formData.city.trim()) {
-      toast.error("Please enter your city");
-      return false;
-    }
-
-    if (!formData.yearsOfExperience) {
-      toast.error("Please enter your years of experience");
-      return false;
-    }
-
-    const years = Number(formData.yearsOfExperience);
-    if (isNaN(years) || years < 0) {
-      toast.error("Please enter a valid number of years");
-      return false;
-    }
-
-    if (years > 50) {
-      toast.error("Years of experience seems too high. Please check.");
-      return false;
-    }
-
-    return true;
-  }
-
-  function validateStep3(): boolean {
-    if (!formData.bio.trim()) {
-      toast.error("Please write something about yourself");
-      return false;
-    }
-
-    if (formData.bio.trim().length < 20) {
-      toast.error("Bio should be at least 100 characters long");
-      return false;
-    }
-
-    if (!formData.portfolioLink.trim()) {
-      toast.error("Please provide your portfolio link");
-      return false;
-    }
-
-    try {
-      new URL(formData.portfolioLink);
-    } catch {
-      toast.error("Please enter a valid portfolio URL (e.g., https://example.com)");
-      return false;
-    }
-
-    if (formData.specialties.length === 0) {
-      toast.error("Please select at least one specialty");
-      return false;
-    }
-
-    return true;
-  }
-
-  function validateStep4(): boolean {
-    if (!formData.profilePhoto) {
-      toast.error("Please upload your profile photo");
-      return false;
-    }
-
-    if (!formData.governmentId) {
-      toast.error("Please upload your government ID");
-      return false;
-    }
-
-    return true;
-  }
-
-  async function handleNext() {
-   if (currentStep === 1) {
-    const isValid = await validateStep1();
+async function handleNext() {
+  if (currentStep === 1) {
+    const isValid = await validateStep1(formData, checkEmailExists);
     if (!isValid) return;
   }
 
-    if (currentStep === 2 && !validateStep2()) {
-      return;
-    }
-
-    if (currentStep === 3 && !validateStep3()) {
-      return;
-    }
-
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
-      toast.success("Step completed successfully!");
-    }
+  if (currentStep === 2) {
+    if (!validateStep2(formData)) return;
   }
+
+  if (currentStep === 3) {
+    if (!validateStep3(formData)) return;
+  }
+
+  if (currentStep < 4) {
+    setCurrentStep((prev) => prev + 1);
+    toast.success("Step completed successfully!");
+  }
+}
 
   function handleBack() {
     if (currentStep > 1) {
@@ -253,10 +140,8 @@ async function validateStep1(): Promise<boolean> {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+  if (!validateStep4(formData)) return;
 
-    if (!validateStep4()) {
-      return;
-    }
 
     setIsLoading(true);
 
@@ -307,6 +192,7 @@ async function validateStep1(): Promise<boolean> {
         email: "",
         password: "",
         phone: "",
+        confirmPassword: "",
         city: "",
         yearsOfExperience: "",
         bio: "",
@@ -333,7 +219,7 @@ async function validateStep1(): Promise<boolean> {
   }
 
   const isStep1Valid =
-    formData.fullName && formData.email && formData.password && formData.phone;
+    formData.fullName && formData.email && formData.password &&  formData.confirmPassword && formData.phone;
   const isStep2Valid = formData.city && formData.yearsOfExperience;
   const isStep3Valid =
     formData.bio && formData.portfolioLink && formData.specialties.length > 0;
@@ -459,6 +345,19 @@ async function validateStep1(): Promise<boolean> {
                         )}
                       </button>
                     </div>
+                    <div className="relative">
+  <label className="block text-sm font-medium text-gray-300 mb-1.5">
+    Confirm Password
+  </label>
+  <input
+    type={showPassword ? "text" : "password"}
+    name="confirmPassword"
+    placeholder="Repeat your password"
+    className="w-full p-3 text-sm rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
+    value={formData.confirmPassword}
+    onChange={handleChange}
+  />
+</div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-1.5">

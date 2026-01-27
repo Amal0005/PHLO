@@ -3,9 +3,7 @@ import { IuserRepository } from "../../../domain/interface/user/IuserRepository"
 import { UserModel } from "../../../framework/database/model/userModel";
 
 export class UserRepository implements IuserRepository {
-
   private toDomain(doc: any): User {
-
     return {
       _id: doc._id.toString(),
       name: doc.name,
@@ -35,14 +33,22 @@ export class UserRepository implements IuserRepository {
   async updatePassword(email: string, hashedPassword: string): Promise<void> {
     await UserModel.updateOne(
       { email },
-      { $set: { password: hashedPassword } }
+      { $set: { password: hashedPassword } },
     );
   }
-    async findAllUsers(): Promise<User[]> {
-    const users = await UserModel.find({role:"user"})
+  async findAllUsers(): Promise<User[]> {
+    const users = await UserModel.find({ role: "user" })
       .select("-password")
       .sort({ createdAt: -1 });
+    return users.map((user) => this.toDomain(user));
+  }
+  async updateUserStatus(userId: string, status: "active" | "blocked"): Promise<void> {
+    await UserModel.updateOne({ _id: userId }, { $set: { status: status } });
+  }
 
-    return users.map(user => this.toDomain(user));
+  async findById(id: string): Promise<User | null> {
+    const user = await UserModel.findById(id);
+    if (!user) return null;
+    return this.toDomain(user);
   }
 }

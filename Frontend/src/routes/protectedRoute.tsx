@@ -1,41 +1,43 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { selectAuthByRole } from "@/store/selectors/authSelector";
 import { RootState } from "@/store/store";
-import { Role } from "@/store/tokenSlice";
+import { Role } from "@/types/role";
+import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router-dom";
+
+const loginRoute: Record<Role, string> = {
+  user: "/login",
+  creator: "/creator/login",
+  admin: "/admin/login",
+};
+
+const dashboardRoute: Record<Role, string> = {
+  user: "/home",
+  creator: "/creator/dashboard",
+  admin: "/admin/dashboard",
+};
+
+type Props = {
+  role: Role;
+  requireAuth?: boolean;
+};
 
 export default function ProtectedRoute({
-  allowedRoles,
-}: {
-  allowedRoles: Role[];
-}) {
-  const { isAuthenticated, role } = useSelector(
-    (state: RootState) => state.token
+  role,
+  requireAuth = true,
+}: Props) {
+  const auth = useSelector((state: RootState) =>
+    selectAuthByRole(state, role)
   );
 
-  if (!isAuthenticated) {
-    if (allowedRoles.includes("admin")) {
-      return <Navigate to="/admin/login" replace />;
-    }
+  const isAuthenticated = auth?.isAuthenticated;
 
-    if (allowedRoles.includes("creator")) {
-      return <Navigate to="/creator/login" replace />;
-    }
-
-    return <Navigate to="/login" replace />;
+  if (requireAuth && !isAuthenticated) {
+    return <Navigate to={loginRoute[role]} replace />;
   }
 
-  if (!role || !allowedRoles.includes(role)) {
-    if (role === "admin") {
-      return <Navigate to="/admin/dashboard" replace />;
-    }
-
-    if (role === "creator") {
-      return <Navigate to="/creator/dashboard" replace />;
-    }
-
-    return <Navigate to="/home" replace />;
+  if (!requireAuth && isAuthenticated) {
+    return <Navigate to={dashboardRoute[role]} replace />;
   }
 
-  // Authorized
   return <Outlet />;
 }

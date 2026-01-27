@@ -1,4 +1,4 @@
-import { CreatorLoginResponseDto } from "../../../dto/creator/creatorLoginResponseDto";
+import { CreatorLoginResponseDto } from "@/domain/dto/creator/creatorLoginResponseDto";
 
 export interface IcreatorLoginUseCase{
     login(email:string,password:string):Promise<CreatorLoginResponseDto>

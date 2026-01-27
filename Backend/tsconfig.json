@@ -5,7 +5,11 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "moduleResolution": "node",
-
+  
+ "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,

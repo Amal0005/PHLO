@@ -6,12 +6,12 @@ import { toast } from "react-toastify";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { loginUserSchema } from "../../../validation/loginUserSchema";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/store/user/userSlice";
+import { setUser } from "@/store/slices/user/userSlice";
 import { authService } from "@/services/user/loginService";
 import GoogleLoginButton from "../../../compoents/reusable/googleButton";
-import { setAuth } from "@/store/tokenSlice";
 import { AppDispatch } from "@/store/store";
 import InputError from "@/compoents/reusable/inputErrors";
+import { setUserAuth } from "@/store/slices/user/userAuthSlice";
 
 interface loginForm {
   email: string;
@@ -47,23 +47,25 @@ export default function Login() {
 
     try {
       const data = await authService.login(form);
-      console.log(data.data, "data");
+      console.log("Login Response Data:", data);
 
-      dispatch(setUser(data.data.user));
+      if (data?.data?.accessToken && data?.data?.user) {
+        dispatch(setUser(data.data.user));
+        dispatch(setUserAuth(data.data.accessToken));
 
-      dispatch(
-        setAuth({
-          token: data.data.accessToken,
-          role: data.data.user.role,
-        }),
-      );
-      console.log("haii");
-      toast.success("Login Successful");
-      navigate("/home");
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Invalid email or password");
-    } finally {
+        toast.success("Login Successful");
+        navigate("/home", { replace: true });
+      } else {
+        console.error("Login failed: Missing token or user data", data);
+        toast.error("Login failed: Invalid server response");
+      }
+    }  catch (error: any) {
+  const message =
+    error?.response?.data?.message ||
+    "Invalid email or password";
+
+  toast.error(message);
+} finally {
       setIsLoading(false);
     }
   }
@@ -237,21 +239,21 @@ export default function Login() {
                     </span>
                   </div>
                 </div>
-
                 <GoogleLoginButton
                   onSuccess={async (idToken: string) => {
                     try {
-                      const data = await authService.googleLogin(idToken);
+                      const response = await authService.googleLogin(idToken);
 
-                      dispatch(setUser(data.user));
-                      dispatch(
-                        setAuth({
-                          token: data.accessToken,
-                          role: data.user.role,
-                        }),
-                      );
+                      console.log("Google Service Response:", response);
 
-                      navigate("/home");
+                      if (response?.accessToken && response?.user) {
+                        dispatch(setUser(response.user));
+                        dispatch(setUserAuth(response.accessToken));
+                        navigate("/home", { replace: true });
+                      } else {
+                        console.error("Google Login: Missing token/user", response);
+                        toast.error("Google login failed: Invalid response");
+                      }
                     } catch (err) {
                       toast.error("Google login failed");
                       console.log(err);

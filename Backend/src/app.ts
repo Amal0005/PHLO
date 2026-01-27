@@ -1,18 +1,22 @@
-import { connectDB } from "./framework/database/connectDB/connectDB";
+import { connectDB } from "@/framework/database/connectDB/connectDB";
 import express, { Express } from "express";
 import http from "http";
 import dotenv from "dotenv";
-import redis from "./framework/redis/redisClient";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { UserRoutes } from "./adapters/routes/user/userRoutes";
-import { CreatorRoutes } from "./adapters/routes/creator/creatorRoutes";
-import { UploadRoutes } from "./adapters/routes/uploadRoutes";
-import { ViewRoutes } from "./adapters/routes/viewRoutes";
-import { AdminRoutes } from "./adapters/routes/admin/adminRoutes";
-import { JwtServices } from "./domain/services/user/jwtServices";
-import { RedisService } from "./domain/services/user/redisServices";
-import { TokenBlacklistService } from "./domain/services/tokenBlacklistService";
+import redis from "@/framework/redis/redisClient";
+import { UserRoutes } from "@/adapters/routes/user/userRoutes";
+import { CreatorRoutes } from "@/adapters/routes/creator/creatorRoutes";
+import { UploadRoutes } from "@/adapters/routes/uploadRoutes";
+import { ViewRoutes } from "@/adapters/routes/viewRoutes";
+import { AdminRoutes } from "@/adapters/routes/admin/adminRoutes";
+import { JwtServices } from "@/domain/services/user/jwtServices";
+import { RedisService } from "@/domain/services/user/redisServices";
+import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
+import { UserRepository } from "@/adapters/repository/user/userRepository";
+import { CreatorRepository } from "./adapters/repository/creator/creatorRepository";
+
+
 
 export class App {
   private app: Express;
@@ -22,6 +26,8 @@ export class App {
   private _jwtService: JwtServices;
   private _redisService: RedisService;
   private _tokenBlacklistService: TokenBlacklistService;
+  private _userRepository: UserRepository;
+  private _creatorRepository:CreatorRepository
 
   constructor() {
     dotenv.config();
@@ -31,6 +37,8 @@ export class App {
     this._jwtService = new JwtServices();
     this._redisService = new RedisService();
     this._tokenBlacklistService = new TokenBlacklistService(this._redisService);
+    this._userRepository = new UserRepository();
+    this._creatorRepository=new CreatorRepository()
 
     this.setMiddlewares();
     this.setUserRoutes();
@@ -54,10 +62,12 @@ export class App {
       next();
     });
   }
-  private setUserRoutes(): void {
+private setUserRoutes(): void {
     const userRoutes = new UserRoutes(
       this._jwtService,
       this._tokenBlacklistService,
+      this._userRepository,
+      this._creatorRepository
     );
     this.app.use("/api", userRoutes.userRouter);
   }
@@ -65,6 +75,8 @@ export class App {
     const creatorRoutes = new CreatorRoutes(
       this._jwtService,
       this._tokenBlacklistService,
+      this._userRepository,
+      this._creatorRepository
     );
     this.app.use("/api/creator", creatorRoutes.creatorRouter);
   }
@@ -79,6 +91,8 @@ export class App {
     const adminRoutes = new AdminRoutes(
       this._jwtService,
       this._tokenBlacklistService,
+      this._userRepository,
+      this._creatorRepository
     );
     this.app.use("/api/admin", adminRoutes.adminRouter);
   }

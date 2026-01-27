@@ -10,7 +10,7 @@ export interface CreatorEntity {
   bio: string;
   portfolioLink?: string;
   governmentId: string;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected"|"blocked";
    rejectionReason?: string;
   specialties?: string[];
   createdAt?: Date;

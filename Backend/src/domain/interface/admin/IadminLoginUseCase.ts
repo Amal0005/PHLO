@@ -5,10 +5,8 @@ export interface IadminLoginUseCase {
     email: string,
     password: string
   ): Promise<{
-     user: UserResponseDto;
-        accessToken: string;
-        refreshToken: string;
+    user: UserResponseDto;
+    accessToken: string;
+    refreshToken: string;
   }>;
-    logout(adminId: string): Promise<void>;
-
 }

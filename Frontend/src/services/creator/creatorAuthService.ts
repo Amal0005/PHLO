@@ -17,3 +17,7 @@ export const creatorLoginService = async (
   const res = await api.post("/creator/login", { email, password });
   return res.data.data;
 };
+export const checkEmailExists = async (email: string): Promise<boolean> => {
+  const res = await api.post("/creator/check-email", { email });
+  return res.data.exists === true;
+};

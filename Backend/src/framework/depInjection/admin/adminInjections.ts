@@ -7,20 +7,25 @@ import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { PasswordService } from "../../../domain/services/user/passwordService";
 import { AdminLoginUseCase } from "../../../useCases/admin/adminLoginUseCase";
 import { AdminUserListingUseCase } from "../../../useCases/admin/adminUserListingUseCase";
-import { ApproveRejectCreatorUseCase } from "../../../useCases/admin/approveRejectCreatorUseCase";
-import { AdminCreatorListingUseCase } from "../../../useCases/creator/adminCreatorListingUseCase";
+import { AdminCreatorListingUseCase } from "../../../useCases/admin/adminCreatorListingUseCase";
+import { ToggleUserStatusUseCase } from "../../../useCases/admin/toggleUserStatusUseCase";
+import { ApproveCreatorUseCase } from "../../../useCases/admin/approveCreatorUseCase";
+import { RejectCreatorUseCase } from "../../../useCases/admin/rejectCreatorUseCase";
+import { ToggleCreatorStatusUseCase } from "@/useCases/admin/toggleCreatorStatusUseCase";
 
-const userRepo=new UserRepository
-const jwtService=new JwtServices
-const passwordService=new PasswordService
-const creatorRepo=new CreatorRepository
+const userRepo = new UserRepository();
+const jwtService = new JwtServices();
+const passwordService = new PasswordService();
+const creatorRepo = new CreatorRepository();
 
+const adminLoginUseCase = new AdminLoginUseCase(userRepo, passwordService, jwtService);
+const adminUserlistingUseCase = new AdminUserListingUseCase(userRepo);
+const adminCreatorListingUseCase = new AdminCreatorListingUseCase(creatorRepo);
+const toggleUserStatusUseCase = new ToggleUserStatusUseCase(userRepo);
+const approveCreatorUseCase = new ApproveCreatorUseCase(creatorRepo);
+const rejectCreatorUseCase = new RejectCreatorUseCase(creatorRepo);
+const toggleCreatorStatusUseCase=new ToggleCreatorStatusUseCase(creatorRepo)
 
- const adminLoginUseCase=new AdminLoginUseCase(userRepo,passwordService,jwtService)
- const adminUserlistingUseCase=new AdminUserListingUseCase(userRepo)
- const adminCreatorListingUseCase=new AdminCreatorListingUseCase(creatorRepo)
- const approveRejectCreatorUseCase=new ApproveRejectCreatorUseCase(creatorRepo) 
-
-export const adminLoginController=new AdminLoginController(adminLoginUseCase)
-export const adminUserController=new AdminUserController(adminUserlistingUseCase,adminCreatorListingUseCase)
-export const adminCreatorController=new AdminCreatorController(approveRejectCreatorUseCase)
+export const adminLoginController = new AdminLoginController(adminLoginUseCase);
+export const adminUserController = new AdminUserController(adminUserlistingUseCase,toggleUserStatusUseCase);
+export const adminCreatorController = new AdminCreatorController(approveCreatorUseCase,rejectCreatorUseCase,adminCreatorListingUseCase,toggleCreatorStatusUseCase);

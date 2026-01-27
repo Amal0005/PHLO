@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import LogoWhite from "../../assets/images/Logo_white.png";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/store/user/userSlice";
-import { authService } from "@/services/user/loginService";
-import { setAuth } from "@/store/tokenSlice";
 import { AppDispatch } from "@/store/store";
 import { loginUserSchema } from "@/validation/loginUserSchema";
+import { AdminAuthService } from "@/services/admin/adminAuthService";
+import { setAdmin } from "@/store/slices/admin/adminSlice";
+import { setAdminAuth } from "@/store/slices/admin/adminAuthSlice";
 
 interface loginForm {
   email: string;
@@ -30,42 +30,37 @@ export default function AdminLogin() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  async function handleLogin(e: FormEvent) {
-    e.preventDefault();
+async function handleLogin(e: FormEvent) {
+  e.preventDefault();
 
-    const result = loginUserSchema.safeParse(form);
-    if (!result.success) {
-      const errors = result.error.flatten().fieldErrors;
-
-      if (errors.email) toast.error(errors.email[0]);
-      if (errors.password) toast.error(errors.password[0]);
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const data = await authService.login(form);
-console.log(data.data);
-
-      dispatch(setUser(data.data.user));
-
-      dispatch(
-        setAuth({
-          token: data.data.accessToken,
-          role: data.data.user.role,
-        })
-      );
-
-      toast.success("Login Successful");
-      navigate("/admin/dashboard");
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error("Invalid email or password");
-    } finally {
-      setIsLoading(false);
-    }
+  const result = loginUserSchema.safeParse(form);
+  if (!result.success) {
+    const errors = result.error.flatten().fieldErrors;
+    if (errors.email) toast.error(errors.email[0]);
+    if (errors.password) toast.error(errors.password[0]);
+    return;
   }
+
+  setIsLoading(true);
+
+  try {
+    const data = await AdminAuthService.login(form);
+
+dispatch(setAdmin(data.data.admin));
+dispatch(setAdminAuth(data.data.accessToken));
+
+
+console.log("skdlf", data);
+
+    toast.success("Admin login successful");
+    navigate("/admin/dashboard", { replace: true });
+  } catch (error) {
+    console.error("Admin login error:", error);
+    toast.error("Invalid admin credentials");
+  } finally {
+    setIsLoading(false);
+  }
+}
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">

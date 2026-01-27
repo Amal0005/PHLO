@@ -1,23 +1,23 @@
 import { ChangeEvent, useState } from "react";
 import { Camera, CameraOff, Users, Award } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { replace, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
-import { setCreator } from "@/store/creator/creatorSlice";
-import { setAuth } from "@/store/tokenSlice";
+import { setCreator } from "@/store/slices/creator/creatorSlice";
 import { toast } from "react-toastify";
 import StatusModal from "./statusModal";
 import { creatorLoginService } from "@/services/creator/creatorAuthService";
+import { setCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
 
 export default function CreatorLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [status, setStatus] = useState<{
-    status: 'pending' | 'rejected' | null;
+    status: "pending" | "rejected" | null;
     message: string;
     reason?: string;
   } | null>(null);
@@ -29,74 +29,60 @@ export default function CreatorLogin() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    setIsLoading(true);
 
-async function handleLogin(e: React.FormEvent) {
-  e.preventDefault();
-  setIsLoading(true);
+    try {
+      const responseData = await creatorLoginService(form.email, form.password);
+      console.log("LOGIN RESPONSE:", responseData);
 
-  try {
-    const responseData = await creatorLoginService(
-      form.email,
-      form.password
-    );
-        console.log("LOGIN RESPONSE:", responseData);
+      if (responseData.status === "pending") {
+        setStatus({
+          status: "pending",
+          message: responseData.message || "Your application is under review",
+        });
+        return;
+      }
+
+      if (responseData.status === "rejected") {
+        setStatus({
+          status: "rejected",
+          message: responseData.message || "Your application was rejected",
+          reason: responseData.reason,
+        });
+        return;
+      }
+
+      if (
+        responseData.status === "approved" &&
+        responseData.creator &&
+        responseData.token
+      ) {
+  dispatch(setCreator(responseData.creator));
+dispatch(setCreatorAuth(responseData.token));
 
 
-    // PENDING
-    if (responseData.status === "pending") {
-      setStatus({
-        status: "pending",
-        message:
-          responseData.message || "Your application is under review",
-      });
-      return;
+        toast.success("Logged in successfully");
+        navigate("/creator/dashboard", { replace: true });
+      }
+    } catch (error: any) {
+      const data = error?.response?.data;
+
+      if (data?.status) {
+        setStatus({
+          status: data.status,
+          message: data.message || "Authentication failed",
+          reason: data.rejectionReason,
+        });
+        return;
+      }
+
+      toast.error(data?.message || "Login failed");
+    } finally {
+      setIsLoading(false);
     }
-
-    // REJECTED
-if (responseData.status === "rejected") {
-  setStatus({
-    status: "rejected",
-    message: responseData.message || "Your application was rejected",
-    reason: responseData.reason,
-  });
-  return;
-}
-
-    // APPROVED
-    if (
-      responseData.status === "approved" &&
-      responseData.creator &&
-      responseData.token
-    ) {
-      dispatch(setCreator(responseData.creator));
-      dispatch(
-        setAuth({
-          token: responseData.token,
-          role: "creator",
-        })
-      );
-
-      toast.success("Logged in successfully");
-      navigate("/creator/dashboard");
-    }
-  } catch (error: any) {
-    const data = error?.response?.data;
-
-    if (data?.status) {
-      setStatus({
-        status: data.status,
-        message: data.message || "Authentication failed",
-        reason: data.rejectionReason,
-      });
-      return;
-    }
-
-    toast.error(data?.message || "Login failed");
-  } finally {
-    setIsLoading(false);
   }
-}
-
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -169,6 +155,7 @@ if (responseData.status === "rejected") {
                   <div className="flex justify-end mt-2">
                     <button
                       type="button"
+                      onClick={() => navigate("/creator/forgot-password")}
                       className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
                       disabled={isLoading}
                     >
@@ -192,14 +179,6 @@ if (responseData.status === "rejected") {
                       )}
                     </button>
                   </div>
-
-<StatusModal
-  isOpen={!!status}
-  onClose={() => setStatus(null)}
-  status={status?.status || null}
-  message={status?.message || ""}
-  reason={status?.reason}
-/>
                 </form>
 
                 <p className="text-gray-400 text-xs sm:text-sm text-center pt-2">
@@ -213,7 +192,13 @@ if (responseData.status === "rejected") {
                 </p>
               </div>
             </div>
-
+            <StatusModal
+              isOpen={!!status}
+              onClose={() => setStatus(null)}
+              status={status?.status || null}
+              message={status?.message || ""}
+              reason={status?.reason}
+            />
             <p className="text-center text-gray-600 text-xs mt-6 px-4">
               Secure creator authentication
             </p>
@@ -230,7 +215,8 @@ if (responseData.status === "rejected") {
           </h2>
 
           <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
-            Access your creator dashboard to manage bookings, upload galleries, and grow your photography business.
+            Access your creator dashboard to manage bookings, upload galleries,
+            and grow your photography business.
           </p>
 
           <div className="hidden sm:flex flex-col gap-4 lg:gap-6">

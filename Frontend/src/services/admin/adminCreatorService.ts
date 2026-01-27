@@ -27,3 +27,7 @@ export const rejectCreator = async (
 ): Promise<void> => {
   await api.patch(`/admin/creators/${creatorId}/reject`, { reason });
 };
+export const toggleCreatorStatus=async(creatorId:string,status:"approved"|"blocked")=>{
+  const response=await api.patch(`/admin/creators/${creatorId}/status`, { status });
+  return response.data
+}

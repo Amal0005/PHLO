@@ -1,6 +1,6 @@
-import { CreatorEntity } from "../../domain/entities/creatorEntities";
-import { IadminCreatorListingUseCase } from "../../domain/interface/admin/IadminCreatorListingUseCase";
-import { IcreatorRepository } from "../../domain/interface/creator/IcreatorRepository";
+import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import { IadminCreatorListingUseCase } from "@/domain/interface/admin/IadminCreatorListingUseCase";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
 
 export class AdminCreatorListingUseCase implements IadminCreatorListingUseCase{
     constructor(

@@ -20,16 +20,16 @@ import {
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
-import { clearUser } from "@/store/user/userSlice";
-import { clearAuth } from "@/store/tokenSlice";
+import { clearUser } from "@/store/slices/user/userSlice";
+
+import { clearUserAuth } from "@/store/slices/user/userAuthSlice";
 
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 const dispatch = useDispatch<AppDispatch>(); 
- const user = useSelector((state: RootState) => state.auth.user);
-
+const user = useSelector((state: RootState) => state.user.user);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -39,10 +39,10 @@ const dispatch = useDispatch<AppDispatch>();
   }, []);
   const navigate = useNavigate();
 const handleLogout = () => {
- dispatch(clearAuth());
+dispatch(clearUserAuth());
 dispatch(clearUser());
-localStorage.clear();
-navigate("/login");
+navigate("/login", { replace: true });
+
 };
   const packages = [
     {

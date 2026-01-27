@@ -11,14 +11,18 @@ export function UserRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="register" element={<Register />} />
-      <Route path="login" element={<Login />} />
-      <Route path="verify-otp" element={<VerifyOtp />} />
-      <Route path="forgot-password" element={<ForgotPassword />} />
 
-      <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
+      <Route element={<ProtectedRoute role="user" requireAuth={false} />}>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="verify-otp" element={<VerifyOtp />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+      </Route>
+
+      <Route element={<ProtectedRoute role="user" />}>
         <Route path="home" element={<Home />} />
       </Route>
     </Routes>
   );
 }
+

@@ -13,19 +13,24 @@ import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
 
+import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
+import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
+import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+
 export class UserRoutes {
   public userRouter: Router;
 
   constructor(
-    private  _jwtService: JwtServices,
-    private  _tokenBlacklistService: TokenBlacklistService
+    private _jwtService: JwtServices,
+    private _tokenBlacklistService: TokenBlacklistService,
+    private _userRepo: IuserRepository,
+    private _creatorRepo:IcreatorRepository
   ) {
     this.userRouter = Router();
     this.setRoutes();
   }
 
   private setRoutes(): void {
-    //PUBLIC ROUTES
     this.userRouter.post(
       "/register",
       validate(registerUserSchema),
@@ -76,11 +81,11 @@ export class UserRoutes {
         userGoogleController.googleLogin(req, res)
     );
 
-    // PROTECTED ROUTES
-    this.userRouter.post(
-      "/logout",
-      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService),
-      logoutController.logout.bind(logoutController)
-    );
+   this.userRouter.post(
+  "/logout",
+  jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo,this._creatorRepo),
+  authorizeRoles("user"),
+  logoutController.logout.bind(logoutController)
+);
   }
 }

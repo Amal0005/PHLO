@@ -1,5 +1,6 @@
-import { ILogoutUseCase } from "../domain/interface/IlogoutUseCase";
-import { ITokenBlacklistService } from "../domain/interface/service/ItokenBlacklistService";
+import { ILogoutUseCase } from "@/domain/interface/IlogoutUseCase";
+import { ITokenBlacklistService } from "@/domain/interface/service/ItokenBlacklistService";
+
 
 export class LogoutUseCase implements ILogoutUseCase {
   constructor(

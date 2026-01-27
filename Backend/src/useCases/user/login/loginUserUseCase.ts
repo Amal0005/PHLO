@@ -10,11 +10,15 @@ export class userLoginUserUseCase implements IuserLoginUseCase {
     private _userRepo: IuserRepository,
     private _passwordService: IpasswordService,
     private _jwtService: IjwtServices
-  ) {}
+  ) { }
 
   async loginUser(user: loginDto) {
     const existingUser = await this._userRepo.findByEmail(user.email);
     if (!existingUser) throw new Error("Email not found");
+
+    if (existingUser.status === "blocked") {
+      throw new Error("Your account has been blocked by the admin");
+    }
 
     if (!existingUser.password)
       throw new Error("Google Login to continue");

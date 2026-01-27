@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { IcreatorLoginUseCase } from "../../../../domain/interface/creator/login/IcreatorLoginUseCase";
-import { AuthError } from "../../../../domain/errors/authError";
+import { IcreatorLoginUseCase } from "@/domain/interface/creator/login/IcreatorLoginUseCase";
+import { AuthError } from "@/domain/errors/authError";
 
 export class CreatorLoginController{
     constructor(
