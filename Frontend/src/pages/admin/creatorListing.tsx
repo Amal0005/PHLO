@@ -9,9 +9,9 @@ import {
 import { Creator } from "@/interface/admin/creatorInterface";
 import { toast } from "react-toastify";
 import { CreatorDetailModal } from "./components/CreatorDetailModal";
+import { confirmActionToast } from "./components/confirmActionToast";
 
 export default function CreatorListingPage() {
-  // ... existing state ...
   const [creators, setCreators] = useState<Creator[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -22,7 +22,6 @@ export default function CreatorListingPage() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedCreator, setSelectedCreator] = useState<Creator | null>(null);
   const [showDetails, setShowDetails] = useState(false);
-  // ... existing effects/handlers ...
 
   useEffect(() => {
     async function loadCreators() {
@@ -78,19 +77,35 @@ export default function CreatorListingPage() {
     }
   };
 
-  const handleToggleStatus = async (creatorId: string, currentStatus: string) => {
-    try {
-const newStatus = currentStatus === "approved" ? "blocked" : "approved";
-      await toggleCreatorStatus(creatorId, newStatus);
-      
-      setCreators((prev) =>
-        prev.map((c) => (c._id === creatorId ? { ...c, status: newStatus as any } : c))
-      );
-      toast.success(`Creator ${newStatus} successfully`);
-    } catch (error) {
-      toast.error("Failed to update status");
+const handleToggleStatus = (
+  creatorId: string,
+  currentStatus: string
+) => {
+  const newStatus = currentStatus === "approved" ? "blocked" : "approved";
+
+  confirmActionToast(
+    `Are you sure you want to ${newStatus === "blocked" ? "block" : "unblock"} this creator?`,
+    async () => {
+      try {
+        await toggleCreatorStatus(creatorId, newStatus);
+
+        setCreators((prev) =>
+          prev.map((c) =>
+            c._id === creatorId ? { ...c, status: newStatus as any } : c
+          )
+        );
+
+        toast.success(
+          newStatus === "blocked"
+            ? "Creator blocked successfully"
+            : "Creator unblocked successfully"
+        );
+      } catch {
+        toast.error("Failed to update creator status");
+      }
     }
-  };
+  );
+};
   if (loading) return <p className="p-6 text-white">Loading creators...</p>;
 
   if (error) return <p className="p-6 text-red-400">{error}</p>;
@@ -108,6 +123,7 @@ const newStatus = currentStatus === "approved" ? "blocked" : "approved";
         <option value="pending">Pending</option>
         <option value="approved">Approved</option>
         <option value="rejected">Rejected</option>
+        <option value="blocked">Blocked</option>
       </select>
 
       <div className="bg-zinc-900/90 border border-white/10 rounded-xl overflow-hidden">
@@ -197,7 +213,6 @@ const newStatus = currentStatus === "approved" ? "blocked" : "approved";
         </table>
       </div>
 
-      {/* MAIN DETAILS MODAL */}
       {showDetails && selectedCreator && (
         <CreatorDetailModal
           creator={selectedCreator}
@@ -207,7 +222,6 @@ const newStatus = currentStatus === "approved" ? "blocked" : "approved";
         />
       )}
 
-      {/* REJECTION REASON MODAL */}
       {showRejectModal && selectedCreator && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
           <div className="bg-zinc-900 w-full max-w-md rounded-xl p-6 border border-red-400/20 relative">
@@ -228,7 +242,7 @@ const newStatus = currentStatus === "approved" ? "blocked" : "approved";
             <textarea
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              placeholder="Enter rejection reason..."
+              placeholder="Enter rejection reason......"
               className="w-full p-3 rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 transition-all duration-300 min-h-[120px] resize-none text-sm"
               maxLength={500}
             />

@@ -12,17 +12,19 @@ import { ToggleUserStatusUseCase } from "../../../useCases/admin/toggleUserStatu
 import { ApproveCreatorUseCase } from "../../../useCases/admin/approveCreatorUseCase";
 import { RejectCreatorUseCase } from "../../../useCases/admin/rejectCreatorUseCase";
 import { ToggleCreatorStatusUseCase } from "@/useCases/admin/toggleCreatorStatusUseCase";
+import { MailService } from "@/domain/services/user/mailServices";
 
 const userRepo = new UserRepository();
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
 const creatorRepo = new CreatorRepository();
+const mailService= new MailService()
 
 const adminLoginUseCase = new AdminLoginUseCase(userRepo, passwordService, jwtService);
 const adminUserlistingUseCase = new AdminUserListingUseCase(userRepo);
 const adminCreatorListingUseCase = new AdminCreatorListingUseCase(creatorRepo);
 const toggleUserStatusUseCase = new ToggleUserStatusUseCase(userRepo);
-const approveCreatorUseCase = new ApproveCreatorUseCase(creatorRepo);
+const approveCreatorUseCase = new ApproveCreatorUseCase(creatorRepo,mailService);
 const rejectCreatorUseCase = new RejectCreatorUseCase(creatorRepo);
 const toggleCreatorStatusUseCase=new ToggleCreatorStatusUseCase(creatorRepo)
 

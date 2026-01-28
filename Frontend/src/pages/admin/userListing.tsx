@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 // import { Edit, Trash2 } from "lucide-react";
 import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserService";
 import { User } from "@/interface/admin/userInterface";
+import { toast } from "react-toastify";
+import { confirmActionToast } from "./components/confirmActionToast";
 
 export default function UserListingPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -23,17 +25,31 @@ export default function UserListingPage() {
     loadUsers();
   }, []);
 
-  const handleToggleStatus = async (userId: string, currentStatus: string) => {
-  try {
-    const newStatus = currentStatus === "active" ? "blocked" : "active";
-    await toggleUserStatus(userId, newStatus);
-    
-    setUsers((prev) =>
-      prev.map((u) => (u._id === userId ? { ...u, status: newStatus } : u))
-    );
-  } catch (error) {
-    console.error("Failed to update status", error);
-  }
+const handleToggleStatus = (userId: string, currentStatus: string) => {
+  const newStatus = currentStatus === "active" ? "blocked" : "active";
+
+  confirmActionToast(
+    `Are you sure you want to ${newStatus === "blocked" ? "block" : "unblock"} this user?`,
+    async () => {
+      try {
+        await toggleUserStatus(userId, newStatus);
+
+        setUsers((prev) =>
+          prev.map((u) =>
+            u._id === userId ? { ...u, status: newStatus } : u
+          )
+        );
+
+        toast.success(
+          newStatus === "blocked"
+            ? "User blocked successfully"
+            : "User unblocked successfully"
+        );
+      } catch {
+        toast.error("Failed to update user status");
+      }
+    }
+  );
 };
 
   if (loading) {
@@ -114,9 +130,19 @@ export default function UserListingPage() {
                 {/* Actions */}
                 <td className="px-6 py-4">
                   <div className="flex justify-end gap-2">
-                    <button onClick={() => user._id && handleToggleStatus(user._id, user.status)}>
+                 <button
+  onClick={() => user._id && handleToggleStatus(user._id, user.status)}
+  className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-all
+    ${
+      user.status === "active"
+        ? "text-red-400 border-red-400/30 hover:bg-red-500/10 hover:border-red-400/60"
+        : "text-green-400 border-green-400/30 hover:bg-green-500/10 hover:border-green-400/60"
+    }
+  `}
+>
   {user.status === "active" ? "Block" : "Unblock"}
 </button>
+
 
                     {/* <button
                       className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition"

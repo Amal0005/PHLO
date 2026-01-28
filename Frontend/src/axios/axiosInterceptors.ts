@@ -52,7 +52,13 @@ export const setUpInterceptors = () => {
         }
       }
 
-  if (err.response?.status === 403) {
+if (err.response?.status === 403) {
+  const url = err.config?.url || "";
+
+  if (url.includes("/creator/login")) {
+    return Promise.reject(err);
+  }
+
   alert(err.response.data.message || "Your account has been blocked.");
 
   store.dispatch(clearUserAuth());
@@ -60,6 +66,7 @@ export const setUpInterceptors = () => {
 
   window.location.href = "/login";
 }
+
 
       return Promise.reject(err);
     },

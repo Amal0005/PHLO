@@ -7,6 +7,8 @@ status: "pending" | "approved" | "rejected" | "blocked";
     profilePhoto?: string;
   governmentId?: string;
   bio?: string;
-  experience?: string;
+  yearsOfExperience?: string;
   portfolioLink?: string;
+    specialties?: string[];
+
 }

@@ -15,13 +15,24 @@ private transporter: nodemailer.Transporter;
   }
 
   
-async sendMail(to: string, subject: string, html: string): Promise<void> {
+async sendMail(
+  to: string,
+  subject: string,
+  html: string,
+  attachments?: {
+    filename: string;
+    path: string;
+    cid?: string;
+  }[]
+): Promise<void> {
   await this.transporter.sendMail({
     from: `"PHLO" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html,
+    attachments,
   });
 }
+
 
 }

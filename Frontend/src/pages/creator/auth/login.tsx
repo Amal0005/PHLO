@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { Camera, CameraOff, Users, Award } from "lucide-react";
-import { replace, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
 import { setCreator } from "@/store/slices/creator/creatorSlice";
@@ -66,20 +66,24 @@ dispatch(setCreatorAuth(responseData.token));
         toast.success("Logged in successfully");
         navigate("/creator/dashboard", { replace: true });
       }
-    } catch (error: any) {
-      const data = error?.response?.data;
+    }catch (error: any) {
+  const data = error?.response?.data;
 
-      if (data?.status) {
-        setStatus({
-          status: data.status,
-          message: data.message || "Authentication failed",
-          reason: data.rejectionReason,
-        });
-        return;
-      }
-
-      toast.error(data?.message || "Login failed");
-    } finally {
+  if (data?.status === "blocked") {
+    toast.error(data.message || "Your account blocked by admin");
+    return;
+  }
+  if (data?.status === "pending" || data?.status === "rejected") {
+    setStatus({
+      status: data.status,
+      message: data.message || "Authentication failed",
+      reason: data.reason,
+    });
+    return;
+  }
+  toast.error(data?.message || "Login failed");
+}
+ finally {
       setIsLoading(false);
     }
   }

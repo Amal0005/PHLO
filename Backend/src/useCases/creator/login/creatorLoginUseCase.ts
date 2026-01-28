@@ -20,8 +20,9 @@ export class CreatorLoginUseCase implements IcreatorLoginUseCase {
     const getEmail = email.trim().toLowerCase();
     const creator = await this._creatorRepo.findByEmail(getEmail);
     console.log(creator?.password);
-    if (!creator) throw new Error("No Creators in this Email");
- if (creator.status === 'pending') {
+if (!creator) {
+  throw new AuthError("Invalid email or password", 401);
+} if (creator.status === 'pending') {
     return {
       status: 'pending',
       message: 'Your application is under review'
@@ -35,15 +36,20 @@ export class CreatorLoginUseCase implements IcreatorLoginUseCase {
     };
     
   }
-  if(creator.status==="blocked"){
-    throw new Error("Your account has been blocked by the admin")
-  }
+if (creator.status === "blocked") {
+  throw new AuthError(
+    "Your account blocked by admin",
+    403,
+    { status: "blocked" }
+  );
+}
     const isMatch = await this._passwordService.compare(
       password,
       creator.password,
     );
-    if (!isMatch) throw new Error("Password is incorrect");
-    const payload: AuthPayload = {
+if (!isMatch) {
+  throw new AuthError("Invalid email or password", 401);
+}    const payload: AuthPayload = {
       email: getEmail,
       role: "creator",
       userId: creator._id!,

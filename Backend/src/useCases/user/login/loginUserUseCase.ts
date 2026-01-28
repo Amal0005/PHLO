@@ -17,7 +17,7 @@ export class userLoginUserUseCase implements IuserLoginUseCase {
     if (!existingUser) throw new Error("Email not found");
 
     if (existingUser.status === "blocked") {
-      throw new Error("Your account has been blocked by the admin");
+      throw new Error("Your account blocked by admin");
     }
 
     if (!existingUser.password)

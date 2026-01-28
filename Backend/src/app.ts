@@ -58,6 +58,10 @@ export class App {
       }),
     );
     this.app.use(cookieParser());
+      this.app.use(
+    "/public",
+    express.static(require("path").join(process.cwd(), "public"))
+  );
     this.app.use((req, res, next) => {
       next();
     });
