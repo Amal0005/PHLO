@@ -6,6 +6,7 @@ import api from "@/axios/axiosConfig";
 import type { RootState } from "@/store/store";
 import { clearAdmin } from "@/store/slices/admin/adminSlice";
 import { clearAdminAuth } from "@/store/slices/admin/adminAuthSlice";
+import { ROUTES } from "@/constants/routes";
 
 interface AdminNavbarProps {
   onMenuToggle: () => void;
@@ -25,7 +26,7 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
       dispatch(clearAdminAuth());
       dispatch(clearAdmin());
 
-      navigate("/admin/login", { replace: true });
+      navigate(ROUTES.ADMIN.LOGIN, { replace: true });
     } catch (err) {
       console.error("Logout failed", err);
     }

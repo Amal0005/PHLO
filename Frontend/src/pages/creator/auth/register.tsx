@@ -16,6 +16,7 @@ import { uploadToS3 as fileUploader } from "@/utils/uploadToS3";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { validateStep1, validateStep2, validateStep3, validateStep4 } from "@/validation/registerCreatorValidation";
+import { ROUTES } from "@/constants/routes";
 
 async function uploadToS3(file: File, type: "profile" | "id"): Promise<string> {
   const url = await fileUploader(file, type);
@@ -92,45 +93,45 @@ export default function CreatorSignup() {
     }
   }
 
-async function checkEmailExists(email: string): Promise<boolean> {
-  const res = await fetch(
-    "http://localhost:5000/api/creator/check-email",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+  async function checkEmailExists(email: string): Promise<boolean> {
+    const res = await fetch(
+      "http://localhost:5000/api/creator/check-email",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }
+    );
+    const data = await res.json();
+    console.log(data)
+
+    if (!res.ok) {
+      throw new Error(data.message || "Email check failed");
     }
-  );
-  const data = await res.json();
-  console.log(data)
 
-  if (!res.ok) {
-    throw new Error(data.message || "Email check failed");
+    return data.exists === true;
   }
 
-  return data.exists === true;
-}
 
+  async function handleNext() {
+    if (currentStep === 1) {
+      const isValid = await validateStep1(formData, checkEmailExists);
+      if (!isValid) return;
+    }
 
-async function handleNext() {
-  if (currentStep === 1) {
-    const isValid = await validateStep1(formData, checkEmailExists);
-    if (!isValid) return;
+    if (currentStep === 2) {
+      if (!validateStep2(formData)) return;
+    }
+
+    if (currentStep === 3) {
+      if (!validateStep3(formData)) return;
+    }
+
+    if (currentStep < 4) {
+      setCurrentStep((prev) => prev + 1);
+      toast.success("Step completed successfully!");
+    }
   }
-
-  if (currentStep === 2) {
-    if (!validateStep2(formData)) return;
-  }
-
-  if (currentStep === 3) {
-    if (!validateStep3(formData)) return;
-  }
-
-  if (currentStep < 4) {
-    setCurrentStep((prev) => prev + 1);
-    toast.success("Step completed successfully!");
-  }
-}
 
   function handleBack() {
     if (currentStep > 1) {
@@ -140,7 +141,7 @@ async function handleNext() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-  if (!validateStep4(formData)) return;
+    if (!validateStep4(formData)) return;
 
 
     setIsLoading(true);
@@ -206,7 +207,7 @@ async function handleNext() {
       setCurrentStep(1);
 
       setTimeout(() => {
-        navigate("/creator/login");
+        navigate(ROUTES.CREATOR.LOGIN);
       }, 2000);
     } catch (error) {
       console.error(error);
@@ -219,7 +220,7 @@ async function handleNext() {
   }
 
   const isStep1Valid =
-    formData.fullName && formData.email && formData.password &&  formData.confirmPassword && formData.phone;
+    formData.fullName && formData.email && formData.password && formData.confirmPassword && formData.phone;
   const isStep2Valid = formData.city && formData.yearsOfExperience;
   const isStep3Valid =
     formData.bio && formData.portfolioLink && formData.specialties.length > 0;
@@ -247,11 +248,10 @@ async function handleNext() {
                 {[1, 2, 3, 4].map((step) => (
                   <div key={step} className="flex items-center flex-1">
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${
-                        currentStep >= step
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${currentStep >= step
                           ? "bg-white border-white text-black"
                           : "bg-zinc-800/50 border-zinc-700 text-gray-500"
-                      }`}
+                        }`}
                     >
                       {currentStep > step ? (
                         <Check className="w-4 h-4" />
@@ -261,9 +261,8 @@ async function handleNext() {
                     </div>
                     {step < 4 && (
                       <div
-                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${
-                          currentStep > step ? "bg-white" : "bg-zinc-700"
-                        }`}
+                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${currentStep > step ? "bg-white" : "bg-zinc-700"
+                          }`}
                       />
                     )}
                   </div>
@@ -346,18 +345,18 @@ async function handleNext() {
                       </button>
                     </div>
                     <div className="relative">
-  <label className="block text-sm font-medium text-gray-300 mb-1.5">
-    Confirm Password
-  </label>
-  <input
-    type={showPassword ? "text" : "password"}
-    name="confirmPassword"
-    placeholder="Repeat your password"
-    className="w-full p-3 text-sm rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
-    value={formData.confirmPassword}
-    onChange={handleChange}
-  />
-</div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                        Confirm Password
+                      </label>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        placeholder="Repeat your password"
+                        className="w-full p-3 text-sm rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                      />
+                    </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-1.5">
@@ -500,11 +499,10 @@ async function handleNext() {
                             key={specialty}
                             type="button"
                             onClick={() => handleSpecialtyToggle(specialty)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
-                              formData.specialties.includes(specialty)
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${formData.specialties.includes(specialty)
                                 ? "bg-white text-black"
                                 : "bg-zinc-800/50 text-gray-400 border border-zinc-700 hover:bg-zinc-700"
-                            }`}
+                              }`}
                           >
                             {specialty}
                           </button>
@@ -670,7 +668,7 @@ async function handleNext() {
               <p className="text-gray-400 text-xs text-center mt-4">
                 Already have an account?{" "}
                 <span
-                  onClick={() => navigate("/creator/login")}
+                  onClick={() => navigate(ROUTES.CREATOR.LOGIN)}
                   className="text-white cursor-pointer hover:underline font-medium"
                 >
                   Log in

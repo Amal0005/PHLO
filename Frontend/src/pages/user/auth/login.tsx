@@ -12,6 +12,7 @@ import GoogleLoginButton from "../../../compoents/reusable/googleButton";
 import { AppDispatch } from "@/store/store";
 import InputError from "@/compoents/reusable/inputErrors";
 import { setUserAuth } from "@/store/slices/user/userAuthSlice";
+import { ROUTES } from "@/constants/routes";
 
 interface loginForm {
   email: string;
@@ -54,24 +55,24 @@ export default function Login() {
         dispatch(setUserAuth(data.data.accessToken));
 
         toast.success("Login Successful");
-        navigate("/home", { replace: true });
+        navigate(ROUTES.USER.HOME, { replace: true });
       } else {
         console.error("Login failed: Missing token or user data", data);
         toast.error("Login failed: Invalid server response");
       }
-    }  catch (error: any) {
-  const message =
-    error?.response?.data?.message ||
-    "Invalid email or password";
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        "Invalid email or password";
 
-  toast.error(message);
-} finally {
+      toast.error(message);
+    } finally {
       setIsLoading(false);
     }
   }
 
   function handleRegister() {
-    navigate("/register");
+    navigate(ROUTES.USER.REGISTER);
   }
 
   return (
@@ -204,7 +205,7 @@ export default function Login() {
                 <div className="flex justify-end">
                   <button
                     type="button"
-                    onClick={() => navigate("/forgot-password")}
+                    onClick={() => navigate(ROUTES.USER.FORGOT_PASSWORD)}
                     className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
                   >
                     Forgot password?
@@ -249,7 +250,7 @@ export default function Login() {
                       if (response?.accessToken && response?.user) {
                         dispatch(setUser(response.user));
                         dispatch(setUserAuth(response.accessToken));
-                        navigate("/home", { replace: true });
+                        navigate(ROUTES.USER.HOME, { replace: true });
                       } else {
                         console.error("Google Login: Missing token/user", response);
                         toast.error("Google login failed: Invalid response");

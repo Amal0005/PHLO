@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import api from "../../../axios/axiosConfig";
 import LogoWhite from "../../../assets/images/Logo_white.png";
+import { ROUTES } from "@/constants/routes";
 
 export default function VerifyOtp() {
   const location = useLocation();
@@ -36,34 +37,34 @@ export default function VerifyOtp() {
     try {
       const res = await api.post("/verify-otp", { email, otp });
       localStorage.setItem("accessToken", res.data.accessToken);
-          toast.success("OTP Verified Successfully!");
-      navigate("/login");
+      toast.success("OTP Verified Successfully!");
+      navigate(ROUTES.USER.LOGIN);
     } catch (error) {
       console.error("Verification error:", error);
-    toast.error("Invalid OTP. Please try again.");
+      toast.error("Invalid OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
   }
 
-async function handleResendOtp() {
-  if (!canResend) return;
+  async function handleResendOtp() {
+    if (!canResend) return;
 
-  try {
-    await api.post("/resend-otp", { email });
+    try {
+      await api.post("/resend-otp", { email });
 
-    toast.info("OTP resent successfully!");
-    setTimer(60);
-    setCanResend(false);
-  } catch (error) {
-    console.error("Resend error:", error);
-    toast.error("Failed to resend OTP. Please try again.");
+      toast.info("OTP resent successfully!");
+      setTimer(60);
+      setCanResend(false);
+    } catch (error) {
+      console.error("Resend error:", error);
+      toast.error("Failed to resend OTP. Please try again.");
+    }
   }
-}
 
 
   function handleBackToRegister() {
-    navigate("/register");
+    navigate(ROUTES.USER.REGISTER);
   }
 
   return (

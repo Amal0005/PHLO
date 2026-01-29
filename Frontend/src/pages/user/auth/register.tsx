@@ -9,6 +9,7 @@ import { registerUserSchema } from "../../../validation/registerUserSchema";
 import GoogleLoginButton from "@/compoents/reusable/googleButton";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/user/userSlice";
+import { ROUTES } from "@/constants/routes";
 
 interface RegisterForm {
   name: string;
@@ -65,7 +66,7 @@ export default function Register() {
       await api.post("/register", submitData);
       toast.success("OTP sent successfully!");
 
-      navigate("/verify-otp", { state: { email: form.email } });
+      navigate(ROUTES.USER.VERIFY_OTP, { state: { email: form.email } });
 
       await new Promise((resolve) => setTimeout(resolve, 1500));
     } catch (error: any) {
@@ -81,7 +82,7 @@ export default function Register() {
   }
 
   function handleLogin() {
-    navigate("/login", { replace: true });
+    navigate(ROUTES.USER.LOGIN, { replace: true });
   }
 
   return (
@@ -358,7 +359,7 @@ export default function Register() {
 
                       dispatch(setUser(res.data.user));
 
-                      navigate("/home");
+                      navigate(ROUTES.USER.HOME);
                     } catch (err) {
                       toast.error("Google login failed");
                       console.log(err);

@@ -261,29 +261,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "@/store/store";
 import { LogOut, Camera, BarChart3 } from "lucide-react";
+import { ROUTES } from "@/constants/routes";
 
 import { clearCreator } from "@/store/slices/creator/creatorSlice";
 import { clearCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
 
 export default function CreatorDashboard() {
 
-const creator = useSelector((state: RootState) => state.creator.creator);
-// const creatorToken = useSelector(
-//   (state: RootState) => state.creatorAuth.token
-// );
+  const creator = useSelector((state: RootState) => state.creator.creator);
+  // const creatorToken = useSelector(
+  //   (state: RootState) => state.creatorAuth.token
+  // );
   const dispatch = useDispatch();
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const handleLogout = () => {
- dispatch(clearCreatorAuth());
-dispatch(clearCreator());
-navigate("/creator/login", { replace: true });
+  const handleLogout = () => {
+    dispatch(clearCreatorAuth());
+    dispatch(clearCreator());
+    navigate(ROUTES.CREATOR.LOGIN, { replace: true });
 
-};
+  };
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-white text-center">
-        
+
         {/* Header */}
         <h1 className="text-2xl font-bold mb-2">
           Welcome, {creator?.fullName || "Creator"} 👋
@@ -295,7 +296,7 @@ navigate("/creator/login", { replace: true });
         {/* Actions */}
         <div className="space-y-3">
           <button
-            onClick={() => navigate("/creator/profile")}
+            onClick={() => navigate(ROUTES.CREATOR.PROFILE)}
             className="w-full flex items-center justify-center gap-2 bg-white text-black py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
           >
             <Camera className="w-5 h-5" />
@@ -303,7 +304,7 @@ navigate("/creator/login", { replace: true });
           </button>
 
           <button
-            onClick={() => navigate("/creator/content")}
+            onClick={() => navigate(ROUTES.CREATOR.CONTENT)}
             className="w-full flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 py-3 rounded-lg transition"
           >
             <Camera className="w-5 h-5" />
@@ -311,7 +312,7 @@ navigate("/creator/login", { replace: true });
           </button>
 
           <button
-            onClick={() => navigate("/creator/analytics")}
+            onClick={() => navigate(ROUTES.CREATOR.ANALYTICS)}
             className="w-full flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 py-3 rounded-lg transition"
           >
             <BarChart3 className="w-5 h-5" />

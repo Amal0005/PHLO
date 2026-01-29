@@ -4,6 +4,7 @@ import { Mail, ArrowLeft, X } from "lucide-react";
 import { passwordService } from "@/services/creator/passwordService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState<string>("");
@@ -102,7 +103,7 @@ export default function ForgotPassword() {
       await passwordService.resetPassword(email, passwords.newPassword);
 
       toast.success("Password reset successful!");
-      navigate("/creator/login")
+      navigate(ROUTES.CREATOR.LOGIN)
     } catch (error) {
       console.error(error);
       toast.error("Failed to reset password");
@@ -119,7 +120,7 @@ export default function ForgotPassword() {
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-              "url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2074')",
+                "url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2074')",
               filter: "grayscale(100%)",
             }}
           />
@@ -228,7 +229,7 @@ export default function ForgotPassword() {
                   Remember your password?{" "}
                   <span
                     className="text-white cursor-pointer hover:underline font-medium"
-                    onClick={() => navigate("/creator/login")}
+                    onClick={() => navigate(ROUTES.CREATOR.LOGIN)}
                   >
                     Back to Login
                   </span>
@@ -256,10 +257,10 @@ export default function ForgotPassword() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
           <div className="w-full max-w-md">
             <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
-              <button onClick={() => navigate("/creator/login")} className="mb-4 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm cursor-pointer">
+              <button onClick={() => navigate(ROUTES.CREATOR.LOGIN)} className="mb-4 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm cursor-pointer">
                 <ArrowLeft className="w-4 h-4" />
                 Back to Login
               </button>
@@ -310,7 +311,7 @@ export default function ForgotPassword() {
 
               <p className="text-gray-400 text-xs sm:text-sm text-center pt-4">
                 Remember your password?{" "}
-                <span className="text-white cursor-pointer hover:underline font-medium" onClick={() => navigate("/creator/login")}>
+                <span className="text-white cursor-pointer hover:underline font-medium" onClick={() => navigate(ROUTES.CREATOR.LOGIN)}>
                   Back to Login
                 </span>
               </p>
@@ -336,7 +337,7 @@ export default function ForgotPassword() {
           </p>
         </div>
 
-       
+
       </div>
 
       {showOtpModal && (

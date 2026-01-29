@@ -23,13 +23,14 @@ import type { AppDispatch } from "@/store/store";
 import { clearUser } from "@/store/slices/user/userSlice";
 
 import { clearUserAuth } from "@/store/slices/user/userAuthSlice";
+import { ROUTES } from "@/constants/routes";
 
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-const dispatch = useDispatch<AppDispatch>(); 
-const user = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.user.user);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -38,12 +39,12 @@ const user = useSelector((state: RootState) => state.user.user);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   const navigate = useNavigate();
-const handleLogout = () => {
-dispatch(clearUserAuth());
-dispatch(clearUser());
-navigate("/login", { replace: true });
+  const handleLogout = () => {
+    dispatch(clearUserAuth());
+    dispatch(clearUser());
+    navigate(ROUTES.USER.LOGIN, { replace: true });
 
-};
+  };
   const packages = [
     {
       id: 1,
@@ -219,11 +220,10 @@ navigate("/login", { replace: true });
     <div className="min-h-screen bg-black text-white">
       {/* Navbar */}
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          isScrolled
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
             ? "bg-black/95 backdrop-blur-lg border-b border-white/10"
             : "bg-transparent"
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1">
           <div className="flex items-center justify-between h-16 lg:h-20">
@@ -269,7 +269,7 @@ navigate("/login", { replace: true });
               ) : (
                 <button
                   className="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105"
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate(ROUTES.USER.LOGIN)}
                 >
                   Sign In
                 </button>
@@ -383,11 +383,10 @@ navigate("/login", { replace: true });
             {packages.map((pkg) => (
               <div
                 key={pkg.id}
-                className={`relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
-                  pkg.popular
+                className={`relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border transition-all duration-300 hover:scale-105 hover:shadow-2xl ${pkg.popular
                     ? "border-white shadow-xl shadow-white/10"
                     : "border-white/10"
-                }`}
+                  }`}
               >
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-white text-black text-sm font-semibold rounded-full">

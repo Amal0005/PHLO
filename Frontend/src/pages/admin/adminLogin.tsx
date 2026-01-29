@@ -10,6 +10,7 @@ import { loginUserSchema } from "@/validation/loginUserSchema";
 import { AdminAuthService } from "@/services/admin/adminAuthService";
 import { setAdmin } from "@/store/slices/admin/adminSlice";
 import { setAdminAuth } from "@/store/slices/admin/adminAuthSlice";
+import { ROUTES } from "@/constants/routes";
 
 interface loginForm {
   email: string;
@@ -30,37 +31,37 @@ export default function AdminLogin() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-async function handleLogin(e: FormEvent) {
-  e.preventDefault();
+  async function handleLogin(e: FormEvent) {
+    e.preventDefault();
 
-  const result = loginUserSchema.safeParse(form);
-  if (!result.success) {
-    const errors = result.error.flatten().fieldErrors;
-    if (errors.email) toast.error(errors.email[0]);
-    if (errors.password) toast.error(errors.password[0]);
-    return;
+    const result = loginUserSchema.safeParse(form);
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors;
+      if (errors.email) toast.error(errors.email[0]);
+      if (errors.password) toast.error(errors.password[0]);
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const data = await AdminAuthService.login(form);
+
+      dispatch(setAdmin(data.data.admin));
+      dispatch(setAdminAuth(data.data.accessToken));
+
+
+      console.log("skdlf", data);
+
+      toast.success("Admin login successful");
+      navigate(ROUTES.ADMIN.DASHBOARD, { replace: true });
+    } catch (error) {
+      console.error("Admin login error:", error);
+      toast.error("Invalid admin credentials");
+    } finally {
+      setIsLoading(false);
+    }
   }
-
-  setIsLoading(true);
-
-  try {
-    const data = await AdminAuthService.login(form);
-
-dispatch(setAdmin(data.data.admin));
-dispatch(setAdminAuth(data.data.accessToken));
-
-
-console.log("skdlf", data);
-
-    toast.success("Admin login successful");
-    navigate("/admin/dashboard", { replace: true });
-  } catch (error) {
-    console.error("Admin login error:", error);
-    toast.error("Invalid admin credentials");
-  } finally {
-    setIsLoading(false);
-  }
-}
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
@@ -141,7 +142,7 @@ console.log("skdlf", data);
                 </div>
               </div>
 
-                    
+
               <button
                 type="button"
                 onClick={handleLogin}

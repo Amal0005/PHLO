@@ -1,5 +1,6 @@
 import { Shield, Users, LayoutDashboard, Camera } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 interface AdminSidebarProps {
   isOpen: boolean;
@@ -11,17 +12,17 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     {
       label: "Dashboard",
       icon: LayoutDashboard,
-      to: "/admin/dashboard",
+      to: ROUTES.ADMIN.DASHBOARD,
     },
     {
       label: "Users",
       icon: Users,
-      to: "/admin/users",
+      to: ROUTES.ADMIN.USERS,
     },
     {
       label: "Creators",
       icon: Camera,
-      to: "/admin/creators",
+      to: ROUTES.ADMIN.CREATORS,
     },
   ];
 
@@ -43,10 +44,9 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 to={item.to}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${
-                    isActive
-                      ? "bg-white/10 text-white border border-white/20"
-                      : "text-gray-400 hover:bg-white/5 hover:text-white border border-transparent"
+                  `flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-300 ${isActive
+                    ? "bg-white/10 text-white border border-white/20"
+                    : "text-gray-400 hover:bg-white/5 hover:text-white border border-transparent"
                   }`
                 }
               >

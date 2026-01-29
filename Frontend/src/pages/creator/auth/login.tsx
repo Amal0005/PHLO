@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { Camera, CameraOff, Users, Award } from "lucide-react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
 import { setCreator } from "@/store/slices/creator/creatorSlice";
@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import StatusModal from "./statusModal";
 import { creatorLoginService } from "@/services/creator/creatorAuthService";
 import { setCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
+import { ROUTES } from "@/constants/routes";
 
 export default function CreatorLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -59,31 +60,31 @@ export default function CreatorLogin() {
         responseData.creator &&
         responseData.token
       ) {
-  dispatch(setCreator(responseData.creator));
-dispatch(setCreatorAuth(responseData.token));
+        dispatch(setCreator(responseData.creator));
+        dispatch(setCreatorAuth(responseData.token));
 
 
         toast.success("Logged in successfully");
-        navigate("/creator/dashboard", { replace: true });
+        navigate(ROUTES.CREATOR.DASHBOARD, { replace: true });
       }
-    }catch (error: any) {
-  const data = error?.response?.data;
+    } catch (error: any) {
+      const data = error?.response?.data;
 
-  if (data?.status === "blocked") {
-    toast.error(data.message || "Your account blocked by admin");
-    return;
-  }
-  if (data?.status === "pending" || data?.status === "rejected") {
-    setStatus({
-      status: data.status,
-      message: data.message || "Authentication failed",
-      reason: data.reason,
-    });
-    return;
-  }
-  toast.error(data?.message || "Login failed");
-}
- finally {
+      if (data?.status === "blocked") {
+        toast.error(data.message || "Your account blocked by admin");
+        return;
+      }
+      if (data?.status === "pending" || data?.status === "rejected") {
+        setStatus({
+          status: data.status,
+          message: data.message || "Authentication failed",
+          reason: data.reason,
+        });
+        return;
+      }
+      toast.error(data?.message || "Login failed");
+    }
+    finally {
       setIsLoading(false);
     }
   }
@@ -159,7 +160,7 @@ dispatch(setCreatorAuth(responseData.token));
                   <div className="flex justify-end mt-2">
                     <button
                       type="button"
-                      onClick={() => navigate("/creator/forgot-password")}
+                      onClick={() => navigate(ROUTES.CREATOR.FORGOT_PASSWORD)}
                       className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
                       disabled={isLoading}
                     >
@@ -188,7 +189,7 @@ dispatch(setCreatorAuth(responseData.token));
                 <p className="text-gray-400 text-xs sm:text-sm text-center pt-2">
                   Haven't Account?{" "}
                   <span
-                    onClick={() => navigate("/creator/register")}
+                    onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
                     className="text-white cursor-pointer hover:underline font-medium hover:scale-105 inline-block transition-transform"
                   >
                     Signup
