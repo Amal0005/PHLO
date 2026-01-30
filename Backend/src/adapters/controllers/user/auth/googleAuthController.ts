@@ -1,17 +1,18 @@
 import { Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 import { IgoogleLoginUseCase } from "../../../../domain/interface/user/auth/IgoogleLoginUseCase";
 
 export class GoogleAuthController {
-  constructor(private _googleLoginUseCase: IgoogleLoginUseCase) {}
+  constructor(private _googleLoginUseCase: IgoogleLoginUseCase) { }
 
   async googleLogin(req: Request, res: Response) {
     try {
       const { idToken } = req.body;
 
       if (!idToken) {
-        return res.status(400).json({ message: "ID token is required" });
+        return res.status(StatusCode.BAD_REQUEST).json({ message: "ID token is required" });
       }
-      
+
       const { user, accessToken, refreshToken } =
         await this._googleLoginUseCase.execute(idToken);
 
@@ -21,12 +22,12 @@ export class GoogleAuthController {
         sameSite: "strict",
       });
 
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         user,
         accessToken,
       });
     } catch (error: any) {
-      return res.status(401).json({
+      return res.status(StatusCode.UNAUTHORIZED).json({
         message: error.message || "Google login failed",
       });
     }

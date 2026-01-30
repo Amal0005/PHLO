@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 import { IadminUserListingUseCase } from "../../../domain/interface/admin/IadminUserListingUseCase";
 import { IadminCreatorListingUseCase } from "../../../domain/interface/admin/IadminCreatorListingUseCase";
 import { IToggleUserStatusUseCase } from "../../../domain/interface/admin/IToggleUserStatusUseCase";
@@ -13,12 +14,12 @@ export class AdminUserController {
       const data = await this._adminUserListingUseCase.getAllUsers()
       const users = data.filter((item) => item.role == "user")
 
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         success: true,
         users,
       });
     } catch (error) {
-      return res.status(500).json({
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: error,
       });
@@ -29,9 +30,9 @@ export class AdminUserController {
       const { userId } = req.params;
       const { status } = req.body;
       await this._toggleUserStatusUseCase.execute(userId, status);
-      return res.status(200).json({ success: true, message: `User ${status} successfully` });
+      return res.status(StatusCode.OK).json({ success: true, message: `User ${status} successfully` });
     } catch (error) {
-      return res.status(500).json({ success: false, message: error });
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error });
     }
   }
 }

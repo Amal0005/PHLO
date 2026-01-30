@@ -3,6 +3,7 @@ import { IVerifyForgotOtpUseCase } from "@/domain/interface/creator/auth/Iverify
 import { IresetPasswordUseCase } from "@/domain/interface/creator/auth/IresetPasswordUseCase";
 
 import { Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 
 export class CreatorAuthController {
     constructor(
@@ -15,15 +16,15 @@ export class CreatorAuthController {
         try {
             const email = req.body.email?.trim().toLowerCase();
             if (!email) {
-                return res.status(400).json({ message: "Email required" });
+                return res.status(StatusCode.BAD_REQUEST).json({ message: "Email required" });
             }
             await this._forgotPasswordUseCase.sendOtp(email);
-            return res.status(200).json({
+            return res.status(StatusCode.OK).json({
                 success: true,
                 message: "OTP sent successfully",
             });
         } catch (error) {
-            return res.status(400).json({
+            return res.status(StatusCode.BAD_REQUEST).json({
                 success: false,
                 message: "Failed to send OTP",
             });
@@ -34,9 +35,9 @@ export class CreatorAuthController {
         try {
             const { email, otp } = req.body;
             await this._verifyForgotOtpUseCase.verify(email, otp);
-            return res.status(200).json({ success: true, message: "Otp Verified" });
+            return res.status(StatusCode.OK).json({ success: true, message: "Otp Verified" });
         } catch (error: any) {
-            return res.status(400).json({
+            return res.status(StatusCode.BAD_REQUEST).json({
                 success: false,
                 message: error?.message || "Invalid OTP",
             });
@@ -48,14 +49,14 @@ export class CreatorAuthController {
             const { email, password } = req.body;
             await this._resetPasswordUseCase.reset(email, password);
             return res
-                .status(200)
+                .status(StatusCode.OK)
                 .json({ success: true, message: "Password Reset Successful" });
         } catch (error: any) {
-            return res.status(400).json({
+            return res.status(StatusCode.BAD_REQUEST).json({
                 success: false,
                 message: error?.message || "Failed to reset password",
             });
         }
     }
-    
+
 }

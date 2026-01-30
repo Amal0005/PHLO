@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 import { AuthPayload } from "@/domain/dto/user/authPayload";
 import { IjwtServices } from "@/domain/interface/service/IjwtServices";
 import { ITokenBlacklistService } from "@/domain/interface/service/ItokenBlacklistService";
@@ -21,14 +22,14 @@ export const jwtAuthMiddleware =
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-          return res.status(401).json({ message: "Unauthorized" });
+          return res.status(StatusCode.UNAUTHORIZED).json({ message: "Unauthorized" });
         }
 
         const token = authHeader.split(" ")[1];
 
         const isBlacklisted = await blacklistService.isTokenBlacklisted(token);
         if (isBlacklisted) {
-          return res.status(401).json({ message: "Token blacklisted" });
+          return res.status(StatusCode.UNAUTHORIZED).json({ message: "Token blacklisted" });
 
         }
 
@@ -36,17 +37,17 @@ export const jwtAuthMiddleware =
 
         const user = await userRepo.findById(decoded.userId);
         if (user && user.status === "blocked") {
-          return res.status(403).json({ success: false, message: "Your account has been blocked by the admin" });
+          return res.status(StatusCode.FORBIDDEN).json({ success: false, message: "Your account has been blocked by the admin" });
         }
         const creator = await creatorRepo.findById(decoded.userId);
         if (creator && creator.status === "blocked") {
-          return res.status(403).json({ success: false, message: "Your account has been blocked by the admin" });
+          return res.status(StatusCode.FORBIDDEN).json({ success: false, message: "Your account has been blocked by the admin" });
         }
         req.user = decoded;
 
         next();
       } catch {
-        return res.status(401).json({ message: "Invalid or expired token" });
+        return res.status(StatusCode.UNAUTHORIZED).json({ message: "Invalid or expired token" });
       }
     };
 

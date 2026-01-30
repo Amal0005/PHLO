@@ -1,22 +1,23 @@
 import { IGetPresignedViewUrlUseCase } from "../../domain/interface/creator/IgetPresignedViewUrlUseCase";
 import { CreatorRepository } from "../repository/creator/creatorRepository";
-import { Request,Response } from "express";
+import { Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 
 export class ViewController {
   constructor(
     private _creatorRepo: CreatorRepository,
     private _getPresignedViewUrlUseCase: IGetPresignedViewUrlUseCase
-  ) {}
+  ) { }
 
   async getImage(req: Request, res: Response) {
     const email = req.query.email as string;
     if (!email) {
-      return res.status(400).json({ message: "Email required" });
+      return res.status(StatusCode.BAD_REQUEST).json({ message: "Email required" });
     }
 
     const creator = await this._creatorRepo.findByEmail(email);
     if (!creator) {
-      return res.status(404).json({ message: "Creator not found" });
+      return res.status(StatusCode.NOT_FOUND).json({ message: "Creator not found" });
     }
 
     return res.json({

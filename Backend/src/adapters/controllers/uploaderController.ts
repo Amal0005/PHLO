@@ -69,17 +69,18 @@
 
 import { IGetPresignedViewUrlUseCase } from "../../domain/interface/creator/IgetPresignedViewUrlUseCase";
 import { IGetPresignedUrlUseCase } from "../../domain/interface/creator/IgetUrl";
-import { Request,Response } from "express";
+import { Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 export class UploadController {
   constructor(
     private _getPresignedUrlUseCase: IGetPresignedUrlUseCase,
     private _getPresignedViewUrlUseCase: IGetPresignedViewUrlUseCase
-  ) {}
+  ) { }
 
   async getPresignedUrl(req: Request, res: Response) {
     const { fileType, folder } = req.body;
     if (!fileType || !folder) {
-      return res.status(400).json({ message: "Missing" });
+      return res.status(StatusCode.BAD_REQUEST).json({ message: "Missing" });
     }
 
     const data = await this._getPresignedUrlUseCase.execute(fileType, folder);
@@ -89,7 +90,7 @@ export class UploadController {
   async getViewUrl(req: Request, res: Response) {
     const { key } = req.query;
     if (!key || typeof key !== "string") {
-      return res.status(400).json({ message: "Key required" });
+      return res.status(StatusCode.BAD_REQUEST).json({ message: "Key required" });
     }
 
     const viewUrl = await this._getPresignedViewUrlUseCase.execute(key);

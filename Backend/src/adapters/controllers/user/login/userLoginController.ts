@@ -1,8 +1,9 @@
 import { IuserLoginUseCase } from "../../../../domain/interface/user/login/IuserLoginUseCase";
 import { Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 
 export class userLoginController {
-  constructor(private _userLoginUseCase: IuserLoginUseCase) {}
+  constructor(private _userLoginUseCase: IuserLoginUseCase) { }
 
   async login(req: Request, res: Response) {
     try {
@@ -15,7 +16,7 @@ export class userLoginController {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
       });
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         success: true,
         data: {
           user: result.user,
@@ -24,7 +25,7 @@ export class userLoginController {
       });
     } catch (error: any) {
       console.log("Login error:", error);
-      res.status(400).json({
+      res.status(StatusCode.BAD_REQUEST).json({
         message: error.message || "Error occurs while login",
       });
     }

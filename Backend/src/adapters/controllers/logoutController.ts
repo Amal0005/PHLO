@@ -1,22 +1,23 @@
 import { Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 import { ILogoutUseCase } from "../../domain/interface/IlogoutUseCase";
 import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
 
 export class LogoutController {
-  constructor(private _logoutUseCase: ILogoutUseCase) {}
+  constructor(private _logoutUseCase: ILogoutUseCase) { }
 
   async logout(req: AuthRequest, res: Response) {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
-        return res.status(401).json({ message: "Authorization header missing" });
+        return res.status(StatusCode.UNAUTHORIZED).json({ message: "Authorization header missing" });
       }
 
       const token = authHeader.split(" ")[1];
       const { exp } = req.user!;
 
       if (typeof exp !== "number") {
-        return res.status(400).json({ message: "Token expiry missing" });
+        return res.status(StatusCode.BAD_REQUEST).json({ message: "Token expiry missing" });
       }
 
       await this._logoutUseCase.logout(token, exp);
@@ -27,12 +28,12 @@ export class LogoutController {
         sameSite: "strict",
       });
 
-      return res.status(200).json({
+      return res.status(StatusCode.OK).json({
         success: true,
         message: "Logged out successfully",
       });
     } catch (error) {
-      return res.status(401).json({ message: "Logout failed" });
+      return res.status(StatusCode.UNAUTHORIZED).json({ message: "Logout failed" });
     }
   }
 }
