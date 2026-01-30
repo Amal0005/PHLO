@@ -4,7 +4,7 @@ export async function uploadToS3(
 ): Promise<string> {
 
   const presignRes = await fetch(
-    "http://localhost:5000/api/upload/presign",
+    `${import.meta.env.VITE_BASE_URL}/upload/presign`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
