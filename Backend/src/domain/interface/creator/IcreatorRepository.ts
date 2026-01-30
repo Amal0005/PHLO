@@ -7,5 +7,6 @@ export interface IcreatorRepository {
     updateStatus(createrId: string, status: "pending" | "approved" | "rejected"|"blocked", reason?: string): Promise<void>
     updatePassword(email: string, hashedPassword: string): Promise<void>;
     findAllCreators(): Promise<CreatorEntity[]>
+    findByPhone(phone:string|undefined):Promise<CreatorEntity|null>
 
 }

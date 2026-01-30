@@ -2,11 +2,12 @@ import { Menu, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LogoWhite from "../../assets/images/Logo_white.png";
-import api from "@/axios/axiosConfig";
 import type { RootState } from "@/store/store";
 import { clearAdmin } from "@/store/slices/admin/adminSlice";
 import { clearAdminAuth } from "@/store/slices/admin/adminAuthSlice";
 import { ROUTES } from "@/constants/routes";
+import { AdminAuthService } from "@/services/admin/adminAuthService";
+import { confirmActionToast } from "../reusable/confirmActionToast";
 
 interface AdminNavbarProps {
   onMenuToggle: () => void;
@@ -19,18 +20,25 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
   const admin = useSelector((state: RootState) => state.admin.admin);
 
 
-  const handleLogout = async () => {
-    try {
-      await api.post("/admin/logout");
+const handleLogout = () => {
+  confirmActionToast(
+    "Are you sure you want to logout?",
+    async () => {
+      try {
+        await AdminAuthService.logOut();
 
-      dispatch(clearAdminAuth());
-      dispatch(clearAdmin());
+        dispatch(clearAdminAuth());
+        dispatch(clearAdmin());
 
-      navigate(ROUTES.ADMIN.LOGIN, { replace: true });
-    } catch (err) {
-      console.error("Logout failed", err);
-    }
-  };
+        navigate(ROUTES.ADMIN.LOGIN, { replace: true });
+      } catch (err) {
+        console.error("Logout failed", err);
+      }
+    },
+    "Logout"
+  );
+};
+
 
   const initials = admin?.name
     ?.split(" ")

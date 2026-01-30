@@ -19,8 +19,8 @@ export class CreatorRegisterController {
 
   async checkExists(req: Request, res: Response) {
     try {
-      const { email } = req.body;
-      await this._checkCreatorExistsUseCase.checkExists(email);
+      const { email,phone } = req.body;
+      await this._checkCreatorExistsUseCase.checkExists(email,phone);
       return res.status(200).json({ success: true, message: "Email is available" });
     } catch (error: any) {
       return res.status(400).json({

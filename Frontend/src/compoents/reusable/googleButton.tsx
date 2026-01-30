@@ -22,7 +22,6 @@ const GoogleLoginButton = ({ onSuccess }: Props) => {
         />
       </div>
 
-      {/* Your styled button (UNCHANGED UI) */}
       <button
         type="button"
         className="w-full py-3.5 px-4 bg-zinc-800/50 hover:bg-zinc-700 border border-zinc-700 hover:border-zinc-600 rounded-lg text-white font-medium transition-all duration-300 flex items-center justify-center gap-3 text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"

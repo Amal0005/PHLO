@@ -38,10 +38,10 @@ export const jwtAuthMiddleware =
         if (user && user.status === "blocked") {
           return res.status(403).json({ success: false, message: "Your account has been blocked by the admin" });
         }
-    const creator = await creatorRepo.findById(decoded.userId);
-      if (creator && creator.status === "blocked") {
-        return res.status(403).json({ success: false, message: "Your account has been blocked by the admin" });
-      }
+        const creator = await creatorRepo.findById(decoded.userId);
+        if (creator && creator.status === "blocked") {
+          return res.status(403).json({ success: false, message: "Your account has been blocked by the admin" });
+        }
         req.user = decoded;
 
         next();

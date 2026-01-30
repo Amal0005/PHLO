@@ -26,7 +26,6 @@ export class CreatorRoutes {
   }
 
   private setRoutes(): void {
-    // PUBLIC ROUTES
     this.creatorRouter.post(
       "/register",
       validate(registerCreatorSchema),
@@ -61,7 +60,6 @@ export class CreatorRoutes {
       creatorRegisterController.checkExists(req, res)
     );
 
-    // PROTECTED ROUTES
     this.creatorRouter.use(
       jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo,this._creatorRepo),
       authorizeRoles("creator")

@@ -7,12 +7,12 @@ import LogoWhite from "../../../assets/images/Logo_white.png";
 import { loginUserSchema } from "../../../validation/loginUserSchema";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/user/userSlice";
-import { authService } from "@/services/user/loginService";
 import GoogleLoginButton from "../../../compoents/reusable/googleButton";
 import { AppDispatch } from "@/store/store";
 import InputError from "@/compoents/reusable/inputErrors";
 import { setUserAuth } from "@/store/slices/user/userAuthSlice";
 import { ROUTES } from "@/constants/routes";
+import { UserAuthService } from "@/services/user/UserAuthService";
 
 interface loginForm {
   email: string;
@@ -47,7 +47,7 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const data = await authService.login(form);
+      const data = await UserAuthService.login(form);
       console.log("Login Response Data:", data);
 
       if (data?.data?.accessToken && data?.data?.user) {
@@ -243,7 +243,7 @@ export default function Login() {
                 <GoogleLoginButton
                   onSuccess={async (idToken: string) => {
                     try {
-                      const response = await authService.googleLogin(idToken);
+                      const response = await UserAuthService.googleLogin(idToken);
 
                       console.log("Google Service Response:", response);
 

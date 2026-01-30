@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserService";
 import { User } from "@/interface/admin/userInterface";
 import { toast } from "react-toastify";
-import { confirmActionToast } from "./components/confirmActionToast";
+import { confirmActionToast } from "../../compoents/reusable/confirmActionToast";
 
 export default function UserListingPage() {
   const [users, setUsers] = useState<User[]>([]);

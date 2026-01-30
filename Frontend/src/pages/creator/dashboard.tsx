@@ -260,41 +260,45 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "@/store/store";
-import { LogOut, Camera, BarChart3 } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 
 import { clearCreator } from "@/store/slices/creator/creatorSlice";
 import { clearCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
+import { confirmActionToast } from "@/compoents/reusable/confirmActionToast";
+import { CreatorAuthService } from "@/services/creator/creatorAuthService";
 
 export default function CreatorDashboard() {
 
   const creator = useSelector((state: RootState) => state.creator.creator);
-  // const creatorToken = useSelector(
-  //   (state: RootState) => state.creatorAuth.token
-  // );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(clearCreatorAuth());
-    dispatch(clearCreator());
-    navigate(ROUTES.CREATOR.LOGIN, { replace: true });
-
-  };
+const handleLogout = () => {
+  confirmActionToast(
+    "Are you sure you want to logout?",
+    async () => {
+      await CreatorAuthService.logout();
+      dispatch(clearCreatorAuth());
+      dispatch(clearCreator());
+      navigate(ROUTES.CREATOR.LOGIN, { replace: true });
+    },
+    "Logout"
+  );
+};
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-white text-center">
 
-        {/* Header */}
         <h1 className="text-2xl font-bold mb-2">
-          Welcome, {creator?.fullName || "Creator"} 👋
+          Welcome, {creator?.fullName || "Creator"}
         </h1>
         <p className="text-gray-400 text-sm mb-6">
           This is your creator dashboard
         </p>
 
-        {/* Actions */}
-        <div className="space-y-3">
+        {/* <div className="space-y-3">
           <button
             onClick={() => navigate(ROUTES.CREATOR.PROFILE)}
             className="w-full flex items-center justify-center gap-2 bg-white text-black py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
@@ -318,9 +322,8 @@ export default function CreatorDashboard() {
             <BarChart3 className="w-5 h-5" />
             Analytics
           </button>
-        </div>
+        </div> */}
 
-        {/* Footer */}
         <button
           onClick={() => handleLogout()}
           className="mt-6 flex items-center justify-center gap-2 text-red-400 hover:text-red-300 text-sm"

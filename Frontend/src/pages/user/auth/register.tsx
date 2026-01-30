@@ -2,14 +2,15 @@ import { useState } from "react";
 import type { ChangeEvent, MouseEvent } from "react";
 import { Image, Calendar, Sparkles, CameraOff, Camera } from "lucide-react";
 import { toast } from "react-toastify";
-import api from "../../../axios/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { registerUserSchema } from "../../../validation/registerUserSchema";
 import GoogleLoginButton from "@/compoents/reusable/googleButton";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/user/userSlice";
+import { setUserAuth } from "@/store/slices/user/userAuthSlice";
 import { ROUTES } from "@/constants/routes";
+import { UserAuthService } from "@/services/user/UserAuthService";
 
 interface RegisterForm {
   name: string;
@@ -54,16 +55,15 @@ export default function Register() {
       if (errors.email) toast.error(errors.email[0]);
       if (errors.phone) toast.error(errors.phone[0]);
       if (errors.password) toast.error(errors.password[0]);
-      if (errors.confirmPassword) {
-        toast.error(errors.confirmPassword[0]);
-      } return;
+      if (errors.confirmPassword)toast.error(errors.confirmPassword[0]);
+      return;
     }
 
     setIsLoading(true);
 
     const { confirmPassword, ...submitData } = form;
     try {
-      await api.post("/register", submitData);
+      await UserAuthService.register(submitData)
       toast.success("OTP sent successfully!");
 
       navigate(ROUTES.USER.VERIFY_OTP, { state: { email: form.email } });
@@ -180,7 +180,6 @@ export default function Register() {
               </div>
 
               <div className="space-y-3.5">
-                {/* Full Name Input with Floating Label */}
                 <div className="relative">
                   <input
                     type="text"
@@ -202,7 +201,6 @@ export default function Register() {
                   </label>
                 </div>
 
-                {/* Email Input with Floating Label */}
                 <div className="relative">
                   <input
                     type="email"
@@ -224,7 +222,6 @@ export default function Register() {
                   </label>
                 </div>
 
-                {/* Phone Input with Floating Label */}
                 <div className="relative">
                   <input
                     type="text"
@@ -246,7 +243,6 @@ export default function Register() {
                   </label>
                 </div>
 
-                {/* Password Input with Floating Label */}
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -355,14 +351,23 @@ export default function Register() {
                 <GoogleLoginButton
                   onSuccess={async (idToken: string) => {
                     try {
-                      const res = await api.post("/auth/google", { idToken });
+                      const res = await UserAuthService.googleLogin(idToken)
 
-                      dispatch(setUser(res.data.user));
+                      if (res.data?.accessToken && res.data?.user) {
+                        dispatch(setUser(res.data.user));
+                        dispatch(setUserAuth(res.data.accessToken));
 
-                      navigate(ROUTES.USER.HOME);
-                    } catch (err) {
-                      toast.error("Google login failed");
-                      console.log(err);
+                        toast.success("Google registration successful!");
+
+                        setTimeout(() => {
+                          navigate(ROUTES.USER.HOME, { replace: true });
+                        }, 100);
+                      } else {
+                        console.error("Google Registration: Missing token/user", res.data);
+                        toast.error("Google registration failed: Invalid response");
+                      }
+                    } catch (err: any) {
+                      toast.error(err?.response?.data?.message || "Google registration failed");
                     }
                   }}
                 />

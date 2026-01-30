@@ -15,8 +15,14 @@ import {
 import { uploadToS3 as fileUploader } from "@/utils/uploadToS3";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { validateStep1, validateStep2, validateStep3, validateStep4 } from "@/validation/registerCreatorValidation";
+import {
+  validateStep1,
+  validateStep2,
+  validateStep3,
+  validateStep4,
+} from "@/validation/registerCreatorValidation";
 import { ROUTES } from "@/constants/routes";
+import { CreatorAuthService } from "@/services/creator/creatorAuthService";
 
 async function uploadToS3(file: File, type: "profile" | "id"): Promise<string> {
   const url = await fileUploader(file, type);
@@ -56,7 +62,6 @@ export default function CreatorSignup() {
     "Wildlife",
     "Commercial",
   ];
-
   const navigate = useNavigate();
 
   function handleChange(
@@ -93,45 +98,23 @@ export default function CreatorSignup() {
     }
   }
 
-  async function checkEmailExists(email: string): Promise<boolean> {
-    const res = await fetch(
-      "http://localhost:5000/api/creator/check-email",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      }
+async function handleNext() {
+  if (currentStep === 1) {
+    const isValid = await validateStep1(
+      formData,
+      CreatorAuthService.checkEmailExists
     );
-    const data = await res.json();
-    console.log(data)
-
-    if (!res.ok) {
-      throw new Error(data.message || "Email check failed");
-    }
-
-    return data.exists === true;
+    if (!isValid) return;
   }
 
+  if (currentStep === 2 && !validateStep2(formData)) return;
+  if (currentStep === 3 && !validateStep3(formData)) return;
 
-  async function handleNext() {
-    if (currentStep === 1) {
-      const isValid = await validateStep1(formData, checkEmailExists);
-      if (!isValid) return;
-    }
-
-    if (currentStep === 2) {
-      if (!validateStep2(formData)) return;
-    }
-
-    if (currentStep === 3) {
-      if (!validateStep3(formData)) return;
-    }
-
-    if (currentStep < 4) {
-      setCurrentStep((prev) => prev + 1);
-      toast.success("Step completed successfully!");
-    }
+  if (currentStep < 4) {
+    setCurrentStep((prev) => prev + 1);
+    toast.success("Step completed successfully!");
   }
+}
 
   function handleBack() {
     if (currentStep > 1) {
@@ -142,7 +125,6 @@ export default function CreatorSignup() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validateStep4(formData)) return;
-
 
     setIsLoading(true);
 
@@ -175,16 +157,7 @@ export default function CreatorSignup() {
         governmentId: governmentIdUrl,
       };
 
-      const res = await fetch("http://localhost:5000/api/creator/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Registration failed");
-      }
+      await CreatorAuthService.register(payload);
 
       toast.success("Creator registered successfully! Awaiting admin approval.");
 
@@ -220,7 +193,11 @@ export default function CreatorSignup() {
   }
 
   const isStep1Valid =
-    formData.fullName && formData.email && formData.password && formData.confirmPassword && formData.phone;
+    formData.fullName &&
+    formData.email &&
+    formData.password &&
+    formData.confirmPassword &&
+    formData.phone;
   const isStep2Valid = formData.city && formData.yearsOfExperience;
   const isStep3Valid =
     formData.bio && formData.portfolioLink && formData.specialties.length > 0;
@@ -248,10 +225,11 @@ export default function CreatorSignup() {
                 {[1, 2, 3, 4].map((step) => (
                   <div key={step} className="flex items-center flex-1">
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${currentStep >= step
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${
+                        currentStep >= step
                           ? "bg-white border-white text-black"
                           : "bg-zinc-800/50 border-zinc-700 text-gray-500"
-                        }`}
+                      }`}
                     >
                       {currentStep > step ? (
                         <Check className="w-4 h-4" />
@@ -261,8 +239,9 @@ export default function CreatorSignup() {
                     </div>
                     {step < 4 && (
                       <div
-                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${currentStep > step ? "bg-white" : "bg-zinc-700"
-                          }`}
+                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${
+                          currentStep > step ? "bg-white" : "bg-zinc-700"
+                        }`}
                       />
                     )}
                   </div>
@@ -499,10 +478,11 @@ export default function CreatorSignup() {
                             key={specialty}
                             type="button"
                             onClick={() => handleSpecialtyToggle(specialty)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${formData.specialties.includes(specialty)
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+                              formData.specialties.includes(specialty)
                                 ? "bg-white text-black"
                                 : "bg-zinc-800/50 text-gray-400 border border-zinc-700 hover:bg-zinc-700"
-                              }`}
+                            }`}
                           >
                             {specialty}
                           </button>

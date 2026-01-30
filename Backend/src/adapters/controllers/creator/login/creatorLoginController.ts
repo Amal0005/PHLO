@@ -8,10 +8,11 @@ export class CreatorLoginController{
     ){}
     async login(req:Request,res:Response){
         try {
-            const {email ,password}=req.body as {
+            const {email ,password}=req.body.Creator as {
                 email:string,
                 password:string
             }
+            console.log(req.body.payload)
             const result=await this._loginUseCase.login(email,password)
                 return res.status(200).json({
         success: true,

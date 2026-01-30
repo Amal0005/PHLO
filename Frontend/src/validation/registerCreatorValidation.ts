@@ -1,97 +1,50 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { toast } from "react-toastify";
+import { creatorStep1Schema, creatorStep2Schema, creatorStep3Schema, creatorStep4Schema } from "./registerCreatorValidationSchema";
+
 
 export async function validateStep1(
   formData: any,
   checkEmailExists: (email: string) => Promise<boolean>
 ): Promise<boolean> {
-  if (!formData.fullName.trim()) {
-    toast.error("Please enter your full name");
-    return false;
-  }
-  const nameRegex = /^[a-zA-Z\s]+$/;
-if(formData.fullName && !nameRegex.test(formData.fullName)){
-    toast.error("Full name can only contain letters");
-    return false;
-  }
-if (formData.fullName.trim().length < 3) {
-    toast.error("Full name must be at least 3 characters")
-    return false;
-  }
-  if (!formData.email.trim()) {
-    toast.error("Please enter your email address");
-    return false;
-  }
+  const result = creatorStep1Schema.safeParse(formData);
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(formData.email)) {
-    toast.error("Please enter a valid email address");
+  if (!result.success) {
+    const errors = result.error.flatten().fieldErrors;
+
+    if (errors.fullName) toast.error(errors.fullName[0]);
+    else if (errors.email) toast.error(errors.email[0]);
+    else if (errors.phone) toast.error(errors.phone[0]);
+    else if (errors.password) toast.error(errors.password[0]);
+    else if (errors.confirmPassword) toast.error(errors.confirmPassword[0]);
+
     return false;
   }
-
-  if (!formData.phone.trim()) {
-    toast.error("Please enter your phone number");
-    return false;
-  }
-
-  const phoneRegex = /^[0-9]{10}$/;
-  if (!phoneRegex.test(formData.phone.trim())) {
-    toast.error("Please enter a valid 10-digit phone number");
-    return false;
-  }
-
-  if (!formData.password) {
-    toast.error("Please enter a password");
-    return false;
-  }
-
-  if (formData.password.length < 6) {
-    toast.error("Password must be at least 6 characters long");
-    return false;
-  }
-
-  if (!formData.confirmPassword) {
-    toast.error("Please confirm your password");
-    return false;
-  }
-
-  if (formData.password !== formData.confirmPassword) {
-    toast.error("Passwords do not match");
-    return false;
-  }
-
-  try {
-    const exists = await checkEmailExists(formData.email);
-    if (exists) {
-      toast.error("Email already registered");
-      return false;
-    }
-  } catch (error: any) {
-    toast.error(error?.message || "Unable to verify email");
+  const emailExists = await checkEmailExists(formData.email);
+  if (emailExists) {
+    toast.error("Email already exists");
     return false;
   }
 
   return true;
 }
 
+
 export function validateStep2(formData: any): boolean {
-  if (!formData.city.trim()) {
-    toast.error("Please enter your city");
-    return false;
-  }
+  const result = creatorStep2Schema.safeParse(formData);
 
-  if (!formData.yearsOfExperience) {
-    toast.error("Please enter your years of experience");
-    return false;
-  }
-
-  const years = Number(formData.yearsOfExperience);
-  if (isNaN(years) || years < 0) {
-    toast.error("Please enter a valid number of years");
-    return false;
-  }
-
-  if (years > 50) {
-    toast.error("Years of experience seems too high. Please check.");
+  if (!result.success) {
+    const errors = result.error.flatten().fieldErrors;
+    
+    if (errors.city) {
+      toast.error(errors.city[0]);
+      return false;
+    }
+    if (errors.yearsOfExperience) {
+      toast.error(errors.yearsOfExperience[0]);
+      return false;
+    }
+    
     return false;
   }
 
@@ -99,30 +52,24 @@ export function validateStep2(formData: any): boolean {
 }
 
 export function validateStep3(formData: any): boolean {
-  if (!formData.bio.trim()) {
-    toast.error("Please write something about yourself");
-    return false;
-  }
+  const result = creatorStep3Schema.safeParse(formData);
 
-  if (formData.bio.trim().length < 20) {
-    toast.error("Bio should be at least 20 characters long");
-    return false;
-  }
-
-  if (!formData.portfolioLink.trim()) {
-    toast.error("Please provide your portfolio link");
-    return false;
-  }
-
-  try {
-    new URL(formData.portfolioLink);
-  } catch {
-    toast.error("Please enter a valid portfolio URL (e.g., https://example.com)");
-    return false;
-  }
-
-  if (formData.specialties.length === 0) {
-    toast.error("Please select at least one specialty");
+  if (!result.success) {
+    const errors = result.error.flatten().fieldErrors;
+    
+    if (errors.bio) {
+      toast.error(errors.bio[0]);
+      return false;
+    }
+    if (errors.portfolioLink) {
+      toast.error(errors.portfolioLink[0]);
+      return false;
+    }
+    if (errors.specialties) {
+      toast.error(errors.specialties[0]);
+      return false;
+    }
+    
     return false;
   }
 
@@ -130,13 +77,20 @@ export function validateStep3(formData: any): boolean {
 }
 
 export function validateStep4(formData: any): boolean {
-  if (!formData.profilePhoto) {
-    toast.error("Please upload your profile photo");
-    return false;
-  }
+  const result = creatorStep4Schema.safeParse(formData);
 
-  if (!formData.governmentId) {
-    toast.error("Please upload your government ID");
+  if (!result.success) {
+    const errors = result.error.flatten().fieldErrors;
+    
+    if (errors.profilePhoto) {
+      toast.error(errors.profilePhoto[0]);
+      return false;
+    }
+    if (errors.governmentId) {
+      toast.error(errors.governmentId[0]);
+      return false;
+    }
+    
     return false;
   }
 

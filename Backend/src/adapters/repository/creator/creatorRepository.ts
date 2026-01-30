@@ -28,7 +28,10 @@ export class CreatorRepository implements IcreatorRepository {
     const creator = await CreatorModel.findOne({ email });
     return creator ? this.toDomain(creator.toObject()) : null;
   }
-
+  async findByPhone(phone: string): Promise<CreatorEntity | null> {
+    const creator = await CreatorModel.findOne({ phone });
+    return creator ? this.toDomain(creator.toObject()) : null;
+  }
   async createCreator(
     creator: Omit<CreatorEntity, "_id">,
   ): Promise<CreatorEntity> {
@@ -48,7 +51,10 @@ export class CreatorRepository implements IcreatorRepository {
   }
 
   async updatePassword(email: string, hashedPassword: string): Promise<void> {
-    await CreatorModel.updateOne({ email }, { $set: { password: hashedPassword } });
+    await CreatorModel.updateOne(
+      { email },
+      { $set: { password: hashedPassword } },
+    );
   }
   async findAllCreators(): Promise<CreatorEntity[]> {
     const creators = await CreatorModel.find()

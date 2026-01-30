@@ -3,10 +3,9 @@ import type { ChangeEvent, FormEvent } from "react";
 import { Mail, Shield, ArrowLeft, Image, Calendar } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
-import api from "../../../axios/axiosConfig";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { ROUTES } from "@/constants/routes";
+import { UserAuthService } from "@/services/user/UserAuthService";
 
 export default function VerifyOtp() {
   const location = useLocation();
@@ -35,7 +34,7 @@ export default function VerifyOtp() {
     setIsLoading(true);
 
     try {
-      const res = await api.post("/verify-otp", { email, otp });
+      const res = await UserAuthService.verifyOtp({email,otp})
       localStorage.setItem("accessToken", res.data.accessToken);
       toast.success("OTP Verified Successfully!");
       navigate(ROUTES.USER.LOGIN);
@@ -51,7 +50,7 @@ export default function VerifyOtp() {
     if (!canResend) return;
 
     try {
-      await api.post("/resend-otp", { email });
+      await UserAuthService.resendOtp({email})
 
       toast.info("OTP resent successfully!");
       setTimer(60);

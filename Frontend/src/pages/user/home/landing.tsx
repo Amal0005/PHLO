@@ -1,12 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-
 import {
   Camera,
-  Menu,
-  X,
   ChevronRight,
   Star,
   Download,
@@ -19,32 +12,9 @@ import {
   ArrowRight,
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
-import type { AppDispatch } from "@/store/store";
-import { clearUser } from "@/store/slices/user/userSlice";
-
-import { clearUserAuth } from "@/store/slices/user/userAuthSlice";
-import { ROUTES } from "@/constants/routes";
+import UserNavbar from "@/compoents/reusable/userNavbar";
 
 export default function LandingPage() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const dispatch = useDispatch<AppDispatch>();
-  const user = useSelector((state: RootState) => state.user.user);
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    dispatch(clearUserAuth());
-    dispatch(clearUser());
-    navigate(ROUTES.USER.LOGIN, { replace: true });
-
-  };
   const packages = [
     {
       id: 1,
@@ -212,108 +182,13 @@ export default function LandingPage() {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
-      setMobileMenuOpen(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navbar */}
-      <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
-            ? "bg-black/95 backdrop-blur-lg border-b border-white/10"
-            : "bg-transparent"
-          }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Logo */}
-            <img
-              src={LogoWhite}
-              alt="Logo"
-              className="h-10 lg:h-19 object-contain"
-            />
-
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-8">
-              <button
-                onClick={() => scrollToSection("packages")}
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                Packages
-              </button>
-              <button
-                onClick={() => scrollToSection("wallpapers")}
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                Wallpapers
-              </button>
-              <button
-                onClick={() => scrollToSection("creators")}
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                Creators
-              </button>
-              {user ? (
-                <div className="flex items-center gap-3">
-                  <span className="text-white font-semibold">
-                    {user.name || user.email}
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <button
-                  className="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105"
-                  onClick={() => navigate(ROUTES.USER.LOGIN)}
-                >
-                  Sign In
-                </button>
-              )}
-            </div>
-
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-white"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-black/95 backdrop-blur-lg border-b border-white/10">
-            <div className="px-4 py-4 space-y-3">
-              <button
-                onClick={() => scrollToSection("packages")}
-                className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
-              >
-                Packages
-              </button>
-              <button
-                onClick={() => scrollToSection("wallpapers")}
-                className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
-              >
-                Wallpapers
-              </button>
-              <button
-                onClick={() => scrollToSection("creators")}
-                className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
-              >
-                Creators
-              </button>
-              <button className="w-full px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors">
-                Sign In
-              </button>
-            </div>
-          </div>
-        )}
-      </nav>
+      <UserNavbar scrollToSection={scrollToSection} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -383,10 +258,11 @@ export default function LandingPage() {
             {packages.map((pkg) => (
               <div
                 key={pkg.id}
-                className={`relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border transition-all duration-300 hover:scale-105 hover:shadow-2xl ${pkg.popular
+                className={`relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
+                  pkg.popular
                     ? "border-white shadow-xl shadow-white/10"
                     : "border-white/10"
-                  }`}
+                }`}
               >
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-white text-black text-sm font-semibold rounded-full">
@@ -562,7 +438,7 @@ export default function LandingPage() {
                   src={LogoWhite}
                   alt="Logo"
                   className="h-10 lg:h-19 object-contain"
-                />{" "}
+                />
               </div>
               <p className="text-gray-400 mb-4 max-w-md">
                 Your one-stop destination for professional photography packages,

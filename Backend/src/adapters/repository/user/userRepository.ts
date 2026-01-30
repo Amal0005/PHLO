@@ -51,4 +51,9 @@ export class UserRepository implements IuserRepository {
     if (!user) return null;
     return this.toDomain(user);
   }
+  async findByPhone(phone: string): Promise<User | null> {
+    const user=await UserModel.findOne({phone})
+    if(!user)return null
+    return this.toDomain(user)
+  }
 }

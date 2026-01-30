@@ -4,10 +4,12 @@ import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepositor
 export class CheckCreatorExistsUseCase implements IcheckCreatorExistsUseCase {
     constructor(private _creatorRepo: IcreatorRepository) { }
 
-    async checkExists(email: string): Promise<void> {
+    async checkExists(email: string,phone:string): Promise<void> {
         const existing = await this._creatorRepo.findByEmail(email);
         if (existing) {
             throw new Error("Email already in use");
         }
+        const existingPhone=await this._creatorRepo.findByPhone(phone)
+        if(existingPhone)throw new Error("Mobile already in use")
     }
 }

@@ -1,3 +1,3 @@
 export interface IcheckCreatorExistsUseCase {
-    checkExists(email: string): Promise<void>;
+    checkExists(email: string,phone:string): Promise<void>;
 }

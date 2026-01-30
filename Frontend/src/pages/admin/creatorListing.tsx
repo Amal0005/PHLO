@@ -9,7 +9,7 @@ import {
 import { Creator } from "@/interface/admin/creatorInterface";
 import { toast } from "react-toastify";
 import { CreatorDetailModal } from "./components/CreatorDetailModal";
-import { confirmActionToast } from "./components/confirmActionToast";
+import { confirmActionToast } from "../../compoents/reusable/confirmActionToast";
 
 export default function CreatorListingPage() {
   const [creators, setCreators] = useState<Creator[]>([]);

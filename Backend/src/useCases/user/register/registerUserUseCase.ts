@@ -13,24 +13,28 @@ import path from "path";
 export class userRegisterUseCase implements IuserRegisterUseCase {
   constructor(
     private _userRepo: IuserRepository,
-    private _creatorRepo:IcreatorRepository,
+    private _creatorRepo: IcreatorRepository,
     private _passwordService: IpasswordService,
     private _otpService: IOTPService,
-    private _mailService: IMailService
+    private _mailService: IMailService,
   ) {}
 
   async registerUser(user: RegisterDto): Promise<void> {
     const email = user.email.trim().toLowerCase();
-
+    const phone = user.phone?.trim();
     const existingUser = await this._userRepo.findByEmail(email);
     if (existingUser) throw new Error("User already exists");
-    const existingCreator=await this._creatorRepo.findByEmail(email)
-    if(existingCreator)throw new Error("This email is already registered as a creator")
+    const existingCreator = await this._creatorRepo.findByEmail(email);
+    if (existingCreator)
+      throw new Error("This email is already registered as a creator");
+    const existingUserPhone = await this._userRepo.findByPhone(phone);
+    if (existingUserPhone)
+      throw new Error("Already Registred Number try with new");
 
     if (!user.password) throw new Error("Password is required");
 
     const hashedPassword = await this._passwordService.hash(user.password);
-    
+
     const pendingUser = {
       ...user,
       email,
@@ -45,7 +49,7 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
 
     const templatePath = path.join(
       __dirname,
-      "../../../templates/user/otp.html"
+      "../../../templates/user/otp.html",
     );
 
     let htmlTemplate = fs.readFileSync(templatePath, "utf8");
@@ -55,7 +59,7 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
     await this._mailService.sendMail(
       email,
       "Verify your account",
-      htmlTemplate
+      htmlTemplate,
     );
   }
 }

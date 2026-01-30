@@ -1,23 +1,22 @@
 import api from "@/axios/axiosConfig";
+import { CreatorLoginPayload, CreatorLoginResponse, CreatorRegisterPayload } from "@/interface/creator/creatorAuthInterface";
 
-export interface CreatorLoginResponse {
-  status: "approved" | "pending" | "rejected";
-  message?: string;
+export const CreatorAuthService = {
+  login: async (Creator:CreatorLoginPayload): Promise<CreatorLoginResponse> => {
+    const res = await api.post("/creator/login", {Creator });
+    return res.data.data;
+  },
 
-  creator?:any;
-  token?: string;
+  checkEmailExists: async (email: string): Promise<boolean> => {
+    const res = await api.post("/creator/check-email", { email });
+    return res.data.exists === true;
+  },
 
-  reason?: string;
-}
-
-export const creatorLoginService = async (
-  email: string,
-  password: string
-): Promise<CreatorLoginResponse> => {
-  const res = await api.post("/creator/login", { email, password });
-  return res.data.data;
-};
-export const checkEmailExists = async (email: string): Promise<boolean> => {
-  const res = await api.post("/creator/check-email", { email });
-  return res.data.exists === true;
+  register: async (payload: CreatorRegisterPayload) => {
+    const res = await api.post("/creator/register", payload);
+    return res.data;
+  },
+  logout:async():Promise<void>=>{
+    await api.post("/creator/logout")
+  }
 };

@@ -6,7 +6,7 @@ import type { AppDispatch } from "@/store/store";
 import { setCreator } from "@/store/slices/creator/creatorSlice";
 import { toast } from "react-toastify";
 import StatusModal from "./statusModal";
-import { creatorLoginService } from "@/services/creator/creatorAuthService";
+import { CreatorAuthService } from "@/services/creator/creatorAuthService";
 import { setCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
 import { ROUTES } from "@/constants/routes";
 
@@ -35,7 +35,7 @@ export default function CreatorLogin() {
     setIsLoading(true);
 
     try {
-      const responseData = await creatorLoginService(form.email, form.password);
+      const responseData = await CreatorAuthService.login(form);
       console.log("LOGIN RESPONSE:", responseData);
 
       if (responseData.status === "pending") {
