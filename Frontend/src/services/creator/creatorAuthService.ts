@@ -7,9 +7,8 @@ export const CreatorAuthService = {
     return res.data.data;
   },
 
-  checkEmailExists: async (email: string): Promise<boolean> => {
-    const res = await api.post("/creator/check-email", { email });
-    return res.data.exists === true;
+  checkCreatorExists: async (email: string, phone: string): Promise<void> => {
+    await api.post("/creator/check-email", { email, phone });
   },
 
   register: async (payload: CreatorRegisterPayload) => {

@@ -58,16 +58,30 @@ export class CreatorRegisterController {
     }
   }
 
-  async checkExists(req: Request, res: Response) {
-    try {
-      const { email, phone } = req.body;
-      await this._checkCreatorExistsUseCase.checkExists(email, phone);
-      return res.status(StatusCode.OK).json({ success: true, message: "Email is available" });
-    } catch (error: any) {
-      return res.status(StatusCode.BAD_REQUEST).json({
+async checkExists(req: Request, res: Response) {
+  try {
+    const { email, phone } = req.body;
+    await this._checkCreatorExistsUseCase.checkExists(email, phone);
+    return res.status(StatusCode.OK).json({
+      success: true,
+    });
+  } catch (error: any) {
+    if (error.message === "EMAIL_EXISTS") {
+      return res.status(StatusCode.CONFLICT).json({
         success: false,
-        message: error.message,
+        message: "Email already exists",
       });
     }
+    if (error.message === "PHONE_EXISTS") {
+      return res.status(StatusCode.CONFLICT).json({
+        success: false,
+        message: "Mobile number already exists",
+      });
+    }
+    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
+}
 }

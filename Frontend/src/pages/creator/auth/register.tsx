@@ -67,7 +67,7 @@ export default function CreatorSignup() {
   const navigate = useNavigate();
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -84,7 +84,7 @@ export default function CreatorSignup() {
 
   function handleFileChange(
     e: React.ChangeEvent<HTMLInputElement>,
-    fieldName: "profilePhoto" | "governmentId"
+    fieldName: "profilePhoto" | "governmentId",
   ) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -101,15 +101,21 @@ export default function CreatorSignup() {
   }
 
   async function handleNext() {
+    if (isLoading) return;
+    setIsLoading(true);
+
     if (currentStep === 1) {
       const isValid = await validateStep1(
         formData,
-        CreatorAuthService.checkEmailExists
+        CreatorAuthService.checkCreatorExists
       );
-      if (!isValid) return;
+
+      if (!isValid) {
+        setIsLoading(false);
+        return;
+      }
 
       try {
-        setIsLoading(true);
         await CreatorAuthService.resendOtp(formData.email);
         setIsOtpModalOpen(true);
         toast.info("Verification code sent to your email");
@@ -118,16 +124,21 @@ export default function CreatorSignup() {
       } finally {
         setIsLoading(false);
       }
-      return; // Don't proceed to next step yet, wait for OTP
+      return;
     }
-
-    if (currentStep === 2 && !validateStep2(formData)) return;
-    if (currentStep === 3 && !validateStep3(formData)) return;
-
+    if (currentStep === 2 && !validateStep2(formData)) {
+      setIsLoading(false);
+      return;
+    }
+    if (currentStep === 3 && !validateStep3(formData)) {
+      setIsLoading(false);
+      return;
+    }
     if (currentStep < 4) {
       setCurrentStep((prev) => prev + 1);
       toast.success("Step completed successfully!");
     }
+    setIsLoading(false);
   }
 
   async function handleOtpVerify(otp: string) {
@@ -137,7 +148,7 @@ export default function CreatorSignup() {
       setCurrentStep(2);
       toast.success("Email verified successfully!");
     } catch (error: any) {
-      throw error; // Let the modal handle the error
+      toast.error(error);
     }
   }
 
@@ -166,7 +177,7 @@ export default function CreatorSignup() {
 
       const profilePhotoUrl = await uploadToS3(
         formData.profilePhoto,
-        "profile"
+        "profile",
       );
       const governmentIdUrl = await uploadToS3(formData.governmentId, "id");
 
@@ -188,7 +199,9 @@ export default function CreatorSignup() {
 
       await CreatorAuthService.register(payload);
 
-      toast.success("Creator registered successfully! Awaiting admin approval.");
+      toast.success(
+        "Creator registered successfully! Awaiting admin approval.",
+      );
 
       setFormData({
         fullName: "",
@@ -214,7 +227,7 @@ export default function CreatorSignup() {
     } catch (error) {
       console.error(error);
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong"
+        error instanceof Error ? error.message : "Something went wrong",
       );
     } finally {
       setIsLoading(false);
@@ -254,10 +267,11 @@ export default function CreatorSignup() {
                 {[1, 2, 3, 4].map((step) => (
                   <div key={step} className="flex items-center flex-1">
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${currentStep >= step
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${
+                        currentStep >= step
                           ? "bg-white border-white text-black"
                           : "bg-zinc-800/50 border-zinc-700 text-gray-500"
-                        }`}
+                      }`}
                     >
                       {currentStep > step ? (
                         <Check className="w-4 h-4" />
@@ -267,8 +281,9 @@ export default function CreatorSignup() {
                     </div>
                     {step < 4 && (
                       <div
-                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${currentStep > step ? "bg-white" : "bg-zinc-700"
-                          }`}
+                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${
+                          currentStep > step ? "bg-white" : "bg-zinc-700"
+                        }`}
                       />
                     )}
                   </div>
@@ -379,14 +394,27 @@ export default function CreatorSignup() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={handleNext}
-                    disabled={!isStep1Valid}
-                    className="w-full bg-white hover:bg-gray-200 text-black py-3 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
-                  >
-                    Continue
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
+      <button
+  onClick={handleNext}
+  disabled={!isStep1Valid || isLoading}
+  className="w-full bg-white hover:bg-gray-200 text-black py-3 rounded-lg font-semibold
+             transition-all duration-300
+             disabled:opacity-50 disabled:cursor-not-allowed
+             flex items-center justify-center gap-2"
+>
+  {isLoading ? (
+    <>
+      <span className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+      Sending Otp...
+    </>
+  ) : (
+    <>
+      Continue
+      <ArrowRight className="w-5 h-5" />
+    </>
+  )}
+</button>
+
                 </div>
               )}
 
@@ -505,10 +533,11 @@ export default function CreatorSignup() {
                             key={specialty}
                             type="button"
                             onClick={() => handleSpecialtyToggle(specialty)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${formData.specialties.includes(specialty)
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+                              formData.specialties.includes(specialty)
                                 ? "bg-white text-black"
                                 : "bg-zinc-800/50 text-gray-400 border border-zinc-700 hover:bg-zinc-700"
-                              }`}
+                            }`}
                           >
                             {specialty}
                           </button>
