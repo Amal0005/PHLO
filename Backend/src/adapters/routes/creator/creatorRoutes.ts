@@ -60,8 +60,16 @@ export class CreatorRoutes {
       creatorRegisterController.checkExists(req, res)
     );
 
+    this.creatorRouter.post("/verify-otp", (req, res) =>
+      creatorRegisterController.verifyOtp(req, res)
+    );
+
+    this.creatorRouter.post("/resend-otp", (req, res) =>
+      creatorRegisterController.resendOtp(req, res)
+    );
+
     this.creatorRouter.use(
-      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo,this._creatorRepo),
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
       authorizeRoles("creator")
     );
 

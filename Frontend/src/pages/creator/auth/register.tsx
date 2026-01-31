@@ -23,6 +23,7 @@ import {
 } from "@/validation/registerCreatorValidation";
 import { ROUTES } from "@/constants/routes";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
+import OtpVerificationModal from "@/components/OtpVerificationModal";
 
 async function uploadToS3(file: File, type: "profile" | "id"): Promise<string> {
   const url = await fileUploader(file, type);
@@ -33,6 +34,7 @@ export default function CreatorSignup() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const [idPreview, setIdPreview] = useState<string | null>(null);
@@ -98,23 +100,50 @@ export default function CreatorSignup() {
     }
   }
 
-async function handleNext() {
-  if (currentStep === 1) {
-    const isValid = await validateStep1(
-      formData,
-      CreatorAuthService.checkEmailExists
-    );
-    if (!isValid) return;
+  async function handleNext() {
+    if (currentStep === 1) {
+      const isValid = await validateStep1(
+        formData,
+        CreatorAuthService.checkEmailExists
+      );
+      if (!isValid) return;
+
+      try {
+        setIsLoading(true);
+        await CreatorAuthService.resendOtp(formData.email);
+        setIsOtpModalOpen(true);
+        toast.info("Verification code sent to your email");
+      } catch (error: any) {
+        toast.error(error?.response?.data?.message || "Failed to send OTP");
+      } finally {
+        setIsLoading(false);
+      }
+      return; // Don't proceed to next step yet, wait for OTP
+    }
+
+    if (currentStep === 2 && !validateStep2(formData)) return;
+    if (currentStep === 3 && !validateStep3(formData)) return;
+
+    if (currentStep < 4) {
+      setCurrentStep((prev) => prev + 1);
+      toast.success("Step completed successfully!");
+    }
   }
 
-  if (currentStep === 2 && !validateStep2(formData)) return;
-  if (currentStep === 3 && !validateStep3(formData)) return;
-
-  if (currentStep < 4) {
-    setCurrentStep((prev) => prev + 1);
-    toast.success("Step completed successfully!");
+  async function handleOtpVerify(otp: string) {
+    try {
+      await CreatorAuthService.verifyOtp(formData.email, otp);
+      setIsOtpModalOpen(false);
+      setCurrentStep(2);
+      toast.success("Email verified successfully!");
+    } catch (error: any) {
+      throw error; // Let the modal handle the error
+    }
   }
-}
+
+  async function handleOtpResend() {
+    await CreatorAuthService.resendOtp(formData.email);
+  }
 
   function handleBack() {
     if (currentStep > 1) {
@@ -225,11 +254,10 @@ async function handleNext() {
                 {[1, 2, 3, 4].map((step) => (
                   <div key={step} className="flex items-center flex-1">
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${
-                        currentStep >= step
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${currentStep >= step
                           ? "bg-white border-white text-black"
                           : "bg-zinc-800/50 border-zinc-700 text-gray-500"
-                      }`}
+                        }`}
                     >
                       {currentStep > step ? (
                         <Check className="w-4 h-4" />
@@ -239,9 +267,8 @@ async function handleNext() {
                     </div>
                     {step < 4 && (
                       <div
-                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${
-                          currentStep > step ? "bg-white" : "bg-zinc-700"
-                        }`}
+                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${currentStep > step ? "bg-white" : "bg-zinc-700"
+                          }`}
                       />
                     )}
                   </div>
@@ -478,11 +505,10 @@ async function handleNext() {
                             key={specialty}
                             type="button"
                             onClick={() => handleSpecialtyToggle(specialty)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
-                              formData.specialties.includes(specialty)
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${formData.specialties.includes(specialty)
                                 ? "bg-white text-black"
                                 : "bg-zinc-800/50 text-gray-400 border border-zinc-700 hover:bg-zinc-700"
-                            }`}
+                              }`}
                           >
                             {specialty}
                           </button>
@@ -719,6 +745,13 @@ async function handleNext() {
           </div>
         </div>
       </div>
+      <OtpVerificationModal
+        isOpen={isOtpModalOpen}
+        email={formData.email}
+        onClose={() => setIsOtpModalOpen(false)}
+        onVerify={handleOtpVerify}
+        onResend={handleOtpResend}
+      />
     </div>
   );
 }
