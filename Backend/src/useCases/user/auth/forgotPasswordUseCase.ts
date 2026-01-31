@@ -4,33 +4,39 @@ import { IforgotPasswordUseCase } from "../../../domain/interface/user/auth/Ifor
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
 import redis from "../../../framework/redis/redisClient";
 
+import { renderTemplate } from "../../../utils/renderTemplates";
+
 export class ForgotPasswordUseCase implements IforgotPasswordUseCase {
   constructor(
     private _userRepo: IuserRepository,
     private _otpService: IOTPService,
     private _mailService: IMailService
-  ) {}
+  ) { }
 
   async sendOtp(email: string): Promise<void> {
     email = email.trim().toLowerCase();
     const user = await this._userRepo.findByEmail(email);
     if (!user) throw new Error("This user does not exists");
     const cooldownKey = `FP_COOLDOWN_${email}`;
-    const otpKey = `FP_OTP_${email}`;
+    // const otpKey = `FP_OTP_${email}`;
 
-    const cooldown=await redis.ttl(cooldownKey)
-    if(cooldown>0) throw new Error(`Please wait ${cooldown} seconds before requesting again`)
+    const cooldown = await redis.ttl(cooldownKey)
+    if (cooldown > 0) throw new Error(`Please wait ${cooldown} seconds before requesting again`)
 
-        const otp=await this._otpService.generateOtp(`FP_${email}`) 
-console.log(otp);
+    const otp = await this._otpService.generateOtp(`FP_${email}`)
+    console.log(otp);
 
-   await this._mailService.sendMail(
+    const htmlTemplate = renderTemplate("user/otp.html", {
+      TITLE: "Password Reset OTP",
+      MESSAGE: "Use the code below to reset your password",
+      OTP_CODE: otp.toString(),
+    });
+
+    await this._mailService.sendMail(
       email,
       "Reset Your Password",
-      `<h2>Password Reset OTP</h2>
-       <p style="font-size:18px;font-weight:bold">${otp}</p>
-       <p>This OTP expires in 1 minutes.</p>`
+      htmlTemplate
     );
-    await redis.set(cooldownKey,"1",{EX:60})
+    await redis.set(cooldownKey, "1", { EX: 60 })
   }
 }

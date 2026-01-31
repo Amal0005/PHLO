@@ -23,10 +23,10 @@ export class UserAuthController {
         success: true,
         message: "OTP sent successfully",
       });
-    } catch (error) {
+    } catch (error: any) {
       return res.status(400).json({
         success: false,
-        message: "Failed to send OTP",
+        message: error?.message || "Failed to send OTP",
       });
     }
   }
@@ -37,7 +37,7 @@ export class UserAuthController {
       await this._verifyForgotOtpUseCase.verify(email, otp)
       return res.status(StatusCode.OK).json({ success: true, message: "Otp Verified" })
     } catch (error: any) {
-      return res.status(StatusCode.BAD_REQUEST).json({
+      return res.status(StatusCode.OK).json({
         success: false,
         message: error?.message || "Invalid OTP",
       });

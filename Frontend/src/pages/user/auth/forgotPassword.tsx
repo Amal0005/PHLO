@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
 import { Mail, ArrowLeft, X } from "lucide-react";
 import { passwordService } from "@/services/user/passwordService";
@@ -21,6 +21,19 @@ export default function ForgotPassword() {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
   const [isResetting, setIsResetting] = useState<boolean>(false);
+  const [timer, setTimer] = useState<number>(60);
+  const [canResend, setCanResend] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (showOtpModal && timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    } else if (timer === 0) {
+      setCanResend(true);
+    }
+  }, [timer, showOtpModal]);
   const navigate = useNavigate();
   const handleSendOtp = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -31,10 +44,14 @@ export default function ForgotPassword() {
       const res = await passwordService.sendForgotPasswordOtp(email);
 
       toast.success(res.message || "OTP sent successfully");
+      toast.success(res.message || "OTP sent successfully");
       setShowOtpModal(true);
-    } catch (error) {
+      setTimer(60);
+      setCanResend(false);
+    } catch (error: any) {
       console.error(error);
-      toast.error("Failed to send OTP. Try again.");
+      const errorMessage = error.response?.data?.message || "Failed to send OTP. Try again.";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -70,14 +87,19 @@ export default function ForgotPassword() {
 
     try {
       setIsVerifying(true);
-      await passwordService.verifyForgotOtp(email, otpValue);
+      const res = await passwordService.verifyForgotOtp(email, otpValue);
+
+      if (!res.success) {
+        throw new Error(res.message || "Invalid OTP");
+      }
 
       toast.success("OTP Verified");
       setShowOtpModal(false);
       setShowResetForm(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error("Invalid OTP. Try again.");
+      const errorMessage = error.response?.data?.message || error.message || "Invalid OTP. Try again.";
+      toast.error(errorMessage);
     } finally {
       setIsVerifying(false);
     }
@@ -104,9 +126,10 @@ export default function ForgotPassword() {
 
       toast.success("Password reset successful!");
       navigate(ROUTES.USER.LOGIN)
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error("Failed to reset password");
+      const errorMessage = error.response?.data?.message || "Failed to reset password";
+      toast.error(errorMessage);
     } finally {
       setIsResetting(false);
     }
@@ -398,9 +421,19 @@ export default function ForgotPassword() {
 
               <p className="text-center text-gray-400 text-xs sm:text-sm mt-4">
                 Didn't receive the code?{" "}
-                <button className="text-white hover:underline font-medium">
-                  Resend
-                </button>
+                Didn't receive the code?{" "}
+                {canResend ? (
+                  <button
+                    onClick={handleSendOtp}
+                    className="text-white hover:underline font-medium"
+                  >
+                    Resend
+                  </button>
+                ) : (
+                  <span>
+                    Resend in <span className="text-white font-mono">{timer}s</span>
+                  </span>
+                )}
               </p>
             </div>
           </div>

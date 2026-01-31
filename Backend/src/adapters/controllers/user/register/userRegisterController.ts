@@ -64,7 +64,8 @@ export class userRegisterController {
       });
 
     } catch (error: any) {
-      return res.status(StatusCode.BAD_REQUEST).json({
+      return res.status(StatusCode.OK).json({
+        success: false,
         message: error?.message || "OTP Verification Failed"
       });
     }

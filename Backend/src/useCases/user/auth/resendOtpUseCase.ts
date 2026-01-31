@@ -4,14 +4,16 @@ import { IresendOtpUseCase } from "../../../domain/interface/user/auth/IresendOt
 import redis from "../../../framework/redis/redisClient";
 
 
+import { renderTemplate } from "../../../utils/renderTemplates";
+
 export class ResendOtpUseCase implements IresendOtpUseCase {
   constructor(
     private _otpService: IOTPService,
     private _mailService: IMailService
-  ) {}
+  ) { }
 
   async resend(email: string): Promise<void> {
-      email = email.trim().toLowerCase();
+    email = email.trim().toLowerCase();
 
     const resendKey = `RESEND_${email}`;
     const countKey = `RESEND_COUNT_${email}`;
@@ -28,13 +30,17 @@ export class ResendOtpUseCase implements IresendOtpUseCase {
 
     const otp = await this._otpService.generateOtp(email);
     console.log(otp);
-    
+
+    const htmlTemplate = renderTemplate("user/otp.html", {
+      TITLE: "Verification Code",
+      MESSAGE: "Here is your new verification code",
+      OTP_CODE: otp.toString(),
+    });
+
     await this._mailService.sendMail(
       email,
       "Verify Your Account",
-      `<h2>Your OTP Code</h2>
-       <p style="font-size:18px;font-weight:bold">${otp}</p>
-       <p>This OTP expires in 1 minutes.</p>`
+      htmlTemplate
     );
 
     await redis.set(resendKey, "1", { EX: 60 });

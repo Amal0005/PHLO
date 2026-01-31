@@ -34,13 +34,19 @@ export default function VerifyOtp() {
     setIsLoading(true);
 
     try {
-      const res = await UserAuthService.verifyOtp({email,otp})
-      localStorage.setItem("accessToken", res.data.accessToken);
+      const res = await UserAuthService.verifyOtp({ email, otp });
+
+      if (!res.success) {
+        throw new Error(res.message || "Verification failed");
+      }
+
       toast.success("OTP Verified Successfully!");
       navigate(ROUTES.USER.LOGIN);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Verification error:", error);
-      toast.error("Invalid OTP. Please try again.");
+      // Handle both Axios errors (with response) and thrown errors (with message)
+      const errorMessage = error.response?.data?.message || error.message || "Invalid OTP. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -50,14 +56,15 @@ export default function VerifyOtp() {
     if (!canResend) return;
 
     try {
-      await UserAuthService.resendOtp({email})
+      await UserAuthService.resendOtp({ email });
 
       toast.info("OTP resent successfully!");
       setTimer(60);
       setCanResend(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Resend error:", error);
-      toast.error("Failed to resend OTP. Please try again.");
+      const errorMessage = error.response?.data?.message || "Failed to resend OTP. Please try again.";
+      toast.error(errorMessage);
     }
   }
 

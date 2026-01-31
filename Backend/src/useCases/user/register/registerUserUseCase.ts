@@ -7,8 +7,8 @@ import { IuserRepository } from "../../../domain/interface/user/IuserRepository"
 import { IuserRegisterUseCase } from "../../../domain/interface/user/register/IuserRegisterUseCase";
 import redis from "../../../framework/redis/redisClient";
 
-import fs from "fs";
-import path from "path";
+
+import { renderTemplate } from "../../../utils/renderTemplates";
 
 export class userRegisterUseCase implements IuserRegisterUseCase {
   constructor(
@@ -47,14 +47,11 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
     const otp = await this._otpService.generateOtp(email);
     console.log("OTP: ", otp);
 
-    const templatePath = path.join(
-      __dirname,
-      "../../../templates/user/otp.html",
-    );
-
-    let htmlTemplate = fs.readFileSync(templatePath, "utf8");
-
-    htmlTemplate = htmlTemplate.replace("{{OTP_CODE}}", otp.toString());
+    const htmlTemplate = renderTemplate("user/otp.html", {
+      TITLE: "Verify Your Email",
+      MESSAGE: "Enter the verification code to complete your registration",
+      OTP_CODE: otp.toString(),
+    });
 
     await this._mailService.sendMail(
       email,

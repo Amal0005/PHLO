@@ -5,6 +5,8 @@ import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepositor
 import redis from "@/framework/redis/redisClient";
 
 
+import { renderTemplate } from "@/utils/renderTemplates";
+
 export class ForgotPasswordUseCase implements IforgotPasswordUseCase {
     constructor(
         private _creatorRepo: IcreatorRepository,
@@ -24,12 +26,16 @@ export class ForgotPasswordUseCase implements IforgotPasswordUseCase {
         const otp = await this._otpService.generateOtp(`FP_CREATOR_${email}`);
         console.log(otp);
 
+        const htmlTemplate = renderTemplate("user/otp.html", {
+            TITLE: "Password Reset OTP",
+            MESSAGE: "Use the code below to reset your password",
+            OTP_CODE: otp.toString(),
+        });
+
         await this._mailService.sendMail(
             email,
             "Reset Your Password",
-            `<h2>Password Reset OTP</h2>
-       <p style="font-size:18px;font-weight:bold">${otp}</p>
-       <p>This OTP expires in 1 minute.</p>`
+            htmlTemplate
         );
         await redis.set(cooldownKey, "1", { EX: 60 });
     }
