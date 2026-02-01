@@ -7,11 +7,13 @@ import Home from "@/pages/user/home/landing";
 import LandingPage from "@/pages/landing";
 import ProtectedRoute from "./protectedRoute";
 import { ROUTES } from "../constants/routes";
+// import NotFound from "@/pages/user/404";
 
 export function UserRoutes() {
   return (
     <Routes>
       <Route path={ROUTES.USER.ROOT} element={<LandingPage />} />
+        {/* <Route path={ROUTES.USER.NOT_FOUND} element={<NotFound />} /> */}
 
       <Route element={<ProtectedRoute role="user" requireAuth={false} />}>
         <Route path={ROUTES.USER.LOGIN} element={<Login />} />

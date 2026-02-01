@@ -31,7 +31,6 @@ export async function validateStep1(
 
 }
 
-
 export function validateStep2(formData: any): boolean {
   const result = creatorStep2Schema.safeParse(formData);
 

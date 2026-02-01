@@ -24,7 +24,7 @@ const otpService = new OtpServices();
 const mailService = new MailService();
 
 const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService);
-const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository);
+const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository, userRepository);
 const verifyCreatorOtpUseCase = new VerifyCreatorOtpUseCase(creatorRepository, otpService);
 const resendCreatorOtpUseCase = new ResendCreatorOtpUseCase(otpService, mailService);
 const creatorLoginUseCase = new CreatorLoginUseCase(creatorRepository, jwtService, passwordService);

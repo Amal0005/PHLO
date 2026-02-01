@@ -90,5 +90,4 @@ export const setUpInterceptors = () => {
     return Promise.reject(err);
   }
 );
-
 };

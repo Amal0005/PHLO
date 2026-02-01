@@ -19,10 +19,7 @@ export class VerifyCreatorOtpUseCase implements IverifyCreatorOtpUseCase {
 
         const pending = await redis.get(`PENDING_CREATOR_${email}`);
         if (!pending) {
-            // If No pending data, it means it's just an email verification step
-            // or the session expired. For step 1 verification, we return a success indicator.
-            // Mark the email as verified for a limited time to allow completing registration.
-            await redis.set(`VERIFIED_CREATOR_EMAIL_${email}`, "true", { EX: 900 }); // 15 minutes
+            await redis.set(`VERIFIED_CREATOR_EMAIL_${email}`, "true", { EX: 900 });
             return { email } as CreatorEntity;
         }
 

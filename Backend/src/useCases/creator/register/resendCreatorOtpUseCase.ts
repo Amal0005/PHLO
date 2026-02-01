@@ -13,19 +13,6 @@ export class ResendCreatorOtpUseCase implements IresendCreatorOtpUseCase {
     async resendOtp(email: string): Promise<void> {
         email = email.trim().toLowerCase();
 
-        const resendKey = `RESEND_CREATOR_${email}`;
-        const countKey = `RESEND_CREATOR_COUNT_${email}`;
-
-        const cooldown = await redis.ttl(resendKey);
-        if (cooldown > 0) {
-            throw new Error(`Wait ${cooldown} seconds before resending OTP`);
-        }
-
-        const count = Number((await redis.get(countKey)) || 0);
-        if (count >= 3) {
-            throw new Error("Max resend attempts reached");
-        }
-
         const otp = await this._otpService.generateOtp(email);
         console.log("Creator OTP:", otp);
 
@@ -40,8 +27,5 @@ export class ResendCreatorOtpUseCase implements IresendCreatorOtpUseCase {
             "Verify Your Creator Account",
             htmlTemplate
         );
-
-        await redis.set(resendKey, "1", { EX: 60 });
-        await redis.set(countKey, (count + 1).toString(), { EX: 600 });
     }
 }

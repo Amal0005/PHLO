@@ -62,7 +62,6 @@ export class RegisterCreatorUseCase implements IregisterCreatorUseCase {
       htmlTemplate
     );
 
-    // Return a placeholder entity since actual creation happens after OTP verification
     return { ...pendingCreator, _id: "" } as CreatorEntity;
   }
 }

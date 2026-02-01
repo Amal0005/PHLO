@@ -148,7 +148,8 @@ export default function CreatorSignup() {
       setCurrentStep(2);
       toast.success("Email verified successfully!");
     } catch (error: any) {
-      toast.error(error);
+      console.error("OTP verification error:", error);
+      toast.error(error?.response?.data?.message || "Invalid OTP. Please try again.");
     }
   }
 
@@ -224,10 +225,10 @@ export default function CreatorSignup() {
       setTimeout(() => {
         navigate(ROUTES.CREATOR.LOGIN);
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong",
+        error?.response?.data?.message || error.message || "Something went wrong"
       );
     } finally {
       setIsLoading(false);
@@ -267,11 +268,10 @@ export default function CreatorSignup() {
                 {[1, 2, 3, 4].map((step) => (
                   <div key={step} className="flex items-center flex-1">
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${
-                        currentStep >= step
-                          ? "bg-white border-white text-black"
-                          : "bg-zinc-800/50 border-zinc-700 text-gray-500"
-                      }`}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 text-sm ${currentStep >= step
+                        ? "bg-white border-white text-black"
+                        : "bg-zinc-800/50 border-zinc-700 text-gray-500"
+                        }`}
                     >
                       {currentStep > step ? (
                         <Check className="w-4 h-4" />
@@ -281,9 +281,8 @@ export default function CreatorSignup() {
                     </div>
                     {step < 4 && (
                       <div
-                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${
-                          currentStep > step ? "bg-white" : "bg-zinc-700"
-                        }`}
+                        className={`h-0.5 flex-1 mx-2 transition-all duration-300 ${currentStep > step ? "bg-white" : "bg-zinc-700"
+                          }`}
                       />
                     )}
                   </div>
@@ -394,26 +393,26 @@ export default function CreatorSignup() {
                     </div>
                   </div>
 
-      <button
-  onClick={handleNext}
-  disabled={!isStep1Valid || isLoading}
-  className="w-full bg-white hover:bg-gray-200 text-black py-3 rounded-lg font-semibold
+                  <button
+                    onClick={handleNext}
+                    disabled={!isStep1Valid || isLoading}
+                    className="w-full bg-white hover:bg-gray-200 text-black py-3 rounded-lg font-semibold
              transition-all duration-300
              disabled:opacity-50 disabled:cursor-not-allowed
              flex items-center justify-center gap-2"
->
-  {isLoading ? (
-    <>
-      <span className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-      Sending Otp...
-    </>
-  ) : (
-    <>
-      Continue
-      <ArrowRight className="w-5 h-5" />
-    </>
-  )}
-</button>
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                        Sending Otp...
+                      </>
+                    ) : (
+                      <>
+                        Continue
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
 
                 </div>
               )}
@@ -533,11 +532,10 @@ export default function CreatorSignup() {
                             key={specialty}
                             type="button"
                             onClick={() => handleSpecialtyToggle(specialty)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
-                              formData.specialties.includes(specialty)
-                                ? "bg-white text-black"
-                                : "bg-zinc-800/50 text-gray-400 border border-zinc-700 hover:bg-zinc-700"
-                            }`}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${formData.specialties.includes(specialty)
+                              ? "bg-white text-black"
+                              : "bg-zinc-800/50 text-gray-400 border border-zinc-700 hover:bg-zinc-700"
+                              }`}
                           >
                             {specialty}
                           </button>

@@ -44,7 +44,6 @@ export default function ForgotPassword() {
       const res = await passwordService.sendForgotPasswordOtp(email);
 
       toast.success(res.message || "OTP sent successfully");
-      toast.success(res.message || "OTP sent successfully");
       setShowOtpModal(true);
       setTimer(60);
       setCanResend(false);
@@ -425,9 +424,10 @@ export default function ForgotPassword() {
                 {canResend ? (
                   <button
                     onClick={handleSendOtp}
-                    className="text-white hover:underline font-medium"
+                    disabled={isLoading}
+                    className="text-white hover:underline font-medium disabled:opacity-50 disabled:no-underline"
                   >
-                    Resend
+                    {isLoading ? "Resending..." : "Resend"}
                   </button>
                 ) : (
                   <span>

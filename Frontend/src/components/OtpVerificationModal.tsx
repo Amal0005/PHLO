@@ -23,6 +23,7 @@ export default function OtpVerificationModal({
 }: OtpVerificationModalProps) {
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
     const [isVerifying, setIsVerifying] = useState(false);
+    const [isResending, setIsResending] = useState(false);
     const [timer, setTimer] = useState(60);
     const [canResend, setCanResend] = useState(false);
 
@@ -81,9 +82,10 @@ export default function OtpVerificationModal({
     };
 
     const handleResend = async () => {
-        if (!canResend) return;
+        if (!canResend || isResending) return;
 
         try {
+            setIsResending(true);
             await onResend();
             toast.info("OTP resent successfully!");
             setTimer(60);
@@ -94,6 +96,8 @@ export default function OtpVerificationModal({
             const errorMessage =
                 error.response?.data?.message || "Failed to resend OTP. Try again.";
             toast.error(errorMessage);
+        } finally {
+            setIsResending(false);
         }
     };
 
@@ -156,9 +160,10 @@ export default function OtpVerificationModal({
                     {canResend ? (
                         <button
                             onClick={handleResend}
-                            className="text-white hover:underline font-medium"
+                            disabled={isResending}
+                            className="text-white hover:underline font-medium disabled:opacity-50 disabled:no-underline"
                         >
-                            Resend
+                            {isResending ? "Resending..." : "Resend"}
                         </button>
                     ) : (
                         <span>
