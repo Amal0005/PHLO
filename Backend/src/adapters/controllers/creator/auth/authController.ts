@@ -23,10 +23,10 @@ export class CreatorAuthController {
                 success: true,
                 message: "OTP sent successfully",
             });
-        } catch (error) {
+        } catch (error: any) {
             return res.status(StatusCode.BAD_REQUEST).json({
                 success: false,
-                message: "Failed to send OTP",
+                message: error?.message || "Failed to send OTP",
             });
         }
     }

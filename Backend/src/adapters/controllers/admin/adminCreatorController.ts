@@ -15,15 +15,20 @@ export class AdminCreatorController {
 
   async getCreators(req: Request, res: Response) {
     try {
-      const data = await this._adminCreatorListingUseCase.getAllCreators();
+      const page =Number(req.query.page)||1
+      const limit=Number(req.query.limit)||10
+
+      const data = await this._adminCreatorListingUseCase.getAllCreators(page,limit);
       return res.status(StatusCode.OK).json({
         success: true,
-        data,
+        ...data,
       });
     } catch (error) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: error,
+message: error instanceof Error 
+  ? error.message 
+  : "Internal Server Error",
       });
     }
   }

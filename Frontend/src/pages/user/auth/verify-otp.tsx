@@ -14,6 +14,7 @@ export default function VerifyOtp() {
 
   const [otp, setOtp] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isResending, setIsResending] = useState<boolean>(false);
   const [timer, setTimer] = useState<number>(60);
   const [canResend, setCanResend] = useState<boolean>(false);
 
@@ -53,18 +54,22 @@ export default function VerifyOtp() {
   }
 
   async function handleResendOtp() {
-    if (!canResend) return;
+    if (!canResend || isResending) return;
 
     try {
+      setIsResending(true);
       await UserAuthService.resendOtp({ email });
 
       toast.info("OTP resent successfully!");
       setTimer(60);
       setCanResend(false);
+      setOtp("");
     } catch (error: any) {
       console.error("Resend error:", error);
       const errorMessage = error.response?.data?.message || "Failed to resend OTP. Please try again.";
       toast.error(errorMessage);
+    } finally {
+      setIsResending(false);
     }
   }
 
@@ -238,9 +243,10 @@ export default function VerifyOtp() {
                     <button
                       type="button"
                       onClick={handleResendOtp}
-                      className="text-sm text-white hover:underline font-medium transition-colors"
+                      disabled={isResending}
+                      className="text-sm text-white hover:underline font-medium transition-colors disabled:opacity-50 disabled:no-underline"
                     >
-                      Resend Code
+                      {isResending ? "Resending..." : "Resend Code"}
                     </button>
                   ) : (
                     <p className="text-sm text-gray-400">

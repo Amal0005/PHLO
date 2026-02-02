@@ -22,7 +22,11 @@ export class LogoutController {
 
       await this._logoutUseCase.logout(token, exp);
 
-      res.clearCookie("refreshToken", {
+      let cookieName = "userRefreshToken";
+      if (req.user?.role === "admin") cookieName = "adminRefreshToken";
+      else if (req.user?.role === "creator") cookieName = "creatorRefreshToken";
+
+      res.clearCookie(cookieName, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",

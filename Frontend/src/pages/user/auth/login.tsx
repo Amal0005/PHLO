@@ -268,7 +268,7 @@ export default function Login() {
                     onClick={handleRegister}
                     className="text-white cursor-pointer hover:underline font-medium hover:scale-105 inline-block transition-transform"
                   >
-                    Sign up
+                    Register
                   </span>
                 </p>
               </div>

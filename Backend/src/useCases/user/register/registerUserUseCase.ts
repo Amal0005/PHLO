@@ -7,7 +7,6 @@ import { IuserRepository } from "../../../domain/interface/user/IuserRepository"
 import { IuserRegisterUseCase } from "../../../domain/interface/user/register/IuserRegisterUseCase";
 import redis from "../../../framework/redis/redisClient";
 
-
 import { renderTemplate } from "../../../utils/renderTemplates";
 
 export class userRegisterUseCase implements IuserRegisterUseCase {
@@ -29,7 +28,9 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
       throw new Error("This email is already registered as a creator");
     const existingUserPhone = await this._userRepo.findByPhone(phone);
     if (existingUserPhone)
-      throw new Error("Already Registred Number try with new");
+      throw new Error(
+        "Phone number already registered. Please try with a different one",
+      );
 
     if (!user.password) throw new Error("Password is required");
 

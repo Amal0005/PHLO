@@ -6,6 +6,7 @@ export const ROUTES = {
     VERIFY_OTP: "/verify-otp",
     FORGOT_PASSWORD: "/forgot-password",
     HOME: "/home",
+    NOT_FOUND:"*"
   },
 
   CREATOR: {

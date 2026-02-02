@@ -29,7 +29,7 @@ export const registerCreatorSchema = z.object({
 
   bio: z
     .string()
-    .min(50, "Bio must be at least 100 characters")
+    .min(20, "Bio must be at least 20 characters")
 ,
   portfolioLink: z
     .string()

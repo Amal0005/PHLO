@@ -15,19 +15,6 @@ export class ResendOtpUseCase implements IresendOtpUseCase {
   async resend(email: string): Promise<void> {
     email = email.trim().toLowerCase();
 
-    const resendKey = `RESEND_${email}`;
-    const countKey = `RESEND_COUNT_${email}`;
-
-    const cooldown = await redis.ttl(resendKey);
-    if (cooldown > 0) {
-      throw new Error(`Wait ${cooldown} seconds before resending OTP`);
-    }
-
-    const count = Number((await redis.get(countKey)) || 0);
-    if (count >= 3) {
-      throw new Error("Max resend attempts reached");
-    }
-
     const otp = await this._otpService.generateOtp(email);
     console.log(otp);
 
@@ -42,8 +29,5 @@ export class ResendOtpUseCase implements IresendOtpUseCase {
       "Verify Your Account",
       htmlTemplate
     );
-
-    await redis.set(resendKey, "1", { EX: 60 });
-    await redis.set(countKey, (count + 1).toString(), { EX: 600 });
   }
 }

@@ -1,0 +1,31 @@
+import { IMailService } from "@/domain/interface/service/ImailServices";
+import { IOTPService } from "@/domain/interface/service/IotpServices";
+import { IresendCreatorOtpUseCase } from "@/domain/interface/creator/register/IresendCreatorOtpUseCase";
+import redis from "@/framework/redis/redisClient";
+import { renderTemplate } from "@/utils/renderTemplates";
+
+export class ResendCreatorOtpUseCase implements IresendCreatorOtpUseCase {
+    constructor(
+        private _otpService: IOTPService,
+        private _mailService: IMailService
+    ) { }
+
+    async resendOtp(email: string): Promise<void> {
+        email = email.trim().toLowerCase();
+
+        const otp = await this._otpService.generateOtp(email);
+        console.log("Creator OTP:", otp);
+
+        const htmlTemplate = renderTemplate("user/otp.html", {
+            TITLE: "Verify Your Email",
+            MESSAGE: "Enter the verification code to complete your creator registration",
+            OTP_CODE: otp.toString(),
+        });
+
+        await this._mailService.sendMail(
+            email,
+            "Verify Your Creator Account",
+            htmlTemplate
+        );
+    }
+}

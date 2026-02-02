@@ -12,7 +12,7 @@ export class CreatorLoginUseCase implements IcreatorLoginUseCase {
     private _creatorRepo: IcreatorRepository,
     private IjwtService: IjwtServices,
     private _passwordService: IpasswordService,
-  ) {}
+  ) { }
   async login(
     email: string,
     password: string,
@@ -20,43 +20,45 @@ export class CreatorLoginUseCase implements IcreatorLoginUseCase {
     const getEmail = email.trim().toLowerCase();
     const creator = await this._creatorRepo.findByEmail(getEmail);
     console.log(creator?.password);
-if (!creator) {
-  throw new AuthError("Invalid email or password", 401);
-} if (creator.status === 'pending') {
-    return {
-      status: 'pending',
-      message: 'Your application is under review'
-    };
-  }
-  if (creator.status === 'rejected') {
-    return {
-      status: 'rejected',
-      message: 'Your application was rejected',
-      reason: creator.rejectionReason
-    };
-    
-  }
-if (creator.status === "blocked") {
-  throw new AuthError(
-    "Your account blocked by admin",
-    403,
-    { status: "blocked" }
-  );
-}
+    if (!creator) {
+      throw new AuthError("Invalid email or password", 401);
+    } if (creator.status === 'pending') {
+      return {
+        status: 'pending',
+        message: 'Your application is under review'
+      };
+    }
+    if (creator.status === 'rejected') {
+      return {
+        status: 'rejected',
+        message: 'Your application was rejected',
+        reason: creator.rejectionReason
+      };
+
+    }
+    if (creator.status === "blocked") {
+      throw new AuthError(
+        "Your account blocked by admin",
+        403,
+        { status: "blocked" }
+      );
+    }
     const isMatch = await this._passwordService.compare(
       password,
       creator.password,
     );
-if (!isMatch) {
-  throw new AuthError("Invalid email or password", 401);
-}    const payload: AuthPayload = {
+    if (!isMatch) {
+      throw new AuthError("Invalid email or password", 401);
+    } const payload: AuthPayload = {
       email: getEmail,
       role: "creator",
       userId: creator._id!,
     };
     const token = this.IjwtService.generateAccessToken(payload);
+    const refreshToken = this.IjwtService.generateRefreshToken(payload);
+
     return {
-        status: "approved",
+      status: "approved",
 
       creator: {
         id: creator._id as string,
@@ -65,7 +67,8 @@ if (!isMatch) {
         role: "creator",
       },
       token,
+      refreshToken
     };
   }
-  
+
 }

@@ -67,23 +67,13 @@ const LandingPage = () => {
       {/* Navigation */}
       <nav className={`fixed w-full z-50 transition-all duration-500 ${isScrolled ? 'bg-black/90 backdrop-blur-xl border-b border-white/10 shadow-2xl' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+<div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-3 group cursor-pointer">
-              <img
-                src={logoWhite}
-                alt="Logo"
-                className="h-19 w-auto object-contain"
-              />
-            </div>
-
-            <div className="hidden md:flex items-center space-x-8">
-              <button onClick={() => scrollToSection('home')} className="text-sm font-medium hover:text-gray-300 transition-all duration-300 hover:tracking-wide">HOME</button>
-              <button onClick={() => scrollToSection('features')} className="text-sm font-medium hover:text-gray-300 transition-all duration-300 hover:tracking-wide">FEATURES</button>
-              <button onClick={() => scrollToSection('roles')} className="text-sm font-medium hover:text-gray-300 transition-all duration-300 hover:tracking-wide">WALLPAPERS</button>
-              <button onClick={() => scrollToSection('gallery')} className="text-sm font-medium hover:text-gray-300 transition-all duration-300 hover:tracking-wide">GALLERY</button>
-              <button onClick={() => navigate(ROUTES.USER.REGISTER)} className="px-6 py-2.5 bg-white text-black text-sm font-semibold rounded-full hover:bg-gray-200 transition-all duration-300 hover:shadow-2xl hover:shadow-white/20 hover:scale-105">
-                GET STARTED
-              </button>
+             <img
+  src={logoWhite}
+  alt="Logo"
+  className="h-16 sm:h-18 md:h-20 w-auto object-contain"
+/>
             </div>
 
             <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -92,19 +82,6 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-black/95 backdrop-blur-xl border-t border-white/10 animate-fade-in">
-            <div className="px-4 pt-4 pb-6 space-y-4">
-              <button onClick={() => scrollToSection('home')} className="block w-full text-left py-3 text-sm font-medium hover:text-gray-300 transition-colors border-b border-white/5">HOME</button>
-              <button onClick={() => scrollToSection('features')} className="block w-full text-left py-3 text-sm font-medium hover:text-gray-300 transition-colors border-b border-white/5">FEATURES</button>
-              <button onClick={() => scrollToSection('roles')} className="block w-full text-left py-3 text-sm font-medium hover:text-gray-300 transition-colors border-b border-white/5">WALLPAPERS</button>
-              <button onClick={() => scrollToSection('gallery')} className="block w-full text-left py-3 text-sm font-medium hover:text-gray-300 transition-colors border-b border-white/5">GALLERY</button>
-              <button onClick={() => navigate(ROUTES.USER.REGISTER)} className="w-full px-6 py-3 bg-white text-black text-sm font-semibold rounded-full hover:bg-gray-200 transition-all duration-300 mt-2">
-                GET STARTED
-              </button>
-            </div>
-          </div>
-        )}
       </nav>
 
       {/* Hero Section */}
@@ -131,10 +108,12 @@ const LandingPage = () => {
             <div className="inline-block animate-fade-in">
               <div className="flex items-center justify-center space-x-3 mb-8">
                 <div className="h-px w-12 bg-white/50"></div>
-                <span style={{
-                  animationDelay: '0.2s',
-                  transform: 'translateY(8px)',
-                }} className="text-sm tracking-[0.3em] text-gray-300">WELCOME TO PHLO</span>
+      <span className="welcome-float flex items-center gap-2 text-sm md:text-base tracking-[0.35em] text-gray-200">
+  WELCOME TO PHLO
+
+</span>
+
+
                 <div className="h-px w-12 bg-white/50"></div>
               </div>
             </div>

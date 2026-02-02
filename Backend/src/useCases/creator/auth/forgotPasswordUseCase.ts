@@ -19,10 +19,6 @@ export class ForgotPasswordUseCase implements IforgotPasswordUseCase {
         const creator = await this._creatorRepo.findByEmail(email);
         if (!creator) throw new Error("This creator does not exist");
 
-        const cooldownKey = `FP_CREATOR_COOLDOWN_${email}`;
-        const cooldown = await redis.ttl(cooldownKey);
-        if (cooldown > 0) throw new Error(`Please wait ${cooldown} seconds before requesting again`);
-
         const otp = await this._otpService.generateOtp(`FP_CREATOR_${email}`);
         console.log(otp);
 
@@ -37,6 +33,5 @@ export class ForgotPasswordUseCase implements IforgotPasswordUseCase {
             "Reset Your Password",
             htmlTemplate
         );
-        await redis.set(cooldownKey, "1", { EX: 60 });
     }
 }

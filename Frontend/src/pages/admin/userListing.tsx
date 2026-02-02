@@ -4,17 +4,27 @@ import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserSer
 import { User } from "@/interface/admin/userInterface";
 import { toast } from "react-toastify";
 import { confirmActionToast } from "../../compoents/reusable/confirmActionToast";
+import Pagination from "@/compoents/reusable/pagination";
 
 export default function UserListingPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "blocked">("all");
+  const limit = 10;
 
   useEffect(() => {
     async function loadUsers() {
       try {
-        const data = await fetchAdminUsers();
-        setUsers(data);
+        setLoading(true);
+
+        const result = await fetchAdminUsers(page, limit);
+
+        setUsers(result.data);
+        setTotalPages(result.totalPages);
+
       } catch {
         setError("Failed to fetch users");
       } finally {
@@ -23,34 +33,40 @@ export default function UserListingPage() {
     }
 
     loadUsers();
-  }, []);
+  }, [page]);
 
-const handleToggleStatus = (userId: string, currentStatus: string) => {
-  const newStatus = currentStatus === "active" ? "blocked" : "active";
+  const filteredUsers = users.filter((user) => {
+    if (filterStatus === "all") return true;
+    return user.status === filterStatus;
+  });
 
-  confirmActionToast(
-    `Are you sure you want to ${newStatus === "blocked" ? "block" : "unblock"} this user?`,
-    async () => {
-      try {
-        await toggleUserStatus(userId, newStatus);
 
-        setUsers((prev) =>
-          prev.map((u) =>
-            u._id === userId ? { ...u, status: newStatus } : u
-          )
-        );
+  const handleToggleStatus = (userId: string, currentStatus: string) => {
+    const newStatus = currentStatus === "active" ? "blocked" : "active";
 
-        toast.success(
-          newStatus === "blocked"
-            ? "User blocked successfully"
-            : "User unblocked successfully"
-        );
-      } catch {
-        toast.error("Failed to update user status");
+    confirmActionToast(
+      `Are you sure you want to ${newStatus === "blocked" ? "block" : "unblock"} this user?`,
+      async () => {
+        try {
+          await toggleUserStatus(userId, newStatus);
+
+          setUsers((prev) =>
+            prev.map((u) =>
+              u._id === userId ? { ...u, status: newStatus } : u
+            )
+          );
+
+          toast.success(
+            newStatus === "blocked"
+              ? "User blocked successfully"
+              : "User unblocked successfully"
+          );
+        } catch {
+          toast.error("Failed to update user status");
+        }
       }
-    }
-  );
-};
+    );
+  };
 
   if (loading) {
     return <p className="p-6 text-white">Loading users...</p>;
@@ -63,6 +79,16 @@ const handleToggleStatus = (userId: string, currentStatus: string) => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold text-white mb-4">Users</h1>
+
+      <select
+        value={filterStatus}
+        onChange={(e) => setFilterStatus(e.target.value as any)}
+        className="mb-4 bg-zinc-900 text-white border border-white/10 rounded-lg px-3 py-2"
+      >
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="blocked">Blocked</option>
+      </select>
 
       <div className="bg-zinc-900/90 border border-white/10 rounded-xl overflow-hidden">
         <table className="w-full">
@@ -84,85 +110,84 @@ const handleToggleStatus = (userId: string, currentStatus: string) => {
           </thead>
 
           <tbody className="divide-y divide-white/10">
-            {users.map((user) => (
-              <tr
-                key={user._id}
-                className="hover:bg-white/5 transition-colors"
-              >
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                      <span className="text-white text-sm font-semibold">
-                        {user.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </span>
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map((user) => (
+                <tr
+                  key={user._id}
+                  className="hover:bg-white/5 transition-colors"
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                        <span className="text-white text-sm font-semibold">
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium text-sm">
+                          {user.name}
+                        </p>
+                        <p className="text-gray-400 text-xs">{user.email}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-white font-medium text-sm">
-                        {user.name}
-                      </p>
-                      <p className="text-gray-400 text-xs">{user.email}</p>
-                    </div>
-                  </div>
-                </td>
+                  </td>
 
-                {/* Status */}
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${user.status === "active"
-                      ? "bg-green-500/10 text-green-400 border border-green-500/20"
-                      : "bg-red-500/10 text-red-400 border border-red-500/20"
-                      }`}
-                  >
-                    {user.status}
-                  </span>
-                </td>
+                  {/* Status */}
+                  <td className="px-6 py-4">
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium ${user.status === "active"
+                        ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                        : "bg-red-500/10 text-red-400 border border-red-500/20"
+                        }`}
+                    >
+                      {user.status}
+                    </span>
+                  </td>
 
-                {/* Joined */}
-                <td className="px-6 py-4 text-gray-400 text-sm">
-                  {user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString()
-                    : "-"}
-                </td>
+                  {/* Joined */}
+                  <td className="px-6 py-4 text-gray-400 text-sm">
+                    {user.createdAt
+                      ? new Date(user.createdAt).toLocaleDateString()
+                      : "-"}
+                  </td>
 
-                {/* Actions */}
-                <td className="px-6 py-4">
-                  <div className="flex justify-end gap-2">
-                 <button
-  onClick={() => user._id && handleToggleStatus(user._id, user.status)}
-  className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-all
-    ${
-      user.status === "active"
-        ? "text-red-400 border-red-400/30 hover:bg-red-500/10 hover:border-red-400/60"
-        : "text-green-400 border-green-400/30 hover:bg-green-500/10 hover:border-green-400/60"
-    }
+                  {/* Actions */}
+                  <td className="px-6 py-4">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => user._id && handleToggleStatus(user._id, user.status)}
+                        className={`px-3 py-1.5 text-sm font-medium rounded-lg border transition-all
+    ${user.status === "active"
+                            ? "text-red-400 border-red-400/30 hover:bg-red-500/10 hover:border-red-400/60"
+                            : "text-green-400 border-green-400/30 hover:bg-green-500/10 hover:border-green-400/60"
+                          }
   `}
->
-  {user.status === "active" ? "Block" : "Unblock"}
-</button>
-
-
-                    {/* <button
-                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition"
-                      title="Edit user"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition"
-                      title="Delete user"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button> */}
-                  </div>
+                      >
+                        {user.status === "active" ? "Block" : "Unblock"}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="px-6 py-10 text-center text-gray-500 text-sm">
+                  No users found with status "{filterStatus}".
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );
 }
+

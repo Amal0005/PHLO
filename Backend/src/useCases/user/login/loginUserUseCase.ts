@@ -3,7 +3,7 @@ import { IjwtServices } from "../../../domain/interface/service/IjwtServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
 import { IuserLoginUseCase } from "../../../domain/interface/user/login/IuserLoginUseCase";
-import { UserMapper } from "../../../domain/mapper/user/userMapper";
+import { UserMapper } from "../../../adapters/mapper/user/userMapper";
 
 export class userLoginUserUseCase implements IuserLoginUseCase {
   constructor(

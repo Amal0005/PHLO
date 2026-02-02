@@ -6,7 +6,7 @@ import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { JwtServices } from "@/domain/services/user/jwtServices";
 import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
-import { logoutController } from "@/framework/depInjection/user/userInjections";
+import { logoutController, tokenController } from "@/framework/depInjection/user/userInjections";
 import { IuserRepository } from "@/domain/interface/user/IuserRepository";
 import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
 
@@ -38,6 +38,9 @@ export class CreatorRoutes {
       (req: Request, res: Response) =>
         creatorLoginController.login(req, res)
     );
+    this.creatorRouter.post("/refresh-token", (req, res) =>
+      tokenController.refreshToken(req, res)
+    );
 
     this.creatorRouter.post(
       "/forgot-password",
@@ -60,8 +63,16 @@ export class CreatorRoutes {
       creatorRegisterController.checkExists(req, res)
     );
 
+    this.creatorRouter.post("/verify-otp", (req, res) =>
+      creatorRegisterController.verifyOtp(req, res)
+    );
+
+    this.creatorRouter.post("/resend-otp", (req, res) =>
+      creatorRegisterController.resendOtp(req, res)
+    );
+
     this.creatorRouter.use(
-      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo,this._creatorRepo),
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
       authorizeRoles("creator")
     );
 

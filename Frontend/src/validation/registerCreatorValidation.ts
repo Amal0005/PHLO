@@ -5,7 +5,7 @@ import { creatorStep1Schema, creatorStep2Schema, creatorStep3Schema, creatorStep
 
 export async function validateStep1(
   formData: any,
-  checkEmailExists: (email: string) => Promise<boolean>
+  checkCreatorExists: (email: string, phone: string) => Promise<void>
 ): Promise<boolean> {
   const result = creatorStep1Schema.safeParse(formData);
 
@@ -20,15 +20,16 @@ export async function validateStep1(
 
     return false;
   }
-  const emailExists = await checkEmailExists(formData.email);
-  if (emailExists) {
-    toast.error("Email already exists");
+ try {
+    await checkCreatorExists(formData.email, formData.phone);
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message || "Validation failed");
     return false;
   }
 
   return true;
-}
 
+}
 
 export function validateStep2(formData: any): boolean {
   const result = creatorStep2Schema.safeParse(formData);

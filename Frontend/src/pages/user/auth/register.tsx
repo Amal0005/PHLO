@@ -348,26 +348,24 @@ export default function Register() {
                   </div>
                 </div>
 
-                <GoogleLoginButton
+                        <GoogleLoginButton
                   onSuccess={async (idToken: string) => {
                     try {
-                      const res = await UserAuthService.googleLogin(idToken)
+                      const response = await UserAuthService.googleLogin(idToken);
 
-                      if (res.data?.accessToken && res.data?.user) {
-                        dispatch(setUser(res.data.user));
-                        dispatch(setUserAuth(res.data.accessToken));
+                      console.log("Google Service Response:", response);
 
-                        toast.success("Google registration successful!");
-
-                        setTimeout(() => {
-                          navigate(ROUTES.USER.HOME, { replace: true });
-                        }, 100);
+                      if (response?.accessToken && response?.user) {
+                        dispatch(setUser(response.user));
+                        dispatch(setUserAuth(response.accessToken));
+                        navigate(ROUTES.USER.HOME, { replace: true });
                       } else {
-                        console.error("Google Registration: Missing token/user", res.data);
-                        toast.error("Google registration failed: Invalid response");
+                        console.error("Google Login: Missing token/user", response);
+                        toast.error("Google login failed: Invalid response");
                       }
-                    } catch (err: any) {
-                      toast.error(err?.response?.data?.message || "Google registration failed");
+                    } catch (err) {
+                      toast.error("Google login failed");
+                      console.log(err);
                     }
                   }}
                 />

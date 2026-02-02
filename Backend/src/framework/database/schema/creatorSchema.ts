@@ -31,7 +31,7 @@ export const creatorSchema = new Schema(
     bio: {
       type: String,
       required: true,
-      minlength: 100,
+      minlength: 20,
       maxlength: 300,
     },
 

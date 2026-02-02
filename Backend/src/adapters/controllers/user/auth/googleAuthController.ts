@@ -16,10 +16,11 @@ export class GoogleAuthController {
       const { user, accessToken, refreshToken } =
         await this._googleLoginUseCase.execute(idToken);
 
-      res.cookie("refreshToken", refreshToken, {
+      res.cookie("userRefreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
       return res.status(StatusCode.OK).json({

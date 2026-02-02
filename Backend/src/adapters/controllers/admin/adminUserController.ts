@@ -11,17 +11,23 @@ export class AdminUserController {
   ) { }
   async getUsers(req: Request, res: Response) {
     try {
-      const data = await this._adminUserListingUseCase.getAllUsers()
-      const users = data.filter((item) => item.role == "user")
+      const page = Math.max(1, Number(req.query.page) || 1);
+      const limit = Math.min(50, Number(req.query.limit) || 10);
+
+      const data =
+        await this._adminUserListingUseCase.getAllUsers(page, limit);
 
       return res.status(StatusCode.OK).json({
         success: true,
-        users,
+        ...data,
       });
     } catch (error) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: error,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Internal Server Error",
       });
     }
   }
