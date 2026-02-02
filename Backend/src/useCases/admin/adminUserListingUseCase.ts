@@ -7,8 +7,7 @@ export class AdminUserListingUseCase implements IadminUserListingUseCase {
     constructor(
         private _userRepo: IuserRepository
     ) { }
-    async getAllUsers(): Promise<User[]> {
-        const users = await this._userRepo.findAllUsers()
-        return users
+    async getAllUsers(page: number, limit: number) {
+        return this._userRepo.findAllUsers(page, limit);
     }
 }

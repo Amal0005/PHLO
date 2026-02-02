@@ -23,7 +23,7 @@ import {
 } from "@/validation/registerCreatorValidation";
 import { ROUTES } from "@/constants/routes";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
-import OtpVerificationModal from "@/components/OtpVerificationModal";
+import OtpVerificationModal from "@/compoents/reusable/OtpVerificationModal";
 
 async function uploadToS3(file: File, type: "profile" | "id"): Promise<string> {
   const url = await fileUploader(file, type);

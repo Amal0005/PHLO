@@ -1,5 +1,6 @@
+import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { CreatorEntity } from "../../entities/creatorEntities";
 
 export interface IadminCreatorListingUseCase {
-  getAllCreators(): Promise<CreatorEntity[]>;
+  getAllCreators(page: number,limit: number): Promise<PaginatedResult<CreatorEntity>>;
 }

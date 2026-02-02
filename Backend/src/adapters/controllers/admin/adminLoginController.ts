@@ -12,7 +12,7 @@ export class AdminLoginController {
       const { email, password } = req.body;
       const result = await this._adminLoginUseCase.login(email, password);
 
-      res.cookie("refreshToken", result.refreshToken, {
+      res.cookie("adminRefreshToken", result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",

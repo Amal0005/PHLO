@@ -1,3 +1,4 @@
+import { TokenController } from "../../../adapters/controllers/tokenController";
 import { LogoutController } from "../../../adapters/controllers/logoutController";
 import { UserAuthController } from "../../../adapters/controllers/user/auth/authController";
 import { GoogleAuthController } from "../../../adapters/controllers/user/auth/googleAuthController";
@@ -24,27 +25,28 @@ import { verifyRegisterOtpUseCase } from "../../../useCases/user/register/verify
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
-const otpServices=new OtpServices()
-const pendingService=new PendingUserService()
-const jwtService=new JwtServices()
-const mailService=new MailService()
-const redisService=new RedisService()
-const tokenBlacklistService=new TokenBlacklistService(redisService)
-const creatorRepository=new CreatorRepository
+const otpServices = new OtpServices()
+const pendingService = new PendingUserService()
+const jwtService = new JwtServices()
+const mailService = new MailService()
+const redisService = new RedisService()
+const tokenBlacklistService = new TokenBlacklistService(redisService)
+const creatorRepository = new CreatorRepository
 
 
-const registerUseCase = new userRegisterUseCase(userRepo,creatorRepository,passwordServices,otpServices,mailService);
-const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices,jwtService);
-const verifyOtpUseCase=new verifyRegisterOtpUseCase(userRepo,otpServices,pendingService)
-const resendOtpUsecase=new ResendOtpUseCase(otpServices,mailService)
-const forgotPasswordUseCase=new ForgotPasswordUseCase(userRepo,otpServices,mailService)
-const verifyForgotOtpUseCase=new VerifyForgotOtpUseCase(otpServices)
-const resetPasswordUseCase=new ResetPasswordUseCase(userRepo,passwordServices)
-const googleLoginUseCase=new GoogleLoginUseCase(userRepo,jwtService)
-const logoutUseCase=new LogoutUseCase(tokenBlacklistService)
+const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService);
+const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
+const verifyOtpUseCase = new verifyRegisterOtpUseCase(userRepo, otpServices, pendingService)
+const resendOtpUsecase = new ResendOtpUseCase(otpServices, mailService)
+const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepo, otpServices, mailService)
+const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpServices)
+const resetPasswordUseCase = new ResetPasswordUseCase(userRepo, passwordServices)
+const googleLoginUseCase = new GoogleLoginUseCase(userRepo, jwtService)
+const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
 
-export const registerController = new userRegisterController(registerUseCase,verifyOtpUseCase,resendOtpUsecase);
+export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
-export const userAuthController=new UserAuthController(forgotPasswordUseCase,verifyForgotOtpUseCase,resetPasswordUseCase)
-export const userGoogleController=new GoogleAuthController(googleLoginUseCase)
-export const logoutController =new LogoutController(logoutUseCase)
+export const userAuthController = new UserAuthController(forgotPasswordUseCase, verifyForgotOtpUseCase, resetPasswordUseCase)
+export const userGoogleController = new GoogleAuthController(googleLoginUseCase)
+export const logoutController = new LogoutController(logoutUseCase)
+export const tokenController = new TokenController(jwtService)

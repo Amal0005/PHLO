@@ -15,11 +15,21 @@ export class CreatorLoginController {
       }
       console.log(req.body.payload)
       const result = await this._loginUseCase.login(email, password)
+
+      if (result.status === "approved" && result.refreshToken) {
+        res.cookie("creatorRefreshToken", result.refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+        delete result.refreshToken;
+      }
+
       return res.status(StatusCode.OK).json({
         success: true,
         message: "Login successful",
         data: result,
-
       });
     } catch (error) {
 

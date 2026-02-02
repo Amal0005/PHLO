@@ -7,6 +7,7 @@ import {
   registerController,
   userAuthController,
   userGoogleController,
+  tokenController
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
@@ -24,7 +25,7 @@ export class UserRoutes {
     private _jwtService: JwtServices,
     private _tokenBlacklistService: TokenBlacklistService,
     private _userRepo: IuserRepository,
-    private _creatorRepo:IcreatorRepository
+    private _creatorRepo: IcreatorRepository
   ) {
     this.userRouter = Router();
     this.setRoutes();
@@ -56,6 +57,9 @@ export class UserRoutes {
       (req: Request, res: Response) =>
         loginController.login(req, res)
     );
+    this.userRouter.post("/refresh-token", (req, res) =>
+      tokenController.refreshToken(req, res)
+    );
 
     this.userRouter.post(
       "/forgot-password",
@@ -81,11 +85,11 @@ export class UserRoutes {
         userGoogleController.googleLogin(req, res)
     );
 
-   this.userRouter.post(
-  "/logout",
-  jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo,this._creatorRepo),
-  authorizeRoles("user"),
-  logoutController.logout.bind(logoutController)
-);
+    this.userRouter.post(
+      "/logout",
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
+      authorizeRoles("user"),
+      logoutController.logout.bind(logoutController)
+    );
   }
 }

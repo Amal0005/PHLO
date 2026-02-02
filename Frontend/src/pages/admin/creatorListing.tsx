@@ -10,6 +10,7 @@ import { Creator } from "@/interface/admin/creatorInterface";
 import { toast } from "react-toastify";
 import { CreatorDetailModal } from "./components/CreatorDetailModal";
 import { confirmActionToast } from "../../compoents/reusable/confirmActionToast";
+import Pagination from "@/compoents/reusable/pagination";
 
 export default function CreatorListingPage() {
   const [creators, setCreators] = useState<Creator[]>([]);
@@ -22,12 +23,19 @@ export default function CreatorListingPage() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedCreator, setSelectedCreator] = useState<Creator | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const limit = 10;
 
   useEffect(() => {
     async function loadCreators() {
       try {
-        const data = await fetchAdminCreators();
-        setCreators(data);
+        setLoading(true);
+
+        const data = await fetchAdminCreators(page, limit);
+
+        setCreators(data.data);
+        setTotalPages(data.totalPages);
       } catch {
         setError("Failed to fetch creators");
       } finally {
@@ -36,7 +44,7 @@ export default function CreatorListingPage() {
     }
 
     loadCreators();
-  }, []);
+  }, [page]);
 
   const filteredCreators =
     filterStatus === "all"
@@ -47,7 +55,7 @@ export default function CreatorListingPage() {
     try {
       await approveCreator(id);
       setCreators((prev) =>
-        prev.map((c) => (c._id === id ? { ...c, status: "approved" } : c))
+        prev.map((c) => (c._id === id ? { ...c, status: "approved" } : c)),
       );
       toast.success("Creator approved successfully");
       setShowDetails(false);
@@ -65,7 +73,7 @@ export default function CreatorListingPage() {
       await rejectCreator(id, reason);
 
       setCreators((prev) =>
-        prev.map((c) => (c._id === id ? { ...c, status: "rejected" } : c))
+        prev.map((c) => (c._id === id ? { ...c, status: "rejected" } : c)),
       );
 
       toast.success("Creator rejected");
@@ -77,35 +85,32 @@ export default function CreatorListingPage() {
     }
   };
 
-const handleToggleStatus = (
-  creatorId: string,
-  currentStatus: string
-) => {
-  const newStatus = currentStatus === "approved" ? "blocked" : "approved";
+  const handleToggleStatus = (creatorId: string, currentStatus: string) => {
+    const newStatus = currentStatus === "approved" ? "blocked" : "approved";
 
-  confirmActionToast(
-    `Are you sure you want to ${newStatus === "blocked" ? "block" : "unblock"} this creator?`,
-    async () => {
-      try {
-        await toggleCreatorStatus(creatorId, newStatus);
+    confirmActionToast(
+      `Are you sure you want to ${newStatus === "blocked" ? "block" : "unblock"} this creator?`,
+      async () => {
+        try {
+          await toggleCreatorStatus(creatorId, newStatus);
 
-        setCreators((prev) =>
-          prev.map((c) =>
-            c._id === creatorId ? { ...c, status: newStatus as any } : c
-          )
-        );
+          setCreators((prev) =>
+            prev.map((c) =>
+              c._id === creatorId ? { ...c, status: newStatus as any } : c,
+            ),
+          );
 
-        toast.success(
-          newStatus === "blocked"
-            ? "Creator blocked successfully"
-            : "Creator unblocked successfully"
-        );
-      } catch {
-        toast.error("Failed to update creator status");
-      }
-    }
-  );
-};
+          toast.success(
+            newStatus === "blocked"
+              ? "Creator blocked successfully"
+              : "Creator unblocked successfully",
+          );
+        } catch {
+          toast.error("Failed to update creator status");
+        }
+      },
+    );
+  };
   if (loading) return <p className="p-6 text-white">Loading creators...</p>;
 
   if (error) return <p className="p-6 text-red-400">{error}</p>;
@@ -157,12 +162,13 @@ const handleToggleStatus = (
 
                 <td className="px-6 py-4">
                   <span
-                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${creator.status === "approved"
-                      ? "bg-green-500/10 text-green-400"
-                      : creator.status === "rejected"
-                        ? "bg-red-500/10 text-red-400"
-                        : "bg-yellow-500/10 text-yellow-400"
-                      }`}
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                      creator.status === "approved"
+                        ? "bg-green-500/10 text-green-400"
+                        : creator.status === "rejected"
+                          ? "bg-red-500/10 text-red-400"
+                          : "bg-yellow-500/10 text-yellow-400"
+                    }`}
                   >
                     {creator.status}
                   </span>
@@ -185,18 +191,21 @@ const handleToggleStatus = (
                     >
                       Details
                     </button>
-                    {creator.status !== "pending" && creator.status !== "rejected" && (
-      <button
-        onClick={() => handleToggleStatus(creator._id, creator.status)}
-        className={`px-3 py-1.5 text-sm rounded-lg border transition-all ${
-          creator.status === "approved"
-            ? "text-red-400 border-red-400/30 hover:bg-red-500/10"
-            : "text-green-400 border-green-400/30 hover:bg-green-500/10"
-        }`}
-      >
-        {creator.status === "approved" ? "Block" : "Unblock"}
-      </button>
-    )}
+                    {creator.status !== "pending" &&
+                      creator.status !== "rejected" && (
+                        <button
+                          onClick={() =>
+                            handleToggleStatus(creator._id, creator.status)
+                          }
+                          className={`px-3 py-1.5 text-sm rounded-lg border transition-all ${
+                            creator.status === "approved"
+                              ? "text-red-400 border-red-400/30 hover:bg-red-500/10"
+                              : "text-green-400 border-green-400/30 hover:bg-green-500/10"
+                          }`}
+                        >
+                          {creator.status === "approved" ? "Block" : "Unblock"}
+                        </button>
+                      )}
                   </div>
                 </td>
               </tr>
@@ -212,6 +221,11 @@ const handleToggleStatus = (
           </tbody>
         </table>
       </div>
+      <Pagination
+  page={page}
+  totalPages={totalPages}
+  onPageChange={setPage}
+/>
 
       {showDetails && selectedCreator && (
         <CreatorDetailModal

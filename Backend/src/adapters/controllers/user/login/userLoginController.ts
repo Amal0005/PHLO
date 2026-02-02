@@ -11,10 +11,11 @@ export class userLoginController {
       console.log(result);
       const { refreshToken } = result;
 
-      res.cookie("refreshToken", refreshToken, {
+      res.cookie("userRefreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
       return res.status(StatusCode.OK).json({
         success: true,

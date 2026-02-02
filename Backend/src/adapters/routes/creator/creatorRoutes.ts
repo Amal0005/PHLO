@@ -6,7 +6,7 @@ import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { JwtServices } from "@/domain/services/user/jwtServices";
 import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
-import { logoutController } from "@/framework/depInjection/user/userInjections";
+import { logoutController, tokenController } from "@/framework/depInjection/user/userInjections";
 import { IuserRepository } from "@/domain/interface/user/IuserRepository";
 import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
 
@@ -37,6 +37,9 @@ export class CreatorRoutes {
       "/login",
       (req: Request, res: Response) =>
         creatorLoginController.login(req, res)
+    );
+    this.creatorRouter.post("/refresh-token", (req, res) =>
+      tokenController.refreshToken(req, res)
     );
 
     this.creatorRouter.post(

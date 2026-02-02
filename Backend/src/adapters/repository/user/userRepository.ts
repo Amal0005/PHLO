@@ -1,33 +1,20 @@
+import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { User } from "../../../domain/entities/userEntities";
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
 import { UserModel } from "../../../framework/database/model/userModel";
+import { paginateMongo } from "@/utils/pagination";
+import { UserMapper } from "../../mapper/user/userMapper";
 
 export class UserRepository implements IuserRepository {
-  private toDomain(doc: any): User {
-    return {
-      _id: doc._id.toString(),
-      name: doc.name,
-      email: doc.email,
-      password: doc.password,
-      phone: doc.phone,
-      googleId: doc.googleId,
-      image: doc.image,
-      status: doc.status,
-      role: doc.role,
-      googleVerified: doc.googleVerified,
-      createdAt: doc.createdAt,
-    };
-  }
-
   async findByEmail(email: string): Promise<User | null> {
     const user = await UserModel.findOne({ email });
     if (!user) return null;
-    return this.toDomain(user);
+    return UserMapper.toDomain(user);
   }
 
   async createUser(user: Omit<User, "_id">): Promise<User> {
     const created = await UserModel.create(user);
-    return this.toDomain(created);
+    return UserMapper.toDomain(created);
   }
 
   async updatePassword(email: string, hashedPassword: string): Promise<void> {
@@ -36,12 +23,29 @@ export class UserRepository implements IuserRepository {
       { $set: { password: hashedPassword } },
     );
   }
-  async findAllUsers(): Promise<User[]> {
-    const users = await UserModel.find({ role: "user" })
-      .select("-password")
-      .sort({ createdAt: -1 });
-    return users.map((user) => this.toDomain(user));
+  async findAllUsers(
+    page: number,
+    limit: number
+  ): Promise<PaginatedResult<User>> {
+
+    const result = await paginateMongo(
+      UserModel,
+      { role: "user" },
+      page,
+      limit,
+      {
+        select: "-password",
+        sort: { createdAt: -1 }
+      }
+    );
+    return {
+      ...result,
+      data: result.data.map((user: any) =>
+        UserMapper.toDomain(user.toObject())
+      )
+    };
   }
+
   async updateUserStatus(userId: string, status: "active" | "blocked"): Promise<void> {
     await UserModel.updateOne({ _id: userId }, { $set: { status: status } });
   }
@@ -49,11 +53,11 @@ export class UserRepository implements IuserRepository {
   async findById(id: string): Promise<User | null> {
     const user = await UserModel.findById(id);
     if (!user) return null;
-    return this.toDomain(user);
+    return UserMapper.toDomain(user);
   }
   async findByPhone(phone: string): Promise<User | null> {
-    const user=await UserModel.findOne({phone})
-    if(!user)return null
-    return this.toDomain(user)
+    const user = await UserModel.findOne({ phone });
+    if (!user) return null;
+    return UserMapper.toDomain(user);
   }
 }
