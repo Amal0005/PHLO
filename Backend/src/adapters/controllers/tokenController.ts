@@ -20,10 +20,8 @@ export class TokenController {
                 });
             }
 
-            // Verify refresh token
             const decoded = this._jwtService.verifyToken(refreshToken);
 
-            // Generate new access token
             const newPayload = {
                 userId: decoded.userId,
                 email: decoded.email,

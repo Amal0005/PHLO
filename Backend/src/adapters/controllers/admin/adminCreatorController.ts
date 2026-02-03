@@ -11,7 +11,7 @@ export class AdminCreatorController {
     private _rejectCreatorUseCase: IrejectCreatorUseCase,
     private _adminCreatorListingUseCase: IadminCreatorListingUseCase,
     private _toggleCreatorStatusUseCase: ItoggleCreatorStatusUseCase,
-  ) { }
+  ) {}
 
   async getCreators(req: Request, res: Response) {
     try {

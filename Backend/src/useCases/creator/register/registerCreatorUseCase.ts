@@ -5,7 +5,7 @@ import { IpasswordService } from "@/domain/interface/service/IpasswordService";
 import { IuserRepository } from "@/domain/interface/user/IuserRepository";
 import { IOTPService } from "@/domain/interface/service/IotpServices";
 import { IMailService } from "@/domain/interface/service/ImailServices";
-import redis from "@/framework/redis/redisClient";
+import { IRedisService } from "@/domain/interface/service/IredisServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 
 export class RegisterCreatorUseCase implements IregisterCreatorUseCase {
@@ -14,8 +14,9 @@ export class RegisterCreatorUseCase implements IregisterCreatorUseCase {
     private _passwordService: IpasswordService,
     private _userRepo: IuserRepository,
     private _otpService: IOTPService,
-    private _mailService: IMailService
-  ) { }
+    private _mailService: IMailService,
+    private _redisService: IRedisService
+  ) {}
 
   async registerCreator(data: CreatorEntity): Promise<CreatorEntity> {
     const email = data.email.trim().toLowerCase();
@@ -36,16 +37,14 @@ export class RegisterCreatorUseCase implements IregisterCreatorUseCase {
       status: "pending" as const
     };
 
-    const isPreVerified = await redis.get(`VERIFIED_CREATOR_EMAIL_${email}`);
+    const isPreVerified = await this._redisService.getValue(`VERIFIED_CREATOR_EMAIL_${email}`);
     if (isPreVerified) {
       const createdCreator = await this._creatorRepo.createCreator(pendingCreator);
-      await redis.del(`VERIFIED_CREATOR_EMAIL_${email}`);
+      await this._redisService.deleteValue(`VERIFIED_CREATOR_EMAIL_${email}`);
       return createdCreator;
     }
 
-    await redis.set(`PENDING_CREATOR_${email}`, JSON.stringify(pendingCreator), {
-      EX: 300,
-    });
+    await this._redisService.setValue(`PENDING_CREATOR_${email}`, JSON.stringify(pendingCreator), 300);
 
     const otp = await this._otpService.generateOtp(email);
     console.log("Creator OTP:", otp);

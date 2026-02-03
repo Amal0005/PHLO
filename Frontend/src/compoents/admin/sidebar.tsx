@@ -28,7 +28,6 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
   return (
     <>
-      {/* Sidebar */}
       <aside
         className={`fixed top-16 left-0 bottom-0 w-64 bg-zinc-900/90 backdrop-blur-xl border-r border-white/10 z-30
         transform transition-transform duration-300 lg:translate-x-0
@@ -57,7 +56,6 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
           })}
         </div>
 
-        {/* Sidebar Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Shield className="w-3 h-3" />

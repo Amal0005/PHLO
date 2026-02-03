@@ -9,7 +9,7 @@ export class UserAuthController {
     private _forgotPasswordUseCase: IforgotPasswordUseCase,
     private _verifyForgotOtpUseCase: IVerifyForgotOtpUseCase,
     private _resetPasswordUseCase: IresetPasswordUseCase
-  ) { }
+  ) {}
 
   async forgotPassword(req: Request, res: Response) {
     try {

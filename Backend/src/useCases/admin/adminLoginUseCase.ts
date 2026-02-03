@@ -9,7 +9,7 @@ export class AdminLoginUseCase implements IadminLoginUseCase {
     private _userRepo: IuserRepository,
     private _passwordService: IpasswordService,
     private _jwtService: IjwtServices
-  ) { }
+  ) {}
 
   async login(
     email: string,

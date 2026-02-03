@@ -6,7 +6,7 @@ import { AuthError } from "@/domain/errors/authError";
 export class CreatorLoginController {
   constructor(
     private _loginUseCase: IcreatorLoginUseCase
-  ) { }
+  ) {}
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body.Creator as {
@@ -21,7 +21,7 @@ export class CreatorLoginController {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
-          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+          maxAge: 7 * 24 * 60 * 60 * 1000
         });
         delete result.refreshToken;
       }

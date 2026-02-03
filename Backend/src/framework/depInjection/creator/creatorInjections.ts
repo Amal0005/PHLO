@@ -5,6 +5,7 @@ import { CreatorRepository } from "@/adapters/repository/creator/creatorReposito
 import { UserRepository } from "@/adapters/repository/user/userRepository";
 import { JwtServices } from "@/domain/services/user/jwtServices";
 import { PasswordService } from "@/domain/services/user/passwordService";
+import { RedisService } from "@/domain/services/user/redisServices";
 import { OtpServices } from "@/domain/services/user/otpServices";
 import { MailService } from "@/domain/services/user/mailServices";
 import { CreatorLoginUseCase } from "@/useCases/creator/login/creatorLoginUseCase";
@@ -20,17 +21,18 @@ const creatorRepository = new CreatorRepository();
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
 const userRepository = new UserRepository();
-const otpService = new OtpServices();
+const redisService = new RedisService();
+const otpService = new OtpServices(redisService);
 const mailService = new MailService();
 
-const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService);
+const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService);
 const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository, userRepository);
-const verifyCreatorOtpUseCase = new VerifyCreatorOtpUseCase(creatorRepository, otpService);
+const verifyCreatorOtpUseCase = new VerifyCreatorOtpUseCase(creatorRepository, otpService, redisService);
 const resendCreatorOtpUseCase = new ResendCreatorOtpUseCase(otpService, mailService);
 const creatorLoginUseCase = new CreatorLoginUseCase(creatorRepository, jwtService, passwordService);
 const forgotPasswordUseCase = new ForgotPasswordUseCase(creatorRepository, otpService, mailService);
-const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpService);
-const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository, passwordService);
+const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpService, redisService);
+const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository, passwordService, redisService);
 
 export const creatorRegisterController = new CreatorRegisterController(
     creatorRegisterUseCase,

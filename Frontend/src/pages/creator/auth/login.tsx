@@ -36,7 +36,6 @@ export default function CreatorLogin() {
 
     try {
       const responseData = await CreatorAuthService.login(form);
-      console.log("LOGIN RESPONSE:", responseData);
 
       if (responseData.status === "pending") {
         setStatus({

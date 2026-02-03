@@ -10,7 +10,7 @@ export class userLoginUserUseCase implements IuserLoginUseCase {
     private _userRepo: IuserRepository,
     private _passwordService: IpasswordService,
     private _jwtService: IjwtServices
-  ) { }
+  ) {}
 
   async loginUser(user: loginDto) {
     const existingUser = await this._userRepo.findByEmail(user.email);

@@ -6,7 +6,7 @@ export class UploadController {
   constructor(
     private _getPresignedUrlUseCase: IGetPresignedUrlUseCase,
     private _getPresignedViewUrlUseCase: IGetPresignedViewUrlUseCase
-  ) { }
+  ) {}
 
   async getPresignedUrl(req: Request, res: Response) {
     const { fileType, folder } = req.body;

@@ -8,7 +8,7 @@ export class AdminUserController {
   constructor(
     private _adminUserListingUseCase: IadminUserListingUseCase,
     private _toggleUserStatusUseCase: IToggleUserStatusUseCase
-  ) { }
+  ) {}
   async getUsers(req: Request, res: Response) {
     try {
       const page = Math.max(1, Number(req.query.page) || 1);

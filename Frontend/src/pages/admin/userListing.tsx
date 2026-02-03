@@ -69,9 +69,11 @@ export default function UserListingPage() {
   };
 
   if (loading) {
-    return <p className="p-6 text-white">Loading users...</p>;
-  }
-
+return (
+  <div className="flex items-center justify-center min-h-screen">
+    <p className="text-white text-lg">Loading users...</p>
+  </div>
+);  }
   if (error) {
     return <p className="p-6 text-red-400">{error}</p>;
   }

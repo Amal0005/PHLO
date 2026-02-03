@@ -111,7 +111,13 @@ export default function CreatorListingPage() {
       },
     );
   };
-  if (loading) return <p className="p-6 text-white">Loading creators...</p>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+    <p className="text-white text-lg">Loading Creators...</p>
+  </div>
+    )
+  }
 
   if (error) return <p className="p-6 text-red-400">{error}</p>;
 

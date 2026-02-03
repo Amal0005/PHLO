@@ -48,8 +48,6 @@ export default function Login() {
 
     try {
       const data = await UserAuthService.login(form);
-      console.log("Login Response Data:", data);
-
       if (data?.data?.accessToken && data?.data?.user) {
         dispatch(setUser(data.data.user));
         dispatch(setUserAuth(data.data.accessToken));
@@ -244,8 +242,6 @@ export default function Login() {
                   onSuccess={async (idToken: string) => {
                     try {
                       const response = await UserAuthService.googleLogin(idToken);
-
-                      console.log("Google Service Response:", response);
 
                       if (response?.accessToken && response?.user) {
                         dispatch(setUser(response.user));

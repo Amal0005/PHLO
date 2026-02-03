@@ -25,22 +25,21 @@ import { verifyRegisterOtpUseCase } from "../../../useCases/user/register/verify
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
-const otpServices = new OtpServices()
-const pendingService = new PendingUserService()
+const redisService = new RedisService()
+const otpServices = new OtpServices(redisService)
+const pendingService = new PendingUserService(redisService)
 const jwtService = new JwtServices()
 const mailService = new MailService()
-const redisService = new RedisService()
 const tokenBlacklistService = new TokenBlacklistService(redisService)
 const creatorRepository = new CreatorRepository
 
-
-const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService);
+const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
 const verifyOtpUseCase = new verifyRegisterOtpUseCase(userRepo, otpServices, pendingService)
 const resendOtpUsecase = new ResendOtpUseCase(otpServices, mailService)
 const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepo, otpServices, mailService)
-const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpServices)
-const resetPasswordUseCase = new ResetPasswordUseCase(userRepo, passwordServices)
+const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpServices, redisService)
+const resetPasswordUseCase = new ResetPasswordUseCase(userRepo, passwordServices, redisService)
 const googleLoginUseCase = new GoogleLoginUseCase(userRepo, jwtService)
 const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
 

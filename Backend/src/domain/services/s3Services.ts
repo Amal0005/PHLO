@@ -37,7 +37,6 @@ if (!fileType.includes('/')) {
       expiresIn: 60,
     });
 
-    // const publicUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
 
     return { uploadUrl, publicUrl:fileName };
   }

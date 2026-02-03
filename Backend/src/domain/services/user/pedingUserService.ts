@@ -1,11 +1,12 @@
-import redis from "../../../framework/redis/redisClient";
+import { IRedisService } from "../../interface/service/IredisServices";
 import { IPendingUserService } from "../../interface/service/IpendingUserService";
 
-export class PendingUserService implements IPendingUserService{
+export class PendingUserService implements IPendingUserService {
+    constructor(private _redisService: IRedisService) { }
     async getPending(email: string): Promise<string | null> {
-        return redis.get(`PENDING_USER_${email}`)
+        return this._redisService.getValue(`PENDING_USER_${email}`)
     }
     async deletePending(email: string): Promise<void> {
-       await redis.del(`PENDING_USER_${email}`)
+        await this._redisService.deleteValue(`PENDING_USER_${email}`)
     }
 }

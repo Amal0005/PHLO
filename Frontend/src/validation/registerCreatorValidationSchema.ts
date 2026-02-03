@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Step 1: Basic Info Schema
 export const creatorStep1Schema = z.object({
   fullName: z
     .string()
@@ -31,7 +30,6 @@ export const creatorStep1Schema = z.object({
   path: ["confirmPassword"],
 });
 
-// Step 2: Experience Schema
 export const creatorStep2Schema = z.object({
   city: z
     .string()
@@ -46,7 +44,6 @@ export const creatorStep2Schema = z.object({
     .refine((val) => Number(val) <= 50, "Years of experience seems too high. Please check."),
 });
 
-// Step 3: Professional Details Schema
 export const creatorStep3Schema = z.object({
   bio: z
     .string()
@@ -64,7 +61,6 @@ export const creatorStep3Schema = z.object({
     .min(1, "Please select at least one specialty"),
 });
 
-// Step 4: Documents Schema
 export const creatorStep4Schema = z.object({
   profilePhoto: z
     .instanceof(File, { message: "Please upload your profile photo" })
@@ -77,7 +73,6 @@ export const creatorStep4Schema = z.object({
     .refine((file) => file !== null, "Please upload your government ID"),
 });
 
-// Complete registration schema (all steps combined)
 export const creatorRegistrationSchema = z.object({
   fullName: z.string().min(3).regex(/^[a-zA-Z\s]+$/),
   email: z.string().email(),

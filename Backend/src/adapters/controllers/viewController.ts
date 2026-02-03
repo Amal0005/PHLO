@@ -7,7 +7,7 @@ export class ViewController {
   constructor(
     private _creatorRepo: CreatorRepository,
     private _getPresignedViewUrlUseCase: IGetPresignedViewUrlUseCase
-  ) { }
+  ) {}
 
   async getImage(req: Request, res: Response) {
     const email = req.query.email as string;

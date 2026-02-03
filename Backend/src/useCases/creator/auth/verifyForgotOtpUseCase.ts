@@ -1,10 +1,13 @@
+import { IRedisService } from "@/domain/interface/service/IredisServices";
 import { IOTPService } from "@/domain/interface/service/IotpServices";
 import { IVerifyForgotOtpUseCase } from "@/domain/interface/creator/auth/IverifyForgotOtpUseCase";
-import redis from "@/framework/redis/redisClient";
 
 
 export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
-    constructor(private _otpService: IOTPService) { }
+    constructor(
+        private _otpService: IOTPService,
+        private _redisService: IRedisService
+    ) {}
 
     async verify(email: string, otp: string): Promise<void> {
         email = email.trim().toLowerCase();
@@ -13,6 +16,6 @@ export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
         if (status === "EXPIRED") throw new Error("OTP expired");
         if (status === "INVALID") throw new Error("Invalid OTP");
 
-        await redis.set(`FP_CREATOR_VERIFIED_${email}`, "1", { EX: 300 });
+        await this._redisService.setValue(`FP_CREATOR_VERIFIED_${email}`, "1", 300);
     }
 }

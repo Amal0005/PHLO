@@ -108,7 +108,6 @@ export const setUpInterceptors = () => {
         } catch (refreshError) {
           processQueue(refreshError, null);
 
-          // Clear auth and redirect
           if (url.includes("/admin")) {
             store.dispatch(clearAdminAuth());
             store.dispatch(clearAdmin());

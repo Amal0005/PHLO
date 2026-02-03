@@ -12,14 +12,13 @@ export class CreatorLoginUseCase implements IcreatorLoginUseCase {
     private _creatorRepo: IcreatorRepository,
     private IjwtService: IjwtServices,
     private _passwordService: IpasswordService,
-  ) { }
+  ) {}
   async login(
     email: string,
     password: string,
   ): Promise<CreatorLoginResponseDto> {
     const getEmail = email.trim().toLowerCase();
     const creator = await this._creatorRepo.findByEmail(getEmail);
-    console.log(creator?.password);
     if (!creator) {
       throw new AuthError("Invalid email or password", 401);
     } if (creator.status === 'pending') {

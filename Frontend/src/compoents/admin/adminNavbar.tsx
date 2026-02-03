@@ -51,7 +51,6 @@ const handleLogout = () => {
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
-          {/* Left */}
           <div className="flex items-center gap-4">
             <button
               onClick={onMenuToggle}
@@ -73,7 +72,6 @@ const handleLogout = () => {
             </div>
           </div>
 
-          {/* Right */}
           <div className="flex items-center gap-3">
             {admin && (
               <div className="hidden sm:flex items-center gap-2 bg-zinc-800/50 rounded-lg px-3 py-2 border border-zinc-700">

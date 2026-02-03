@@ -353,7 +353,6 @@ export default function Register() {
                     try {
                       const response = await UserAuthService.googleLogin(idToken);
 
-                      console.log("Google Service Response:", response);
 
                       if (response?.accessToken && response?.user) {
                         dispatch(setUser(response.user));

@@ -5,7 +5,7 @@ import { IOTPService } from "../../../domain/interface/service/IotpServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
 import { IuserRegisterUseCase } from "../../../domain/interface/user/register/IuserRegisterUseCase";
-import redis from "../../../framework/redis/redisClient";
+import { IRedisService } from "../../../domain/interface/service/IredisServices";
 
 import { renderTemplate } from "../../../utils/renderTemplates";
 
@@ -16,6 +16,7 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
     private _passwordService: IpasswordService,
     private _otpService: IOTPService,
     private _mailService: IMailService,
+    private _redisService: IRedisService,
   ) {}
 
   async registerUser(user: RegisterDto): Promise<void> {
@@ -42,9 +43,11 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
       password: hashedPassword,
     };
 
-    await redis.set(`PENDING_USER_${email}`, JSON.stringify(pendingUser), {
-      EX: 300,
-    });
+    await this._redisService.setValue(
+      `PENDING_USER_${email}`,
+      JSON.stringify(pendingUser),
+      300,
+    );
     const otp = await this._otpService.generateOtp(email);
     console.log("OTP: ", otp);
 

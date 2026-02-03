@@ -2,7 +2,6 @@ import { IMailService } from "@/domain/interface/service/ImailServices";
 import { IOTPService } from "@/domain/interface/service/IotpServices";
 import { IforgotPasswordUseCase } from "@/domain/interface/creator/auth/IforgotPasswordUseCase";
 import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
-import redis from "@/framework/redis/redisClient";
 
 
 import { renderTemplate } from "@/utils/renderTemplates";
@@ -12,7 +11,7 @@ export class ForgotPasswordUseCase implements IforgotPasswordUseCase {
         private _creatorRepo: IcreatorRepository,
         private _otpService: IOTPService,
         private _mailService: IMailService
-    ) { }
+    ) {}
 
     async sendOtp(email: string): Promise<void> {
         email = email.trim().toLowerCase();

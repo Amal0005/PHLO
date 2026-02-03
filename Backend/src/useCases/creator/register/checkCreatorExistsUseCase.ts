@@ -6,11 +6,11 @@ export class CheckCreatorExistsUseCase implements IcheckCreatorExistsUseCase {
   constructor(
     private _creatorRepo: IcreatorRepository,
     private _userRepo: IuserRepository
-  ) { }
+  ) {}
 
   async checkExists(email: string, phone: string): Promise<void> {
     const existingCreatorByEmail = await this._creatorRepo.findByEmail(email);
-    if (existingCreatorByEmail) {
+    if (existingCreatorByEmail&&existingCreatorByEmail.status!=="rejected") {
       throw new Error("EMAIL_EXISTS");
     }
 
@@ -20,7 +20,7 @@ export class CheckCreatorExistsUseCase implements IcheckCreatorExistsUseCase {
     }
 
     const existingPhone = await this._creatorRepo.findByPhone(phone);
-    if (existingPhone) {
+    if (existingPhone &&existingPhone.status!=="rejected") {
       throw new Error("PHONE_EXISTS");
     }
   }

@@ -11,7 +11,7 @@ export class CreatorRegisterController {
     private _checkCreatorExistsUseCase: IcheckCreatorExistsUseCase,
     private _verifyCreatorOtpUseCase: IverifyCreatorOtpUseCase,
     private _resendCreatorOtpUseCase: IresendCreatorOtpUseCase
-  ) { }
+  ) {}
 
   async register(req: Request, res: Response) {
     try {

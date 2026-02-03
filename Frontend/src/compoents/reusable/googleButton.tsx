@@ -12,7 +12,6 @@ const GoogleLoginButton = ({ onSuccess }: Props) => {
           onSuccess={(res) => {
             const idToken = res.credential;
             if (!idToken) return;
-            console.log("GOOGLE ID TOKEN:", idToken);
             onSuccess(idToken);
           }}
           onError={() => {

@@ -1,7 +1,7 @@
 import { X, Mail, Briefcase, Award, Link2, FileCheck } from "lucide-react";
 import { Creator } from "@/interface/admin/creatorInterface";
-import { S3Media } from "@/compoents/reusable/S3Media";
 import { useState } from "react";
+import { S3Media } from "@/compoents/reusable/S3Media";
 
 interface Props {
   creator: Creator;
@@ -21,22 +21,20 @@ export const CreatorDetailModal = ({
     s3Key: string;
   } | null>(null);
   const [isApproving, setIsApproving] = useState(false);
-  console.log("exp", creator);
-const handleApprove = async () => {
-  try {
-    setIsApproving(true);
-    await onApprove(creator._id);
-  } finally {
-    setIsApproving(false);
-  }
-};
+  console.log("ekbxp", creator);
+  const handleApprove = async () => {
+    try {
+      setIsApproving(true);
+      await onApprove(creator._id);
+    } finally {
+      setIsApproving(false);
+    }
+  };
 
   return (
     <>
-      {/* Main Modal - Card Based Design */}
       <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-50 p-4">
         <div className="bg-gray-50 rounded-2xl max-w-4xl w-full shadow-2xl overflow-hidden">
-          {/* Close Button - Top Right */}
           <button
             onClick={onClose}
             className="absolute top-6 right-6 z-10 text-gray-600 hover:text-gray-900 
@@ -46,7 +44,6 @@ const handleApprove = async () => {
           </button>
 
           <div className="grid md:grid-cols-3 gap-0">
-            {/* Left Sidebar - Profile Card */}
             <div className="bg-white p-8 border-r border-gray-200">
               <div className="text-center mb-6">
                 <div
@@ -64,8 +61,10 @@ const handleApprove = async () => {
                     className="w-32 h-32 rounded-2xl object-cover mx-auto shadow-lg 
                              ring-4 ring-gray-100 group-hover:ring-gray-300 transition-all"
                   />
-                  <div className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/10 
-                               transition-all flex items-center justify-center">
+                  <div
+                    className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/10 
+                               transition-all flex items-center justify-center"
+                  >
                     <span className="text-white opacity-0 group-hover:opacity-100 text-xs font-semibold">
                       PREVIEW
                     </span>
@@ -81,7 +80,6 @@ const handleApprove = async () => {
                 </div>
               </div>
 
-              {/* Quick Stats */}
               <div className="space-y-4">
                 <div className="bg-gray-50 rounded-xl p-4">
                   <div className="flex items-center gap-2 text-gray-500 mb-1">
@@ -111,7 +109,6 @@ const handleApprove = async () => {
               </div>
             </div>
 
-            {/* Right Content Area */}
             <div className="md:col-span-2 bg-white">
               <div className="p-8">
                 <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 pb-3 border-b border-gray-200">
@@ -119,7 +116,6 @@ const handleApprove = async () => {
                 </h4>
 
                 <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-                  {/* Bio Card */}
                   <div className="bg-gray-50 rounded-xl p-5">
                     <h5 className="font-semibold text-gray-900 mb-2">Bio</h5>
                     <p className="text-gray-700 text-sm leading-relaxed">
@@ -127,9 +123,10 @@ const handleApprove = async () => {
                     </p>
                   </div>
 
-                  {/* Specialization Card */}
                   <div className="bg-gray-50 rounded-xl p-5">
-                    <h5 className="font-semibold text-gray-900 mb-3">Specializations</h5>
+                    <h5 className="font-semibold text-gray-900 mb-3">
+                      Specializations
+                    </h5>
                     {creator.specialties?.length ? (
                       <div className="flex flex-wrap gap-2">
                         {creator.specialties.map((item, index) => (
@@ -143,16 +140,36 @@ const handleApprove = async () => {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-400 text-sm">No specializations listed</p>
+                      <p className="text-gray-400 text-sm">
+                        No specializations listed
+                      </p>
+                    )}
+                  </div>
+                  <div className="bg-gray-50 rounded-xl p-5">
+                    <h5 className="font-semibold text-gray-900 mb-3">
+                      Phone Number
+                    </h5>
+
+                    {creator?.phone ? (
+                      <div className="flex flex-wrap gap-2">
+                        <p className="text-sm text-gray-700">{creator.phone}</p>
+                      </div>
+                    ) : (
+                      <p className="text-gray-400 text-sm">
+                        No phone number listed
+                      </p>
                     )}
                   </div>
 
-                  {/* Portfolio Card */}
                   <div className="bg-gray-50 rounded-xl p-5">
-                    <h5 className="font-semibold text-gray-900 mb-3">Portfolio</h5>
+                    <h5 className="font-semibold text-gray-900 mb-3">
+                      Portfolio
+                    </h5>
                     {creator.portfolioLink ? (
                       <button
-                        onClick={() => window.open(creator.portfolioLink, "_blank")}
+                        onClick={() =>
+                          window.open(creator.portfolioLink, "_blank")
+                        }
                         className="inline-flex items-center gap-2 px-4 py-2.5 bg-black text-white 
                                  text-sm font-medium rounded-lg hover:bg-gray-800 transition-all 
                                  shadow-sm hover:shadow-md"
@@ -161,13 +178,16 @@ const handleApprove = async () => {
                         Open Portfolio
                       </button>
                     ) : (
-                      <p className="text-gray-400 text-sm">No portfolio link provided</p>
+                      <p className="text-gray-400 text-sm">
+                        No portfolio link provided
+                      </p>
                     )}
                   </div>
 
-                  {/* Government ID Card */}
                   <div className="bg-gray-50 rounded-xl p-5">
-                    <h5 className="font-semibold text-gray-900 mb-3">Government ID</h5>
+                    <h5 className="font-semibold text-gray-900 mb-3">
+                      Government ID
+                    </h5>
                     <div
                       className="cursor-pointer inline-block group"
                       onClick={() =>
@@ -183,10 +203,14 @@ const handleApprove = async () => {
                           className="w-40 h-28 object-cover border-2 border-gray-200 
                                    group-hover:border-gray-400 transition-all shadow-sm"
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 
-                                     transition-all flex items-center justify-center">
-                          <span className="text-white opacity-0 group-hover:opacity-100 
-                                       text-xs font-bold tracking-wide">
+                        <div
+                          className="absolute inset-0 bg-black/0 group-hover:bg-black/20 
+                                     transition-all flex items-center justify-center"
+                        >
+                          <span
+                            className="text-white opacity-0 group-hover:opacity-100 
+                                       text-xs font-bold tracking-wide"
+                          >
                             CLICK TO VIEW
                           </span>
                         </div>
@@ -196,7 +220,6 @@ const handleApprove = async () => {
                 </div>
               </div>
 
-              {/* Action Footer */}
               <div className="border-t border-gray-200 p-6 bg-gray-50">
                 {creator.status === "pending" ? (
                   <div className="flex gap-3">
@@ -208,10 +231,10 @@ const handleApprove = async () => {
                     >
                       Reject
                     </button>
-                 <button
-  onClick={handleApprove}
-  disabled={isApproving}
-  className={`
+                    <button
+                      onClick={handleApprove}
+                      disabled={isApproving}
+                      className={`
     flex-1 px-6 py-3.5 rounded-xl font-bold 
     flex items-center justify-center gap-2
     transition-all shadow-md
@@ -221,39 +244,38 @@ const handleApprove = async () => {
         : "bg-black text-white hover:bg-gray-800 hover:shadow-lg"
     }
   `}
->
-  {isApproving ? (
-    <>
-      <svg
-        className="animate-spin h-5 w-5 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          className="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          strokeWidth="4"
-        />
-        <path
-          className="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-        />
-      </svg>
-      Approving...
-    </>
-  ) : (
-    <>
-      <FileCheck size={18} />
-      Approve
-    </>
-  )}
-</button>
-
+                    >
+                      {isApproving ? (
+                        <>
+                          <svg
+                            className="animate-spin h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                            />
+                          </svg>
+                          Approving...
+                        </>
+                      ) : (
+                        <>
+                          <FileCheck size={18} />
+                          Approve
+                        </>
+                      )}
+                    </button>
                   </div>
                 ) : (
                   <div className="text-center py-2 bg-white rounded-lg border border-gray-200 px-4">
@@ -271,7 +293,6 @@ const handleApprove = async () => {
         </div>
       </div>
 
-      {/* Polaroid Style Image Preview */}
       {preview && (
         <div
           className="fixed inset-0 bg-black/95 flex items-center justify-center z-[60] p-8"
@@ -281,9 +302,7 @@ const handleApprove = async () => {
             className="relative animate-[fadeIn_0.2s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Polaroid Frame */}
             <div className="bg-white p-4 pb-16 shadow-2xl transform hover:scale-105 transition-transform duration-300">
-              {/* Image */}
               <div className="relative bg-gray-100">
                 <S3Media
                   s3Key={preview.s3Key}
@@ -291,7 +310,6 @@ const handleApprove = async () => {
                 />
               </div>
 
-              {/* Polaroid Caption */}
               <div className="absolute bottom-4 left-4 right-4 text-center">
                 <p className="text-gray-700 font-handwriting text-lg tracking-wide">
                   {preview.title}
@@ -299,7 +317,6 @@ const handleApprove = async () => {
               </div>
             </div>
 
-            {/* Close Button - Floating */}
             <button
               onClick={() => setPreview(null)}
               className="absolute -top-16 right-0 text-white/80 hover:text-white 
@@ -313,10 +330,11 @@ const handleApprove = async () => {
               </div>
             </button>
 
-            {/* Decorative Tape Effect (Top) */}
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 
+            <div
+              className="absolute -top-3 left-1/2 transform -translate-x-1/2 
                          w-24 h-8 bg-white/10 backdrop-blur-sm rotate-2 
-                         border-t border-b border-white/20"></div>
+                         border-t border-b border-white/20"
+            ></div>
           </div>
         </div>
       )}
