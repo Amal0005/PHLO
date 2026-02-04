@@ -2,6 +2,7 @@ import { X, Mail, Briefcase, Award, Link2, FileCheck } from "lucide-react";
 import { Creator } from "@/interface/admin/creatorInterface";
 import { useState } from "react";
 import { S3Media } from "@/compoents/reusable/s3Media";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
   creator: Creator;
@@ -20,7 +21,7 @@ export const CreatorDetailModal = ({
     s3Key: string;
   } | null>(null);
   const [isApproving, setIsApproving] = useState(false);
-  console.log("ekbxp", creator);
+
   const handleApprove = async () => {
     try {
       setIsApproving(true);
@@ -31,312 +32,312 @@ export const CreatorDetailModal = ({
   };
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-md flex items-center justify-center z-50 p-4">
-        <div className="bg-gray-50 rounded-2xl max-w-4xl w-full shadow-2xl overflow-hidden">
-          <button
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="flex min-h-full items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-md"
             onClick={onClose}
-            className="absolute top-6 right-6 z-10 text-gray-600 hover:text-gray-900 
-                     bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-all"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 30,
+              mass: 0.8,
+            }}
+            className="relative bg-white rounded-3xl max-w-4xl w-full shadow-2xl overflow-hidden z-10"
           >
-            <X size={20} />
-          </button>
+            <button
+              onClick={onClose}
+              className="absolute top-6 right-6 z-20 text-gray-500 hover:text-gray-900 
+                       bg-white shadow-sm border border-gray-100 rounded-full p-2.5 
+                       transition-all active:scale-90 hover:bg-gray-50"
+            >
+              <X size={20} />
+            </button>
 
-          <div className="grid md:grid-cols-3 gap-0">
-            <div className="bg-white p-8 border-r border-gray-200">
-              <div className="text-center mb-6">
-                <div
-                  className="cursor-pointer inline-block group relative mb-4"
-                  onClick={() =>
-                    setPreview({
-                      title: "Profile Photo",
-                      s3Key: creator.profilePhoto || "",
-                    })
-                  }
-                >
-                  <S3Media
-                    s3Key={creator.profilePhoto || ""}
-                    alt={creator.fullName}
-                    className="w-32 h-32 rounded-2xl object-cover mx-auto shadow-lg 
-                             ring-4 ring-gray-100 group-hover:ring-gray-300 transition-all"
-                  />
+            <div className="grid md:grid-cols-3 gap-0">
+              <div className="bg-gray-50/50 p-8 border-r border-gray-100">
+                <div className="text-center mb-6">
                   <div
-                    className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/10 
-                               transition-all flex items-center justify-center"
+                    className="cursor-pointer inline-block group relative mb-4"
+                    onClick={() =>
+                      setPreview({
+                        title: "Profile Photo",
+                        s3Key: creator.profilePhoto || "",
+                      })
+                    }
                   >
-                    <span className="text-white opacity-0 group-hover:opacity-100 text-xs font-semibold">
-                      PREVIEW
-                    </span>
+                    <S3Media
+                      s3Key={creator.profilePhoto || ""}
+                      alt={creator.fullName}
+                      className="w-32 h-32 rounded-3xl object-cover mx-auto shadow-xl 
+                               ring-4 ring-white group-hover:ring-gray-100 transition-all duration-300"
+                    />
+                    <div
+                      className="absolute inset-0 rounded-3xl bg-black/0 group-hover:bg-black/20 
+                                 transition-all duration-300 flex items-center justify-center"
+                    >
+                      <span className="text-white opacity-0 group-hover:opacity-100 text-xs font-bold tracking-widest">
+                        VIEW
+                      </span>
+                    </div>
+                  </div>
+
+                  <h3 className="text-2xl font-black text-gray-900 mb-1">
+                    {creator.fullName}
+                  </h3>
+                  <div className="flex items-center justify-center gap-1.5 text-gray-500 text-sm font-medium">
+                    <Mail size={14} className="text-gray-400" />
+                    <p className="truncate">{creator.email}</p>
                   </div>
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-1">
-                  {creator.fullName}
-                </h3>
-                <div className="flex items-center justify-center gap-1.5 text-gray-600 text-sm">
-                  <Mail size={14} />
-                  <p className="truncate">{creator.email}</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="flex items-center gap-2 text-gray-500 mb-1">
-                    <Briefcase size={16} />
-                    <span className="text-xs font-semibold uppercase tracking-wide">
-                      Experience
-                    </span>
-                  </div>
-                  <p className="text-gray-900 font-bold text-lg">
-                    {creator.yearsOfExperience
-                      ? `${creator.yearsOfExperience} Years`
-                      : "N/A"}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="flex items-center gap-2 text-gray-500 mb-1">
-                    <Award size={16} />
-                    <span className="text-xs font-semibold uppercase tracking-wide">
-                      Specialties
-                    </span>
-                  </div>
-                  <p className="text-gray-900 font-bold text-lg">
-                    {creator.specialties?.length || 0}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="md:col-span-2 bg-white">
-              <div className="p-8">
-                <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 pb-3 border-b border-gray-200">
-                  Application Details
-                </h4>
-
-                <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-                  <div className="bg-gray-50 rounded-xl p-5">
-                    <h5 className="font-semibold text-gray-900 mb-2">Bio</h5>
-                    <p className="text-gray-700 text-sm leading-relaxed">
-                      {creator.bio || "No bio provided"}
+                <div className="space-y-3">
+                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+                    <div className="flex items-center gap-2 text-gray-400 mb-1">
+                      <Briefcase size={14} />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                        Experience
+                      </span>
+                    </div>
+                    <p className="text-gray-900 font-extrabold text-xl">
+                      {creator.yearsOfExperience
+                        ? `${creator.yearsOfExperience} Years`
+                        : "N/A"}
                     </p>
                   </div>
 
-                  <div className="bg-gray-50 rounded-xl p-5">
-                    <h5 className="font-semibold text-gray-900 mb-3">
-                      Specializations
-                    </h5>
-                    {creator.specialties?.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {creator.specialties.map((item, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1.5 bg-white text-gray-800 rounded-lg text-sm 
-                                     font-medium border border-gray-200 shadow-sm"
+                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
+                    <div className="flex items-center gap-2 text-gray-400 mb-1">
+                      <Award size={14} />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                        Specialties
+                      </span>
+                    </div>
+                    <p className="text-gray-900 font-extrabold text-xl">
+                      {creator.specialties?.length || 0}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="md:col-span-2 bg-white">
+                <div className="p-8">
+                  <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-6 pb-2 border-b border-gray-100">
+                    Application Information
+                  </h4>
+
+                  <div className="space-y-6 max-h-[55vh] overflow-y-auto pr-4 custom-scrollbar">
+                    <div className="space-y-2">
+                      <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        Bio
+                      </h5>
+                      <div className="bg-gray-50/50 rounded-2xl p-5 border border-gray-100">
+                        <p className="text-gray-700 text-sm leading-relaxed font-medium">
+                          {creator.bio || "No bio provided"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        Specializations
+                      </h5>
+                      {creator.specialties?.length ? (
+                        <div className="flex flex-wrap gap-2">
+                          {creator.specialties.map((item, index) => (
+                            <span
+                              key={index}
+                              className="px-4 py-2 bg-white text-gray-700 rounded-xl text-xs 
+                                       font-bold border border-gray-100 shadow-sm"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-gray-400 text-sm font-medium italic">
+                          No specializations listed
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                          Phone
+                        </h5>
+                        <div className="bg-gray-50/50 rounded-xl p-3 border border-gray-100">
+                          <p className="text-sm font-bold text-gray-700">
+                            {creator?.phone || "Not provided"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                          Portfolio
+                        </h5>
+                        {creator.portfolioLink ? (
+                          <button
+                            onClick={() =>
+                              window.open(creator.portfolioLink, "_blank")
+                            }
+                            className="w-full flex items-center justify-between px-4 py-3 bg-gray-900 text-white 
+                                     text-xs font-bold rounded-xl hover:bg-black transition-all 
+                                     active:scale-[0.98] shadow-lg shadow-black/10 group"
                           >
-                            {item}
-                          </span>
-                        ))}
+                            <span className="flex items-center gap-2">
+                              <Link2 size={14} />
+                              Open Link
+                            </span>
+                            <X
+                              size={12}
+                              className="rotate-45 group-hover:translate-x-0.5 transition-transform"
+                            />
+                          </button>
+                        ) : (
+                          <div className="bg-gray-50/50 rounded-xl p-3 border border-gray-100">
+                            <p className="text-sm text-gray-400 font-medium">
+                              No link
+                            </p>
+                          </div>
+                        )}
                       </div>
-                    ) : (
-                      <p className="text-gray-400 text-sm">
-                        No specializations listed
-                      </p>
-                    )}
-                  </div>
-                  <div className="bg-gray-50 rounded-xl p-5">
-                    <h5 className="font-semibold text-gray-900 mb-3">
-                      Phone Number
-                    </h5>
+                    </div>
 
-                    {creator?.phone ? (
-                      <div className="flex flex-wrap gap-2">
-                        <p className="text-sm text-gray-700">{creator.phone}</p>
-                      </div>
-                    ) : (
-                      <p className="text-gray-400 text-sm">
-                        No phone number listed
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="bg-gray-50 rounded-xl p-5">
-                    <h5 className="font-semibold text-gray-900 mb-3">
-                      Portfolio
-                    </h5>
-                    {creator.portfolioLink ? (
-                      <button
+                    <div className="space-y-2">
+                      <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        Documents
+                      </h5>
+                      <div
+                        className="cursor-pointer group relative inline-block"
                         onClick={() =>
-                          window.open(creator.portfolioLink, "_blank")
+                          setPreview({
+                            title: "Government ID",
+                            s3Key: creator.governmentId || "",
+                          })
                         }
-                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-black text-white 
-                                 text-sm font-medium rounded-lg hover:bg-gray-800 transition-all 
-                                 shadow-sm hover:shadow-md"
                       >
-                        <Link2 size={16} />
-                        Open Portfolio
-                      </button>
-                    ) : (
-                      <p className="text-gray-400 text-sm">
-                        No portfolio link provided
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="bg-gray-50 rounded-xl p-5">
-                    <h5 className="font-semibold text-gray-900 mb-3">
-                      Government ID
-                    </h5>
-                    <div
-                      className="cursor-pointer inline-block group"
-                      onClick={() =>
-                        setPreview({
-                          title: "Government ID",
-                          s3Key: creator.governmentId || "",
-                        })
-                      }
-                    >
-                      <div className="relative overflow-hidden rounded-lg">
-                        <S3Media
-                          s3Key={creator.governmentId || ""}
-                          className="w-40 h-28 object-cover border-2 border-gray-200 
-                                   group-hover:border-gray-400 transition-all shadow-sm"
-                        />
-                        <div
-                          className="absolute inset-0 bg-black/0 group-hover:bg-black/20 
-                                     transition-all flex items-center justify-center"
-                        >
-                          <span
-                            className="text-white opacity-0 group-hover:opacity-100 
-                                       text-xs font-bold tracking-wide"
-                          >
-                            CLICK TO VIEW
-                          </span>
+                        <div className="relative overflow-hidden rounded-2xl border-2 border-gray-100 group-hover:border-gray-300 transition-all shadow-md">
+                          <S3Media
+                            s3Key={creator.governmentId || ""}
+                            className="w-48 h-32 object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                            <span className="text-white opacity-0 group-hover:opacity-100 text-[10px] font-black tracking-widest">
+                              VIEW ID
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="border-t border-gray-200 p-6 bg-gray-50">
-                {creator.status === "pending" ? (
-                  <div className="flex gap-3">
-                    <button
-                      onClick={onReject}
-                      className="flex-1 px-6 py-3.5 bg-white text-gray-900 font-bold rounded-xl 
-                               border-2 border-gray-300 hover:border-red-400 hover:text-red-600 
-                               transition-all shadow-sm hover:shadow-md"
-                    >
-                      Reject
-                    </button>
-                    <button
-                      onClick={handleApprove}
-                      disabled={isApproving}
-                      className={`
-    flex-1 px-6 py-3.5 rounded-xl font-bold 
-    flex items-center justify-center gap-2
-    transition-all shadow-md
-    ${
-      isApproving
-        ? "bg-gray-700 cursor-not-allowed"
-        : "bg-black text-white hover:bg-gray-800 hover:shadow-lg"
-    }
-  `}
-                    >
-                      {isApproving ? (
-                        <>
-                          <svg
-                            className="animate-spin h-5 w-5 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            />
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                            />
-                          </svg>
-                          Approving...
-                        </>
-                      ) : (
-                        <>
-                          <FileCheck size={18} />
-                          Approve
-                        </>
-                      )}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-center py-2 bg-white rounded-lg border border-gray-200 px-4">
-                    <p className="text-sm text-gray-600">
-                      Application status:{" "}
-                      <span className="capitalize font-bold text-gray-900">
-                        {creator.status}
-                      </span>
-                    </p>
-                  </div>
-                )}
+                <div className="border-t border-gray-100 p-8 bg-gray-50/30">
+                  {creator.status === "pending" ? (
+                    <div className="flex gap-4">
+                      <button
+                        onClick={onReject}
+                        className="flex-1 px-6 py-4 bg-white text-gray-900 font-black rounded-2xl 
+                                 border-2 border-gray-100 hover:border-red-100 hover:text-red-600 
+                                 transition-all active:scale-[0.98] shadow-sm"
+                      >
+                        Decline
+                      </button>
+                      <button
+                        onClick={handleApprove}
+                        disabled={isApproving}
+                        className={`
+                          flex-1 px-6 py-4 rounded-2xl font-black 
+                          flex items-center justify-center gap-3
+                          transition-all shadow-xl shadow-black/10 active:scale-[0.98]
+                          ${isApproving
+                            ? "bg-gray-700 cursor-not-allowed"
+                            : "bg-black text-white hover:bg-gray-800"
+                          }
+                        `}
+                      >
+                        {isApproving ? (
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                          <>
+                            <FileCheck size={18} />
+                            Approve Creator
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-3 py-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                      <div
+                        className={`w-2 h-2 rounded-full ${creator.status === "approved" ? "bg-green-500" : "bg-red-500"}`}
+                      />
+                      <p className="text-sm font-bold text-gray-500">
+                        Profile is{" "}
+                        <span className="text-gray-900 uppercase tracking-tighter">
+                          {creator.status}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {preview && (
-        <div
-          className="fixed inset-0 bg-black/95 flex items-center justify-center z-[60] p-8"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center z-[100] p-4 sm:p-8"
           onClick={() => setPreview(null)}
         >
-          <div
-            className="relative animate-[fadeIn_0.2s_ease-out]"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="relative max-w-full max-h-full flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="bg-white p-4 pb-16 shadow-2xl transform hover:scale-105 transition-transform duration-300">
-              <div className="relative bg-gray-100">
-                <S3Media
-                  s3Key={preview.s3Key}
-                  className="w-auto h-auto max-w-3xl max-h-[70vh] object-contain"
-                />
-              </div>
+            <button
+              onClick={() => setPreview(null)}
+              className="absolute -top-14 right-0 sm:-top-4 sm:-right-16 text-white/50 hover:text-white 
+                       transition-all p-3 bg-white/5 hover:bg-white/10 rounded-full active:scale-90"
+              title="Close"
+            >
+              <X size={24} />
+            </button>
 
-              <div className="absolute bottom-4 left-4 right-4 text-center">
-                <p className="text-gray-700 font-handwriting text-lg tracking-wide">
-                  {preview.title}
+            <div className="relative group overflow-hidden rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10">
+              <S3Media
+                s3Key={preview.s3Key}
+                className="max-w-full max-h-[80vh] object-contain block"
+              />
+              <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                <p className="text-white text-center font-bold tracking-[0.2em] transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                  {preview.title.toUpperCase()}
                 </p>
               </div>
             </div>
-
-            <button
-              onClick={() => setPreview(null)}
-              className="absolute -top-16 right-0 text-white/80 hover:text-white 
-                       transition-all flex items-center gap-3 group"
-            >
-              <span className="text-sm font-medium tracking-wider opacity-70 group-hover:opacity-100">
-                CLOSE
-              </span>
-              <div className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-3">
-                <X size={20} />
-              </div>
-            </button>
-
-            <div
-              className="absolute -top-3 left-1/2 transform -translate-x-1/2 
-                         w-24 h-8 bg-white/10 backdrop-blur-sm rotate-2 
-                         border-t border-b border-white/20"
-            ></div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
-    </>
+    </AnimatePresence>
   );
 };
