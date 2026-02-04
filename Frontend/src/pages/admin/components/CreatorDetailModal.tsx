@@ -1,7 +1,7 @@
 import { X, Mail, Briefcase, Award, Link2, FileCheck } from "lucide-react";
 import { Creator } from "@/interface/admin/creatorInterface";
 import { useState } from "react";
-import { S3Media } from "@/compoents/reusable/S3Media";
+import { S3Media } from "@/compoents/reusable/s3Media";
 
 interface Props {
   creator: Creator;
