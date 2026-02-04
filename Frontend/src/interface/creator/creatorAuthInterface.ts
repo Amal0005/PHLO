@@ -14,7 +14,7 @@ export interface CreatorRegisterPayload {
   email: string;
   password: string;
   phone: string;
-  city: string;
+city: string;
   yearsOfExperience: number;
   bio: string;
   portfolioLink: string;

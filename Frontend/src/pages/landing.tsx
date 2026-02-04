@@ -34,13 +34,13 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setMobileMenuOpen(false);
-    }
-  };
+  // const scrollToSection = (id: string) => {
+  //   const element = document.getElementById(id);
+  //   if (element) {
+  //     element.scrollIntoView({ behavior: 'smooth' });
+  //     setMobileMenuOpen(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-black text-white overflow-x-hidden">

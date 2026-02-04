@@ -9,7 +9,6 @@ interface Props {
   onApprove: (id: string) => void;
   onReject: () => void;
 }
-
 export const CreatorDetailModal = ({
   creator,
   onClose,
