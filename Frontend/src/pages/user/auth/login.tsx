@@ -60,8 +60,7 @@ export default function Login() {
       }
     } catch (error: any) {
       const message =
-        error?.response?.data?.message ||
-        "Invalid email or password";
+        error?.response?.data?.message || "Invalid email or password";
 
       toast.error(message);
     } finally {
@@ -169,6 +168,9 @@ export default function Login() {
 
               <div className="space-y-4">
                 <div>
+                  <label className="block text-sm text-gray-400 mb-1">
+                    Email
+                  </label>
                   <InputError
                     type="email"
                     name="email"
@@ -179,6 +181,9 @@ export default function Login() {
                 </div>
 
                 <div className="relative">
+                  <label className="block text-sm text-gray-400 mb-1">
+                    password
+                  </label>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
@@ -241,14 +246,18 @@ export default function Login() {
                 <GoogleLoginButton
                   onSuccess={async (idToken: string) => {
                     try {
-                      const response = await UserAuthService.googleLogin(idToken);
+                      const response =
+                        await UserAuthService.googleLogin(idToken);
 
                       if (response?.accessToken && response?.user) {
                         dispatch(setUser(response.user));
                         dispatch(setUserAuth(response.accessToken));
                         navigate(ROUTES.USER.HOME, { replace: true });
                       } else {
-                        console.error("Google Login: Missing token/user", response);
+                        console.error(
+                          "Google Login: Missing token/user",
+                          response,
+                        );
                         toast.error("Google login failed: Invalid response");
                       }
                     } catch (err) {

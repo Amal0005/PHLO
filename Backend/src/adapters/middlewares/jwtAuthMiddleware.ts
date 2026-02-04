@@ -34,7 +34,7 @@ export const jwtAuthMiddleware =
         }
 
         const decoded = jwtService.verifyToken(token);
-
+      
         const user = await userRepo.findById(decoded.userId);
         if (user && user.status === "blocked") {
           return res.status(StatusCode.FORBIDDEN).json({ success: false, message: "Your account has been blocked by the admin" });

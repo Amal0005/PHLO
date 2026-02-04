@@ -11,7 +11,6 @@ const NotFound = () => {
     setMounted(true);
     const crackTimer = setTimeout(() => setCrackAnimated(true), 400);
     
-    // Random glitch effect
     const glitchInterval = setInterval(() => {
       setGlitchActive(true);
       setTimeout(() => setGlitchActive(false), 200);
@@ -25,7 +24,6 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden font-['Outfit',sans-serif]">
-      {/* Animated grain overlay */}
       <div className="fixed inset-0 opacity-[0.04] pointer-events-none z-50">
         <div className="w-full h-full animate-grain bg-[url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PScwIDAgNDAwIDQwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48ZmlsdGVyIGlkPSdub2lzZSc+PGZlVHVyYnVsZW5jZSB0eXBlPSdmcmFjdGFsTm9pc2UnIGJhc2VGcmVxdWVuY3k9JzAuOScgbnVtT2N0YXZlcz0nNCcgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbHRlcj0ndXJsKCNub2lzZSknLz48L3N2Zz4=')]"></div>
       </div>

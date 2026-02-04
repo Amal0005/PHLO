@@ -62,7 +62,6 @@ export default function CreatorLogin() {
         dispatch(setCreator(responseData.creator));
         dispatch(setCreatorAuth(responseData.token));
 
-
         toast.success("Logged in successfully");
         navigate(ROUTES.CREATOR.DASHBOARD, { replace: true });
       }
@@ -82,8 +81,7 @@ export default function CreatorLogin() {
         return;
       }
       toast.error(data?.message || "Login failed");
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
   }
@@ -121,6 +119,9 @@ export default function CreatorLogin() {
               <div className="space-y-4">
                 <form onSubmit={handleLogin}>
                   <div>
+                    <label className="block text-sm text-gray-400 mb-1">
+                      Email
+                    </label>
                     <input
                       type="email"
                       name="email"
@@ -133,6 +134,9 @@ export default function CreatorLogin() {
                   </div>
 
                   <div className="relative mt-4">
+                    <label className="block text-sm text-gray-400 mb-1">
+                      Password
+                    </label>
                     <input
                       type={showPassword ? "text" : "password"}
                       name="password"
