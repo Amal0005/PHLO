@@ -60,4 +60,9 @@ export class UserRepository implements IuserRepository {
     if (!user) return null;
     return UserMapper.toDomain(user);
   }
+  async editProfile(userId: string, data: { name?: string; phone?: string; image?: string; }): Promise<User | null> {
+    const user=await UserModel.findByIdAndUpdate(userId, { $set: data },{ new: true }).select("-password");
+    if(!user)return null
+    return UserMapper.toDomain(user)
+  }
 }

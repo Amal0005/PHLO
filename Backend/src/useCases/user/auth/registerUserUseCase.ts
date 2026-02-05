@@ -4,7 +4,7 @@ import { IMailService } from "../../../domain/interface/service/ImailServices";
 import { IOTPService } from "../../../domain/interface/service/IotpServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
-import { IuserRegisterUseCase } from "../../../domain/interface/user/register/IuserRegisterUseCase";
+import { IuserRegisterUseCase } from "../../../domain/interface/user/auth/IuserRegisterUseCase";
 import { IRedisService } from "../../../domain/interface/service/IredisServices";
 
 import { renderTemplate } from "../../../utils/renderTemplates";

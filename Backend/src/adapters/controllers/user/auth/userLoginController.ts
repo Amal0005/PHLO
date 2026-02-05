@@ -1,4 +1,4 @@
-import { IuserLoginUseCase } from "../../../../domain/interface/user/login/IuserLoginUseCase";
+import { IuserLoginUseCase } from "../../../../domain/interface/user/auth/IuserLoginUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 

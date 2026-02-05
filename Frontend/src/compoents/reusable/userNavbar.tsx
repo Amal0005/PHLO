@@ -85,26 +85,32 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
             >
               Creators
             </button>
-            {user ? (
-              <div className="flex items-center gap-3">
-                <span className="text-white font-semibold">
-                  {user.name || user.email}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <button
-                className="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105"
-                onClick={() => navigate(ROUTES.USER.LOGIN)}
-              >
-                Sign In
-              </button>
-            )}
+           {user ? (
+  <div className="flex items-center gap-3">
+    <span className="text-white font-semibold">
+      {user.name || user.email}
+    </span>
+    <button
+      onClick={() => navigate(ROUTES.USER.PROFILE)}
+      className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+    >
+      Profile
+    </button>
+    <button
+      onClick={handleLogout}
+      className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+    >
+      Logout
+    </button>
+  </div>
+) : (
+  <button
+    className="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105"
+    onClick={() => navigate(ROUTES.USER.LOGIN)}
+  >
+    Sign In
+  </button>
+)}
           </div>
 
           {/* Mobile Menu Button */}
@@ -139,21 +145,32 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
             >
               Creators
             </button>
-            {user ? (
-              <button
-                onClick={handleLogout}
-                className="w-full px-6 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
-              >
-                Logout
-              </button>
-            ) : (
-              <button
-                onClick={() => navigate(ROUTES.USER.LOGIN)}
-                className="w-full px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-              >
-                Sign In
-              </button>
-            )}
+           {user ? (
+  <>
+    <button
+      onClick={() => {
+        navigate(ROUTES.USER.PROFILE);
+        setMobileMenuOpen(false);
+      }}
+      className="w-full px-6 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+    >
+      Profile
+    </button>
+    <button
+      onClick={handleLogout}
+      className="w-full px-6 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+    >
+      Logout
+    </button>
+  </>
+) : (
+  <button
+    onClick={() => navigate(ROUTES.USER.LOGIN)}
+    className="w-full px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+  >
+    Sign In
+  </button>
+)}
           </div>
         </div>
       )}

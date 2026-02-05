@@ -9,4 +9,11 @@ export interface IuserRepository {
   updateUserStatus(userId: string, status: "active" | "blocked"): Promise<void>;
   findById(id: string): Promise<User | null>;
   findByPhone(phone: string | undefined): Promise<User | null>
+  editProfile(userId: string,data:{
+    name?: string;
+    phone?: string;
+    image?: string;
+  }
+): Promise<User | null>;
+
 }
