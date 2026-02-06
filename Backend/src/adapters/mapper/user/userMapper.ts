@@ -10,6 +10,7 @@ export class UserMapper {
       phone: user.phone,
       status: user.status,
       role: user.role,
+      image: user.image,
       googleVerified: user.googleVerified,
       createdAt: user.createdAt,
     };

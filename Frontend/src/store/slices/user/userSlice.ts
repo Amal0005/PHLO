@@ -7,7 +7,7 @@ export type User = {
   status: string;
   role: string;
   phone: string;
-  imageUrl?: string;
+  image?: string;
 };
 
 type UserState = {

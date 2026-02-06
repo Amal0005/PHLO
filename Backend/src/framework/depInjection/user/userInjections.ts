@@ -2,8 +2,8 @@ import { TokenController } from "../../../adapters/controllers/tokenController";
 import { LogoutController } from "../../../adapters/controllers/logoutController";
 import { UserAuthController } from "../../../adapters/controllers/user/auth/authController";
 import { GoogleAuthController } from "../../../adapters/controllers/user/auth/googleAuthController";
-import { userLoginController } from "../../../adapters/controllers/user/login/userLoginController";
-import { userRegisterController } from "../../../adapters/controllers/user/register/userRegisterController";
+import { userLoginController } from "../../../adapters/controllers/user/auth/userLoginController";
+import { userRegisterController } from "../../../adapters/controllers/user/auth/userRegisterController";
 import { CreatorRepository } from "../../../adapters/repository/creator/creatorRepository";
 import { UserRepository } from "../../../adapters/repository/user/userRepository";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
@@ -19,9 +19,13 @@ import { GoogleLoginUseCase } from "../../../useCases/user/auth/googleLoginUseCa
 import { ResendOtpUseCase } from "../../../useCases/user/auth/resendOtpUseCase";
 import { ResetPasswordUseCase } from "../../../useCases/user/auth/resetPasswordUseCase";
 import { VerifyForgotOtpUseCase } from "../../../useCases/user/auth/verifyForgotOtpUseCase";
-import { userLoginUserUseCase } from "../../../useCases/user/login/loginUserUseCase";
-import { userRegisterUseCase } from "../../../useCases/user/register/registerUserUseCase";
-import { verifyRegisterOtpUseCase } from "../../../useCases/user/register/verifyRegisterOtpUseCase";
+import { userLoginUserUseCase } from "../../../useCases/user/auth/loginUserUseCase";
+import { userRegisterUseCase } from "../../../useCases/user/auth/registerUserUseCase";
+import { verifyRegisterOtpUseCase } from "../../../useCases/user/auth/verifyRegisterOtpUseCase";
+import { GetUserProfileUseCase } from "@/useCases/user/profile/getUserProfileUseCase";
+import { UserProfileController } from "@/adapters/controllers/user/profile/userProfileController";
+import { EditUserProfileUsecase } from "@/useCases/user/profile/editUserProfileUseCase";
+import { ChangePasswordUseCase } from "@/useCases/user/profile/changePasswordUseCase";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -42,6 +46,9 @@ const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpServices, redisServ
 const resetPasswordUseCase = new ResetPasswordUseCase(userRepo, passwordServices, redisService)
 const googleLoginUseCase = new GoogleLoginUseCase(userRepo, jwtService)
 const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
+const getUserProfileUseCase = new GetUserProfileUseCase(userRepo)
+const editUserProfileUseCase = new EditUserProfileUsecase(userRepo,creatorRepository)
+const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
@@ -49,3 +56,4 @@ export const userAuthController = new UserAuthController(forgotPasswordUseCase, 
 export const userGoogleController = new GoogleAuthController(googleLoginUseCase)
 export const logoutController = new LogoutController(logoutUseCase)
 export const tokenController = new TokenController(jwtService)
+export const userProfileController = new UserProfileController(getUserProfileUseCase, editUserProfileUseCase, changePasswordUseCase)

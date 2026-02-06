@@ -1,7 +1,7 @@
-import { IuserRegisterUseCase } from "../../../../domain/interface/user/register/IuserRegisterUseCase";
+import { IuserRegisterUseCase } from "../../../../domain/interface/user/auth/IuserRegisterUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IverifyRegisterOtpUseCase } from "../../../../domain/interface/user/register/IverifyRegisterOtpUseCase";
+import { IverifyRegisterOtpUseCase } from "../../../../domain/interface/user/auth/IverifyRegisterOtpUseCase";
 import { IresendOtpUseCase } from "../../../../domain/interface/user/auth/IresendOtpUseCase";
 
 export class userRegisterController {
