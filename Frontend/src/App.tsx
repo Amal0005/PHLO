@@ -13,20 +13,18 @@ export default function App() {
         <AdminRoutes />
         <UserRoutes />
       </BrowserRouter>
-
 <ToastContainer
   position="top-center"
-  autoClose={2500}
-  hideProgressBar={true}
-  newestOnTop={true}
+  autoClose={2000}
+  hideProgressBar={false}
+  newestOnTop={false}
   closeOnClick
   rtl={false}
-  pauseOnFocusLoss={false}
-  draggable={false}
+  pauseOnFocusLoss
+  draggable
   pauseOnHover
   theme="dark"
-  toastClassName="custom-toast"
-  bodyClassName="custom-toast-body"
+  icon={false}
 />
     </>
   );

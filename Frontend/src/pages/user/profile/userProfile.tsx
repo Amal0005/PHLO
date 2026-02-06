@@ -1,20 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { Shield, Edit2, Camera, X } from "lucide-react";
+import { Shield, Edit2, Camera, Lock } from "lucide-react";
 import { AppDispatch } from "@/store/store";
 import { updateUserProfile } from "@/store/slices/user/userSlice";
 import { ROUTES } from "@/constants/routes";
-import InputError from "@/compoents/reusable/inputErrors";
-import { editProfileSchema } from "@/validation/userProfileSchema";
+import { changePasswordSchema, editProfileSchema } from "@/validation/userProfileSchema";
 import Navbar from "@/compoents/reusable/userNavbar";
 import { UserProfileService } from "@/services/user/userProfileServices";
+import { EditUserProfile } from "./components/editUserProfile";
+import { EditUserPassword } from "./components/editUserPassword";
+import { ViewProfileImage } from "./components/viewProfileImage";
 
 interface ProfileForm {
   name: string;
   phone: string;
+  email: string;
 }
 
 export default function UserProfile() {
@@ -27,8 +30,63 @@ export default function UserProfile() {
   const [form, setForm] = useState<ProfileForm>({
     name: "",
     phone: "",
+    email: ""
   });
   const [profileData, setProfileData] = useState<any>(null);
+  const [isViewingImage, setIsViewingImage] = useState<boolean>(false);
+  const [isChangingPassword, setIsChangingPassword] = useState<boolean>(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [editProfileErrors, setEditProfileErrors] = useState<any>({});
+  const [passwordErrors, setPasswordErrors] = useState<any>({});
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const { uploadUrl, publicUrl } = await UserProfileService.getUploadUrl(file.type, "user-profiles");
+
+      await UserProfileService.uploadToS3(uploadUrl, file);
+      // Update backend with Key
+      const response = await UserProfileService.editProfile({ image: publicUrl });
+
+      if (response.success && response.user) {
+        // Get the viewable link properly
+        const viewUrl = await UserProfileService.getViewUrl(response.user.image || publicUrl);
+
+        // Update state with the VIEWABLE link
+        setProfileData({ ...response.user, image: viewUrl });
+
+        dispatch(updateUserProfile({
+          name: response.user.name,
+          phone: response.user.phone,
+        }));
+        toast.success("Profile photo updated!");
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Failed to upload image");
+    } finally {
+      setIsLoading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   useEffect(() => {
     fetchProfile();
@@ -38,11 +96,23 @@ export default function UserProfile() {
     try {
       setIsLoading(true);
       const response = await UserProfileService.getProfile();
+
       if (response.success && response.user) {
-        setProfileData(response.user);
+        let userData = response.user;
+
+        if (userData.image && !userData.image.startsWith("http")) {
+          try {
+            const viewUrl = await UserProfileService.getViewUrl(userData.image);
+            userData = { ...userData, image: viewUrl };
+          } catch (err) {
+            console.error("Failed to sign image url", err);
+          }
+        }
+        setProfileData(userData);
         setForm({
-          name: response.user.name || "",
-          phone: response.user.phone || "",
+          name: String(userData.name ?? ""),
+          phone: String(userData.phone ?? ""),
+          email: String(userData.email ?? "")
         });
       }
     } catch (error: any) {
@@ -54,18 +124,55 @@ export default function UserProfile() {
     }
   };
 
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
+  };
+
+  const handlePasswordSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setPasswordErrors({});
+    const result = changePasswordSchema.safeParse(passwordForm);
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors;
+      setPasswordErrors(errors);
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const response = await UserProfileService.changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      });
+      if (response.success) {
+        setIsChangingPassword(false);
+        setPasswordForm({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        toast.success("Password updated successfully!");
+      }
+    } catch (error: any) {
+      const message = error?.response?.data?.message || "Failed to update password";
+      toast.error(message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setEditProfileErrors({});
+    console.log("SUBMIT DATA:", form);
 
     const result = editProfileSchema.safeParse(form);
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors;
-      if (errors.name) toast.error(errors.name[0]);
-      if (errors.phone) toast.error(errors.phone[0]);
+      setEditProfileErrors(errors);
       return;
     }
 
@@ -133,7 +240,7 @@ export default function UserProfile() {
       <div className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
         <div className="w-full max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-            
+
             {/* LEFT SIDE - Name & Tagline */}
             <div className="lg:col-span-4 space-y-4 order-2 lg:order-1 text-center lg:text-left">
               <div>
@@ -146,7 +253,7 @@ export default function UserProfile() {
               </div>
 
               {!isEditing && (
-                <div className="pt-8 space-y-3 flex justify-center lg:justify-start">
+                <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <button
                     onClick={() => setIsEditing(true)}
                     className="flex items-center gap-2 text-white text-sm uppercase tracking-wider hover:text-gray-300 transition-colors group"
@@ -155,6 +262,15 @@ export default function UserProfile() {
                       <Edit2 className="w-4 h-4" />
                     </span>
                     Edit Profile
+                  </button>
+                  <button
+                    onClick={() => setIsChangingPassword(true)}
+                    className="flex items-center gap-2 text-white text-sm uppercase tracking-wider hover:text-gray-300 transition-colors group"
+                  >
+                    <span className="w-8 h-8 rounded-full border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                      <Lock className="w-4 h-4" />
+                    </span>
+                    Change Password
                   </button>
                 </div>
               )}
@@ -169,23 +285,49 @@ export default function UserProfile() {
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-white rounded-full p-2">
                     {/* Inner image container */}
                     <div className="w-full h-full rounded-full overflow-hidden bg-zinc-900 relative">
-                      {profileData?.image ? (
-                        <img
-                          src={profileData.image}
-                          alt={profileData.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-700 flex items-center justify-center">
-                          <span className="text-white text-5xl sm:text-6xl lg:text-7xl font-bold">
-                            {getInitials(profileData?.name || "U")}
-                          </span>
-                        </div>
-                      )}
-                      
+                      <div
+                        className="w-full h-full cursor-pointer"
+                        onClick={() => {
+                          if (profileData?.image) setIsViewingImage(true);
+                        }}
+                      >
+                        {profileData?.image ? (
+                          <img
+                            src={profileData.image}
+                            alt={profileData.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-700 flex items-center justify-center">
+                            <span className="text-white text-5xl sm:text-6xl lg:text-7xl font-bold">
+                              {getInitials(profileData?.name || "U")}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
                       {/* Camera Icon Overlay */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer">
-                        <Camera className="w-10 h-10 text-white" />
+                      <div
+                        className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none"
+                      >
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            fileInputRef.current?.click();
+                          }}
+                          className="pointer-events-auto p-4 rounded-full hover:bg-white/10 transition-colors"
+                          title="Change Profile Photo"
+                        >
+                          <Camera className="w-10 h-10 text-white" />
+                        </button>
+                        {/* Hidden Input */}
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleImageUpload}
+                          accept="image/*"
+                          className="hidden"
+                        />
                       </div>
                     </div>
                   </div>
@@ -194,7 +336,7 @@ export default function UserProfile() {
             </div>
 
             {/* RIGHT SIDE - Profile Info */}
-            <div className="lg:col-span-4 space-y-6 order-3 text-center lg:text-right">
+            <div className="lg:col-span-4 space-y-10 order-3 text-center lg:text-right">
               {/* Profile Details */}
               <div className="space-y-6">
                 <div>
@@ -253,84 +395,34 @@ export default function UserProfile() {
         </div>
       )}
 
-      {/* EDIT MODAL - Minimalist Style */}
-      {isEditing && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md">
-            {/* Close Button */}
-            <div className="flex justify-end mb-4">
-              <button
-                onClick={() => setIsEditing(false)}
-                className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      {/* EDIT MODAL */}
+      <EditUserProfile
+        isOpen={isEditing}
+        onClose={() => setIsEditing(false)}
+        form={form}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        isSaving={isSaving}
+        errors={editProfileErrors}
+      />
 
-            {/* Edit Form */}
-            <div className="text-center space-y-8">
-              <div>
-                <h2 className="text-3xl sm:text-4xl font-light text-white uppercase tracking-tight mb-2">
-                  Edit Profile
-                </h2>
-                <p className="text-gray-500 text-sm tracking-wide">
-                  Update your information
-                </p>
-              </div>
+      {/* PASSWORD CHANGE MODAL */}
+      <EditUserPassword
+        isOpen={isChangingPassword}
+        onClose={() => setIsChangingPassword(false)}
+        passwordForm={passwordForm}
+        handlePasswordChange={handlePasswordChange}
+        handlePasswordSubmit={handlePasswordSubmit}
+        isSaving={isSaving}
+        errors={passwordErrors}
+      />
 
-              <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Name Field */}
-                <div className="space-y-3">
-                  <label className="block text-sm text-gray-500 uppercase tracking-wider">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Your Name"
-                    className="w-full bg-transparent border-b border-white/20 text-white text-center text-lg font-light py-3 px-4 outline-none focus:border-white transition-colors placeholder:text-gray-600"
-                  />
-                </div>
+      <ViewProfileImage
+        isOpen={isViewingImage}
+        onClose={() => setIsViewingImage(false)}
+        imageUrl={profileData?.image}
+      />
 
-                {/* Phone Field */}
-                <div className="space-y-3">
-                  <label className="block text-sm text-gray-500 uppercase tracking-wider">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                    placeholder="Phone Number"
-                    className="w-full bg-transparent border-b border-white/20 text-white text-center text-lg font-light py-3 px-4 outline-none focus:border-white transition-colors placeholder:text-gray-600"
-                  />
-                </div>
-
-                {/* Save Button */}
-                <div className="pt-8">
-                  <button
-                    type="submit"
-                    disabled={isSaving}
-                    className="flex items-center justify-center gap-3 text-white text-sm uppercase tracking-wider hover:text-gray-300 transition-colors group mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span>{isSaving ? "Saving..." : "Save Changes"}</span>
-                    <span className="w-10 h-10 rounded-full border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                      {isSaving ? (
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      ) : (
-                        "→"
-                      )}
-                    </span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

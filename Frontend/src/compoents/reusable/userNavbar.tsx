@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Menu, X } from "lucide-react";
@@ -21,6 +21,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,31 +31,32 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
- const handleLogout = () => {
-  confirmActionToast(
-    "Are you sure you want to logout?",
-    async () => {
-      await UserAuthService.logout();
-      dispatch(clearUserAuth());
-      dispatch(clearUser());
-      navigate(ROUTES.USER.LOGIN, { replace: true });
-    },
-    "Logout"
-  );
-};
+  const handleLogout = () => {
+    confirmActionToast(
+      "Are you sure you want to logout?",
+      async () => {
+        await UserAuthService.logout();
+        dispatch(clearUserAuth());
+        dispatch(clearUser());
+        navigate(ROUTES.USER.LOGIN, { replace: true });
+      },
+      "Logout"
+    );
+  };
 
   const handleMenuClick = (sectionId: string) => {
     scrollToSection(sectionId);
     setMobileMenuOpen(false);
   };
 
+  const isProfilePage = location.pathname === ROUTES.USER.PROFILE;
+
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled
+      className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
           ? "bg-black/95 backdrop-blur-lg border-b border-white/10"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1">
         <div className="flex items-center justify-between h-16 lg:h-20">
@@ -85,32 +87,34 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
             >
               Creators
             </button>
-           {user ? (
-  <div className="flex items-center gap-3">
-    <span className="text-white font-semibold">
-      {user.name || user.email}
-    </span>
-    <button
-      onClick={() => navigate(ROUTES.USER.PROFILE)}
-      className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
-    >
-      Profile
-    </button>
-    <button
-      onClick={handleLogout}
-      className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
-    >
-      Logout
-    </button>
-  </div>
-) : (
-  <button
-    className="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105"
-    onClick={() => navigate(ROUTES.USER.LOGIN)}
-  >
-    Sign In
-  </button>
-)}
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-white font-semibold">
+                  {user.name || user.email}
+                </span>
+                {!isProfilePage && (
+                  <button
+                    onClick={() => navigate(ROUTES.USER.PROFILE)}
+                    className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+                  >
+                    Profile
+                  </button>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <button
+                className="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105"
+                onClick={() => navigate(ROUTES.USER.LOGIN)}
+              >
+                Sign In
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -145,32 +149,34 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
             >
               Creators
             </button>
-           {user ? (
-  <>
-    <button
-      onClick={() => {
-        navigate(ROUTES.USER.PROFILE);
-        setMobileMenuOpen(false);
-      }}
-      className="w-full px-6 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
-    >
-      Profile
-    </button>
-    <button
-      onClick={handleLogout}
-      className="w-full px-6 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
-    >
-      Logout
-    </button>
-  </>
-) : (
-  <button
-    onClick={() => navigate(ROUTES.USER.LOGIN)}
-    className="w-full px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-  >
-    Sign In
-  </button>
-)}
+            {user ? (
+              <>
+                {!isProfilePage && (
+                  <button
+                    onClick={() => {
+                      navigate(ROUTES.USER.PROFILE);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full px-6 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+                  >
+                    Profile
+                  </button>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="w-full px-6 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20 transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate(ROUTES.USER.LOGIN)}
+                className="w-full px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </div>
       )}

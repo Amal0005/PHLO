@@ -107,5 +107,17 @@ export class UserRoutes {
       (req: Request, res: Response) =>
         userProfileController.editProfile(req, res),
     );
+    this.userRouter.patch(
+      "/change-password",
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: Request, res: Response) =>
+        userProfileController.changePassword(req, res),
+    );
   }
 }

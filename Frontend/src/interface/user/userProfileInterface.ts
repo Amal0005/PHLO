@@ -2,6 +2,7 @@ export interface UserProfileResponse {
   _id: string;
   name: string;
   email: string;
+  image?:string
   phone: string;
   status: string;
   role: string;
@@ -12,4 +13,6 @@ export interface UserProfileResponse {
 export interface EditProfilePayload {
   name?: string;
   phone?: string;
+  image?:string;
+  email?:string
 }

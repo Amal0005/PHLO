@@ -25,6 +25,7 @@ import { verifyRegisterOtpUseCase } from "../../../useCases/user/auth/verifyRegi
 import { GetUserProfileUseCase } from "@/useCases/user/profile/getUserProfileUseCase";
 import { UserProfileController } from "@/adapters/controllers/user/profile/userProfileController";
 import { EditUserProfileUsecase } from "@/useCases/user/profile/editUserProfileUseCase";
+import { ChangePasswordUseCase } from "@/useCases/user/profile/changePasswordUseCase";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -45,8 +46,9 @@ const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpServices, redisServ
 const resetPasswordUseCase = new ResetPasswordUseCase(userRepo, passwordServices, redisService)
 const googleLoginUseCase = new GoogleLoginUseCase(userRepo, jwtService)
 const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
-const getUserProfileUseCase= new GetUserProfileUseCase(userRepo)
-const editUserProfileUseCase=new EditUserProfileUsecase(userRepo)
+const getUserProfileUseCase = new GetUserProfileUseCase(userRepo)
+const editUserProfileUseCase = new EditUserProfileUsecase(userRepo,creatorRepository)
+const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
@@ -54,4 +56,4 @@ export const userAuthController = new UserAuthController(forgotPasswordUseCase, 
 export const userGoogleController = new GoogleAuthController(googleLoginUseCase)
 export const logoutController = new LogoutController(logoutUseCase)
 export const tokenController = new TokenController(jwtService)
-export const userProfileController = new UserProfileController(getUserProfileUseCase,editUserProfileUseCase)
+export const userProfileController = new UserProfileController(getUserProfileUseCase, editUserProfileUseCase, changePasswordUseCase)

@@ -5,5 +5,6 @@ export interface IeditUserProfileUseCase{
       name?: string;
       phone?: string;
       image?: string;
+      email?:string
     }):Promise<User|null>
 }
