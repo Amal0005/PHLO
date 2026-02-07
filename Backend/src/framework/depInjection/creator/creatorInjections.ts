@@ -16,6 +16,9 @@ import { VerifyForgotOtpUseCase } from "@/useCases/creator/auth/verifyForgotOtpU
 import { ResetPasswordUseCase } from "@/useCases/creator/auth/resetPasswordUseCase";
 import { VerifyCreatorOtpUseCase } from "@/useCases/creator/register/verifyCreatorOtpUseCase";
 import { ResendCreatorOtpUseCase } from "@/useCases/creator/register/resendCreatorOtpUseCase";
+import { EditCreatorProfileUseCase } from "@/useCases/creator/profile/editCreatorProfileUseCase";
+import { GetCreatorProfileUseCase } from "@/useCases/creator/profile/getCreatorProfileUseCase";
+import { CreatorProfileController } from "@/adapters/controllers/creator/profile/creatorProfileController";
 
 const creatorRepository = new CreatorRepository();
 const jwtService = new JwtServices();
@@ -33,12 +36,11 @@ const creatorLoginUseCase = new CreatorLoginUseCase(creatorRepository, jwtServic
 const forgotPasswordUseCase = new ForgotPasswordUseCase(creatorRepository, otpService, mailService);
 const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpService, redisService);
 const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository, passwordService, redisService);
+const getCreatorProfileUseCase= new GetCreatorProfileUseCase(creatorRepository)
+const editCreatorProfileUseCase= new EditCreatorProfileUseCase(creatorRepository)
 
-export const creatorRegisterController = new CreatorRegisterController(
-    creatorRegisterUseCase,
-    checkCreatorExistsUseCase,
-    verifyCreatorOtpUseCase,
-    resendCreatorOtpUseCase
-);
+export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase,checkCreatorExistsUseCase,verifyCreatorOtpUseCase,resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
 export const creatorAuthController = new CreatorAuthController(forgotPasswordUseCase, verifyForgotOtpUseCase, resetPasswordUseCase);
+export const creatorProfileController=new CreatorProfileController(getCreatorProfileUseCase,editCreatorProfileUseCase)
+

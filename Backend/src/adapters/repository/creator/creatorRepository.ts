@@ -64,4 +64,12 @@ async findById(id: string): Promise<CreatorEntity | null> {
   const creator = await CreatorModel.findById(id);
     return creator ? CreatorMapper.toDomain(creator) : null;
   }
+  async updateProfile(creatorId: string, data: Partial<CreatorEntity>): Promise<CreatorEntity | null> {
+    const creator=await CreatorModel.findByIdAndUpdate(
+      creatorId,
+      {$set:data},
+      {new:true}
+    )
+    return creator?CreatorMapper.toDomain(creator):null
+  }
 }
