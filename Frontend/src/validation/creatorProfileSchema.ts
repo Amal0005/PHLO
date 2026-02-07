@@ -1,0 +1,16 @@
+import { z } from "zod";
+
+export const creatorProfileSchema = z.object({
+  fullName: z.string().min(3, "Full name must be at least 3 characters"),
+  phone: z.string().regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
+  city: z.string().min(2, "City name is too short"),
+  yearsOfExperience: z
+    .number()
+    .min(0, "Experience cannot be negative")
+    .max(50, "Experience cannot exceed 50 years"),
+  bio: z.string().min(20, "Bio is required and must be at least 20 characters"),
+  portfolioLink: z
+    .string()
+    .url("Portfolio link is required and must be a valid URL")
+    .min(1, "Portfolio link is required"),
+});

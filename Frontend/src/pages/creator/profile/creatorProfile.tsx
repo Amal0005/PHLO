@@ -1,13 +1,14 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store/store";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import { CreatorProfileResponse, EditCreatorProfilePayload } from "@/interface/creator/creatorProfileInterface";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
-import { Edit, Mail, Phone, MapPin, Briefcase, User, Star, Link as LinkIcon, Camera, X } from "lucide-react";
+import { Edit, Mail, Phone, MapPin, Briefcase, User, Link as LinkIcon } from "lucide-react";
 import { toast } from "react-toastify";
-import { uploadToS3 } from "@/utils/uploadToS3";
+import { S3Service } from "@/services/s3Service";
 import { S3Media } from "@/compoents/reusable/s3Media";
+import { EditCreatorProfileModal } from "./components/EditCreatorProfileModal";
+import { z } from "zod";
+import { creatorProfileSchema } from "@/validation/creatorProfileSchema";
 
 export default function CreatorProfile() {
   const [profile, setProfile] = useState<CreatorProfileResponse | null>(null);
@@ -17,6 +18,7 @@ export default function CreatorProfile() {
   const [editForm, setEditForm] = useState<EditCreatorProfilePayload>({});
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetchProfile();
@@ -25,10 +27,11 @@ export default function CreatorProfile() {
   const fetchProfile = async () => {
     try {
       const response = await CreatorProfileServices.getProfile();
-      if (response.success) {
-        setProfile(response.creator);
-        // Initialize edit form with current profile data
-        const { fullName, phone, city, yearsOfExperience, bio, portfolioLink, specialties } = response.creator;
+      if (response.success && response.creator) {
+        const creatorData = response.creator;
+
+        setProfile(creatorData);
+        const { fullName, phone, city, yearsOfExperience, bio, portfolioLink, specialties } = creatorData;
         setEditForm({ fullName, phone, city, yearsOfExperience, bio, portfolioLink, specialties });
       }
     } catch (error) {
@@ -61,16 +64,39 @@ export default function CreatorProfile() {
 
   const handleEditSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    setErrors({});
+
+    const validation = creatorProfileSchema.safeParse(editForm);
+    if (!validation.success) {
+      const fieldErrors: Record<string, string> = {};
+      validation.error.issues.forEach((issue: z.ZodIssue) => {
+        if (issue.path[0]) {
+          fieldErrors[issue.path[0].toString()] = issue.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     setIsSaving(true);
     try {
-      let profilePhotoUrl = profile?.profilePhoto;
+      let profilePhotoKey = profile?.profilePhoto || "";
 
-      if (selectedFile) {
-        // Corrected S3 upload logic
-        profilePhotoUrl = await uploadToS3(selectedFile, "profile");
+      if (profilePhotoKey.startsWith("http")) {
+        const s3Match = profilePhotoKey.match(/amazonaws\.com\/(.+)$/);
+        if (s3Match && s3Match[1]) {
+          profilePhotoKey = decodeURIComponent(s3Match[1]);
+        }
       }
 
-      const payload = { ...editForm, profilePhoto: profilePhotoUrl };
+      if (selectedFile) {
+        const { uploadUrl, publicUrl } = await S3Service.getPresignedUrl(selectedFile.type, "profile");
+        await S3Service.uploadFile(uploadUrl, selectedFile);
+        profilePhotoKey = publicUrl;
+      }
+
+      const payload = { ...editForm, profilePhoto: profilePhotoKey };
       const response = await CreatorProfileServices.editProfile(payload);
 
       if (response.success) {
@@ -78,9 +104,17 @@ export default function CreatorProfile() {
         setIsEditModalOpen(false);
         toast.success("Profile updated successfully");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating profile:", error);
-      toast.error("Failed to update profile");
+      const serverMessage = error.response?.data?.message || "Failed to update profile";
+
+      if (serverMessage.toLowerCase().includes("mobile") || serverMessage.toLowerCase().includes("phone")) {
+        setErrors(prev => ({ ...prev, phone: serverMessage }));
+      } else if (serverMessage.toLowerCase().includes("full name")) {
+        setErrors(prev => ({ ...prev, fullName: serverMessage }));
+      } else {
+        toast.error(serverMessage);
+      }
     } finally {
       setIsSaving(false);
     }
@@ -99,12 +133,14 @@ export default function CreatorProfile() {
       <CreatorNavbar />
 
       <main className="max-w-5xl mx-auto px-4 pt-32 pb-20">
-        {/* Profile Header Card */}
         <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden mb-12">
           <div className="h-48 bg-gradient-to-r from-zinc-800 to-zinc-900 relative">
             <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="absolute bottom-6 right-6 p-3 bg-white text-black rounded-full hover:scale-105 transition-transform shadow-xl flex items-center gap-2 text-sm font-semibold"
+              onClick={() => {
+                setErrors({});
+                setIsEditModalOpen(true);
+              }}
+              className="absolute bottom-6 right-6 z-20 p-3 bg-white text-black rounded-full hover:scale-105 transition-transform shadow-xl flex items-center gap-2 text-sm font-semibold"
             >
               <Edit className="w-4 h-4" />
               Edit Profile
@@ -200,144 +236,18 @@ export default function CreatorProfile() {
         </div>
       </main>
 
-      {/* Edit Profile Modal */}
-      {isEditModalOpen && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-          <div className="bg-zinc-900 border border-white/10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl">
-            <div className="sticky top-0 bg-zinc-900/95 backdrop-blur-md px-8 py-6 border-b border-white/10 flex justify-between items-center z-10">
-              <div>
-                <h2 className="text-2xl font-bold">Edit Profile</h2>
-                <p className="text-gray-500 text-sm italic">Update your professional identity</p>
-              </div>
-              <button
-                onClick={() => setIsEditModalOpen(false)}
-                className="p-2 hover:bg-white/10 rounded-full transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            <form onSubmit={handleEditSubmit} className="p-8 space-y-8">
-              {/* Photo Upload */}
-              <div className="flex flex-col items-center gap-4">
-                <div className="relative group">
-                  <div className="w-32 h-32 rounded-2xl bg-zinc-800 overflow-hidden border-2 border-white/10 group-hover:border-white transition-colors">
-                    {photoPreview ? (
-                      <img src={photoPreview} className="w-full h-full object-cover" />
-                    ) : profile?.profilePhoto ? (
-                      <S3Media s3Key={profile.profilePhoto} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-zinc-600">
-                        <User className="w-12 h-12" />
-                      </div>
-                    )}
-                  </div>
-                  <label className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity rounded-2xl">
-                    <Camera className="w-8 h-8 text-white" />
-                    <input type="file" className="hidden" accept="image/*" onChange={handlePhotoChange} />
-                  </label>
-                </div>
-                <p className="text-xs text-gray-500">Click to change profile photo</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-gray-500 font-semibold ml-1">Full Name</label>
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={editForm.fullName || ""}
-                    onChange={handleEditChange}
-                    className="w-full bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white transition-colors"
-                    placeholder="Enter full name"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-gray-500 font-semibold ml-1">Phone</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    value={editForm.phone || ""}
-                    onChange={handleEditChange}
-                    className="w-full bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white transition-colors"
-                    placeholder="Phone number"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-gray-500 font-semibold ml-1">City</label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={editForm.city || ""}
-                    onChange={handleEditChange}
-                    className="w-full bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white transition-colors"
-                    placeholder="Location"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs uppercase tracking-widest text-gray-500 font-semibold ml-1">Years of Exp</label>
-                  <input
-                    type="number"
-                    name="yearsOfExperience"
-                    value={editForm.yearsOfExperience || 0}
-                    onChange={handleEditChange}
-                    className="w-full bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white transition-colors"
-                    placeholder="Experience"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs uppercase tracking-widest text-gray-500 font-semibold ml-1">Bio</label>
-                <textarea
-                  name="bio"
-                  value={editForm.bio || ""}
-                  onChange={handleEditChange}
-                  className="w-full bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-white transition-colors h-32 resize-none"
-                  placeholder="Tell us about yourself..."
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs uppercase tracking-widest text-gray-500 font-semibold ml-1">Portfolio Link</label>
-                <div className="flex items-center bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 focus-within:border-white transition-colors">
-                  <LinkIcon className="w-4 h-4 text-gray-500 mr-3" />
-                  <input
-                    type="url"
-                    name="portfolioLink"
-                    value={editForm.portfolioLink || ""}
-                    onChange={handleEditChange}
-                    className="bg-transparent outline-none flex-1 text-sm"
-                    placeholder="https://..."
-                  />
-                </div>
-              </div>
-
-              <div className="pt-6 border-t border-white/10 flex justify-end gap-4">
-                <button
-                  type="button"
-                  onClick={() => setIsEditModalOpen(false)}
-                  className="px-6 py-2.5 text-sm font-semibold hover:text-white transition-colors text-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  className="px-8 py-2.5 bg-white text-black text-sm font-bold rounded-xl hover:scale-105 transition-all disabled:opacity-50 flex items-center gap-2"
-                >
-                  {isSaving && <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />}
-                  {isSaving ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <EditCreatorProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        editForm={editForm}
+        handleEditChange={handleEditChange}
+        handlePhotoChange={handlePhotoChange}
+        handleSubmit={handleEditSubmit}
+        isSaving={isSaving}
+        photoPreview={photoPreview}
+        profilePhoto={profile?.profilePhoto}
+        errors={errors}
+      />
     </div>
   );
 }
