@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import {
+  adminCategoryController,
   adminCreatorController,
   adminLoginController,
   adminUserController,
@@ -12,6 +13,7 @@ import { logoutController, tokenController } from "../../../framework/depInjecti
 
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
 import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { ICategoryRepository } from "@/domain/interface/admin/IcategoryRepository";
 
 export class AdminRoutes {
   public adminRouter: Router;
@@ -20,13 +22,11 @@ export class AdminRoutes {
     private _jwtService: JwtServices,
     private _tokenBlacklistService: TokenBlacklistService,
     private _userRepo: IuserRepository,
-    private _creatorRepo: IcreatorRepository
-
+    private _creatorRepo: IcreatorRepository,
   ) {
     this.adminRouter = Router();
     this.setRoutes();
   }
-
   private setRoutes(): void {
     this.adminRouter.post(
       "/login",
@@ -51,19 +51,16 @@ export class AdminRoutes {
       (req: Request, res: Response) =>
         adminUserController.getUsers(req, res)
     );
-
     this.adminRouter.get(
       "/creators",
       (req: Request, res: Response) =>
         adminCreatorController.getCreators(req, res)
     );
-
     this.adminRouter.patch(
       "/creators/:id/approve",
       (req: Request, res: Response) =>
         adminCreatorController.approve(req, res)
     );
-
     this.adminRouter.patch(
       "/creators/:id/reject",
       (req: Request, res: Response) =>
@@ -74,6 +71,12 @@ export class AdminRoutes {
     })
     this.adminRouter.patch("/creators/:creatorId/status", (req: Request, res: Response) => {
       adminCreatorController.changeCreatorStatus(req, res)
+    })
+    this.adminRouter.post("/category",(req:Request,res:Response)=>{
+      adminCategoryController.addCategory(req,res)
+    })
+    this.adminRouter.get("/category",(req:Request,res:Response)=>{
+      adminCategoryController.getCategory(req,res)
     })
   }
 }

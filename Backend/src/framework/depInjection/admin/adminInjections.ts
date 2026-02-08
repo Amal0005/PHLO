@@ -13,12 +13,18 @@ import { ApproveCreatorUseCase } from "../../../useCases/admin/approveCreatorUse
 import { RejectCreatorUseCase } from "../../../useCases/admin/rejectCreatorUseCase";
 import { ToggleCreatorStatusUseCase } from "@/useCases/admin/toggleCreatorStatusUseCase";
 import { MailService } from "@/domain/services/user/mailServices";
+import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
+import { AddCategoryUseCase } from "@/useCases/admin/addCategoryUseCase";
+import { AdminCategoryController } from "@/adapters/controllers/admin/AdminCategoryController";
+import { GetCategoryUseCase } from "@/useCases/admin/getCategoryUseCase";
 
 const userRepo = new UserRepository();
+const creatorRepo = new CreatorRepository();
+const categoryRepo=new CategoryRepository()
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
-const creatorRepo = new CreatorRepository();
 const mailService= new MailService()
+
 
 const adminLoginUseCase = new AdminLoginUseCase(userRepo, passwordService, jwtService);
 const adminUserlistingUseCase = new AdminUserListingUseCase(userRepo);
@@ -27,7 +33,10 @@ const toggleUserStatusUseCase = new ToggleUserStatusUseCase(userRepo);
 const approveCreatorUseCase = new ApproveCreatorUseCase(creatorRepo,mailService);
 const rejectCreatorUseCase = new RejectCreatorUseCase(creatorRepo);
 const toggleCreatorStatusUseCase=new ToggleCreatorStatusUseCase(creatorRepo)
+const addCategoryUseCase=new AddCategoryUseCase(categoryRepo)
+const getCategoryUseCase=new GetCategoryUseCase(categoryRepo)
 
 export const adminLoginController = new AdminLoginController(adminLoginUseCase);
 export const adminUserController = new AdminUserController(adminUserlistingUseCase,toggleUserStatusUseCase);
 export const adminCreatorController = new AdminCreatorController(approveCreatorUseCase,rejectCreatorUseCase,adminCreatorListingUseCase,toggleCreatorStatusUseCase);
+export const adminCategoryController=new AdminCategoryController(addCategoryUseCase,getCategoryUseCase)
