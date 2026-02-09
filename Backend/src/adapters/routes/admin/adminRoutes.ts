@@ -40,7 +40,6 @@ export class AdminRoutes {
       jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
       authorizeRoles("admin")
     );
-
     this.adminRouter.post(
       "/logout",
       logoutController.logout.bind(logoutController)
@@ -78,5 +77,10 @@ export class AdminRoutes {
     this.adminRouter.get("/category",(req:Request,res:Response)=>{
       adminCategoryController.getCategory(req,res)
     })
-  }
+    this.adminRouter.delete("/category/:categoryId",(req:Request,res:Response)=>{
+      adminCategoryController.deleteCategory(req,res)
+    })
+    this.adminRouter.patch("/category/:categoryId", (req: Request, res: Response) => {
+    adminCategoryController.editCategory(req, res);
+});  }
 }

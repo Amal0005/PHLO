@@ -27,5 +27,6 @@ export const ROUTES = {
     DASHBOARD: "/admin/dashboard",
     USERS: "/admin/users",
     CREATORS: "/admin/creators",
+    CATEGORIES: "/admin/category"
   },
 };

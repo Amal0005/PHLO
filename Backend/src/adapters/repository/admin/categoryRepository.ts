@@ -19,5 +19,13 @@ export class CategoryRepository implements ICategoryRepository{
     async delete(categoryId: string): Promise<void> {
         await CategoryModel.findByIdAndDelete(categoryId)
     }
-
+    async update(categoryId: string, category: Partial<CategoryEntity>): Promise<CategoryEntity | null> {
+        await CategoryModel.updateOne({_id:categoryId},{$set:category})
+        return await CategoryModel.findById(categoryId);
+    }
+    async findByName(name: string): Promise<CategoryEntity | null> {
+         const category = await CategoryModel.findOne({ name });
+        if (!category) return null;
+        return { ...category.toObject(), categoryId: category._id.toString() };
+    }
 }

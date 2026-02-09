@@ -15,8 +15,10 @@ import { ToggleCreatorStatusUseCase } from "@/useCases/admin/toggleCreatorStatus
 import { MailService } from "@/domain/services/user/mailServices";
 import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
 import { AddCategoryUseCase } from "@/useCases/admin/addCategoryUseCase";
-import { AdminCategoryController } from "@/adapters/controllers/admin/AdminCategoryController";
 import { GetCategoryUseCase } from "@/useCases/admin/getCategoryUseCase";
+import { DeleteCategoryUseCase } from "@/useCases/admin/deleteCategoryUseCase";
+import { AdminCategoryController } from "@/adapters/controllers/admin/adminCategoryController";
+import { EditCategoryUseCase } from "@/useCases/admin/editCategoryUseCase";
 
 const userRepo = new UserRepository();
 const creatorRepo = new CreatorRepository();
@@ -35,8 +37,10 @@ const rejectCreatorUseCase = new RejectCreatorUseCase(creatorRepo);
 const toggleCreatorStatusUseCase=new ToggleCreatorStatusUseCase(creatorRepo)
 const addCategoryUseCase=new AddCategoryUseCase(categoryRepo)
 const getCategoryUseCase=new GetCategoryUseCase(categoryRepo)
+const deleteCategoryUseCase=new DeleteCategoryUseCase(categoryRepo)
+const editCategoryUseCase = new EditCategoryUseCase(categoryRepo)
 
 export const adminLoginController = new AdminLoginController(adminLoginUseCase);
 export const adminUserController = new AdminUserController(adminUserlistingUseCase,toggleUserStatusUseCase);
 export const adminCreatorController = new AdminCreatorController(approveCreatorUseCase,rejectCreatorUseCase,adminCreatorListingUseCase,toggleCreatorStatusUseCase);
-export const adminCategoryController=new AdminCategoryController(addCategoryUseCase,getCategoryUseCase)
+export const adminCategoryController=new AdminCategoryController(addCategoryUseCase,getCategoryUseCase,deleteCategoryUseCase,editCategoryUseCase)
