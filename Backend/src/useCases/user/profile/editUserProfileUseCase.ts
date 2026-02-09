@@ -7,7 +7,7 @@ export class EditUserProfileUsecase implements IeditUserProfileUseCase {
   constructor(
     private _userRepo: IuserRepository,
     private _creatorRepo: IcreatorRepository,
-  ) { }
+  ) {}
   async editProfile(
     userId: string,
     data: { name?: string; phone?: string; image?: string; email: string },

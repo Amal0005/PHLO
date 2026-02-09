@@ -8,43 +8,40 @@ import { clearCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
 import { confirmActionToast } from "@/compoents/reusable/confirmActionToast";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
 
-export default function CreatorDashboard() {
+import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
 
+export default function CreatorDashboard() {
   const creator = useSelector((state: RootState) => state.creator.creator);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-const handleLogout = () => {
-  confirmActionToast(
-    "Are you sure you want to logout?",
-    async () => {
-      await CreatorAuthService.logout();
-      dispatch(clearCreatorAuth());
-      dispatch(clearCreator());
-      navigate(ROUTES.CREATOR.LOGIN, { replace: true });
-    },
-    "Logout"
-  );
-};
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-white text-center">
+    <div className="min-h-screen bg-black text-white">
+      <CreatorNavbar />
 
-        <h1 className="text-2xl font-bold mb-2">
-          Welcome, {creator?.fullName || "Creator"}
-        </h1>
-        <p className="text-gray-400 text-sm mb-6">
-          This is your creator dashboard
-        </p>
-        <button
-          onClick={() => handleLogout()}
-          className="mt-6 flex items-center justify-center gap-2 text-red-400 hover:text-red-300 text-sm"
-        >
-          <LogOut className="w-4 h-4" />
-          Logout
-        </button>
-      </div>
+      <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
+        <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 lg:p-12 mb-8">
+          <div className="max-w-3xl">
+            <h2 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">
+              Creator Dashboard
+            </h2>
+            <h1 className="text-4xl lg:text-6xl font-black mb-6 tracking-tight">
+              Welcome back, <br />
+              <span className="text-gray-400">{creator?.fullName || "Creator"}</span>
+            </h1>
+            <p className="text-gray-400 text-lg lg:text-xl font-light leading-relaxed mb-8">
+              Manage your profile, view your analytics, and create stunning content for your audience.
+            </p>
+          </div>
+        </div>
+
+        {/* Dashboard Grid Placeholder */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-48 bg-zinc-900/40 border border-white/5 rounded-2xl flex items-center justify-center">
+              <span className="text-zinc-700 font-mono tracking-tighter">FEATURE_{i}_PLACEHOLDER</span>
+            </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }

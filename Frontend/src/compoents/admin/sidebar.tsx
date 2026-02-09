@@ -1,4 +1,4 @@
-import { Shield, Users, LayoutDashboard, Camera } from "lucide-react";
+import { Shield, Users, LayoutDashboard, Camera, FolderTree } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 
@@ -23,6 +23,11 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       label: "Creators",
       icon: Camera,
       to: ROUTES.ADMIN.CREATORS,
+    },
+        {
+      label: "Categories",
+      icon: FolderTree,
+      to: ROUTES.ADMIN.CATEGORIES,
     },
   ];
 

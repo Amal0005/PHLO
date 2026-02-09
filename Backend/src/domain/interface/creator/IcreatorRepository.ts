@@ -9,5 +9,6 @@ export interface IcreatorRepository {
     updatePassword(email: string, hashedPassword: string): Promise<void>;
   findAllCreators(page: number,limit: number): Promise<PaginatedResult<CreatorEntity>>;
     findByPhone(phone:string|undefined):Promise<CreatorEntity|null>
+    updateProfile(creatorId:string,data:Partial<CreatorEntity>):Promise<CreatorEntity|null>
 
 }

@@ -5,6 +5,7 @@ import ForgotPassword from "@/pages/creator/auth/forgotPassword";
 import CreatorDashboard from "@/pages/creator/dashboard";
 import ProtectedRoute from "./protectedRoute";
 import { ROUTES } from "../constants/routes";
+import CreatorProfile from "@/pages/creator/profile/creatorProfile";
 export function CreatorRoutes() {
   return (
     <Routes>
@@ -18,11 +19,9 @@ export function CreatorRoutes() {
       </Route>
 
       <Route element={<ProtectedRoute role="creator" />}>
-        <Route
-          path={ROUTES.CREATOR.ROOT}
-          element={<Navigate to={ROUTES.CREATOR.DASHBOARD} replace />}
-        />
+        <Route path={ROUTES.CREATOR.ROOT}element={<Navigate to={ROUTES.CREATOR.DASHBOARD} replace />}/>
         <Route path={ROUTES.CREATOR.DASHBOARD} element={<CreatorDashboard />} />
+        <Route path={ROUTES.CREATOR.PROFILE} element={<CreatorProfile />} />
       </Route>
     </Routes>
   );

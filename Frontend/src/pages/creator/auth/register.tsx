@@ -12,7 +12,7 @@ import {
   EyeOff,
 } from "lucide-react";
 
-import { uploadToS3 as fileUploader } from "@/utils/uploadToS3";
+import { S3Service } from "@/services/s3Service";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
@@ -26,7 +26,7 @@ import { CreatorAuthService } from "@/services/creator/creatorAuthService";
 import OtpVerificationModal from "@/compoents/reusable/OtpVerificationModal";
 
 async function uploadToS3(file: File, type: "profile" | "id"): Promise<string> {
-  const url = await fileUploader(file, type);
+  const url = await S3Service.uploadToS3(file, type);
   return url;
 }
 

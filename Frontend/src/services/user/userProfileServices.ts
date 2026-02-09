@@ -1,5 +1,6 @@
 import api from "@/axios/axiosConfig";
 import { EditProfilePayload, UserProfileResponse } from "@/interface/user/userProfileInterface";
+import { S3Service } from "@/services/s3Service";
 
 export const UserProfileService = {
   getProfile: async (): Promise<{ success: boolean; user: UserProfileResponse }> => {
@@ -14,20 +15,8 @@ export const UserProfileService = {
     const res = await api.patch("/change-password", payload);
     return res.data;
   },
-  getUploadUrl: async (fileType: string, folder: string): Promise<{ uploadUrl: string; publicUrl: string }> => {
-  const res = await api.post("/upload/presign", { fileType, folder });
-  return res.data;
-},
-uploadToS3: async (url: string, file: File): Promise<void> => {
-  await fetch(url, {
-    method: "PUT",
-    headers: { "Content-Type": file.type },
-    body: file,
-  })
-  
-},
-getViewUrl: async (key: string): Promise<string> => {
-  const res = await api.get(`/upload/view-url?key=${key}`);
-  return res.data.viewUrl;
-},
+  // Delegate S3 operations to the unified service
+  getUploadUrl: S3Service.getPresignedUrl,
+  uploadToS3: S3Service.uploadFile,
+  getViewUrl: S3Service.getViewUrl,
 }
