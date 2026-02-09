@@ -3,7 +3,6 @@ import { Schema } from "mongoose";
 export const creatorSchema = new Schema(
   {
     fullName: { type: String, required: true },
-
     email: {
       type: String,
       required: true,

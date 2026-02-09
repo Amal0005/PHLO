@@ -2,7 +2,7 @@ import { loginDto } from "../../../domain/dto/user/loginDto";
 import { IjwtServices } from "../../../domain/interface/service/IjwtServices";
 import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
 import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
-import { IuserLoginUseCase } from "../../../domain/interface/user/login/IuserLoginUseCase";
+import { IuserLoginUseCase } from "../../../domain/interface/user/auth/IuserLoginUseCase";
 import { UserMapper } from "../../../adapters/mapper/user/userMapper";
 
 export class userLoginUserUseCase implements IuserLoginUseCase {

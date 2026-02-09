@@ -1,7 +1,7 @@
-import { IGetPresignedViewUrlUseCase } from "../../domain/interface/creator/IgetPresignedViewUrlUseCase";
-import { CreatorRepository } from "../repository/creator/creatorRepository";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
+import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IgetPresignedViewUrlUseCase";
+import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
 
 export class ViewController {
   constructor(
