@@ -13,7 +13,6 @@ export class CreatorLoginController {
         email: string,
         password: string
       }
-      console.log(req.body.payload)
       const result = await this._loginUseCase.login(email, password)
 
       if (result.status === "approved" && result.refreshToken) {

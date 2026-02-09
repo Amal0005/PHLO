@@ -12,6 +12,8 @@ import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
 
 export default function CreatorDashboard() {
   const creator = useSelector((state: RootState) => state.creator.creator);
+console.log(creator?.id);
+
 
   return (
     <div className="min-h-screen bg-black text-white">

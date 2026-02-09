@@ -4,6 +4,7 @@ import {
   creatorRegisterController,
   creatorAuthController,
   creatorProfileController,
+  creatorPackageController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
@@ -59,15 +60,15 @@ export class CreatorRoutes {
     this.creatorRouter.post("/reset-password", (req: Request, res: Response) =>
       creatorAuthController.resetPassword(req, res),
     );
-    this.creatorRouter.post("/check-email", (req, res) =>
+    this.creatorRouter.post("/check-email", (req: Request, res: Response) =>
       creatorRegisterController.checkExists(req, res),
     );
 
-    this.creatorRouter.post("/verify-otp", (req, res) =>
+    this.creatorRouter.post("/verify-otp", (req: Request, res: Response) =>
       creatorRegisterController.verifyOtp(req, res),
     );
 
-    this.creatorRouter.post("/resend-otp", (req, res) =>
+    this.creatorRouter.post("/resend-otp", (req: Request, res: Response) =>
       creatorRegisterController.resendOtp(req, res),
     );
 
@@ -85,11 +86,14 @@ export class CreatorRoutes {
       "/logout",
       logoutController.logout.bind(logoutController),
     );
-    this.creatorRouter.get("/profile", (req, res) =>
+    this.creatorRouter.get("/profile", (req: Request, res: Response) =>
       creatorProfileController.getProfile(req, res),
     );
-    this.creatorRouter.patch("/profile", (req, res) =>
+    this.creatorRouter.patch("/profile", (req: Request, res: Response) =>
       creatorProfileController.editProfile(req, res),
     );
+    this.creatorRouter.post("/package",(req: Request, res: Response)=>{
+      creatorPackageController.addPackage(req,res)
+    })
   }
 }

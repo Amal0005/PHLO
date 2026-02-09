@@ -19,11 +19,15 @@ import { ResendCreatorOtpUseCase } from "@/useCases/creator/register/resendCreat
 import { EditCreatorProfileUseCase } from "@/useCases/creator/profile/editCreatorProfileUseCase";
 import { GetCreatorProfileUseCase } from "@/useCases/creator/profile/getCreatorProfileUseCase";
 import { CreatorProfileController } from "@/adapters/controllers/creator/profile/creatorProfileController";
+import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
+import { AddPackageUseCase } from "@/useCases/creator/package/addPackageUseCase";
+import { CreatorPackageController } from "@/adapters/controllers/creator/creatorPackageController";
 
 const creatorRepository = new CreatorRepository();
+const userRepository = new UserRepository();
+const packageRepository=new PackageRepository()
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
-const userRepository = new UserRepository();
 const redisService = new RedisService();
 const otpService = new OtpServices(redisService);
 const mailService = new MailService();
@@ -38,9 +42,11 @@ const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpService, redisServi
 const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository, passwordService, redisService);
 const getCreatorProfileUseCase= new GetCreatorProfileUseCase(creatorRepository)
 const editCreatorProfileUseCase= new EditCreatorProfileUseCase(creatorRepository)
+const addPackageUseCase=new AddPackageUseCase(packageRepository)
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase,checkCreatorExistsUseCase,verifyCreatorOtpUseCase,resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
 export const creatorAuthController = new CreatorAuthController(forgotPasswordUseCase, verifyForgotOtpUseCase, resetPasswordUseCase);
 export const creatorProfileController=new CreatorProfileController(getCreatorProfileUseCase,editCreatorProfileUseCase)
+export const creatorPackageController=new CreatorPackageController(addPackageUseCase)
 
