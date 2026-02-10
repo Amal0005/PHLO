@@ -13,7 +13,7 @@ interface AddPackageModalProps {
   onSuccess: () => void;
 }
 
-const AddPackageModal: React.FC<AddPackageModalProps> = ({ isOpen, onClose, onSuccess }) => {
+export const AddPackageModal: React.FC<AddPackageModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [categories, setCategories] = useState<{ _id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -223,5 +223,3 @@ const AddPackageModal: React.FC<AddPackageModalProps> = ({ isOpen, onClose, onSu
     </div>
   );
 };
-
-export default AddPackageModal;

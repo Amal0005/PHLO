@@ -19,6 +19,7 @@ export const ROUTES = {
     PROFILE: "/creator/profile",
     CONTENT: "/creator/content",
     ANALYTICS: "/creator/analytics",
+    PACKAGES: "/creator/packages"
   },
 
   ADMIN: {

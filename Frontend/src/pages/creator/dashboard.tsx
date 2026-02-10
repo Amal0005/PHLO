@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
-import AddPackageModal from "./package/addPackageModal";
-import PackageOptionModal from "./package/PackageOptionModal";
 import { useState } from "react";
-import { Plus, Package } from "lucide-react";
+import { Package } from "lucide-react";
+import { PackageOptionModal } from "./package/components/packageOptionModal";
+import { AddPackageModal } from "./package/components/addPackageModal";
 
 export default function CreatorDashboard() {
   const creator = useSelector((state: RootState) => state.creator.creator);
@@ -13,12 +13,10 @@ export default function CreatorDashboard() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleSelectView = () => {
-    // This will be implemented when you have the view packages logic/page
     console.log("View Packages selected");
   };
 
   const handleAddSuccess = () => {
-    // Refresh packages list if needed
     console.log("Package added successfully");
   };
 
@@ -42,13 +40,11 @@ export default function CreatorDashboard() {
           </div>
         </div>
 
-        {/* Dashboard Actions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div 
             onClick={() => setIsOptionModalOpen(true)}
             className="h-48 bg-white/5 border border-white/10 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-all group relative overflow-hidden"
           >
-            {/* Hover Decorative Element */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             
             <div className="w-14 h-14 bg-white text-black rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform relative z-10 shadow-xl">
@@ -60,16 +56,12 @@ export default function CreatorDashboard() {
               <span className="text-gray-500 text-sm font-medium">View or Manage your packages</span>
             </div>
             
-            {/* Icon decoration */}
             <div className="absolute -bottom-4 -right-4 text-white/5 group-hover:text-white/10 transition-colors">
               <Package size={100} />
             </div>
           </div>
-
-          {/* You can add more dashboard items here later (e.g., Analytics, Profile settings etc.) */}
         </div>
 
-        {/* Modals Handling */}
         <PackageOptionModal
           isOpen={isOptionModalOpen}
           onClose={() => setIsOptionModalOpen(false)}
@@ -77,7 +69,7 @@ export default function CreatorDashboard() {
           onSelectView={handleSelectView}
         />
 
-        <AddPackageModal 
+        <AddPackageModal
           isOpen={isAddModalOpen} 
           onClose={() => setIsAddModalOpen(false)} 
           onSuccess={handleAddSuccess} 
