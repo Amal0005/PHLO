@@ -22,6 +22,7 @@ import { CreatorProfileController } from "@/adapters/controllers/creator/profile
 import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
 import { AddPackageUseCase } from "@/useCases/creator/package/addPackageUseCase";
 import { CreatorPackageController } from "@/adapters/controllers/creator/creatorPackageController";
+import { GetPackagesUseCase } from "@/useCases/creator/package/getPackageUseCase";
 
 const creatorRepository = new CreatorRepository();
 const userRepository = new UserRepository();
@@ -43,10 +44,11 @@ const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository, passwor
 const getCreatorProfileUseCase= new GetCreatorProfileUseCase(creatorRepository)
 const editCreatorProfileUseCase= new EditCreatorProfileUseCase(creatorRepository)
 const addPackageUseCase=new AddPackageUseCase(packageRepository)
+const getPackageUseCase=new GetPackagesUseCase(packageRepository)
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase,checkCreatorExistsUseCase,verifyCreatorOtpUseCase,resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
 export const creatorAuthController = new CreatorAuthController(forgotPasswordUseCase, verifyForgotOtpUseCase, resetPasswordUseCase);
 export const creatorProfileController=new CreatorProfileController(getCreatorProfileUseCase,editCreatorProfileUseCase)
-export const creatorPackageController=new CreatorPackageController(addPackageUseCase)
+export const creatorPackageController=new CreatorPackageController(addPackageUseCase,getPackageUseCase)
 

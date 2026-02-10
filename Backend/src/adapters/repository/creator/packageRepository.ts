@@ -11,4 +11,14 @@ export class PackageRepository implements IPackageRepository {
       _id: obj._id.toString(),
     };
   }
+    async findByCreatorId(creatorId: string): Promise<PackageEntity[]> {
+    const packages = await PackageModel.find({ creatorId }).sort({ createdAt: -1 });
+    return packages.map(pkg => {
+      const obj = pkg.toObject();
+      return {
+        ...obj,
+        _id: obj._id.toString(),
+      } as PackageEntity;
+    });
+  }
 }

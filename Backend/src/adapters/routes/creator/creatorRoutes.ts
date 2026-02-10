@@ -95,5 +95,8 @@ export class CreatorRoutes {
     this.creatorRouter.post("/package",(req: Request, res: Response)=>{
       creatorPackageController.addPackage(req,res)
     })
+        this.creatorRouter.get("/package", (req: Request, res: Response) => {
+      creatorPackageController.getPackages(req, res);
+    });
   }
 }
