@@ -1,17 +1,17 @@
 import { CreatorLoginResponseDto } from "@/domain/dto/creator/creatorLoginResponseDto";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
-import { IcreatorLoginUseCase } from "@/domain/interface/creator/login/IcreatorLoginUseCase";
-import { IjwtServices } from "@/domain/interface/service/IjwtServices";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { ICreatorLoginUseCase } from "@/domain/interface/creator/login/ICreatorLoginUseCase";
+import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { AuthPayload } from "@/domain/dto/user/authPayload";
-import { IpasswordService } from "@/domain/interface/service/IpasswordService";
+import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { AuthError } from "@/domain/errors/authError";
 
 
-export class CreatorLoginUseCase implements IcreatorLoginUseCase {
+export class CreatorLoginUseCase implements ICreatorLoginUseCase {
   constructor(
-    private _creatorRepo: IcreatorRepository,
-    private IjwtService: IjwtServices,
-    private _passwordService: IpasswordService,
+    private _creatorRepo: ICreatorRepository,
+    private IjwtService: IJwtServices,
+    private _passwordService: IPasswordService,
   ) {}
   async login(
     email: string,
@@ -71,3 +71,4 @@ export class CreatorLoginUseCase implements IcreatorLoginUseCase {
   }
 
 }
+

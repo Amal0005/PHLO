@@ -1,6 +1,6 @@
-import { IRedisService } from "@/domain/interface/service/IredisServices";
-import { IOTPService } from "@/domain/interface/service/IotpServices";
-import { IVerifyForgotOtpUseCase } from "@/domain/interface/creator/auth/IverifyForgotOtpUseCase";
+import { IRedisService } from "@/domain/interface/service/IRedisServices";
+import { IOTPService } from "@/domain/interface/service/IOtpServices";
+import { IVerifyForgotOtpUseCase } from "@/domain/interface/creator/auth/IVerifyForgotOtpUseCase";
 
 
 export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
@@ -19,3 +19,4 @@ export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
         await this._redisService.setValue(`FP_CREATOR_VERIFIED_${email}`, "1", 300);
     }
 }
+

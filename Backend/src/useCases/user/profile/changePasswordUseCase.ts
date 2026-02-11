@@ -1,11 +1,11 @@
-import { IpasswordService } from "@/domain/interface/service/IpasswordService";
-import { IuserRepository } from "@/domain/interface/user/IuserRepository";
-import { IchangePasswordUseCase } from "@/domain/interface/user/profile/IchangepasswordUseCase";
+import { IPasswordService } from "@/domain/interface/service/IPasswordService";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { IChangepasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
 
-export class ChangePasswordUseCase implements IchangePasswordUseCase {
+export class ChangePasswordUseCase implements IChangepasswordUseCase {
     constructor(
-        private _userRepo: IuserRepository,
-        private _passwordService: IpasswordService
+        private _userRepo: IUserRepository,
+        private _passwordService: IPasswordService
     ) { }
 
     async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {

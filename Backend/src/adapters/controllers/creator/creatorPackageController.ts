@@ -1,10 +1,10 @@
-import { IaddPackageUseCase } from "@/domain/interface/creator/package/IaddPackageUseCase";
-import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IgetPackageUseCase";
+import { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
+import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
 import { Request, Response } from "express";
 
 export class CreatorPackageController {
   constructor(
-    private _addPackageUseCase: IaddPackageUseCase,
+    private _addPackageUseCase: IAddPackageUseCase,
     private _getPackagesUseCase:IgetPackagesUseCase
   ) {}
   async addPackage(req: Request, res: Response) {
@@ -30,3 +30,4 @@ export class CreatorPackageController {
     }
   }
 }
+

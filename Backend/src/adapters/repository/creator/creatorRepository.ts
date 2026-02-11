@@ -1,11 +1,11 @@
 import { CreatorMapper } from "@/adapters/mapper/creator/creatorMapper";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { CreatorModel } from "@/framework/database/model/creatorModel";
 import { paginateMongo } from "@/utils/pagination";
 
-export class CreatorRepository implements IcreatorRepository {
+export class CreatorRepository implements ICreatorRepository {
 
 
   async findByEmail(email: string): Promise<CreatorEntity | null> {
@@ -73,3 +73,4 @@ async findById(id: string): Promise<CreatorEntity | null> {
     return creator?CreatorMapper.toDomain(creator):null
   }
 }
+

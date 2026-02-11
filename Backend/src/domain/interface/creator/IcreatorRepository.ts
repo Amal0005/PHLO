@@ -1,7 +1,7 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 
-export interface IcreatorRepository {
+export interface ICreatorRepository {
     createCreator(data: CreatorEntity,): Promise<CreatorEntity>
     findByEmail(email: string): Promise<CreatorEntity | null>
     findById(id: string): Promise<CreatorEntity | null>;

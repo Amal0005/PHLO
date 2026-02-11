@@ -1,4 +1,4 @@
-import { IPackageRepository } from "@/domain/interface/repositories/IpackageRepository";
+import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { PackageModel } from "@/framework/database/model/packageModel";
 
@@ -22,3 +22,4 @@ export class PackageRepository implements IPackageRepository {
     });
   }
 }
+

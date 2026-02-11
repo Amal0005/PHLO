@@ -1,11 +1,11 @@
-import { IcheckCreatorExistsUseCase } from "@/domain/interface/creator/register/IcheckCreatorExistsUseCase";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
-import { IuserRepository } from "@/domain/interface/user/IuserRepository";
+import { ICheckCreatorExistsUseCase } from "@/domain/interface/creator/register/ICheckCreatorExistsUseCase";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
 
-export class CheckCreatorExistsUseCase implements IcheckCreatorExistsUseCase {
+export class CheckCreatorExistsUseCase implements ICheckCreatorExistsUseCase {
   constructor(
-    private _creatorRepo: IcreatorRepository,
-    private _userRepo: IuserRepository
+    private _creatorRepo: ICreatorRepository,
+    private _userRepo: IUserRepository
   ) {}
 
   async checkExists(email: string, phone: string): Promise<void> {
@@ -25,3 +25,4 @@ export class CheckCreatorExistsUseCase implements IcheckCreatorExistsUseCase {
     }
   }
 }
+

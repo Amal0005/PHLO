@@ -1,12 +1,12 @@
 import { User } from "../../../domain/entities/userEntities";
-import { IOTPService } from "../../../domain/interface/service/IotpServices";
-import { IPendingUserService } from "../../../domain/interface/service/IpendingUserService";
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
-import { IverifyRegisterOtpUseCase } from "../../../domain/interface/user/auth/IverifyRegisterOtpUseCase";
+import { IOTPService } from "../../../domain/interface/service/IOtpServices";
+import { IPendingUserService } from "../../../domain/interface/service/IPendingUserService";
+import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
+import { IVerifyRegisterOtpUseCase } from "../../../domain/interface/user/auth/IVerifyRegisterOtpUseCase";
 
-export class verifyRegisterOtpUseCase implements IverifyRegisterOtpUseCase {
+export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {
   constructor(
-    private _userRepo: IuserRepository,
+    private _userRepo: IUserRepository,
     private _otpService: IOTPService,
     private _pendingUser: IPendingUserService
   ) {}
@@ -23,3 +23,4 @@ export class verifyRegisterOtpUseCase implements IverifyRegisterOtpUseCase {
     return createdUser;
   }
 }
+

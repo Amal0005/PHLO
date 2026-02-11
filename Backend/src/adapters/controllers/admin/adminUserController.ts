@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IadminUserListingUseCase } from "../../../domain/interface/admin/IadminUserListingUseCase";
-import { IadminCreatorListingUseCase } from "../../../domain/interface/admin/IadminCreatorListingUseCase";
+import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IAdminUserListingUseCase";
+import { IAdminCreatorListingUseCase } from "../../../domain/interface/admin/IAdminCreatorListingUseCase";
 import { IToggleUserStatusUseCase } from "../../../domain/interface/admin/IToggleUserStatusUseCase";
 
 export class AdminUserController {
   constructor(
-    private _adminUserListingUseCase: IadminUserListingUseCase,
+    private _adminUserListingUseCase: IAdminUserListingUseCase,
     private _toggleUserStatusUseCase: IToggleUserStatusUseCase
   ) {}
   async getUsers(req: Request, res: Response) {
@@ -42,3 +42,4 @@ export class AdminUserController {
     }
   }
 }
+

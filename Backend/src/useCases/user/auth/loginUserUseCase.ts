@@ -1,15 +1,15 @@
 import { loginDto } from "../../../domain/dto/user/loginDto";
-import { IjwtServices } from "../../../domain/interface/service/IjwtServices";
-import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
-import { IuserLoginUseCase } from "../../../domain/interface/user/auth/IuserLoginUseCase";
+import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
+import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
+import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
+import { IUserLoginUseCase } from "../../../domain/interface/user/auth/IUserLoginUseCase";
 import { UserMapper } from "../../../adapters/mapper/user/userMapper";
 
-export class userLoginUserUseCase implements IuserLoginUseCase {
+export class userLoginUserUseCase implements IUserLoginUseCase {
   constructor(
-    private _userRepo: IuserRepository,
-    private _passwordService: IpasswordService,
-    private _jwtService: IjwtServices
+    private _userRepo: IUserRepository,
+    private _passwordService: IPasswordService,
+    private _jwtService: IJwtServices
   ) {}
 
   async loginUser(user: loginDto) {
@@ -48,3 +48,4 @@ export class userLoginUserUseCase implements IuserLoginUseCase {
     };
   }
 }
+

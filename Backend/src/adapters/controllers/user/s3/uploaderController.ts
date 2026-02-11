@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IGetPresignedUrlUseCase } from "@/domain/interface/creator/IgetUrl";
-import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IgetPresignedViewUrlUseCase";
+import { IGetPresignedUrlUseCase } from "@/domain/interface/creator/IGetUrl";
+import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
 export class UploadController {
   constructor(
     private _getPresignedUrlUseCase: IGetPresignedUrlUseCase,
@@ -28,3 +28,4 @@ export class UploadController {
     return res.json({ viewUrl });
   }
 }
+

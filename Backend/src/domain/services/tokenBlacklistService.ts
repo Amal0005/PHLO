@@ -1,5 +1,5 @@
-import { IRedisService } from "@/domain/interface/service/IredisServices";
-import { ITokenBlacklistService } from "@/domain/interface/service/ItokenBlacklistService";
+import { IRedisService } from "@/domain/interface/service/IRedisServices";
+import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
 
 
 export class TokenBlacklistService implements ITokenBlacklistService{
@@ -18,3 +18,4 @@ export class TokenBlacklistService implements ITokenBlacklistService{
         return value==="1"
     }
 }
+

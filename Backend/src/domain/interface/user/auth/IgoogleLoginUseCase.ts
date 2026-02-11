@@ -1,6 +1,6 @@
 import { User } from "../../../entities/userEntities";
 
-export interface IgoogleLoginUseCase {
+export interface IGoogleLoginUseCase {
   execute(
     idToken: string
   ): Promise<{
@@ -9,3 +9,4 @@ export interface IgoogleLoginUseCase {
     refreshToken: string;
   }>;
 }
+

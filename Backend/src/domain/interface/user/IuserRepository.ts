@@ -1,7 +1,7 @@
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { User } from "../../entities/userEntities";
 
-export interface IuserRepository {
+export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
   createUser(user: Omit<User, "_id">): Promise<User>;
   updatePassword(email: string, hashedPassword: string): Promise<void>;
@@ -17,3 +17,4 @@ export interface IuserRepository {
 ): Promise<User | null>;
 
 }
+

@@ -1,8 +1,8 @@
 import { PackageEntity } from "@/domain/entities/packageEntity";
-import { IaddPackageUseCase } from "@/domain/interface/creator/package/IaddPackageUseCase";
-import { IPackageRepository } from "@/domain/interface/repositories/IpackageRepository";
+import { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
+import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 
-export class AddPackageUseCase implements IaddPackageUseCase{
+export class AddPackageUseCase implements IAddPackageUseCase{
     constructor(
         private _packageRepo:IPackageRepository
     ){}

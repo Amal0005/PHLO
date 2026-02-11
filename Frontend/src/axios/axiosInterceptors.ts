@@ -25,6 +25,7 @@ const processQueue = (error: any, token: string | null = null) => {
 export const setUpInterceptors = () => {
   api.interceptors.request.use((config) => {
     const state = store.getState();
+
     const url = config.url || "";
 
     if (url.startsWith("http")) return config;

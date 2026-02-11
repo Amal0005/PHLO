@@ -96,7 +96,7 @@ const ViewPackagesPage: React.FC = () => {
                   )}
 
                   {/* STATUS */}
-                  <div className="absolute top-4 right-4">
+                  {/* <div className="absolute top-4 right-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-bold ${
                         pkg.status === "approved"
@@ -108,7 +108,7 @@ const ViewPackagesPage: React.FC = () => {
                     >
                       {pkg.status || "pending"}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* CONTENT */}

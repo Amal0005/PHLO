@@ -16,8 +16,8 @@ import {
   logoutController,
   tokenController,
 } from "@/framework/depInjection/user/userInjections";
-import { IuserRepository } from "@/domain/interface/user/IuserRepository";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 
 export class CreatorRoutes {
   public creatorRouter: Router;
@@ -25,8 +25,8 @@ export class CreatorRoutes {
   constructor(
     private _jwtService: JwtServices,
     private _tokenBlacklistService: TokenBlacklistService,
-    private _userRepo: IuserRepository,
-    private _creatorRepo: IcreatorRepository,
+    private _userRepo: IUserRepository,
+    private _creatorRepo: ICreatorRepository,
   ) {
     this.creatorRouter = Router();
     this.setRoutes();
@@ -100,3 +100,4 @@ export class CreatorRoutes {
     });
   }
 }
+

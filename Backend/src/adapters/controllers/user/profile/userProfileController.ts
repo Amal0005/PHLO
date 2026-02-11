@@ -1,14 +1,14 @@
 import { UserMapper } from "@/adapters/mapper/user/userMapper";
-import { IchangePasswordUseCase } from "@/domain/interface/user/profile/IchangepasswordUseCase";
-import { IeditUserProfileUseCase } from "@/domain/interface/user/profile/IeditUserProfileUseCase";
-import { IgetUserProfileUseCase } from "@/domain/interface/user/profile/IgetUserProfileUseCase";
+import { IChangepasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
+import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
+import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
 import { Request, Response } from "express";
 
 export class UserProfileController {
   constructor(
-    private _getUserProfileUsecase: IgetUserProfileUseCase,
-    private _editUserProfileUseCase: IeditUserProfileUseCase,
-    private _changePasswordUseCase: IchangePasswordUseCase
+    private _getUserProfileUsecase: IGetUserProfileUseCase,
+    private _editUserProfileUseCase: IEditUserProfileUseCase,
+    private _changePasswordUseCase: IChangepasswordUseCase
   ) { }
   async getProfile(req: Request, res: Response): Promise<void> {
     try {
@@ -72,3 +72,4 @@ export class UserProfileController {
     }
   }
 }
+

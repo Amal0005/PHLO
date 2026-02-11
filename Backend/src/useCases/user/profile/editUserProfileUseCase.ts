@@ -1,12 +1,12 @@
 import { User } from "@/domain/entities/userEntities";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
-import { IuserRepository } from "@/domain/interface/user/IuserRepository";
-import { IeditUserProfileUseCase } from "@/domain/interface/user/profile/IeditUserProfileUseCase";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
 
-export class EditUserProfileUsecase implements IeditUserProfileUseCase {
+export class EditUserProfileUsecase implements IEditUserProfileUseCase {
   constructor(
-    private _userRepo: IuserRepository,
-    private _creatorRepo: IcreatorRepository,
+    private _userRepo: IUserRepository,
+    private _creatorRepo: ICreatorRepository,
   ) {}
   async editProfile(
     userId: string,
@@ -39,3 +39,4 @@ export class EditUserProfileUsecase implements IeditUserProfileUseCase {
     return newUser;
   }
 }
+

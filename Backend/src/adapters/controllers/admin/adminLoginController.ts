@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IadminLoginUseCase } from "../../../domain/interface/admin/IadminLoginUseCase";
-import { ILogoutUseCase } from "../../../domain/interface/IlogoutUseCase";
+import { IAdminLoginUseCase } from "../../../domain/interface/admin/IAdminLoginUseCase";
+import { ILogoutUseCase } from "../../../domain/interface/ILogoutUseCase";
 
 export class AdminLoginController {
   constructor(
-    private _adminLoginUseCase: IadminLoginUseCase,
+    private _adminLoginUseCase: IAdminLoginUseCase,
   ) {}
   async login(req: Request, res: Response) {
     try {
@@ -36,3 +36,4 @@ export class AdminLoginController {
     }
   }
 }
+

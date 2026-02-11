@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IgetPresignedViewUrlUseCase";
+import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
 import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
 
 export class ViewController {
@@ -30,3 +30,4 @@ export class ViewController {
     });
   }
 }
+

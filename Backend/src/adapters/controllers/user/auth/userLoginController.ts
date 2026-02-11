@@ -1,9 +1,9 @@
-import { IuserLoginUseCase } from "../../../../domain/interface/user/auth/IuserLoginUseCase";
+import { IUserLoginUseCase } from "../../../../domain/interface/user/auth/IUserLoginUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 
 export class userLoginController {
-  constructor(private _userLoginUseCase: IuserLoginUseCase) { }
+  constructor(private _userLoginUseCase: IUserLoginUseCase) { }
 
   async login(req: Request, res: Response) {
     try {
@@ -32,3 +32,4 @@ export class userLoginController {
     }
   }
 }
+

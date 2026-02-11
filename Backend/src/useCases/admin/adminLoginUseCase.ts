@@ -1,14 +1,14 @@
 import { UserResponseDto } from "../../domain/dto/user/userResponseDto";
-import { IadminLoginUseCase } from "../../domain/interface/admin/IadminLoginUseCase";
-import { IjwtServices } from "../../domain/interface/service/IjwtServices";
-import { IpasswordService } from "../../domain/interface/service/IpasswordService";
-import { IuserRepository } from "../../domain/interface/user/IuserRepository";
+import { IAdminLoginUseCase } from "../../domain/interface/admin/IAdminLoginUseCase";
+import { IJwtServices } from "../../domain/interface/service/IJwtServices";
+import { IPasswordService } from "../../domain/interface/service/IPasswordService";
+import { IUserRepository } from "../../domain/interface/user/IUserRepository";
 
-export class AdminLoginUseCase implements IadminLoginUseCase {
+export class AdminLoginUseCase implements IAdminLoginUseCase {
   constructor(
-    private _userRepo: IuserRepository,
-    private _passwordService: IpasswordService,
-    private _jwtService: IjwtServices
+    private _userRepo: IUserRepository,
+    private _passwordService: IPasswordService,
+    private _jwtService: IJwtServices
   ) {}
 
   async login(
@@ -52,3 +52,4 @@ export class AdminLoginUseCase implements IadminLoginUseCase {
     };
   }
 }
+

@@ -15,9 +15,9 @@ import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
 
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
+import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 
 export class UserRoutes {
   public userRouter: Router;
@@ -25,8 +25,8 @@ export class UserRoutes {
   constructor(
     private _jwtService: JwtServices,
     private _tokenBlacklistService: TokenBlacklistService,
-    private _userRepo: IuserRepository,
-    private _creatorRepo: IcreatorRepository,
+    private _userRepo: IUserRepository,
+    private _creatorRepo: ICreatorRepository,
   ) {
     this.userRouter = Router();
     this.setRoutes();
@@ -121,3 +121,4 @@ export class UserRoutes {
     );
   }
 }
+

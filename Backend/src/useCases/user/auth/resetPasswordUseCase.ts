@@ -1,12 +1,12 @@
-import { IRedisService } from "../../../domain/interface/service/IredisServices";
-import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
-import { IresetPasswordUseCase } from "../../../domain/interface/user/auth/IresetPasswordUseCase";
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
+import { IRedisService } from "../../../domain/interface/service/IRedisServices";
+import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
+import { IResetPasswordUseCase } from "../../../domain/interface/user/auth/IResetPasswordUseCase";
+import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 
-export class ResetPasswordUseCase implements IresetPasswordUseCase {
+export class ResetPasswordUseCase implements IResetPasswordUseCase {
   constructor(
-    private _userRepo: IuserRepository,
-    private _passwordService: IpasswordService,
+    private _userRepo: IUserRepository,
+    private _passwordService: IPasswordService,
     private _redisService: IRedisService
   ) {}
 
@@ -22,3 +22,4 @@ export class ResetPasswordUseCase implements IresetPasswordUseCase {
     await this._redisService.deleteValue(`OTP_FP_${email}`);
   }
 }
+

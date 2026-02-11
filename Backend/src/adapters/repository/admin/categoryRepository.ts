@@ -1,5 +1,5 @@
 import { CategoryEntity } from "@/domain/entities/categoryEntity";
-import { ICategoryRepository } from "@/domain/interface/admin/IcategoryRepository";
+import { ICategoryRepository } from "@/domain/interface/admin/ICategoryRepository";
 import { CategoryModel } from "@/framework/database/model/categoryModel";
 
 export class CategoryRepository implements ICategoryRepository{

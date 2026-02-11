@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { ILogoutUseCase } from "../../domain/interface/IlogoutUseCase";
+import { ILogoutUseCase } from "../../domain/interface/ILogoutUseCase";
 import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
 
 export class LogoutController {
@@ -41,3 +41,4 @@ export class LogoutController {
     }
   }
 }
+

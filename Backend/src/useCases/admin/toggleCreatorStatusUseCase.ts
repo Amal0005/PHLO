@@ -1,9 +1,9 @@
-import { ItoggleCreatorStatusUseCase } from "@/domain/interface/admin/ItoggleCreatorStatusUseCase";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 
-export class ToggleCreatorStatusUseCase implements ItoggleCreatorStatusUseCase{
+export class ToggleCreatorStatusUseCase implements IToggleCreatorStatusUseCase{
     constructor(
-        private _creatorRepo:IcreatorRepository
+        private _creatorRepo:ICreatorRepository
     ){}
 
     async execute(creatorId: string, status: "approved" | "blocked"): Promise<void> {

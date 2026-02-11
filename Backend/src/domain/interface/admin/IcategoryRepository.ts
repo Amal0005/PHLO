@@ -8,3 +8,4 @@ export interface ICategoryRepository {
   update(categoryId: string,category: Partial<CategoryEntity>): Promise<CategoryEntity | null>;
   findByName(name: string): Promise<CategoryEntity | null>;
 }
+

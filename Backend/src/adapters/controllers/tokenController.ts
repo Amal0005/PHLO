@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IjwtServices } from "@/domain/interface/service/IjwtServices";
+import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 
 export class TokenController {
-    constructor(private _jwtService: IjwtServices) { }
+    constructor(private _jwtService: IJwtServices) { }
 
     async refreshToken(req: Request, res: Response) {
         try {
@@ -43,3 +43,4 @@ export class TokenController {
         }
     }
 }
+

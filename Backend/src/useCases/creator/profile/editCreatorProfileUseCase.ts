@@ -1,10 +1,10 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
-import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IeditCreatorUseCase";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
 
 export class EditCreatorProfileUseCase implements IeditCreatorProfileUseCase {
     constructor(
-        private _creatorRepo: IcreatorRepository
+        private _creatorRepo: ICreatorRepository
     ) { }
     async editProfile(creatorId: string, data: Partial<CreatorEntity>): Promise<CreatorEntity | null> {
         if (!creatorId) throw new Error("Creator id is required")

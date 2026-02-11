@@ -1,6 +1,6 @@
 import { PackageEntity } from "@/domain/entities/packageEntity";
-import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IgetPackageUseCase";
-import { IPackageRepository } from "@/domain/interface/repositories/IpackageRepository";
+import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
+import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 
 export class GetPackagesUseCase implements IgetPackagesUseCase {
   constructor(
@@ -10,3 +10,4 @@ export class GetPackagesUseCase implements IgetPackagesUseCase {
     return await this.packageRepository.findByCreatorId(creatorId);
   }
 }
+

@@ -1,5 +1,6 @@
 import { User } from "@/domain/entities/userEntities";
 
-export interface IgetUserProfileUseCase{
+export interface IGetUserProfileUseCase{
     getProfile(userId:string):Promise<User|null>
 }
+

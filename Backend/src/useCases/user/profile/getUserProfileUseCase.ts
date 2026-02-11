@@ -1,10 +1,10 @@
 import { User } from "@/domain/entities/userEntities";
-import { IgetUserProfileUseCase } from "@/domain/interface/user/profile/IgetUserProfileUseCase";
-import { IuserRepository } from "@/domain/interface/user/IuserRepository";
+import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
 
-export class GetUserProfileUseCase implements IgetUserProfileUseCase{
+export class GetUserProfileUseCase implements IGetUserProfileUseCase{
     constructor(
-        private _userRepo:IuserRepository
+        private _userRepo:IUserRepository
     ){}
     async getProfile(userId: string): Promise<User | null> {
         if(!userId)throw new Error("User Id is required")

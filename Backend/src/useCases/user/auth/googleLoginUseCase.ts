@@ -1,14 +1,14 @@
 import { User } from "../../../domain/entities/userEntities";
-import { IjwtServices } from "../../../domain/interface/service/IjwtServices";
-import { IgoogleLoginUseCase } from "../../../domain/interface/user/auth/IgoogleLoginUseCase";
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
+import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
+import { IGoogleLoginUseCase } from "../../../domain/interface/user/auth/IGoogleLoginUseCase";
+import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 import { verifyGoogleIdToken } from "../../../framework/google/verifyGoogleIdToken";
 
 
-   export class GoogleLoginUseCase implements IgoogleLoginUseCase {
+   export class GoogleLoginUseCase implements IGoogleLoginUseCase {
   constructor(
-    private _userRepo: IuserRepository,
-    private _jwtService: IjwtServices
+    private _userRepo: IUserRepository,
+    private _jwtService: IJwtServices
   ) {}
 
   async execute(idToken: string): Promise<{ user: User; accessToken: string; refreshToken: string }> {
@@ -54,3 +54,4 @@ const accessToken = this._jwtService.generateAccessToken(payload);
   }
   }
 }
+
