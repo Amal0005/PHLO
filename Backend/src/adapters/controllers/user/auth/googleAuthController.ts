@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IgoogleLoginUseCase } from "../../../../domain/interface/user/auth/IgoogleLoginUseCase";
+import { IGoogleLoginUseCase } from "../../../../domain/interface/user/auth/IGoogleLoginUseCase";
 
 export class GoogleAuthController {
-  constructor(private _googleLoginUseCase: IgoogleLoginUseCase) { }
+  constructor(private _googleLoginUseCase: IGoogleLoginUseCase) { }
 
   async googleLogin(req: Request, res: Response) {
     try {
@@ -34,3 +34,4 @@ export class GoogleAuthController {
     }
   }
 }
+

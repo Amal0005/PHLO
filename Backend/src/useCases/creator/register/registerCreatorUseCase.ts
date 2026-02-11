@@ -1,18 +1,18 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
-import { IregisterCreatorUseCase } from "@/domain/interface/creator/register/IregisterCreatorUseCase";
-import { IpasswordService } from "@/domain/interface/service/IpasswordService";
-import { IuserRepository } from "@/domain/interface/user/IuserRepository";
-import { IOTPService } from "@/domain/interface/service/IotpServices";
-import { IMailService } from "@/domain/interface/service/ImailServices";
-import { IRedisService } from "@/domain/interface/service/IredisServices";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { IRegisterCreatorUseCase } from "@/domain/interface/creator/register/IRegisterCreatorUseCase";
+import { IPasswordService } from "@/domain/interface/service/IPasswordService";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { IOTPService } from "@/domain/interface/service/IOtpServices";
+import { IMailService } from "@/domain/interface/service/IMailServices";
+import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 
-export class RegisterCreatorUseCase implements IregisterCreatorUseCase {
+export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
   constructor(
-    private _creatorRepo: IcreatorRepository,
-    private _passwordService: IpasswordService,
-    private _userRepo: IuserRepository,
+    private _creatorRepo: ICreatorRepository,
+    private _passwordService: IPasswordService,
+    private _userRepo: IUserRepository,
     private _otpService: IOTPService,
     private _mailService: IMailService,
     private _redisService: IRedisService
@@ -64,3 +64,4 @@ export class RegisterCreatorUseCase implements IregisterCreatorUseCase {
     return { ...pendingCreator, _id: "" } as CreatorEntity;
   }
 }
+

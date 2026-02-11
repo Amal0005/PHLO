@@ -11,9 +11,9 @@ import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
 import { logoutController, tokenController } from "../../../framework/depInjection/user/userInjections";
 
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
-import { ICategoryRepository } from "@/domain/interface/admin/IcategoryRepository";
+import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { ICategoryRepository } from "@/domain/interface/admin/ICategoryRepository";
 
 export class AdminRoutes {
   public adminRouter: Router;
@@ -21,8 +21,8 @@ export class AdminRoutes {
   constructor(
     private _jwtService: JwtServices,
     private _tokenBlacklistService: TokenBlacklistService,
-    private _userRepo: IuserRepository,
-    private _creatorRepo: IcreatorRepository,
+    private _userRepo: IUserRepository,
+    private _creatorRepo: ICreatorRepository,
   ) {
     this.adminRouter = Router();
     this.setRoutes();
@@ -84,3 +84,4 @@ export class AdminRoutes {
     adminCategoryController.editCategory(req, res);
 });  }
 }
+

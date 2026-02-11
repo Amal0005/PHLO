@@ -1,12 +1,12 @@
-import { IRedisService } from "@/domain/interface/service/IredisServices";
+import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
-import { IOTPService } from "@/domain/interface/service/IotpServices";
-import { IverifyCreatorOtpUseCase } from "@/domain/interface/creator/register/IverifyCreatorOtpUseCase";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { IOTPService } from "@/domain/interface/service/IOtpServices";
+import { IVerifyCreatorOtpUseCase } from "@/domain/interface/creator/register/IVerifyCreatorOtpUseCase";
 
-export class VerifyCreatorOtpUseCase implements IverifyCreatorOtpUseCase {
+export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {
     constructor(
-        private _creatorRepo: IcreatorRepository,
+        private _creatorRepo: ICreatorRepository,
         private _otpService: IOTPService,
         private _redisService: IRedisService
     ) {}
@@ -32,3 +32,4 @@ export class VerifyCreatorOtpUseCase implements IverifyCreatorOtpUseCase {
         return createdCreator;
     }
 }
+

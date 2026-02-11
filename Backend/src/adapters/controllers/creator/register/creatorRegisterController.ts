@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IregisterCreatorUseCase } from "@/domain/interface/creator/register/IregisterCreatorUseCase";
-import { IcheckCreatorExistsUseCase } from "@/domain/interface/creator/register/IcheckCreatorExistsUseCase";
-import { IverifyCreatorOtpUseCase } from "@/domain/interface/creator/register/IverifyCreatorOtpUseCase";
-import { IresendCreatorOtpUseCase } from "@/domain/interface/creator/register/IresendCreatorOtpUseCase";
+import { IRegisterCreatorUseCase } from "@/domain/interface/creator/register/IRegisterCreatorUseCase";
+import { ICheckCreatorExistsUseCase } from "@/domain/interface/creator/register/ICheckCreatorExistsUseCase";
+import { IVerifyCreatorOtpUseCase } from "@/domain/interface/creator/register/IVerifyCreatorOtpUseCase";
+import { IResendCreatorOtpUseCase } from "@/domain/interface/creator/register/IResendCreatorOtpUseCase";
 
 export class CreatorRegisterController {
   constructor(
-    private _registerCreatorUseCase: IregisterCreatorUseCase,
-    private _checkCreatorExistsUseCase: IcheckCreatorExistsUseCase,
-    private _verifyCreatorOtpUseCase: IverifyCreatorOtpUseCase,
-    private _resendCreatorOtpUseCase: IresendCreatorOtpUseCase
+    private _registerCreatorUseCase: IRegisterCreatorUseCase,
+    private _checkCreatorExistsUseCase: ICheckCreatorExistsUseCase,
+    private _verifyCreatorOtpUseCase: IVerifyCreatorOtpUseCase,
+    private _resendCreatorOtpUseCase: IResendCreatorOtpUseCase
   ) {}
 
   async register(req: Request, res: Response) {

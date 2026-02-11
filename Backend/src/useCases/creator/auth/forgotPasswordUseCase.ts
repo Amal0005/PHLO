@@ -1,14 +1,14 @@
-import { IMailService } from "@/domain/interface/service/ImailServices";
-import { IOTPService } from "@/domain/interface/service/IotpServices";
-import { IforgotPasswordUseCase } from "@/domain/interface/creator/auth/IforgotPasswordUseCase";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { IMailService } from "@/domain/interface/service/IMailServices";
+import { IOTPService } from "@/domain/interface/service/IOtpServices";
+import { IForgotPasswordUseCase } from "@/domain/interface/creator/auth/IForgotPasswordUseCase";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 
 
 import { renderTemplate } from "@/utils/renderTemplates";
 
-export class ForgotPasswordUseCase implements IforgotPasswordUseCase {
+export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     constructor(
-        private _creatorRepo: IcreatorRepository,
+        private _creatorRepo: ICreatorRepository,
         private _otpService: IOTPService,
         private _mailService: IMailService
     ) {}
@@ -34,3 +34,4 @@ export class ForgotPasswordUseCase implements IforgotPasswordUseCase {
         );
     }
 }
+

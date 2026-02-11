@@ -1,5 +1,5 @@
-import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IgetPresignedViewUrlUseCase";
-import { IStorageService } from "@/domain/interface/service/Is3Services";
+import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
+import { IStorageService } from "@/domain/interface/service/IS3Services";
 
 
 export class GetPresignedViewUrlUseCase implements IGetPresignedViewUrlUseCase {
@@ -10,3 +10,4 @@ export class GetPresignedViewUrlUseCase implements IGetPresignedViewUrlUseCase {
     return this._storageService.getSignedViewUrl(key);
   }
 }
+

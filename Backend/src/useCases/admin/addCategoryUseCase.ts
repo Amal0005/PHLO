@@ -1,8 +1,8 @@
 import { CategoryEntity } from "@/domain/entities/categoryEntity";
-import { IaddCategoryUseCase } from "@/domain/interface/admin/IaddCategoryUseCase";
-import { ICategoryRepository } from "@/domain/interface/admin/IcategoryRepository";
+import { IAddCategoryUseCase } from "@/domain/interface/admin/IAddCategoryUseCase";
+import { ICategoryRepository } from "@/domain/interface/admin/ICategoryRepository";
 
-export class AddCategoryUseCase implements IaddCategoryUseCase {
+export class AddCategoryUseCase implements IAddCategoryUseCase {
   constructor(private _categoryRepo: ICategoryRepository) {}
   async add(name: string, description?: string): Promise<CategoryEntity> {
     if (!name) throw new Error("Name is required");
@@ -12,3 +12,4 @@ export class AddCategoryUseCase implements IaddCategoryUseCase {
     return category;
   }
 }
+

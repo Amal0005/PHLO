@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IcreatorLoginUseCase } from "@/domain/interface/creator/login/IcreatorLoginUseCase";
+import { ICreatorLoginUseCase } from "@/domain/interface/creator/login/ICreatorLoginUseCase";
 import { AuthError } from "@/domain/errors/authError";
 
 export class CreatorLoginController {
   constructor(
-    private _loginUseCase: IcreatorLoginUseCase
+    private _loginUseCase: ICreatorLoginUseCase
   ) {}
   async login(req: Request, res: Response) {
     try {
@@ -13,7 +13,6 @@ export class CreatorLoginController {
         email: string,
         password: string
       }
-      console.log(req.body.payload)
       const result = await this._loginUseCase.login(email, password)
 
       if (result.status === "approved" && result.refreshToken) {

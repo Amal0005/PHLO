@@ -1,7 +1,7 @@
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
-import { IStorageService } from "@/domain/interface/service/Is3Services";
+import { IStorageService } from "@/domain/interface/service/IS3Services";
 
 export class S3StorageService implements IStorageService {
   private s3: S3Client;
@@ -49,3 +49,4 @@ if (!fileType.includes('/')) {
   return getSignedUrl(this.s3, command, { expiresIn: 300 });
 }
 }
+

@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IapproveCreatorUseCase } from "../../../domain/interface/admin/IapproveCreatorUseCase";
-import { IrejectCreatorUseCase } from "../../../domain/interface/admin/IrejectCreatorUseCase";
-import { IadminCreatorListingUseCase } from "../../../domain/interface/admin/IadminCreatorListingUseCase";
-import { ItoggleCreatorStatusUseCase } from "@/domain/interface/admin/ItoggleCreatorStatusUseCase";
+import { IApproveCreatorUseCase } from "../../../domain/interface/admin/IApproveCreatorUseCase";
+import { IRejectCreatorUseCase } from "../../../domain/interface/admin/IRejectCreatorUseCase";
+import { IAdminCreatorListingUseCase } from "../../../domain/interface/admin/IAdminCreatorListingUseCase";
+import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
 
 export class AdminCreatorController {
   constructor(
-    private _approveCreatorUseCase: IapproveCreatorUseCase,
-    private _rejectCreatorUseCase: IrejectCreatorUseCase,
-    private _adminCreatorListingUseCase: IadminCreatorListingUseCase,
-    private _toggleCreatorStatusUseCase: ItoggleCreatorStatusUseCase,
+    private _approveCreatorUseCase: IApproveCreatorUseCase,
+    private _rejectCreatorUseCase: IRejectCreatorUseCase,
+    private _adminCreatorListingUseCase: IAdminCreatorListingUseCase,
+    private _toggleCreatorStatusUseCase: IToggleCreatorStatusUseCase,
   ) {}
 
   async getCreators(req: Request, res: Response) {
@@ -104,3 +104,4 @@ message: error instanceof Error
     }
   }
 }
+

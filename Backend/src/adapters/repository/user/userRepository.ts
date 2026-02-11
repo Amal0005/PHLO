@@ -1,11 +1,11 @@
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { User } from "../../../domain/entities/userEntities";
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
+import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 import { UserModel } from "../../../framework/database/model/userModel";
 import { paginateMongo } from "@/utils/pagination";
 import { UserMapper } from "../../mapper/user/userMapper";
 
-export class UserRepository implements IuserRepository {
+export class UserRepository implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     const user = await UserModel.findOne({ email });
     if (!user) return null;
@@ -68,3 +68,4 @@ export class UserRepository implements IuserRepository {
     return UserMapper.toDomain(user)
   }
 }
+

@@ -1,7 +1,7 @@
-import { IpasswordService } from "../../interface/service/IpasswordService";
+import { IPasswordService } from "../../interface/service/IPasswordService";
 import bcrypt from "bcryptjs"
 
-export class PasswordService implements IpasswordService{
+export class PasswordService implements IPasswordService{
     async hash(password: string): Promise<string> {
         return await bcrypt.hash(password,10)
     }

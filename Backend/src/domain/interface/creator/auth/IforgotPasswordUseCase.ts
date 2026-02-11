@@ -1,3 +1,4 @@
-export interface IforgotPasswordUseCase {
+export interface IForgotPasswordUseCase {
     sendOtp(email: string): Promise<void>;
 }
+

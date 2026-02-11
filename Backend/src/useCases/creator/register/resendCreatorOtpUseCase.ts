@@ -1,9 +1,9 @@
-import { IMailService } from "@/domain/interface/service/ImailServices";
-import { IOTPService } from "@/domain/interface/service/IotpServices";
-import { IresendCreatorOtpUseCase } from "@/domain/interface/creator/register/IresendCreatorOtpUseCase";
+import { IMailService } from "@/domain/interface/service/IMailServices";
+import { IOTPService } from "@/domain/interface/service/IOtpServices";
+import { IResendCreatorOtpUseCase } from "@/domain/interface/creator/register/IResendCreatorOtpUseCase";
 import { renderTemplate } from "@/utils/renderTemplates";
 
-export class ResendCreatorOtpUseCase implements IresendCreatorOtpUseCase {
+export class ResendCreatorOtpUseCase implements IResendCreatorOtpUseCase {
     constructor(
         private _otpService: IOTPService,
         private _mailService: IMailService
@@ -28,3 +28,4 @@ export class ResendCreatorOtpUseCase implements IresendCreatorOtpUseCase {
         );
     }
 }
+

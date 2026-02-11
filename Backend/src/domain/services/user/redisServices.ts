@@ -1,5 +1,5 @@
 import redis from "../../../framework/redis/redisClient";
-import { IRedisService } from "../../interface/service/IredisServices";
+import { IRedisService } from "../../interface/service/IRedisServices";
 
 export class RedisService implements IRedisService {
   async setValue(key: string, value: string, expiresInSeconds?: number): Promise<void> {
@@ -18,3 +18,4 @@ export class RedisService implements IRedisService {
     await redis.del(key);
   }
 }
+

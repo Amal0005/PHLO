@@ -1,8 +1,8 @@
 import { CategoryEntity } from "@/domain/entities/categoryEntity";
-import { ICategoryRepository } from "@/domain/interface/admin/IcategoryRepository";
-import { IeditCategoryUseCase } from "@/domain/interface/admin/IeditCategoryUseCase";
+import { ICategoryRepository } from "@/domain/interface/admin/ICategoryRepository";
+import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseCase";
 
-export class EditCategoryUseCase implements IeditCategoryUseCase{
+export class EditCategoryUseCase implements IEditCategoryUseCase{
     constructor(
         private _categoryRepo:ICategoryRepository
     ){}

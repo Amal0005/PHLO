@@ -1,6 +1,6 @@
-import { IRedisService } from "../../../domain/interface/service/IredisServices";
-import { IOTPService } from "../../../domain/interface/service/IotpServices";
-import { IVerifyForgotOtpUseCase } from "../../../domain/interface/user/auth/IverifyForgotOtpUseCase";
+import { IRedisService } from "../../../domain/interface/service/IRedisServices";
+import { IOTPService } from "../../../domain/interface/service/IOtpServices";
+import { IVerifyForgotOtpUseCase } from "../../../domain/interface/user/auth/IVerifyForgotOtpUseCase";
 
 export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
   constructor(
@@ -17,3 +17,4 @@ export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
 
   }
 }
+

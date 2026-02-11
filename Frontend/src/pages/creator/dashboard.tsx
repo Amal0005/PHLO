@@ -1,24 +1,31 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { LogOut } from "lucide-react";
-import { ROUTES } from "@/constants/routes";
-import { clearCreator } from "@/store/slices/creator/creatorSlice";
-import { clearCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
-import { confirmActionToast } from "@/compoents/reusable/confirmActionToast";
-import { CreatorAuthService } from "@/services/creator/creatorAuthService";
-
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import { useState } from "react";
+import { Package } from "lucide-react";
+import { PackageOptionModal } from "./package/components/packageOptionModal";
+import { AddPackageModal } from "./package/components/addPackageModal";
 
 export default function CreatorDashboard() {
   const creator = useSelector((state: RootState) => state.creator.creator);
+  
+  const [isOptionModalOpen, setIsOptionModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const handleSelectView = () => {
+    console.log("View Packages selected");
+  };
+
+  const handleAddSuccess = () => {
+    console.log("Package added successfully");
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
       <CreatorNavbar />
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
-        <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 lg:p-12 mb-8">
+        <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 lg:p-12 mb-8 shadow-2xl">
           <div className="max-w-3xl">
             <h2 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">
               Creator Dashboard
@@ -33,14 +40,40 @@ export default function CreatorDashboard() {
           </div>
         </div>
 
-        {/* Dashboard Grid Placeholder */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-48 bg-zinc-900/40 border border-white/5 rounded-2xl flex items-center justify-center">
-              <span className="text-zinc-700 font-mono tracking-tighter">FEATURE_{i}_PLACEHOLDER</span>
+          <div 
+            onClick={() => setIsOptionModalOpen(true)}
+            className="h-48 bg-white/5 border border-white/10 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-all group relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            
+            <div className="w-14 h-14 bg-white text-black rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform relative z-10 shadow-xl">
+              <Package size={28} />
             </div>
-          ))}
+            
+            <div className="text-center relative z-10">
+              <span className="block text-white font-black text-xl tracking-tight">Packages</span>
+              <span className="text-gray-500 text-sm font-medium">View or Manage your packages</span>
+            </div>
+            
+            <div className="absolute -bottom-4 -right-4 text-white/5 group-hover:text-white/10 transition-colors">
+              <Package size={100} />
+            </div>
+          </div>
         </div>
+
+        <PackageOptionModal
+          isOpen={isOptionModalOpen}
+          onClose={() => setIsOptionModalOpen(false)}
+          onSelectAdd={() => setIsAddModalOpen(true)}
+          onSelectView={handleSelectView}
+        />
+
+        <AddPackageModal
+          isOpen={isAddModalOpen} 
+          onClose={() => setIsAddModalOpen(false)} 
+          onSuccess={handleAddSuccess} 
+        />
       </main>
     </div>
   );

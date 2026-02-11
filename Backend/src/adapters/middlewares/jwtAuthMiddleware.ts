@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { AuthPayload } from "@/domain/dto/user/authPayload";
-import { IjwtServices } from "@/domain/interface/service/IjwtServices";
-import { ITokenBlacklistService } from "@/domain/interface/service/ItokenBlacklistService";
-import { IuserRepository } from "@/domain/interface/user/IuserRepository";
-import { IcreatorRepository } from "@/domain/interface/creator/IcreatorRepository";
+import { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 
 
 export interface AuthRequest extends Request {
@@ -12,10 +12,10 @@ export interface AuthRequest extends Request {
 }
 export const jwtAuthMiddleware =
   (
-    jwtService: IjwtServices,
+    jwtService: IJwtServices,
     blacklistService: ITokenBlacklistService,
-    userRepo: IuserRepository,
-    creatorRepo: IcreatorRepository
+    userRepo: IUserRepository,
+    creatorRepo: ICreatorRepository
   ) =>
     async (req: AuthRequest, res: Response, next: NextFunction) => {
       try {
@@ -50,4 +50,5 @@ export const jwtAuthMiddleware =
         return res.status(StatusCode.UNAUTHORIZED).json({ message: "Invalid or expired token" });
       }
     };
+
 

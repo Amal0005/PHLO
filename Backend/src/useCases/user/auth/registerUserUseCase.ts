@@ -1,19 +1,19 @@
 import { RegisterDto } from "../../../domain/dto/user/registerDto";
-import { IcreatorRepository } from "../../../domain/interface/creator/IcreatorRepository";
-import { IMailService } from "../../../domain/interface/service/ImailServices";
-import { IOTPService } from "../../../domain/interface/service/IotpServices";
-import { IpasswordService } from "../../../domain/interface/service/IpasswordService";
-import { IuserRepository } from "../../../domain/interface/user/IuserRepository";
-import { IuserRegisterUseCase } from "../../../domain/interface/user/auth/IuserRegisterUseCase";
-import { IRedisService } from "../../../domain/interface/service/IredisServices";
+import { ICreatorRepository } from "../../../domain/interface/creator/ICreatorRepository";
+import { IMailService } from "../../../domain/interface/service/IMailServices";
+import { IOTPService } from "../../../domain/interface/service/IOtpServices";
+import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
+import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
+import { IUserRegisterUseCase } from "../../../domain/interface/user/auth/IUserRegisterUseCase";
+import { IRedisService } from "../../../domain/interface/service/IRedisServices";
 
 import { renderTemplate } from "../../../utils/renderTemplates";
 
-export class userRegisterUseCase implements IuserRegisterUseCase {
+export class userRegisterUseCase implements IUserRegisterUseCase {
   constructor(
-    private _userRepo: IuserRepository,
-    private _creatorRepo: IcreatorRepository,
-    private _passwordService: IpasswordService,
+    private _userRepo: IUserRepository,
+    private _creatorRepo: ICreatorRepository,
+    private _passwordService: IPasswordService,
     private _otpService: IOTPService,
     private _mailService: IMailService,
     private _redisService: IRedisService,
@@ -64,3 +64,4 @@ export class userRegisterUseCase implements IuserRegisterUseCase {
     );
   }
 }
+

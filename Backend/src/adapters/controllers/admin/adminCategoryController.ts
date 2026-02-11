@@ -1,15 +1,15 @@
-import { IaddCategoryUseCase } from "@/domain/interface/admin/IaddCategoryUseCase";
-import { IdeleteCategoryUseCase } from "@/domain/interface/admin/IdeleteCategoryUseCase";
-import { IeditCategoryUseCase } from "@/domain/interface/admin/IeditCategoryUseCase";
-import { IgetCategoriesUseCase } from "@/domain/interface/admin/IgetCategoryUseCase";
+import { IAddCategoryUseCase } from "@/domain/interface/admin/IAddCategoryUseCase";
+import { IDeleteCategoryUseCase } from "@/domain/interface/admin/IDeleteCategoryUseCase";
+import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseCase";
+import { IgetCategoriesUseCase } from "@/domain/interface/admin/IGetCategoryUseCase";
 import { Request, Response } from "express";
 
 export class AdminCategoryController {
   constructor(
-    private _addCategoryUseCase: IaddCategoryUseCase,
+    private _addCategoryUseCase: IAddCategoryUseCase,
     private _getCategoryUseCase: IgetCategoriesUseCase,
-    private _deleteCategoryUseCase: IdeleteCategoryUseCase,
-    private _editCategoryUseCae: IeditCategoryUseCase,
+    private _deleteCategoryUseCase: IDeleteCategoryUseCase,
+    private _editCategoryUseCae: IEditCategoryUseCase,
   ) {}
   async addCategory(req: Request, res: Response) {
     try {
@@ -54,3 +54,4 @@ export class AdminCategoryController {
     }
   }
 }
+

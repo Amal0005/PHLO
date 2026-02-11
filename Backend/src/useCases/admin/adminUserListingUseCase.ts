@@ -1,11 +1,11 @@
 import { User } from "../../domain/entities/userEntities";
-import { IadminUserListingUseCase } from "../../domain/interface/admin/IadminUserListingUseCase";
-import { IuserRepository } from "../../domain/interface/user/IuserRepository";
+import { IAdminUserListingUseCase } from "../../domain/interface/admin/IAdminUserListingUseCase";
+import { IUserRepository } from "../../domain/interface/user/IUserRepository";
 
 
-export class AdminUserListingUseCase implements IadminUserListingUseCase {
+export class AdminUserListingUseCase implements IAdminUserListingUseCase {
     constructor(
-        private _userRepo: IuserRepository
+        private _userRepo: IUserRepository
     ) {}
     async getAllUsers(page: number, limit: number) {
         return this._userRepo.findAllUsers(page, limit);

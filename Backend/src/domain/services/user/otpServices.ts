@@ -1,5 +1,5 @@
-import { IRedisService } from "../../interface/service/IredisServices";
-import { IOTPService } from "../../interface/service/IotpServices";
+import { IRedisService } from "../../interface/service/IRedisServices";
+import { IOTPService } from "../../interface/service/IOtpServices";
 
 export class OtpServices implements IOTPService {
   constructor(private _redisService: IRedisService) { }

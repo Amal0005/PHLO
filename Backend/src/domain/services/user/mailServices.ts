@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { IMailService } from "../../interface/service/ImailServices";
+import { IMailService } from "../../interface/service/IMailServices";
 
 export class MailService implements IMailService {
 private transporter: nodemailer.Transporter;
@@ -36,3 +36,4 @@ async sendMail(
 
 
 }
+

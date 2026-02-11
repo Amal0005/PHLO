@@ -1,5 +1,5 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 
-export interface IgetCreatorProfileUseCase {
+export interface IGetCreatorProfileUseCase {
     getProfile(creatorId:string):Promise<CreatorEntity|null>
 }

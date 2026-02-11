@@ -1,6 +1,6 @@
 import { UserResponseDto } from "../../dto/user/userResponseDto";
 
-export interface IadminLoginUseCase {
+export interface IAdminLoginUseCase {
   login(
     email: string,
     password: string
@@ -10,3 +10,4 @@ export interface IadminLoginUseCase {
     refreshToken: string;
   }>;
 }
+

@@ -1,3 +1,4 @@
-export interface IresendOtpUseCase {
+export interface IResendOtpUseCase {
   resend(email: string): Promise<void>;
 }
+

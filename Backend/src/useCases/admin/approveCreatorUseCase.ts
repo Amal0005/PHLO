@@ -1,12 +1,12 @@
-import { IMailService } from "@/domain/interface/service/ImailServices";
-import { IapproveCreatorUseCase } from "../../domain/interface/admin/IapproveCreatorUseCase";
-import { IcreatorRepository } from "../../domain/interface/creator/IcreatorRepository";
+import { IMailService } from "@/domain/interface/service/IMailServices";
+import { IApproveCreatorUseCase } from "../../domain/interface/admin/IApproveCreatorUseCase";
+import { ICreatorRepository } from "../../domain/interface/creator/ICreatorRepository";
 import { renderTemplate } from "@/utils/renderTemplates";
 import path from "node:path";
 
-export class ApproveCreatorUseCase implements IapproveCreatorUseCase {
+export class ApproveCreatorUseCase implements IApproveCreatorUseCase {
   constructor(
-    private _creatorRepo: IcreatorRepository,
+    private _creatorRepo: ICreatorRepository,
     private _mailService: IMailService,
   ) {}
   async approveCreator(creatorId: string): Promise<void> {
@@ -35,3 +35,4 @@ export class ApproveCreatorUseCase implements IapproveCreatorUseCase {
 
   }
 }
+

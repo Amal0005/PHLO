@@ -53,7 +53,7 @@ export const S3Service = {
      */
     uploadToS3: async (
         file: File,
-        folder: "profile" | "id" | "user-profiles" | "creator-profiles"
+        folder: "profile" | "id" | "user-profiles" | "creator-profiles"|"packages"
     ): Promise<string> => {
         const { uploadUrl, publicUrl } = await S3Service.getPresignedUrl(
             file.type,

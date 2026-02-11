@@ -6,6 +6,7 @@ import CreatorDashboard from "@/pages/creator/dashboard";
 import ProtectedRoute from "./protectedRoute";
 import { ROUTES } from "../constants/routes";
 import CreatorProfile from "@/pages/creator/profile/creatorProfile";
+import ViewPackagesPage from "@/pages/creator/package/viewPackage";
 export function CreatorRoutes() {
   return (
     <Routes>
@@ -22,6 +23,8 @@ export function CreatorRoutes() {
         <Route path={ROUTES.CREATOR.ROOT}element={<Navigate to={ROUTES.CREATOR.DASHBOARD} replace />}/>
         <Route path={ROUTES.CREATOR.DASHBOARD} element={<CreatorDashboard />} />
         <Route path={ROUTES.CREATOR.PROFILE} element={<CreatorProfile />} />
+        <Route path={ROUTES.CREATOR.PACKAGES} element={<ViewPackagesPage />} />
+
       </Route>
     </Routes>
   );

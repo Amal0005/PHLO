@@ -1,14 +1,14 @@
-import { IuserRegisterUseCase } from "../../../../domain/interface/user/auth/IuserRegisterUseCase";
+import { IUserRegisterUseCase } from "../../../../domain/interface/user/auth/IUserRegisterUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IverifyRegisterOtpUseCase } from "../../../../domain/interface/user/auth/IverifyRegisterOtpUseCase";
-import { IresendOtpUseCase } from "../../../../domain/interface/user/auth/IresendOtpUseCase";
+import { IVerifyRegisterOtpUseCase } from "../../../../domain/interface/user/auth/IVerifyRegisterOtpUseCase";
+import { IResendOtpUseCase } from "../../../../domain/interface/user/auth/IResendOtpUseCase";
 
 export class userRegisterController {
   constructor(
-    private _userRegisterUseCase: IuserRegisterUseCase,
-    private _verifyOtpUseCase: IverifyRegisterOtpUseCase,
-    private _resendOtpUseCase: IresendOtpUseCase
+    private _userRegisterUseCase: IUserRegisterUseCase,
+    private _verifyOtpUseCase: IVerifyRegisterOtpUseCase,
+    private _resendOtpUseCase: IResendOtpUseCase
   ) {}
 
   async register(req: Request, res: Response) {
@@ -71,3 +71,4 @@ export class userRegisterController {
     }
   }
 }
+

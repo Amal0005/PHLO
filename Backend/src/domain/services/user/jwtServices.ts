@@ -1,8 +1,8 @@
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
-import { IjwtServices } from "../../interface/service/IjwtServices";
+import { IJwtServices } from "../../interface/service/IJwtServices";
 import { AuthPayload } from "../../dto/user/authPayload";
 
-export class JwtServices implements IjwtServices {
+export class JwtServices implements IJwtServices {
   private getSecret(): string {
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET is missing");
@@ -47,3 +47,4 @@ decodeToken(token: string): AuthPayload | null {
   }
 }
 }
+
