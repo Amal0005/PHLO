@@ -12,6 +12,8 @@ import { CreatorDetailModal } from "./components/CreatorDetailModal";
 import { confirmActionToast } from "../../compoents/reusable/confirmActionToast";
 import Pagination from "@/compoents/reusable/pagination";
 
+import DataTable, { Column } from "@/compoents/reusable/dataTable";
+
 export default function CreatorListingPage() {
   const [creators, setCreators] = useState<Creator[]>([]);
   const [loading, setLoading] = useState(true);
@@ -111,127 +113,112 @@ export default function CreatorListingPage() {
       },
     );
   };
-  if (loading) {
+
+  const columns: Column<Creator>[] = [
+    {
+      header: "Creator",
+      key: "creator",
+      render: (creator) => (
+        <div>
+          <p className="text-white font-medium text-sm">{creator.fullName}</p>
+          <p className="text-gray-400 text-xs">{creator.email}</p>
+        </div>
+      ),
+    },
+    {
+      header: "Status",
+      key: "status",
+      render: (creator) => (
+        <span
+          className={`px-2.5 py-1 rounded-full text-xs font-medium ${creator.status === "approved"
+              ? "bg-green-500/10 text-green-400"
+              : creator.status === "rejected"
+                ? "bg-red-500/10 text-red-400"
+                : "bg-yellow-500/10 text-yellow-400"
+            }`}
+        >
+          {creator.status}
+        </span>
+      ),
+    },
+    {
+      header: "Joined",
+      key: "createdAt",
+      render: (creator) => (
+        <span className="text-gray-400 text-sm">
+          {creator.createdAt ? new Date(creator.createdAt).toLocaleDateString() : "-"}
+        </span>
+      ),
+    },
+    {
+      header: "Actions",
+      key: "actions",
+      align: "right",
+      render: (creator) => (
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={() => {
+              setSelectedCreator(creator);
+              setShowDetails(true);
+            }}
+            className="px-3 py-1.5 text-sm text-blue-400 border border-blue-400/30 rounded-lg hover:bg-blue-500/10 transition-all"
+          >
+            Details
+          </button>
+          {creator.status !== "pending" && creator.status !== "rejected" && (
+            <button
+              onClick={() => handleToggleStatus(creator._id, creator.status)}
+              className={`px-3 py-1.5 text-sm rounded-lg border transition-all ${creator.status === "approved"
+                  ? "text-red-400 border-red-400/30 hover:bg-red-500/10 border-red-400/60"
+                  : "text-green-400 border-green-400/30 hover:bg-green-500/10 border-green-400/60"
+                }`}
+            >
+              {creator.status === "approved" ? "Block" : "Unblock"}
+            </button>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  if (loading && creators.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-    <p className="text-white text-lg">Loading Creators...</p>
-  </div>
-    )
+        <p className="text-white text-lg animate-pulse">Loading Creators...</p>
+      </div>
+    );
   }
 
   if (error) return <p className="p-6 text-red-400">{error}</p>;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-white mb-4">Creators</h1>
-
-      <select
-        value={filterStatus}
-        onChange={(e) => setFilterStatus(e.target.value as any)}
-        className="mb-4 bg-zinc-900 text-white border border-white/10 rounded-lg px-3 py-2"
-      >
-        <option value="all">All</option>
-        <option value="pending">Pending</option>
-        <option value="approved">Approved</option>
-        <option value="rejected">Rejected</option>
-        <option value="blocked">Blocked</option>
-      </select>
-
-      <div className="bg-zinc-900/90 border border-white/10 rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-white/10">
-              <th className="px-6 py-4 text-left text-xs text-gray-400 uppercase">
-                Creator
-              </th>
-              <th className="px-6 py-4 text-left text-xs text-gray-400 uppercase">
-                Status
-              </th>
-              <th className="px-6 py-4 text-left text-xs text-gray-400 uppercase">
-                Joined
-              </th>
-              <th className="px-6 py-4 text-right text-xs text-gray-400 uppercase">
-                Actions
-              </th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-white/10">
-            {filteredCreators.map((creator) => (
-              <tr key={creator._id} className="hover:bg-white/5">
-                <td className="px-6 py-4">
-                  <p className="text-white font-medium text-sm">
-                    {creator.fullName}
-                  </p>
-                  <p className="text-gray-400 text-xs">{creator.email}</p>
-                </td>
-
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                      creator.status === "approved"
-                        ? "bg-green-500/10 text-green-400"
-                        : creator.status === "rejected"
-                          ? "bg-red-500/10 text-red-400"
-                          : "bg-yellow-500/10 text-yellow-400"
-                    }`}
-                  >
-                    {creator.status}
-                  </span>
-                </td>
-
-                <td className="px-6 py-4 text-gray-400 text-sm">
-                  {creator.createdAt
-                    ? new Date(creator.createdAt).toLocaleDateString()
-                    : "-"}
-                </td>
-
-                <td className="px-6 py-4">
-                  <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => {
-                        setSelectedCreator(creator);
-                        setShowDetails(true);
-                      }}
-                      className="px-3 py-1.5 text-sm text-blue-400 border border-blue-400/30 rounded-lg hover:bg-blue-500/10"
-                    >
-                      Details
-                    </button>
-                    {creator.status !== "pending" &&
-                      creator.status !== "rejected" && (
-                        <button
-                          onClick={() =>
-                            handleToggleStatus(creator._id, creator.status)
-                          }
-                          className={`px-3 py-1.5 text-sm rounded-lg border transition-all ${
-                            creator.status === "approved"
-                              ? "text-red-400 border-red-400/30 hover:bg-red-500/10"
-                              : "text-green-400 border-green-400/30 hover:bg-green-500/10"
-                          }`}
-                        >
-                          {creator.status === "approved" ? "Block" : "Unblock"}
-                        </button>
-                      )}
-                  </div>
-                </td>
-              </tr>
-            ))}
-
-            {filteredCreators.length === 0 && (
-              <tr>
-                <td colSpan={4} className="py-6 text-center text-gray-500">
-                  No creators found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-white">Creators</h1>
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value as any)}
+          className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
+        >
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+          <option value="blocked">Blocked</option>
+        </select>
       </div>
-      <Pagination
-  page={page}
-  totalPages={totalPages}
-  onPageChange={setPage}
-/>
+
+      <div className="space-y-4">
+        <DataTable
+          columns={columns}
+          data={filteredCreators}
+          loading={loading}
+          keyExtractor={(creator) => creator._id}
+          emptyMessage="No creators found."
+        />
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      </div>
+
 
       {showDetails && selectedCreator && (
         <CreatorDetailModal

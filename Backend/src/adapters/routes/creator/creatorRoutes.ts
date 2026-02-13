@@ -4,7 +4,10 @@ import {
   creatorRegisterController,
   creatorAuthController,
   creatorProfileController,
-  creatorPackageController,
+  addPackageController,
+  getPackagesController,
+  editPackagesController,
+  deletePackageController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
@@ -18,6 +21,8 @@ import {
 } from "@/framework/depInjection/user/userInjections";
 import { IUserRepository } from "@/domain/interface/user/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { editPackageSchema } from "@/adapters/validation/packageEditSchema";
+import { addPackageSchema } from "@/adapters/validation/packageAddSchema";
 
 export class CreatorRoutes {
   public creatorRouter: Router;
@@ -92,12 +97,28 @@ export class CreatorRoutes {
     this.creatorRouter.patch("/profile", (req: Request, res: Response) =>
       creatorProfileController.editProfile(req, res),
     );
-    this.creatorRouter.post("/package",(req: Request, res: Response)=>{
-      creatorPackageController.addPackage(req,res)
-    })
-        this.creatorRouter.get("/package", (req: Request, res: Response) => {
-      creatorPackageController.getPackages(req, res);
-    });
+  this.creatorRouter.post(
+  "/package",
+  validate(addPackageSchema),
+  (req: Request, res: Response) => {
+    addPackageController.addPackage(req, res)
   }
-}
+)
+    this.creatorRouter.get("/package", (req: Request, res: Response) => {
+      getPackagesController.getPackage(req, res);
+    });
+       this.creatorRouter.patch(
+      "/package/:packageId",
+      validate(editPackageSchema),
+      (req: Request, res: Response) => {
+        editPackagesController.editPackage(req, res);
+      });
+      this.creatorRouter.delete(
+  "/package/:packageId",
+  (req: Request, res: Response) => {
+    deletePackageController.deletePackage(req, res);
+  }
+);
+  }
 
+}

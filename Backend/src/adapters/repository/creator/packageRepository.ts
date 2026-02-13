@@ -21,5 +21,32 @@ export class PackageRepository implements IPackageRepository {
       } as PackageEntity;
     });
   }
+  
+  async findById(packageId: string): Promise<PackageEntity | null> {
+    const pkg = await PackageModel.findById(packageId);
+    if (!pkg) return null;
+    const obj = pkg.toObject();
+    return {
+      ...obj,
+      _id: obj._id.toString(),
+    } as PackageEntity;
+  }
+  async update(packageId: string, data: Partial<PackageEntity>): Promise<PackageEntity | null> {
+    const updatedPackage = await PackageModel.findByIdAndUpdate(
+      packageId,
+      { $set: data },
+      { new: true, runValidators: true }
+    );
+    if (!updatedPackage) return null;
+    const obj = updatedPackage.toObject();
+    return {
+      ...obj,
+      _id: obj._id.toString(),
+    } as PackageEntity;
+  }
+    async delete(packageId: string): Promise<boolean> {
+    const result = await PackageModel.findByIdAndDelete(packageId);
+    return result !== null;
+  }
 }
 

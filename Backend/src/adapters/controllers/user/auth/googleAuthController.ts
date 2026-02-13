@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IGoogleLoginUseCase } from "../../../../domain/interface/user/auth/IGoogleLoginUseCase";
+import { MESSAGES } from "@/utils/commonMessages";
+import { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
 
 export class GoogleAuthController {
   constructor(private _googleLoginUseCase: IGoogleLoginUseCase) { }
@@ -10,7 +11,7 @@ export class GoogleAuthController {
       const { idToken } = req.body;
 
       if (!idToken) {
-        return res.status(StatusCode.BAD_REQUEST).json({ message: "ID token is required" });
+        return res.status(StatusCode.BAD_REQUEST).json({ message: MESSAGES.AUTH.TOKEN_REQUIRED });
       }
 
       const { user, accessToken, refreshToken } =
@@ -29,7 +30,7 @@ export class GoogleAuthController {
       });
     } catch (error: any) {
       return res.status(StatusCode.UNAUTHORIZED).json({
-        message: error.message || "Google login failed",
+        message: error.message || MESSAGES.AUTH.GOOGLE_LOGIN_FAILED,
       });
     }
   }

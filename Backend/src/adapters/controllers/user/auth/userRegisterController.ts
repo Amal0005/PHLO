@@ -1,6 +1,7 @@
 import { IUserRegisterUseCase } from "../../../../domain/interface/user/auth/IUserRegisterUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/utils/commonMessages";
 import { IVerifyRegisterOtpUseCase } from "../../../../domain/interface/user/auth/IVerifyRegisterOtpUseCase";
 import { IResendOtpUseCase } from "../../../../domain/interface/user/auth/IResendOtpUseCase";
 
@@ -9,7 +10,7 @@ export class userRegisterController {
     private _userRegisterUseCase: IUserRegisterUseCase,
     private _verifyOtpUseCase: IVerifyRegisterOtpUseCase,
     private _resendOtpUseCase: IResendOtpUseCase
-  ) {}
+  ) { }
 
   async register(req: Request, res: Response) {
     try {
@@ -19,13 +20,13 @@ export class userRegisterController {
 
       return res.status(StatusCode.OK).json({
         success: true,
-        message: "OTP sent to email. Please verify to complete registration.",
+        message: MESSAGES.AUTH.OTP_SENT,
       });
 
     } catch (error: any) {
       return res.status(StatusCode.BAD_REQUEST).json({
         success: false,
-        message: error.message || "Registration failed",
+        message: error.message || MESSAGES.ERROR.BAD_REQUEST,
       });
     }
   }
@@ -33,7 +34,7 @@ export class userRegisterController {
   async resendOtp(req: Request, res: Response) {
     try {
       const email = req.body.email?.trim().toLowerCase()
-      if (!email) return res.status(StatusCode.BAD_REQUEST).json({ message: "Email Required" })
+      if (!email) return res.status(StatusCode.BAD_REQUEST).json({ message: MESSAGES.AUTH.EMAIL_REQUIRED })
       await this._resendOtpUseCase.resend(email)
 
       return res.status(StatusCode.OK).json({ success: true, message: "Email Send Successfully" })
@@ -41,7 +42,7 @@ export class userRegisterController {
     } catch (error) {
       return res.status(StatusCode.BAD_REQUEST).json({
         success: false,
-        message: "Failed to resend OTP"
+        message: MESSAGES.AUTH.SEND_OTP_FAILED
       })
 
     }
@@ -59,14 +60,14 @@ export class userRegisterController {
 
       return res.status(StatusCode.OK).json({
         success: true,
-        message: "User Verified Successfully",
+        message: MESSAGES.AUTH.OTP_VERIFIED,
         user
       });
 
     } catch (error: any) {
       return res.status(StatusCode.OK).json({
         success: false,
-        message: error?.message || "OTP Verification Failed"
+        message: error?.message || MESSAGES.AUTH.INVALID_OTP
       });
     }
   }

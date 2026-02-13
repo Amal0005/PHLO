@@ -23,7 +23,9 @@ import { userLoginUserUseCase } from "../../../useCases/user/auth/loginUserUseCa
 import { userRegisterUseCase } from "../../../useCases/user/auth/registerUserUseCase";
 import { verifyRegisterOtpUseCase } from "../../../useCases/user/auth/verifyRegisterOtpUseCase";
 import { GetUserProfileUseCase } from "@/useCases/user/profile/getUserProfileUseCase";
-import { UserProfileController } from "@/adapters/controllers/user/profile/userProfileController";
+import { GetProfileController } from "@/adapters/controllers/user/profile/getProfileController";
+import { EditProfileController } from "@/adapters/controllers/user/profile/editProfileController";
+import { ChangePasswordController } from "@/adapters/controllers/user/profile/changePasswordController";
 import { EditUserProfileUsecase } from "@/useCases/user/profile/editUserProfileUseCase";
 import { ChangePasswordUseCase } from "@/useCases/user/profile/changePasswordUseCase";
 
@@ -37,6 +39,7 @@ const mailService = new MailService()
 const tokenBlacklistService = new TokenBlacklistService(redisService)
 const creatorRepository = new CreatorRepository
 
+
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
 const verifyOtpUseCase = new verifyRegisterOtpUseCase(userRepo, otpServices, pendingService)
@@ -47,7 +50,7 @@ const resetPasswordUseCase = new ResetPasswordUseCase(userRepo, passwordServices
 const googleLoginUseCase = new GoogleLoginUseCase(userRepo, jwtService)
 const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepo)
-const editUserProfileUseCase = new EditUserProfileUsecase(userRepo,creatorRepository)
+const editUserProfileUseCase = new EditUserProfileUsecase(userRepo, creatorRepository)
 const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
@@ -56,4 +59,6 @@ export const userAuthController = new UserAuthController(forgotPasswordUseCase, 
 export const userGoogleController = new GoogleAuthController(googleLoginUseCase)
 export const logoutController = new LogoutController(logoutUseCase)
 export const tokenController = new TokenController(jwtService)
-export const userProfileController = new UserProfileController(getUserProfileUseCase, editUserProfileUseCase, changePasswordUseCase)
+export const getProfileController = new GetProfileController(getUserProfileUseCase)
+export const editProfileController = new EditProfileController(editUserProfileUseCase)
+export const changePasswordController = new ChangePasswordController(changePasswordUseCase)

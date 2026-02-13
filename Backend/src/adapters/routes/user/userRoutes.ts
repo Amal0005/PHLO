@@ -8,7 +8,9 @@ import {
   userAuthController,
   userGoogleController,
   tokenController,
-  userProfileController,
+  getProfileController,
+  editProfileController,
+  changePasswordController,
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
@@ -93,7 +95,7 @@ export class UserRoutes {
       ),
       authorizeRoles("user"),
       (req: Request, res: Response) =>
-        userProfileController.getProfile(req, res),
+        getProfileController.execute(req, res),
     );
     this.userRouter.patch(
       "/profile",
@@ -105,7 +107,7 @@ export class UserRoutes {
       ),
       authorizeRoles("user"),
       (req: Request, res: Response) =>
-        userProfileController.editProfile(req, res),
+        editProfileController.execute(req, res),
     );
     this.userRouter.patch(
       "/change-password",
@@ -117,7 +119,7 @@ export class UserRoutes {
       ),
       authorizeRoles("user"),
       (req: Request, res: Response) =>
-        userProfileController.changePassword(req, res),
+        changePasswordController.execute(req, res),
     );
   }
 }

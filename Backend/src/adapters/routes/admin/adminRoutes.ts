@@ -1,9 +1,12 @@
 import { Router, Request, Response } from "express";
 import {
-  adminCategoryController,
+  addCategoryController,
   adminCreatorController,
   adminLoginController,
   adminUserController,
+  deleteCategoryController,
+  editCategoryController,
+  getCategoryController,
 } from "../../../framework/depInjection/admin/adminInjections";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
@@ -13,7 +16,6 @@ import { logoutController, tokenController } from "../../../framework/depInjecti
 
 import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
-import { ICategoryRepository } from "@/domain/interface/admin/ICategoryRepository";
 
 export class AdminRoutes {
   public adminRouter: Router;
@@ -71,17 +73,18 @@ export class AdminRoutes {
     this.adminRouter.patch("/creators/:creatorId/status", (req: Request, res: Response) => {
       adminCreatorController.changeCreatorStatus(req, res)
     })
-    this.adminRouter.post("/category",(req:Request,res:Response)=>{
-      adminCategoryController.addCategory(req,res)
+    this.adminRouter.post("/category", (req: Request, res: Response) => {
+      addCategoryController.execute(req, res)
     })
-    this.adminRouter.get("/category",(req:Request,res:Response)=>{
-      adminCategoryController.getCategory(req,res)
+    this.adminRouter.get("/category", (req: Request, res: Response) => {
+      getCategoryController.execute(req, res)
     })
-    this.adminRouter.delete("/category/:categoryId",(req:Request,res:Response)=>{
-      adminCategoryController.deleteCategory(req,res)
+    this.adminRouter.delete("/category/:categoryId", (req: Request, res: Response) => {
+      deleteCategoryController.execute(req, res)
     })
     this.adminRouter.patch("/category/:categoryId", (req: Request, res: Response) => {
-    adminCategoryController.editCategory(req, res);
-});  }
+      editCategoryController.execute(req, res);
+    });
+  }
 }
 

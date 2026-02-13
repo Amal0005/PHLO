@@ -3,8 +3,8 @@ import { StatusCode } from "@/utils/statusCodes";
 import { AuthPayload } from "@/domain/dto/user/authPayload";
 import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
-import { IUserRepository } from "@/domain/interface/user/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
 
 
 export interface AuthRequest extends Request {
@@ -34,7 +34,7 @@ export const jwtAuthMiddleware =
         }
 
         const decoded = jwtService.verifyToken(token);
-      
+
         const user = await userRepo.findById(decoded.userId);
         if (user && user.status === "blocked") {
           return res.status(StatusCode.FORBIDDEN).json({ success: false, message: "Your account has been blocked by the admin" });

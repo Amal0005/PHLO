@@ -36,6 +36,7 @@ export const S3Service = {
      * Uploads a file directly to S3 using a presigned URL.
      */
     uploadFile: async (url: string, file: File): Promise<void> => {
+        console.log(url);
         const response = await fetch(url, {
             method: "PUT",
             headers: { "Content-Type": file.type },

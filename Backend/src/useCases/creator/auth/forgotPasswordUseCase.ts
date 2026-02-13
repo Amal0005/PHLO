@@ -2,6 +2,7 @@ import { IMailService } from "@/domain/interface/service/IMailServices";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IForgotPasswordUseCase } from "@/domain/interface/creator/auth/IForgotPasswordUseCase";
 import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { MESSAGES } from "@/utils/commonMessages";
 
 
 import { renderTemplate } from "@/utils/renderTemplates";
@@ -11,12 +12,12 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
         private _creatorRepo: ICreatorRepository,
         private _otpService: IOTPService,
         private _mailService: IMailService
-    ) {}
+    ) { }
 
     async sendOtp(email: string): Promise<void> {
         email = email.trim().toLowerCase();
         const creator = await this._creatorRepo.findByEmail(email);
-        if (!creator) throw new Error("This creator does not exist");
+        if (!creator) throw new Error(MESSAGES.CREATOR.NOT_FOUND);
 
         const otp = await this._otpService.generateOtp(`FP_CREATOR_${email}`);
         console.log(otp);

@@ -1,0 +1,20 @@
+src/adapters/controllers/user/auth/userLoginController.ts(1,35): error TS1261: Already included file name 'c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/auth/IuserLoginUseCase.ts' differs from file name 'c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/auth/IUserLoginUseCase.ts' only in casing.
+  The file is in the program because:
+    Imported via "../../../../domain/interface/user/auth/IuserLoginUseCase" from file 'c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/controllers/user/auth/userLoginController.ts'
+    Imported via "@/domain/interface/user/auth/IuserLoginUseCase" from file 'c:/Users/amalf/Desktop/PHLO/Backend/src/useCases/user/auth/loginUserUseCase.ts'
+    Matched by default include pattern '**/*'
+src/useCases/user/auth/registerUserUseCase.ts(8,38): error TS1149: File name 'c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/auth/IuserRegisterUseCase.ts' differs from already included file name 'c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/auth/IUserRegisterUseCase.ts' only in casing.
+  The file is in the program because:
+    Imported via "../../../../domain/interface/user/auth/IUserRegisterUseCase" from file 'c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/controllers/user/auth/userRegisterController.ts'
+    Imported via "../../../domain/interface/user/auth/IuserRegisterUseCase" from file 'c:/Users/amalf/Desktop/PHLO/Backend/src/useCases/user/auth/registerUserUseCase.ts'
+    Matched by default include pattern '**/*'
+src/useCases/user/auth/resendOtpUseCase.ts(3,35): error TS1149: File name 'c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/auth/IresendOtpUseCase.ts' differs from already included file name 'c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/auth/IResendOtpUseCase.ts' only in casing.
+  The file is in the program because:
+    Imported via "../../../../domain/interface/user/auth/IResendOtpUseCase" from file 'c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/controllers/user/auth/userRegisterController.ts'
+    Imported via "../../../domain/interface/user/auth/IresendOtpUseCase" from file 'c:/Users/amalf/Desktop/PHLO/Backend/src/useCases/user/auth/resendOtpUseCase.ts'
+    Matched by default include pattern '**/*'
+src/useCases/user/auth/verifyRegisterOtpUseCase.ts(5,43): error TS1149: File name 'c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/auth/IverifyRegisterOtpUseCase.ts' differs from already included file name 'c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/auth/IVerifyRegisterOtpUseCase.ts' only in casing.
+  The file is in the program because:
+    Imported via "../../../../domain/interface/user/auth/IVerifyRegisterOtpUseCase" from file 'c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/controllers/user/auth/userRegisterController.ts'
+    Imported via "../../../domain/interface/user/auth/IverifyRegisterOtpUseCase" from file 'c:/Users/amalf/Desktop/PHLO/Backend/src/useCases/user/auth/verifyRegisterOtpUseCase.ts'
+    Matched by default include pattern '**/*'

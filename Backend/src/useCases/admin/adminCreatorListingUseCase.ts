@@ -4,9 +4,9 @@ import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepositor
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class AdminCreatorListingUseCase implements IAdminCreatorListingUseCase {
-  constructor(private _creatorRepo: ICreatorRepository) {}
-async getAllCreators(page: number, limit: number): Promise<PaginatedResult<CreatorEntity>> {
-        return await this._creatorRepo.findAllCreators(page, limit);
-}
+  constructor(private _creatorRepo: ICreatorRepository) { }
+  async getAllCreators(page: number, limit: number): Promise<PaginatedResult<CreatorEntity>> {
+    return await this._creatorRepo.findAllCreators(page, limit);
+  }
 }
 
