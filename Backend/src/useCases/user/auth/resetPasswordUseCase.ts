@@ -8,7 +8,7 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
     private _userRepo: IUserRepository,
     private _passwordService: IPasswordService,
     private _redisService: IRedisService
-  ) {}
+  ) { }
 
   async reset(email: string, newPassword: string): Promise<void> {
     email = email.trim().toLowerCase();

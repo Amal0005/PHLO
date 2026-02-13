@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const creatorProfileSchema = z.object({
-  fullName: z.string().min(3, "Full name must be at least 3 characters"),
+  fullName: z.string().trim().min(3, "Full name must be at least 3 characters"),
   phone: z.string().regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
   city: z.string().min(2, "City name is too short"),
   yearsOfExperience: z

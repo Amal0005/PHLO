@@ -5,7 +5,7 @@ import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlackli
 export class LogoutUseCase implements ILogoutUseCase {
   constructor(
     private blacklistService: ITokenBlacklistService
-  ) {}
+  ) { }
 
   async logout(token: string, exp: number): Promise<void> {
     const now = Math.floor(Date.now() / 1000);

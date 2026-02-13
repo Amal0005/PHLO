@@ -1,6 +1,6 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
-import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
+import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IeditCreatorUseCase";
 
 export class EditCreatorProfileUseCase implements IeditCreatorProfileUseCase {
     constructor(

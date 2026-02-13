@@ -1,27 +1,29 @@
 import { UserMapper } from "@/adapters/mapper/user/userMapper";
-import { IChangepasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
 import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
 import { Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/utils/commonMessages";
+import { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangePasswordUseCase";
 
 export class UserProfileController {
   constructor(
     private _getUserProfileUsecase: IGetUserProfileUseCase,
     private _editUserProfileUseCase: IEditUserProfileUseCase,
-    private _changePasswordUseCase: IChangepasswordUseCase
+    private _changePasswordUseCase: IChangePasswordUseCase
   ) { }
   async getProfile(req: Request, res: Response): Promise<void> {
     try {
       const userId = (req as any).user?.userId;
       const user = await this._getUserProfileUsecase.getProfile(userId);
       if (!user) {
-        res.status(404).json({ success: false, message: "User not found" });
+        res.status(StatusCode.NOT_FOUND).json({ success: false, message: MESSAGES.AUTH.USER_NOT_FOUND });
         return;
       }
       const userDto = UserMapper.toDto(user);
-      res.status(200).json({ success: true, user: userDto });
+      res.status(StatusCode.OK).json({ success: true, user: userDto });
     } catch (error: any) {
-      res.status(500).json({
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: error.message,
       });
@@ -37,12 +39,12 @@ export class UserProfileController {
         userId,
         req.body,
       );
-      res.status(200).json({
+      res.status(StatusCode.OK).json({
         success: true,
         user,
       });
     } catch (error: any) {
-      res.status(500).json({
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: error.message,
       });
@@ -53,21 +55,21 @@ export class UserProfileController {
       const userId = (req as any).user?.userId
       const { currentPassword, newPassword } = req.body
       if (!currentPassword || !newPassword) {
-        res.status(400).json({
+        res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          message: "Both fields are required",
+          message: MESSAGES.ERROR.ALL_FIELDS_REQUIRED,
         });
         return;
       }
       await this._changePasswordUseCase.changePassword(userId, currentPassword, newPassword)
-      res.status(200).json({
+      res.status(StatusCode.OK).json({
         success: true,
-        message: "Password updated successfully",
+        message: MESSAGES.AUTH.PASSWORD_UPDATE_SUCCESS,
       });
     } catch (error: any) {
-      res.status(400).json({
+      res.status(StatusCode.BAD_REQUEST).json({
         success: false,
-        message: error.message || "Failed to update password",
+        message: error.message || MESSAGES.AUTH.PASSWORD_UPDATE_FAILED,
       });
     }
   }

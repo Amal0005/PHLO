@@ -1,4 +1,4 @@
-import { IToggleUserStatusUseCase } from "../../domain/interface/admin/IToggleUserStatusUseCase";
+import { IToggleUserStatusUseCase } from "@/domain/interface/admin/IToggleUserStatusUseCase";
 import { IUserRepository } from "../../domain/interface/user/IUserRepository";
 
 export class ToggleUserStatusUseCase implements IToggleUserStatusUseCase {

@@ -23,28 +23,28 @@ export class JwtServices implements IJwtServices {
     return jwt.sign(payload, secret, { expiresIn });
   }
 
-verifyToken(token: string): AuthPayload {
-  const secret = this.getSecret();
-  const decoded = jwt.verify(token, secret);
+  verifyToken(token: string): AuthPayload {
+    const secret = this.getSecret();
+    const decoded = jwt.verify(token, secret);
 
-  if (
-    typeof decoded !== "object" ||
-    !("userId" in decoded) ||
-    !("role" in decoded) ||
-    !("email" in decoded)
-  ) {
-    throw new Error("Invalid token payload");
+    if (
+      typeof decoded !== "object" ||
+      !("userId" in decoded) ||
+      !("role" in decoded) ||
+      !("email" in decoded)
+    ) {
+      throw new Error("Invalid token payload");
+    }
+
+    return decoded as AuthPayload;
   }
 
-  return decoded as AuthPayload;
-}
-
-decodeToken(token: string): AuthPayload | null {
-  try {
-    return jwt.decode(token) as AuthPayload;
-  } catch {
-    return null;
+  decodeToken(token: string): AuthPayload | null {
+    try {
+      return jwt.decode(token) as AuthPayload;
+    } catch {
+      return null;
+    }
   }
-}
 }
 

@@ -1,15 +1,16 @@
+import { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
 import { User } from "../../../domain/entities/userEntities";
 import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
-import { IGoogleLoginUseCase } from "../../../domain/interface/user/auth/IGoogleLoginUseCase";
-import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 import { verifyGoogleIdToken } from "../../../framework/google/verifyGoogleIdToken";
+import { MESSAGES } from "@/utils/commonMessages";
+import { IUserRepository } from "@/domain/interface/user/IUserRepository";
 
 
-   export class GoogleLoginUseCase implements IGoogleLoginUseCase {
+export class GoogleLoginUseCase implements IGoogleLoginUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _jwtService: IJwtServices
-  ) {}
+  ) { }
 
   async execute(idToken: string): Promise<{ user: User; accessToken: string; refreshToken: string }> {
 
@@ -30,28 +31,28 @@ import { verifyGoogleIdToken } from "../../../framework/google/verifyGoogleIdTok
 
 
 
-if (!user || !user._id) {
-  throw new Error("User not found");
-}
+    if (!user || !user._id) {
+      throw new Error(MESSAGES.AUTH.USER_NOT_FOUND);
+    }
 
-if (user.status === "blocked") {
-  throw new Error("User is blocked");
-}
+    if (user.status === "blocked") {
+      throw new Error(MESSAGES.AUTH.USER_BLOCKED);
+    }
 
-const payload = {
-  userId: user._id.toString(),
-  role: user.role,
-  email: user.email,
-  
-};
+    const payload = {
+      userId: user._id.toString(),
+      role: user.role,
+      email: user.email,
 
-const accessToken = this._jwtService.generateAccessToken(payload);
-  const refreshToken = this._jwtService.generateRefreshToken(payload);
-  return{
-    user,
-    accessToken,
-    refreshToken
-  }
+    };
+
+    const accessToken = this._jwtService.generateAccessToken(payload);
+    const refreshToken = this._jwtService.generateRefreshToken(payload);
+    return {
+      user,
+      accessToken,
+      refreshToken
+    }
   }
 }
 

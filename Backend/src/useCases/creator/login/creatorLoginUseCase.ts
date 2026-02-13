@@ -5,6 +5,8 @@ import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { AuthPayload } from "@/domain/dto/user/authPayload";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { AuthError } from "@/domain/errors/authError";
+import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/utils/statusCodes";
 
 
 export class CreatorLoginUseCase implements ICreatorLoginUseCase {
@@ -12,7 +14,7 @@ export class CreatorLoginUseCase implements ICreatorLoginUseCase {
     private _creatorRepo: ICreatorRepository,
     private IjwtService: IJwtServices,
     private _passwordService: IPasswordService,
-  ) {}
+  ) { }
   async login(
     email: string,
     password: string,
@@ -20,25 +22,25 @@ export class CreatorLoginUseCase implements ICreatorLoginUseCase {
     const getEmail = email.trim().toLowerCase();
     const creator = await this._creatorRepo.findByEmail(getEmail);
     if (!creator) {
-      throw new AuthError("Invalid email or password", 401);
+      throw new AuthError(MESSAGES.AUTH.INVALID_CREDENTIALS, StatusCode.UNAUTHORIZED);
     } if (creator.status === 'pending') {
       return {
         status: 'pending',
-        message: 'Your application is under review'
+        message: MESSAGES.AUTH.APPLICATION_UNDER_REVIEW
       };
     }
     if (creator.status === 'rejected') {
       return {
         status: 'rejected',
-        message: 'Your application was rejected',
+        message: MESSAGES.AUTH.APPLICATION_REJECTED,
         reason: creator.rejectionReason
       };
 
     }
     if (creator.status === "blocked") {
       throw new AuthError(
-        "Your account blocked by admin",
-        403,
+        MESSAGES.AUTH.ACCOUNT_BLOCKED,
+        StatusCode.FORBIDDEN,
         { status: "blocked" }
       );
     }
@@ -47,7 +49,7 @@ export class CreatorLoginUseCase implements ICreatorLoginUseCase {
       creator.password,
     );
     if (!isMatch) {
-      throw new AuthError("Invalid email or password", 401);
+      throw new AuthError(MESSAGES.AUTH.INVALID_CREDENTIALS, StatusCode.UNAUTHORIZED);
     } const payload: AuthPayload = {
       email: getEmail,
       role: "creator",

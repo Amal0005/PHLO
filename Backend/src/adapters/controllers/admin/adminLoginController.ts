@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IAdminLoginUseCase } from "../../../domain/interface/admin/IAdminLoginUseCase";
+import { MESSAGES } from "@/utils/commonMessages";
+import { IAdminLoginUseCase } from "../../../domain/interface/admin/IadminLoginUseCase";
 import { ILogoutUseCase } from "../../../domain/interface/ILogoutUseCase";
 
 export class AdminLoginController {
   constructor(
     private _adminLoginUseCase: IAdminLoginUseCase,
-  ) {}
+  ) { }
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
@@ -21,7 +22,7 @@ export class AdminLoginController {
 
       return res.status(StatusCode.OK).json({
         success: true,
-        message: "Admin login successful",
+        message: MESSAGES.ADMIN.LOGIN_SUCCESS,
         data: {
           user: result.user,
           accessToken: result.accessToken,

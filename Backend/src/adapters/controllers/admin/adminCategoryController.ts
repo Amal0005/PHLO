@@ -3,6 +3,7 @@ import { IDeleteCategoryUseCase } from "@/domain/interface/admin/IDeleteCategory
 import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseCase";
 import { IgetCategoriesUseCase } from "@/domain/interface/admin/IGetCategoryUseCase";
 import { Request, Response } from "express";
+import { StatusCode } from "@/utils/statusCodes";
 
 export class AdminCategoryController {
   constructor(
@@ -10,22 +11,22 @@ export class AdminCategoryController {
     private _getCategoryUseCase: IgetCategoriesUseCase,
     private _deleteCategoryUseCase: IDeleteCategoryUseCase,
     private _editCategoryUseCae: IEditCategoryUseCase,
-  ) {}
+  ) { }
   async addCategory(req: Request, res: Response) {
     try {
       const { name, description } = req.body;
       const category = await this._addCategoryUseCase.add(name, description);
-      res.status(201).json({ success: true, category });
+      res.status(StatusCode.CREATED).json({ success: true, category });
     } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
+      res.status(StatusCode.BAD_REQUEST).json({ success: false, message: error.message });
     }
   }
   async getCategory(req: Request, res: Response) {
     try {
       const categories = await this._getCategoryUseCase.getCategory();
-      res.status(200).json({ success: true, categories });
+      res.status(StatusCode.OK).json({ success: true, categories });
     } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
     }
   }
   async deleteCategory(req: Request, res: Response) {
@@ -33,10 +34,10 @@ export class AdminCategoryController {
       const { categoryId } = req.params;
       await this._deleteCategoryUseCase.delete(categoryId);
       res
-        .status(200)
+        .status(StatusCode.OK)
         .json({ success: true, message: "Category deleted successfully" });
     } catch (error: any) {
-      res.status(500).json({ success: false, message: error.message });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
     }
   }
   async editCategory(req: Request, res: Response) {
@@ -48,9 +49,9 @@ export class AdminCategoryController {
         name,
         description,
       );
-      res.status(200).json({ success: true, category });
+      res.status(StatusCode.OK).json({ success: true, category });
     } catch (error: any) {
-      res.status(400).json({ success: false, message: error.message });
+      res.status(StatusCode.BAD_REQUEST).json({ success: false, message: error.message });
     }
   }
 }

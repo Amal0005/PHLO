@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
-import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IAdminUserListingUseCase";
-import { IAdminCreatorListingUseCase } from "../../../domain/interface/admin/IAdminCreatorListingUseCase";
+import { MESSAGES } from "@/utils/commonMessages";
+import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IadminUserListingUseCase";
+import { IAdminCreatorListingUseCase } from "../../../domain/interface/admin/IadminCreatorListingUseCase";
 import { IToggleUserStatusUseCase } from "../../../domain/interface/admin/IToggleUserStatusUseCase";
 
 export class AdminUserController {
   constructor(
     private _adminUserListingUseCase: IAdminUserListingUseCase,
     private _toggleUserStatusUseCase: IToggleUserStatusUseCase
-  ) {}
+  ) { }
   async getUsers(req: Request, res: Response) {
     try {
       const page = Math.max(1, Number(req.query.page) || 1);
@@ -27,7 +28,7 @@ export class AdminUserController {
         message:
           error instanceof Error
             ? error.message
-            : "Internal Server Error",
+            : MESSAGES.ERROR.INTERNAL_SERVER_ERROR,
       });
     }
   }

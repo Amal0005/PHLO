@@ -1,6 +1,7 @@
-import { IUserLoginUseCase } from "../../../../domain/interface/user/auth/IUserLoginUseCase";
+import { IUserLoginUseCase } from "../../../../domain/interface/user/auth/IuserLoginUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/utils/commonMessages";
 
 export class userLoginController {
   constructor(private _userLoginUseCase: IUserLoginUseCase) { }
@@ -15,7 +16,7 @@ export class userLoginController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000, 
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       return res.status(StatusCode.OK).json({
         success: true,
@@ -27,7 +28,7 @@ export class userLoginController {
     } catch (error: any) {
       console.log("Login error:", error);
       res.status(StatusCode.BAD_REQUEST).json({
-        message: error.message || "Error occurs while login",
+        message: error.message || MESSAGES.ERROR.BAD_REQUEST,
       });
     }
   }
