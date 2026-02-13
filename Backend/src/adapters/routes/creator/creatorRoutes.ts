@@ -4,7 +4,8 @@ import {
   creatorRegisterController,
   creatorAuthController,
   creatorProfileController,
-  creatorPackageController,
+  addPackageController,
+  getPackagesController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
@@ -92,12 +93,11 @@ export class CreatorRoutes {
     this.creatorRouter.patch("/profile", (req: Request, res: Response) =>
       creatorProfileController.editProfile(req, res),
     );
-    this.creatorRouter.post("/package",(req: Request, res: Response)=>{
-      creatorPackageController.addPackage(req,res)
+    this.creatorRouter.post("/package", (req: Request, res: Response) => {
+      addPackageController.execute(req, res)
     })
-        this.creatorRouter.get("/package", (req: Request, res: Response) => {
-      creatorPackageController.getPackages(req, res);
+    this.creatorRouter.get("/package", (req: Request, res: Response) => {
+      getPackagesController.execute(req, res);
     });
   }
 }
-

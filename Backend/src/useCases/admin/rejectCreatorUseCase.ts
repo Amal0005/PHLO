@@ -1,4 +1,4 @@
-import { IRejectCreatorUseCase } from "../../domain/interface/admin/IrejectCreatorUseCase";
+import { IRejectCreatorUseCase } from "../../domain/interface/admin/IRejectCreatorUseCase";
 import { ICreatorRepository } from "../../domain/interface/creator/ICreatorRepository";
 import { MESSAGES } from "@/utils/commonMessages";
 

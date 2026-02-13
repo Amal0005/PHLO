@@ -1,4 +1,4 @@
-import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/ItoggleCreatorStatusUseCase";
+import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
 import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 
 export class ToggleCreatorStatusUseCase implements IToggleCreatorStatusUseCase {

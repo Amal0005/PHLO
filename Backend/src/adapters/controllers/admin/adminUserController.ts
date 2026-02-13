@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { MESSAGES } from "@/utils/commonMessages";
-import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IadminUserListingUseCase";
-import { IAdminCreatorListingUseCase } from "../../../domain/interface/admin/IadminCreatorListingUseCase";
+import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IAdminUserListingUseCase";
+import { IAdminCreatorListingUseCase } from "../../../domain/interface/admin/IAdminCreatorListingUseCase";
 import { IToggleUserStatusUseCase } from "../../../domain/interface/admin/IToggleUserStatusUseCase";
 
 export class AdminUserController {

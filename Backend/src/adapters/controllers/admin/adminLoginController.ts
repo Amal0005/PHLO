@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { MESSAGES } from "@/utils/commonMessages";
-import { IAdminLoginUseCase } from "../../../domain/interface/admin/IadminLoginUseCase";
+import { IAdminLoginUseCase } from "../../../domain/interface/admin/IAdminLoginUseCase";
 import { ILogoutUseCase } from "../../../domain/interface/ILogoutUseCase";
 
 export class AdminLoginController {

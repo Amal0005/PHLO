@@ -1,8 +1,8 @@
 import { CategoryEntity } from "@/domain/entities/categoryEntity";
 import { ICategoryRepository } from "@/domain/interface/admin/ICategoryRepository";
-import { IgetCategoriesUseCase } from "@/domain/interface/admin/IGetCategoryUseCase";
+import { IGetCategoryUseCase } from "@/domain/interface/admin/IGetCategoryUseCase";
 
-export class GetCategoryUseCase implements IgetCategoriesUseCase {
+export class GetCategoryUseCase implements IGetCategoryUseCase {
     constructor(
         private _categoryRepo: ICategoryRepository
     ) { }

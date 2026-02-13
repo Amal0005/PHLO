@@ -1,5 +1,5 @@
 import { PackageEntity } from "@/domain/entities/packageEntity";
-import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IgetPackageUseCase";
+import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 
 export class GetPackagesUseCase implements IgetPackagesUseCase {

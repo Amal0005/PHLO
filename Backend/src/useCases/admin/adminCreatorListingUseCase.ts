@@ -1,5 +1,5 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IadminCreatorListingUseCase";
+import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IAdminCreatorListingUseCase";
 import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 

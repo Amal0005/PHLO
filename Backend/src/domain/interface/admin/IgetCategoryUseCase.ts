@@ -1,5 +1,5 @@
 import { CategoryEntity } from "@/domain/entities/categoryEntity";
 
-export interface IgetCategoriesUseCase {
+export interface IGetCategoryUseCase {
   getCategory(): Promise<CategoryEntity[]>;
 }

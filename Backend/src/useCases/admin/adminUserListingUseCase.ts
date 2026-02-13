@@ -1,4 +1,4 @@
-import { IAdminUserListingUseCase } from "../../domain/interface/admin/IadminUserListingUseCase";
+import { IAdminUserListingUseCase } from "../../domain/interface/admin/IAdminUserListingUseCase";
 import { IUserRepository } from "../../domain/interface/user/IUserRepository";
 
 

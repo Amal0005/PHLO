@@ -2,7 +2,7 @@ import { User } from "../../../domain/entities/userEntities";
 import { IOTPService } from "../../../domain/interface/service/IOtpServices";
 import { IPendingUserService } from "../../../domain/interface/service/IPendingUserService";
 import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
-import { IVerifyRegisterOtpUseCase } from "../../../domain/interface/user/auth/IverifyRegisterOtpUseCase";
+import { IVerifyRegisterOtpUseCase } from "../../../domain/interface/user/auth/IVerifyRegisterOtpUseCase";
 import { MESSAGES } from "@/utils/commonMessages";
 
 export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {

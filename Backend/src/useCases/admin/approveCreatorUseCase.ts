@@ -1,5 +1,5 @@
 import { IMailService } from "@/domain/interface/service/IMailServices";
-import { IApproveCreatorUseCase } from "../../domain/interface/admin/IapproveCreatorUseCase";
+import { IApproveCreatorUseCase } from "../../domain/interface/admin/IApproveCreatorUseCase";
 import { ICreatorRepository } from "../../domain/interface/creator/ICreatorRepository";
 import { MESSAGES } from "@/utils/commonMessages";
 import { renderTemplate } from "@/utils/renderTemplates";

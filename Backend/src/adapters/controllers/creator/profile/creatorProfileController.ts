@@ -1,6 +1,6 @@
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IeditCreatorUseCase";
-import { IGetCreatorProfileUseCase } from "@/domain/interface/creator/profile/IgetCreatorProfileUseCase";
+import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
+import { IGetCreatorProfileUseCase } from "@/domain/interface/creator/profile/IGetCreatorProfileUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 
