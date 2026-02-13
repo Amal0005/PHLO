@@ -5,7 +5,7 @@ import { StatusCode } from "@/utils/statusCodes";
 export class AddPackageController {
     constructor(private _addPackageUseCase: IAddPackageUseCase) { }
 
-    async execute(req: Request, res: Response) {
+    async addPackage(req: Request, res: Response) {
         try {
             const creatorId = (req as any).user?.userId;
             const packageData = { ...req.body, creatorId };

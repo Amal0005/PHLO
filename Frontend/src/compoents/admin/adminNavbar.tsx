@@ -20,24 +20,24 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
   const admin = useSelector((state: RootState) => state.admin.admin);
 
 
-const handleLogout = () => {
-  confirmActionToast(
-    "Are you sure you want to logout?",
-    async () => {
-      try {
-        await AdminAuthService.logOut();
+  const handleLogout = () => {
+    confirmActionToast(
+      "Are you sure you want to logout?",
+      async () => {
+        try {
+          await AdminAuthService.logOut();
 
-        dispatch(clearAdminAuth());
-        dispatch(clearAdmin());
+          dispatch(clearAdminAuth());
+          dispatch(clearAdmin());
 
-        navigate(ROUTES.ADMIN.LOGIN, { replace: true });
-      } catch (err) {
-        console.error("Logout failed", err);
-      }
-    },
-    "Logout"
-  );
-};
+          navigate(ROUTES.ADMIN.LOGIN, { replace: true });
+        } catch (err) {
+          console.error("Logout failed", err);
+        }
+      },
+      "Logout"
+    );
+  };
 
 
   const initials = admin?.name

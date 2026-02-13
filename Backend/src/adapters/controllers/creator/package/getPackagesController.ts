@@ -6,7 +6,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 export class GetPackagesController {
     constructor(private _getPackagesUseCase: IgetPackagesUseCase) { }
 
-    async execute(req: Request, res: Response) {
+    async getPackage(req: Request, res: Response) {
         try {
             const creatorId = (req as any).user?.userId;
             if (!creatorId) {

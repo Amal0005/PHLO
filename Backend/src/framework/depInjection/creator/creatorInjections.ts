@@ -24,6 +24,10 @@ import { AddPackageUseCase } from "@/useCases/creator/package/addPackageUseCase"
 import { AddPackageController } from "@/adapters/controllers/creator/package/addPackageController";
 import { GetPackagesController } from "@/adapters/controllers/creator/package/getPackagesController";
 import { GetPackagesUseCase } from "@/useCases/creator/package/getPackageUseCase";
+import { EditPackageUseCase } from "@/useCases/creator/package/editPackageUseCase";
+import { EditPackageController } from "@/adapters/controllers/creator/package/editPackageController";
+import { DeletePackageUseCase } from "@/useCases/creator/package/deletePackageUseCase";
+import { DeletePackageController } from "@/adapters/controllers/creator/package/deletePackageController";
 
 const creatorRepository = new CreatorRepository();
 const userRepository = new UserRepository();
@@ -46,6 +50,8 @@ const getCreatorProfileUseCase = new GetCreatorProfileUseCase(creatorRepository)
 const editCreatorProfileUseCase = new EditCreatorProfileUseCase(creatorRepository)
 const addPackageUseCase = new AddPackageUseCase(packageRepository)
 const getPackageUseCase = new GetPackagesUseCase(packageRepository)
+const editPackageUseCase = new EditPackageUseCase(packageRepository)
+const deletePackageUseCase= new DeletePackageUseCase(packageRepository)
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
@@ -53,5 +59,7 @@ export const creatorAuthController = new CreatorAuthController(forgotPasswordUse
 export const creatorProfileController = new CreatorProfileController(getCreatorProfileUseCase, editCreatorProfileUseCase)
 export const addPackageController = new AddPackageController(addPackageUseCase);
 export const getPackagesController = new GetPackagesController(getPackageUseCase);
+export const editPackagesController = new EditPackageController(editPackageUseCase)
+export const deletePackageController= new DeletePackageController(deletePackageUseCase)
 
 
