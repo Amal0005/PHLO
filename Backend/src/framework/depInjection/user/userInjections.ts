@@ -28,6 +28,11 @@ import { EditProfileController } from "@/adapters/controllers/user/profile/editP
 import { ChangePasswordController } from "@/adapters/controllers/user/profile/changePasswordController";
 import { EditUserProfileUsecase } from "@/useCases/user/profile/editUserProfileUseCase";
 import { ChangePasswordUseCase } from "@/useCases/user/profile/changePasswordUseCase";
+import { ListUserPackagesUseCase } from "@/useCases/user/package/listUserPackagesUseCase";
+import { ListUserPackagesController } from "@/adapters/controllers/user/package/listUserPackagesController";
+import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
+import { GetPackageDetailUseCase } from "@/useCases/user/package/getPackageDetailUseCase";
+import { GetPackageDetailController } from "@/adapters/controllers/user/package/getPackageDetailController";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -37,7 +42,8 @@ const pendingService = new PendingUserService(redisService)
 const jwtService = new JwtServices()
 const mailService = new MailService()
 const tokenBlacklistService = new TokenBlacklistService(redisService)
-const creatorRepository = new CreatorRepository
+const creatorRepository = new CreatorRepository()
+const packageRepository=new PackageRepository()
 
 
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
@@ -52,6 +58,9 @@ const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepo)
 const editUserProfileUseCase = new EditUserProfileUsecase(userRepo, creatorRepository)
 const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
+const listUserPackagesUseCase=new ListUserPackagesUseCase(packageRepository)
+const getPackageDetailUseCase = new GetPackageDetailUseCase(packageRepository);
+
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
@@ -62,3 +71,5 @@ export const tokenController = new TokenController(jwtService)
 export const getProfileController = new GetProfileController(getUserProfileUseCase)
 export const editProfileController = new EditProfileController(editUserProfileUseCase)
 export const changePasswordController = new ChangePasswordController(changePasswordUseCase)
+export const listUserPackagesController=new ListUserPackagesController(listUserPackagesUseCase)
+export const getPackageDetailController=new GetPackageDetailController(getPackageDetailUseCase)

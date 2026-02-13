@@ -117,8 +117,7 @@ export class CreatorRoutes {
   "/package/:packageId",
   (req: Request, res: Response) => {
     deletePackageController.deletePackage(req, res);
-  }
-);
+  });
   }
 
 }

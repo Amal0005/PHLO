@@ -7,6 +7,8 @@ export const ROUTES = {
     FORGOT_PASSWORD: "/forgot-password",
     HOME: "/home",
     PROFILE: "/profile",
+    PACKAGES:"/packages",
+    PACKAGE_DETAIL:"/packages/:packageId",
     NOT_FOUND: "*"
   },
 

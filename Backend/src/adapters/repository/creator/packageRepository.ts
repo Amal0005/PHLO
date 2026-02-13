@@ -1,5 +1,5 @@
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { PackageEntity } from "@/domain/entities/packageEntity";
+import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { PackageModel } from "@/framework/database/model/packageModel";
 
 export class PackageRepository implements IPackageRepository {
@@ -11,9 +11,11 @@ export class PackageRepository implements IPackageRepository {
       _id: obj._id.toString(),
     };
   }
-    async findByCreatorId(creatorId: string): Promise<PackageEntity[]> {
-    const packages = await PackageModel.find({ creatorId }).sort({ createdAt: -1 });
-    return packages.map(pkg => {
+  async findByCreatorId(creatorId: string): Promise<PackageEntity[]> {
+    const packages = await PackageModel.find({ creatorId }).sort({
+      createdAt: -1,
+    });
+    return packages.map((pkg) => {
       const obj = pkg.toObject();
       return {
         ...obj,
@@ -21,9 +23,12 @@ export class PackageRepository implements IPackageRepository {
       } as PackageEntity;
     });
   }
-  
+
   async findById(packageId: string): Promise<PackageEntity | null> {
-    const pkg = await PackageModel.findById(packageId);
+  const pkg = await PackageModel.findById(packageId)
+  .populate('creatorId', 'fullName profilePhoto city')
+  .populate('category', 'name');
+  
     if (!pkg) return null;
     const obj = pkg.toObject();
     return {
@@ -31,11 +36,14 @@ export class PackageRepository implements IPackageRepository {
       _id: obj._id.toString(),
     } as PackageEntity;
   }
-  async update(packageId: string, data: Partial<PackageEntity>): Promise<PackageEntity | null> {
+  async update(
+    packageId: string,
+    data: Partial<PackageEntity>,
+  ): Promise<PackageEntity | null> {
     const updatedPackage = await PackageModel.findByIdAndUpdate(
       packageId,
       { $set: data },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
     if (!updatedPackage) return null;
     const obj = updatedPackage.toObject();
@@ -44,9 +52,49 @@ export class PackageRepository implements IPackageRepository {
       _id: obj._id.toString(),
     } as PackageEntity;
   }
-    async delete(packageId: string): Promise<boolean> {
+  async delete(packageId: string): Promise<boolean> {
     const result = await PackageModel.findByIdAndDelete(packageId);
     return result !== null;
   }
-}
+  async findAllPackages(filters?: {
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    creatorId?: string;
+  }): Promise<PackageEntity[]> {
+    const query: any = {};
 
+
+
+    if (filters?.category) {
+      query.category = filters.category;
+    }
+
+    if (filters?.creatorId) {
+      query.creatorId = filters.creatorId;
+    }
+
+    if (filters?.minPrice !== undefined || filters?.maxPrice !== undefined) {
+      query.price = {};
+      if (filters.minPrice !== undefined) {
+        query.price.$gte = filters.minPrice;
+      }
+      if (filters.maxPrice !== undefined) {
+        query.price.$lte = filters.maxPrice;
+      }
+    }
+
+  const packages = await PackageModel.find(query)
+  .populate('creatorId', 'fullName profilePhoto city')
+  .populate('category', 'name')
+  .sort({ createdAt: -1 });
+
+    return packages.map(pkg => {
+      const obj = pkg.toObject();
+      return {
+        ...obj,
+        _id: obj._id.toString(),
+      } as PackageEntity;
+    });
+  }
+}

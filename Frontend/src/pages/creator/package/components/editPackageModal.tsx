@@ -17,7 +17,11 @@ interface EditPackageModalProps {
     title: string;
     description: string;
     price: number;
-    category: string;
+    category: string | {
+      _id: string;
+      name: string;
+      description?: string;
+    };
     images?: string[];
   } | null;
 }
@@ -62,7 +66,11 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
       setValue("title", packageData.title);
       setValue("description", packageData.description);
       setValue("price", packageData.price);
-      setValue("category", packageData.category);
+      // Extract category ID if it's a populated object
+      const categoryId = typeof packageData.category === 'object'
+        ? packageData.category._id
+        : packageData.category;
+      setValue("category", categoryId);
       setExistingImages(packageData.images || []);
     }
   }, [packageData, isOpen, setValue]);
@@ -112,10 +120,13 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
       if (data.description && data.description !== packageData.description)
         updateData.description = data.description;
       if (data.price && data.price !== packageData.price) updateData.price = data.price;
-      if (data.category && data.category !== packageData.category)
+      const currentCategoryId = typeof packageData.category === 'object'
+        ? packageData.category._id
+        : packageData.category;
+      if (data.category && data.category !== currentCategoryId)
         updateData.category = data.category;
-      if (allImages.length !== packageData.images?.length || 
-          !allImages.every((img, i) => img === packageData.images?.[i])) {
+      if (allImages.length !== packageData.images?.length ||
+        !allImages.every((img, i) => img === packageData.images?.[i])) {
         updateData.images = allImages;
       }
 

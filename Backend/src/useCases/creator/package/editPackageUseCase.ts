@@ -3,7 +3,7 @@ import { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPac
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 
 export class EditPackageUseCase implements IEditPackageUseCase {
-  constructor(private _packageRepo: IPackageRepository) {}
+  constructor(private _packageRepo: IPackageRepository) { }
 
   async editPackage(
     packageId: string,
@@ -11,12 +11,17 @@ export class EditPackageUseCase implements IEditPackageUseCase {
     data: Partial<PackageEntity>
   ): Promise<PackageEntity> {
     const existingPackage = await this._packageRepo.findById(packageId);
-    
+
     if (!existingPackage) {
       throw new Error("Package not found");
     }
 
-    if (existingPackage.creatorId.toString() !== creatorId.toString()) {
+    // Handle populated creatorId (object) or unpopulated (string)
+    const existingCreatorId = typeof existingPackage.creatorId === 'object'
+      ? (existingPackage.creatorId as any)._id?.toString()
+      : existingPackage.creatorId.toString();
+
+    if (existingCreatorId !== creatorId.toString()) {
       throw new Error("Unauthorized: You can only edit your own packages");
     }
 
@@ -29,7 +34,7 @@ export class EditPackageUseCase implements IEditPackageUseCase {
     };
 
     const updatedPackage = await this._packageRepo.update(packageId, updateData);
-    
+
     if (!updatedPackage) {
       throw new Error("Failed to update package");
     }
