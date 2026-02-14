@@ -15,6 +15,7 @@ import { RedisService } from "@/domain/services/user/redisServices";
 import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
 import { UserRepository } from "@/adapters/repository/user/userRepository";
 import { CreatorRepository } from "./adapters/repository/creator/creatorRepository";
+import { loggerMiddleware } from "./adapters/middlewares/loggerMiddleware";
 
 
 
@@ -48,6 +49,7 @@ export class App {
     this.setAdminRouter();
   }
   private setMiddlewares(): void {
+    this.app.use(loggerMiddleware)
     this.app.use(express.json());
     this.app.use(
       cors({
@@ -62,9 +64,7 @@ export class App {
     "/public",
     express.static(require("path").join(process.cwd(), "public"))
   );
-    this.app.use((req, res, next) => {
-      next();
-    });
+
   }
 private setUserRoutes(): void {
     const userRoutes = new UserRoutes(
