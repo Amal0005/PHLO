@@ -8,7 +8,7 @@ export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
     constructor(
         private _otpService: IOTPService,
         private _redisService: IRedisService
-    ) { }
+    ) {}
 
     async verify(email: string, otp: string): Promise<void> {
         email = email.trim().toLowerCase();

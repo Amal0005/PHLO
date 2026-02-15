@@ -1,71 +1,52 @@
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { User } from "../../../domain/entities/userEntities";
-import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
-import { UserModel } from "../../../framework/database/model/userModel";
+import { UserModel, IUserModel } from "../../../framework/database/model/userModel";
 import { paginateMongo } from "@/utils/pagination";
 import { UserMapper } from "../../mapper/user/userMapper";
+import { BaseRepository } from "../BaseRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 
-export class UserRepository implements IUserRepository {
+export class UserRepository extends BaseRepository<User, IUserModel> implements IUserRepository {
+  constructor() {
+    super(UserModel);
+  }
+
+  protected mapToEntity(doc: any): User {
+    return UserMapper.toDomain(doc);
+  }
+
+  // Inherited: findById, update, delete, create, findAll
+
   async findByEmail(email: string): Promise<User | null> {
-    const user = await UserModel.findOne({ email });
-    if (!user) return null;
-    return UserMapper.toDomain(user);
+    const user = await this.model.findOne({ email });
+    return user ? this.mapToEntity(user) : null;
   }
 
   async createUser(user: Omit<User, "_id">): Promise<User> {
-    const created = await UserModel.create(user);
-    return UserMapper.toDomain(created);
+    const created = await this.model.create(user as any);
+    return this.mapToEntity(created);
   }
 
   async updatePassword(email: string, hashedPassword: string): Promise<void> {
-    await UserModel.updateOne(
-      { email },
-      { $set: { password: hashedPassword } },
-    );
+    await this.model.updateOne({ email }, { $set: { password: hashedPassword } });
   }
-  async findAllUsers(
-    page: number,
-    limit: number
-  ): Promise<PaginatedResult<User>> {
 
-    const result = await paginateMongo(
-      UserModel,
-      { role: "user" },
-      page,
-      limit,
-      {
-        select: "-password",
-        sort: { createdAt: -1 }
-      }
-    );
-    return {
-      ...result,
-      data: result.data.map((user: any) =>
-        UserMapper.toDomain(user.toObject())
-      )
-    };
+  async findAllUsers(page: number, limit: number): Promise<PaginatedResult<User>> {
+    const result = await paginateMongo(this.model, { role: "user" }, page, limit, { select: "-password", sort: { createdAt: -1 } });
+    return { ...result, data: result.data.map((user: any) => this.mapToEntity(user.toObject())) };
   }
 
   async updateUserStatus(userId: string, status: "active" | "blocked"): Promise<void> {
-    await UserModel.updateOne({ _id: userId }, { $set: { status: status } });
+    await this.model.updateOne({ _id: userId }, { $set: { status: status } });
   }
 
-  async findById(id: string): Promise<User | null> {
-    const user = await UserModel.findById(id);
-    if (!user) return null;
-    return UserMapper.toDomain(user);
-  }
   async findByPhone(phone: string): Promise<User | null> {
-    const user = await UserModel.findOne({ phone });
-    if (!user) return null;
-    return UserMapper.toDomain(user);
+    const user = await this.model.findOne({ phone });
+    return user ? this.mapToEntity(user) : null;
   }
+
   async editProfile(userId: string, data: { name?: string; phone?: string; image?: string; }): Promise<User | null> {
-    console.log("jg",data, typeof data.name);
-    
-  const user=await UserModel.findByIdAndUpdate(userId, { $set: data },{ new: true }).select("-password");
-    if(!user)return null
-    return UserMapper.toDomain(user)
+    const user = await this.model.findByIdAndUpdate(userId, { $set: data }, { new: true }).select("-password");
+    return user ? this.mapToEntity(user) : null;
   }
 }
-

@@ -1,4 +1,4 @@
-import { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangePasswordUseCase";
+import { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { MESSAGES } from "@/utils/commonMessages";

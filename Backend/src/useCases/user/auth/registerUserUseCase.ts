@@ -1,13 +1,12 @@
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
-import { RegisterDto } from "../../../domain/dto/user/registerDto";
-import { ICreatorRepository } from "../../../domain/interface/creator/ICreatorRepository";
-import { IMailService } from "../../../domain/interface/service/IMailServices";
-import { IOTPService } from "../../../domain/interface/service/IOtpServices";
-import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
-import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
-import { IUserRegisterUseCase } from "../../../domain/interface/user/auth/IUserRegisterUseCase";
-
-import { renderTemplate } from "../../../utils/renderTemplates";
+import { IUserRegisterUseCase } from "@/domain/interface/user/auth/IUserRegisterUseCase";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IPasswordService } from "@/domain/interface/service/IPasswordService";
+import { IOTPService } from "@/domain/interface/service/IOtpServices";
+import { IMailService } from "@/domain/interface/service/IMailServices";
+import { renderTemplate } from "@/utils/renderTemplates";
+import { RegisterDto } from "@/domain/dto/user/registerDto";
 
 export class userRegisterUseCase implements IUserRegisterUseCase {
   constructor(
@@ -17,7 +16,7 @@ export class userRegisterUseCase implements IUserRegisterUseCase {
     private _otpService: IOTPService,
     private _mailService: IMailService,
     private _redisService: IRedisService,
-  ) { }
+  ) {}
 
   async registerUser(user: RegisterDto): Promise<void> {
     const email = user.email.trim().toLowerCase();

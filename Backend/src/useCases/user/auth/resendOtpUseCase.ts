@@ -9,7 +9,7 @@ export class ResendOtpUseCase implements IResendOtpUseCase {
   constructor(
     private _otpService: IOTPService,
     private _mailService: IMailService
-  ) { }
+  ) {}
 
   async resend(email: string): Promise<void> {
     email = email.trim().toLowerCase();

@@ -19,10 +19,10 @@ import {
   logoutController,
   tokenController,
 } from "@/framework/depInjection/user/userInjections";
-import { IUserRepository } from "@/domain/interface/user/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 import { editPackageSchema } from "@/adapters/validation/packageEditSchema";
 import { addPackageSchema } from "@/adapters/validation/packageAddSchema";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 
 export class CreatorRoutes {
   public creatorRouter: Router;

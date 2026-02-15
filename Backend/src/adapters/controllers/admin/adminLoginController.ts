@@ -7,7 +7,7 @@ import { ILogoutUseCase } from "../../../domain/interface/ILogoutUseCase";
 export class AdminLoginController {
   constructor(
     private _adminLoginUseCase: IAdminLoginUseCase,
-  ) { }
+  ) {}
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;

@@ -1,6 +1,6 @@
 import { User } from "@/domain/entities/userEntities";
-import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
-import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
 
 export class EditUserProfileUsecase implements IEditUserProfileUseCase {
@@ -14,7 +14,6 @@ export class EditUserProfileUsecase implements IEditUserProfileUseCase {
   ): Promise<User | null> {
     if (!userId) throw new Error("userID is required");
     if (!data) throw new Error("User dara is required");
-    console.log("userrrrrrrr", data);
     if (data.phone) {
       const trimmed = data.phone.trim();
       const existingPhone = await this._userRepo.findByPhone(trimmed);

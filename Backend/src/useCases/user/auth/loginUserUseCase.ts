@@ -1,8 +1,8 @@
-import { loginDto } from "../../../domain/dto/user/loginDto";
-import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
-import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
-import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
-import { UserMapper } from "../../../adapters/mapper/user/userMapper";
+import { UserMapper } from "@/adapters/mapper/user/userMapper";
+import { loginDto } from "@/domain/dto/user/loginDto";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { IUserLoginUseCase } from "@/domain/interface/user/auth/IUserLoginUseCase";
 import { MESSAGES } from "@/utils/commonMessages";
 
@@ -11,7 +11,7 @@ export class userLoginUserUseCase implements IUserLoginUseCase {
     private _userRepo: IUserRepository,
     private _passwordService: IPasswordService,
     private _jwtService: IJwtServices
-  ) { }
+  ) {}
 
   async loginUser(user: loginDto) {
     const existingUser = await this._userRepo.findByEmail(user.email);

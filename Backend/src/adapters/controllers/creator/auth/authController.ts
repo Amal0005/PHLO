@@ -11,7 +11,7 @@ export class CreatorAuthController {
         private _forgotPasswordUseCase: IForgotPasswordUseCase,
         private _verifyForgotOtpUseCase: IVerifyForgotOtpUseCase,
         private _resetPasswordUseCase: IResetPasswordUseCase
-    ) { }
+    ) {}
 
     async forgotPassword(req: Request, res: Response) {
         try {

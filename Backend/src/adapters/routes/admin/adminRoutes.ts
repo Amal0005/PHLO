@@ -13,9 +13,8 @@ import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
 import { logoutController, tokenController } from "../../../framework/depInjection/user/userInjections";
-
-import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 
 export class AdminRoutes {
   public adminRouter: Router;

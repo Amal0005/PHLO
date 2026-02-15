@@ -8,7 +8,7 @@ export class CreatorProfileController {
     constructor(
         private _getCreatorProfileUseCase: IGetCreatorProfileUseCase,
         private _editCreatorProfileUseCase: IeditCreatorProfileUseCase
-    ) { }
+    ) {}
     async getProfile(req: AuthRequest, res: Response) {
         try {
             const creator = await this._getCreatorProfileUseCase.getProfile(req.user!.userId)

@@ -1,12 +1,12 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
 import { IRegisterCreatorUseCase } from "@/domain/interface/creator/register/IRegisterCreatorUseCase";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IMailService } from "@/domain/interface/service/IMailServices";
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { renderTemplate } from "@/utils/renderTemplates";
-import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 
 export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
   constructor(

@@ -3,14 +3,14 @@ import { UserResponseDto } from "../../domain/dto/user/userResponseDto";
 import { IJwtServices } from "../../domain/interface/service/IJwtServices";
 import { IPasswordService } from "../../domain/interface/service/IPasswordService";
 import { MESSAGES } from "@/utils/commonMessages";
-import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 
 export class AdminLoginUseCase implements IAdminLoginUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _passwordService: IPasswordService,
     private _jwtService: IJwtServices
-  ) { }
+  ) {}
 
   async login(
     email: string,

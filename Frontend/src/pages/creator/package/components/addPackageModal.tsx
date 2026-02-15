@@ -51,7 +51,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   const locationValue = watch("location");
 
   useEffect(() => {
-    console.log('🔍 Current location in form:', locationValue);
+    console.log('Current location in form:', locationValue);
   }, [locationValue]);
 
   useEffect(() => {
@@ -88,18 +88,14 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   };
 
   const onSubmit = async (data: PackageFormData) => {
-    console.log('🔍 Form data received in onSubmit:', data);
-    console.log('🔍 Location in form data:', data.location);
-
     // Double check with getValues
     const currentFormValues = getValues();
-    console.log('🔍 Current form values from getValues:', currentFormValues);
-    console.log('🔍 Location from getValues:', currentFormValues.location);
+    console.log('Current form values from getValues:', currentFormValues);
 
-    // ✅ Search location validation
+    //Search location validation
     if (!data.location || data.location.coordinates[0] === 0) {
       toast.error("Please search and select a location");
-      console.error('❌ Location validation failed:', data.location);
+      console.error('Location validation failed:', data.location);
       return;
     }
 
@@ -117,8 +113,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
         images: imageUrls,
       };
 
-      console.log('📍 Sending package data with location:', packageData);
-      console.log('📍 Location details:', {
+      console.log('Location details:', {
         coordinates: packageData.location?.coordinates,
         placeName: packageData.placeName
       });

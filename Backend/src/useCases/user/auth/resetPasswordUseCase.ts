@@ -1,14 +1,14 @@
-import { IRedisService } from "../../../domain/interface/service/IRedisServices";
-import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
-import { IResetPasswordUseCase } from "../../../domain/interface/user/auth/IResetPasswordUseCase";
-import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IPasswordService } from "@/domain/interface/service/IPasswordService";
+import { IRedisService } from "@/domain/interface/service/IRedisServices";
+import { IResetPasswordUseCase } from "@/domain/interface/user/auth/IResetPasswordUseCase";
 
 export class ResetPasswordUseCase implements IResetPasswordUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _passwordService: IPasswordService,
     private _redisService: IRedisService
-  ) { }
+  ) {}
 
   async reset(email: string, newPassword: string): Promise<void> {
     email = email.trim().toLowerCase();

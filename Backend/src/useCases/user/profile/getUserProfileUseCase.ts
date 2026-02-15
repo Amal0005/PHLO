@@ -1,6 +1,6 @@
 import { User } from "@/domain/entities/userEntities";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
-import { IUserRepository } from "@/domain/interface/user/IUserRepository";
 
 export class GetUserProfileUseCase implements IGetUserProfileUseCase{
     constructor(

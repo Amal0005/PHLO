@@ -1,11 +1,9 @@
 import { PackageEntity } from "@/domain/entities/packageEntity";
+import { IBaseRepository } from "./IBaseRepository";
 
-export interface IPackageRepository {
+export interface IPackageRepository extends IBaseRepository<PackageEntity> {
   add(data: PackageEntity): Promise<PackageEntity>;
   findByCreatorId(creatorId: string): Promise<PackageEntity[]>;
-  findById(packageId: string): Promise<PackageEntity | null>;
-  update(packageId: string, data: Partial<PackageEntity>): Promise<PackageEntity | null>;
-  delete(packageId: string): Promise<boolean>;
   findAllPackages(filters?: {
     category?: string;
     minPrice?: number;
@@ -18,4 +16,3 @@ export interface IPackageRepository {
     radiusInKm?: number;
   }): Promise<PackageEntity[]>;
 }
-

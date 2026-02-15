@@ -25,7 +25,7 @@ export default function MapboxLocationPicker({ onChange }: Props) {
     longitude: 76.2711,
   };
 
-  // ✅ SEARCH LOCATION
+  // SEARCH LOCATION
   useEffect(() => {
     if (!geocoderContainerRef.current) return;
 
@@ -46,8 +46,6 @@ export default function MapboxLocationPicker({ onChange }: Props) {
         longitude: lng,
         placeName: e.result.place_name,
       };
-
-      console.log('🗺️ MapBox - Location selected from search:', payload);
       setMarker(payload);
       onChange(payload);
     });
@@ -57,12 +55,10 @@ export default function MapboxLocationPicker({ onChange }: Props) {
     };
   }, [onChange]);
 
-  // ✅ CLICK MAP → REVERSE GEOCODE
+  // CLICK MAP → REVERSE GEOCODE
   const handleMapClick = async (e: MapMouseEvent) => {
     const lat = e.lngLat.lat;
     const lng = e.lngLat.lng;
-
-    console.log('🗺️ MapBox - Map clicked at:', { lat, lng });
 
     try {
       const res = await fetch(
@@ -77,7 +73,6 @@ export default function MapboxLocationPicker({ onChange }: Props) {
         placeName: data?.features?.[0]?.place_name,
       };
 
-      console.log('🗺️ MapBox - Location from map click:', payload);
       setMarker(payload);
       onChange(payload);
     } catch {
@@ -86,7 +81,6 @@ export default function MapboxLocationPicker({ onChange }: Props) {
         longitude: lng,
       };
 
-      console.log('🗺️ MapBox - Location from map click (no place name):', payload);
       setMarker(payload);
       onChange(payload);
     }

@@ -3,14 +3,14 @@ import { User } from "../../../domain/entities/userEntities";
 import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
 import { verifyGoogleIdToken } from "../../../framework/google/verifyGoogleIdToken";
 import { MESSAGES } from "@/utils/commonMessages";
-import { IUserRepository } from "@/domain/interface/user/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 
 
 export class GoogleLoginUseCase implements IGoogleLoginUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _jwtService: IJwtServices
-  ) { }
+  ) {}
 
   async execute(idToken: string): Promise<{ user: User; accessToken: string; refreshToken: string }> {
 

@@ -167,7 +167,6 @@ export default function UserProfile() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setEditProfileErrors({});
-    console.log("SUBMIT DATA:", form);
 
     const result = editProfileSchema.safeParse(form);
     if (!result.success) {

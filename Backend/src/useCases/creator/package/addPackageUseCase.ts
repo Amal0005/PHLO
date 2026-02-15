@@ -5,9 +5,8 @@ import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepo
 export class AddPackageUseCase implements IAddPackageUseCase {
     constructor(
         private _packageRepo: IPackageRepository
-    ) { }
+    ) {}
     async addPackage(data: Partial<PackageEntity>): Promise<PackageEntity> {
-        console.log('📦 Received package data:', JSON.stringify(data, null, 2));
 
         const newPackage: PackageEntity = {
             creatorId: data.creatorId!,
@@ -20,7 +19,6 @@ export class AddPackageUseCase implements IAddPackageUseCase {
             placeName: data.placeName,
         };
 
-        console.log('📦 Creating package with location:', newPackage.location);
 
         return await this._packageRepo.add(newPackage)
     }

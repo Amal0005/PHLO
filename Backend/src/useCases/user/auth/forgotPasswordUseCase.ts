@@ -1,7 +1,7 @@
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { IMailService } from "../../../domain/interface/service/IMailServices";
 import { IOTPService } from "../../../domain/interface/service/IOtpServices";
 import { IForgotPasswordUseCase } from "../../../domain/interface/user/auth/IForgotPasswordUseCase";
-import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 
 import { renderTemplate } from "../../../utils/renderTemplates";
 

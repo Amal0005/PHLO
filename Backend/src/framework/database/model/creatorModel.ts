@@ -1,4 +1,4 @@
-import { model, Types } from "mongoose";
+import { model, Document, Types } from "mongoose";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { creatorSchema } from "../schema/creatorSchema";
 
