@@ -6,5 +6,16 @@ export interface IPackageRepository {
   findById(packageId: string): Promise<PackageEntity | null>;
   update(packageId: string, data: Partial<PackageEntity>): Promise<PackageEntity | null>;
   delete(packageId: string): Promise<boolean>;
+  findAllPackages(filters?: {
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    creatorId?: string;
+    search?: string;
+    sortBy?: "price-asc" | "price-desc" | "newest";
+    lat?: number;
+    lng?: number;
+    radiusInKm?: number;
+  }): Promise<PackageEntity[]>;
 }
 

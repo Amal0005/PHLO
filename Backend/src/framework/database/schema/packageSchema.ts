@@ -6,13 +6,24 @@ export const packageSchema = new Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    category: { type: Types.ObjectId, ref: "category", required: true },
-    status: {
-      type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
-    },
+    category: { type: Types.ObjectId, ref: "Category", required: true },
     images: [{ type: String }],
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+        required: true,
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true,
+      },
+    },
+    placeName: { type: String, required: false },
   },
   { timestamps: true }
 );
+
+// CRITICAL: Add the 2dsphere index for geospatial queries
+packageSchema.index({ location: "2dsphere" });

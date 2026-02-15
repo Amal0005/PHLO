@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { ArrowLeft, Package as PackageIcon, Edit, Trash2, Search, ArrowUpDown } from "lucide-react";
+import { ArrowLeft, Package as PackageIcon, Edit, Trash2, Search, ArrowUpDown, Plus, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { CreatorPackageService } from "@/services/creator/creatorPackageService";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
@@ -8,6 +8,7 @@ import { S3Media } from "@/compoents/reusable/s3Media";
 import { EditPackageModal } from "./components/editPackageModal";
 import { toast } from "react-toastify";
 import { DeleteConfirmModal } from "./components/deleteConfirmationModal";
+import { AddPackageModal } from "./components/addPackageModal";
 
 const ViewPackagesPage: React.FC = () => {
   const [packages, setPackages] = useState<any[]>([]);
@@ -18,6 +19,7 @@ const ViewPackagesPage: React.FC = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  const [addModalOpen, setAddModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const fetchPackages = async () => {
@@ -110,6 +112,14 @@ const ViewPackagesPage: React.FC = () => {
                 Manage and monitor your professional offerings
               </p>
             </div>
+
+            <button
+              onClick={() => setAddModalOpen(true)}
+              className="px-6 py-3 bg-white text-black rounded-2xl hover:bg-zinc-200 transition-all flex items-center gap-2 font-black shadow-[0_0_20px_rgba(255,255,255,0.15)] group"
+            >
+              <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+              <span className="hidden sm:inline tracking-tighter">CREATE NEW PACKAGE</span>
+            </button>
           </div>
 
           <div className="hidden md:flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl">
@@ -237,8 +247,13 @@ const ViewPackagesPage: React.FC = () => {
                     {pkg.description}
                   </p>
 
+                  <div className="flex items-center gap-2 text-gray-400 text-xs mb-4">
+                    <MapPin size={14} className="text-white/40" />
+                    <span className="line-clamp-1">{pkg.placeName || "Location not set"}</span>
+                  </div>
+
                   <div className="flex items-center justify-between">
-                    <div className="text-2xl font-black">
+                    <div className="text-2xl font-black text-white">
                       ₹ {pkg.price ? pkg.price.toLocaleString() : 0}
                     </div>
 
@@ -275,6 +290,12 @@ const ViewPackagesPage: React.FC = () => {
         onConfirm={handleDeleteConfirm}
         packageTitle={selectedPackage?.title || ""}
         loading={deleteLoading}
+      />
+
+      <AddPackageModal
+        isOpen={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onSuccess={fetchPackages}
       />
     </div>
   );

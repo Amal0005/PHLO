@@ -3,7 +3,7 @@ import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
 import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
 import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 import { UserMapper } from "../../../adapters/mapper/user/userMapper";
-import { IUserLoginUseCase } from "@/domain/interface/user/auth/IuserLoginUseCase";
+import { IUserLoginUseCase } from "@/domain/interface/user/auth/IUserLoginUseCase";
 import { MESSAGES } from "@/utils/commonMessages";
 
 export class userLoginUserUseCase implements IUserLoginUseCase {

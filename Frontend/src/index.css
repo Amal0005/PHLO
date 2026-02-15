@@ -63,10 +63,12 @@
     transform: translateY(0);
     opacity: 0.85;
   }
+
   50% {
     transform: translateY(-6px);
     opacity: 1;
   }
+
   100% {
     transform: translateY(0);
     opacity: 0.85;
@@ -76,4 +78,131 @@
 .welcome-float {
   display: inline-block;
   animation: floatText 3.5s ease-in-out infinite;
+}
+
+/* Mapbox Geocoder Premium Styling */
+.location-geocoder-container {
+  width: 100%;
+}
+
+.mapboxgl-ctrl-geocoder {
+  width: 100% !important;
+  max-width: none !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+}
+
+.mapboxgl-ctrl-geocoder--input {
+  color: white !important;
+  padding: 12px 12px 12px 45px !important;
+  background-color: transparent !important;
+  font-size: 14px !important;
+}
+
+.mapboxgl-ctrl-geocoder--icon-search {
+  fill: #6b7280 !important;
+  top: 12px !important;
+  left: 12px !important;
+}
+
+.mapboxgl-ctrl-geocoder--icon-close {
+  fill: #6b7280 !important;
+  margin-top: 4px !important;
+}
+
+.mapboxgl-ctrl-geocoder--suggestions {
+  background-color: #121212 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  margin-top: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8) !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.mapboxgl-ctrl-geocoder--suggestion {
+  padding: 12px 16px !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background-color: transparent !important;
+}
+
+.mapboxgl-ctrl-geocoder--suggestion:last-child {
+  border-bottom: none !important;
+}
+
+.mapboxgl-ctrl-geocoder--suggestion-title {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  display: block !important;
+  font-size: 14px !important;
+  margin-bottom: 2px !important;
+}
+
+.mapboxgl-ctrl-geocoder--suggestion-address {
+  color: #a1a1aa !important;
+  font-size: 12px !important;
+  display: block !important;
+}
+
+/* Hover and Active states - Extra specific to override default Mapbox CSS */
+.mapboxgl-ctrl-geocoder--suggestion:hover,
+.mapboxgl-ctrl-geocoder .suggestions>li>a:hover,
+.mapboxgl-ctrl-geocoder .suggestions>.active>a {
+  background-color: #27272a !important;
+  /* Zinc 800 */
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.mapboxgl-ctrl-geocoder .suggestions>.active>a .mapboxgl-ctrl-geocoder--suggestion-title,
+.mapboxgl-ctrl-geocoder--suggestion:hover .mapboxgl-ctrl-geocoder--suggestion-title {
+  color: #ffffff !important;
+}
+
+.mapboxgl-ctrl-geocoder .suggestions>.active>a .mapboxgl-ctrl-geocoder--suggestion-address,
+.mapboxgl-ctrl-geocoder--suggestion:hover .mapboxgl-ctrl-geocoder--suggestion-address {
+  color: #e4e4e7 !important;
+  /* Zinc 200 */
+}
+
+/* Ensure the list itself is dark and solid */
+.mapboxgl-ctrl-geocoder .suggestions {
+  background-color: #121212 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.mapboxgl-ctrl-geocoder .suggestions>li {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.mapboxgl-ctrl-geocoder .suggestions>li>a {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+}
+
+/* Remove default mapbox attribution in search */
+.mapboxgl-ctrl-geocoder--powered-by {
+  display: none !important;
+}
+
+/* Scrollbar Hider Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

@@ -51,8 +51,8 @@ export default function CreatorNavbar() {
     return (
         <nav
             className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
-                    ? "bg-black/95 backdrop-blur-lg border-b border-white/10"
-                    : "bg-transparent"
+                ? "bg-black/95 backdrop-blur-lg border-b border-white/10"
+                : "bg-transparent"
                 }`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,6 +90,19 @@ export default function CreatorNavbar() {
                                         Creator
                                     </span>
                                 </div>
+                                {creator.profilePhoto ? (
+                                    <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10">
+                                        {creator.profilePhoto.startsWith('http') ? (
+                                            <img src={creator.profilePhoto} alt={creator.fullName} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <S3Media s3Key={creator.profilePhoto} className="w-full h-full object-cover" />
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold">
+                                        {creator.fullName.charAt(0)}
+                                    </div>
+                                )}
                                 <button
                                     onClick={handleLogout}
                                     className="p-2 bg-white/5 border border-white/10 rounded-full hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-400 transition-all"
@@ -123,8 +136,8 @@ export default function CreatorNavbar() {
                                     setMobileMenuOpen(false);
                                 }}
                                 className={`flex items-center gap-4 w-full px-4 py-3 rounded-xl transition-all ${link.active
-                                        ? "bg-white/10 text-white"
-                                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                                    ? "bg-white/10 text-white"
+                                    : "text-gray-400 hover:text-white hover:bg-white/5"
                                     }`}
                             >
                                 <link.icon className="w-5 h-5" />

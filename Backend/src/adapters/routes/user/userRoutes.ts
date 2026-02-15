@@ -11,6 +11,8 @@ import {
   getProfileController,
   editProfileController,
   changePasswordController,
+  listUserPackagesController,
+  getPackageDetailController,
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
@@ -94,8 +96,7 @@ export class UserRoutes {
         this._creatorRepo,
       ),
       authorizeRoles("user"),
-      (req: Request, res: Response) =>
-        getProfileController.execute(req, res),
+      (req: Request, res: Response) => getProfileController.execute(req, res),
     );
     this.userRouter.patch(
       "/profile",
@@ -106,8 +107,7 @@ export class UserRoutes {
         this._creatorRepo,
       ),
       authorizeRoles("user"),
-      (req: Request, res: Response) =>
-        editProfileController.execute(req, res),
+      (req: Request, res: Response) => editProfileController.execute(req, res),
     );
     this.userRouter.patch(
       "/change-password",
@@ -121,6 +121,20 @@ export class UserRoutes {
       (req: Request, res: Response) =>
         changePasswordController.execute(req, res),
     );
+    this.userRouter.get(
+      "/packages",
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: Request, res: Response) =>
+        listUserPackagesController.listPackages(req, res),
+    );
+    this.userRouter.get("/packages/:id", (req: Request, res: Response) =>
+      getPackageDetailController.getPackageDetail(req, res),
+    );
   }
 }
-

@@ -8,6 +8,8 @@ import LandingPage from "@/pages/landing";
 import ProtectedRoute from "./protectedRoute";
 import { ROUTES } from "../constants/routes";
 import UserProfile from "@/pages/user/profile/userProfile";
+import PackageListing from "@/pages/user/package/packageListing";
+import PackageDetailPage from "@/pages/user/package/packageDetail";
 // import NotFound from "@/pages/user/404";
 
 export function UserRoutes() {
@@ -29,6 +31,8 @@ export function UserRoutes() {
       <Route element={<ProtectedRoute role="user" />}>
         <Route path={ROUTES.USER.HOME} element={<Home />} />
           <Route path={ROUTES.USER.PROFILE} element={<UserProfile />} />
+          <Route path={ROUTES.USER.PACKAGES} element={<PackageListing/>}/>
+          <Route path={ROUTES.USER.PACKAGE_DETAIL} element={<PackageDetailPage/>}/>
       </Route>
     </Routes>
   );

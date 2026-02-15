@@ -12,7 +12,7 @@ import { confirmActionToast } from "./confirmActionToast";
 import { UserAuthService } from "@/services/user/UserAuthService";
 
 interface NavbarProps {
-  scrollToSection: (id: string) => void;
+  scrollToSection?: (id: string) => void;
 }
 
 export default function Navbar({ scrollToSection }: NavbarProps) {
@@ -44,18 +44,19 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
     );
   };
 
-  const handleMenuClick = (sectionId: string) => {
+ const handleMenuClick = (sectionId: string) => {
+  if (scrollToSection) {
     scrollToSection(sectionId);
-    setMobileMenuOpen(false);
-  };
-
+  }
+  setMobileMenuOpen(false);
+};
   const isProfilePage = location.pathname === ROUTES.USER.PROFILE;
 
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
-          ? "bg-black/95 backdrop-blur-lg border-b border-white/10"
-          : "bg-transparent"
+        ? "bg-black/95 backdrop-blur-lg border-b border-white/10"
+        : "bg-transparent"
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1">
@@ -70,7 +71,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             <button
-              onClick={() => scrollToSection("packages")}
+              onClick={() => navigate(ROUTES.USER.PACKAGES)}
               className="text-gray-300 hover:text-white transition-colors"
             >
               Packages
@@ -132,7 +133,10 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
         <div className="md:hidden bg-black/95 backdrop-blur-lg border-b border-white/10">
           <div className="px-4 py-4 space-y-3">
             <button
-              onClick={() => handleMenuClick("packages")}
+              onClick={() => {
+                navigate(ROUTES.USER.PACKAGES);
+                setMobileMenuOpen(false);
+              }}
               className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               Packages

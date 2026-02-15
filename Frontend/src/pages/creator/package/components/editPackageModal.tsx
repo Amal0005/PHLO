@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { S3Service } from "@/services/s3Service";
 import { S3Media } from "@/compoents/reusable/s3Media";
+import LocationSearchBar from "./locationSearchBar";
 
 interface EditPackageModalProps {
   isOpen: boolean;
@@ -17,8 +18,17 @@ interface EditPackageModalProps {
     title: string;
     description: string;
     price: number;
-    category: string;
+    category: string | {
+      _id: string;
+      name: string;
+      description?: string;
+    };
     images?: string[];
+    location?: {
+      type: "Point";
+      coordinates: [number, number];
+    };
+    placeName?: string;
   } | null;
 }
 
@@ -62,8 +72,18 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
       setValue("title", packageData.title);
       setValue("description", packageData.description);
       setValue("price", packageData.price);
-      setValue("category", packageData.category);
+      // Extract category ID if it's a populated object
+      const categoryId = typeof packageData.category === 'object'
+        ? packageData.category._id
+        : packageData.category;
+      setValue("category", categoryId);
       setExistingImages(packageData.images || []);
+      if (packageData.location) {
+        setValue("location", packageData.location);
+      }
+      if (packageData.placeName) {
+        setValue("placeName", packageData.placeName);
+      }
     }
   }, [packageData, isOpen, setValue]);
 
@@ -112,12 +132,18 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
       if (data.description && data.description !== packageData.description)
         updateData.description = data.description;
       if (data.price && data.price !== packageData.price) updateData.price = data.price;
-      if (data.category && data.category !== packageData.category)
+      const currentCategoryId = typeof packageData.category === 'object'
+        ? packageData.category._id
+        : packageData.category;
+      if (data.category && data.category !== currentCategoryId)
         updateData.category = data.category;
-      if (allImages.length !== packageData.images?.length || 
-          !allImages.every((img, i) => img === packageData.images?.[i])) {
+      if (allImages.length !== packageData.images?.length ||
+        !allImages.every((img, i) => img === packageData.images?.[i])) {
         updateData.images = allImages;
       }
+
+      if (data.location) updateData.location = data.location;
+      if (data.placeName) updateData.placeName = data.placeName;
 
       await CreatorPackageService.editPackage(packageData._id, updateData);
 
@@ -143,71 +169,110 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-zinc-900 border border-white/10 p-8 rounded-3xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-black mb-6 tracking-tight text-white">
-          Edit Package
-        </h2>
-
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <div className="bg-zinc-900 border border-white/10 p-6 md:p-8 rounded-3xl w-full max-w-2xl shadow-2xl max-h-[95vh] overflow-y-auto no-scrollbar">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <label className="block text-xs uppercase tracking-widest text-gray-500 font-bold mb-2">
-              Title
-            </label>
-            <input
-              {...register("title")}
-              className="w-full bg-black/50 border border-white/5 p-4 rounded-xl text-white"
-            />
-            {errors.title && (
-              <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
-            )}
+            <h2 className="text-3xl font-black tracking-tight text-white leading-none mb-2">
+              Edit Package
+            </h2>
+            <p className="text-gray-500 text-sm font-medium uppercase tracking-wider">Update Package Details</p>
+          </div>
+          <button onClick={handleClose} className="text-gray-500 hover:text-white transition-colors">✕</button>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+            <div className="space-y-5">
+              {/* TITLE */}
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 font-bold mb-2">
+                  Title
+                </label>
+                <input
+                  {...register("title")}
+                  className="w-full bg-black/50 border border-white/5 p-4 rounded-xl text-white focus:border-white/20 outline-none transition-colors"
+                />
+                {errors.title && (
+                  <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
+                )}
+              </div>
+
+              {/* PRICE */}
+              <div>
+                <label className="text-xs text-gray-500 font-bold mb-2 block uppercase tracking-widest">
+                  Price (₹)
+                </label>
+                <input
+                  type="number"
+                  {...register("price", { valueAsNumber: true })}
+                  className="w-full bg-black/50 border border-white/5 p-4 rounded-xl text-white focus:border-white/20 outline-none transition-colors"
+                />
+                {errors.price && (
+                  <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-5">
+              {/* CATEGORY */}
+              <div>
+                <label className="text-xs text-gray-500 font-bold mb-2 block uppercase tracking-widest">
+                  Category
+                </label>
+                <select
+                  {...register("category")}
+                  className="w-full bg-black/50 border border-white/5 p-4 rounded-xl text-white focus:border-white/20 outline-none transition-colors appearance-none"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* LOCATION SEARCH */}
+              <div>
+                <label className="text-xs text-gray-500 font-bold mb-2 block uppercase tracking-widest">
+                  Search Location {packageData.placeName && `(Current: ${packageData.placeName})`}
+                </label>
+
+                <LocationSearchBar
+                  onChange={(location) => {
+                    const geoJSON = {
+                      type: "Point" as const,
+                      coordinates: [location.longitude, location.latitude] as [number, number]
+                    };
+
+                    setValue("location", geoJSON, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+                    setValue("placeName", location.placeName || "", { shouldValidate: true });
+                  }}
+                />
+
+                {errors.location && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Please select a location
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
 
+          {/* DESCRIPTION */}
           <div>
             <label className="block text-xs uppercase tracking-widest text-gray-500 font-bold mb-2">
               Description
             </label>
             <textarea
               {...register("description")}
-              className="w-full bg-black/50 border border-white/5 p-4 rounded-xl h-32 text-white"
+              className="w-full bg-black/50 border border-white/5 p-4 rounded-xl h-32 text-white focus:border-white/20 outline-none transition-colors resize-none"
             />
             {errors.description && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.description.message}
               </p>
             )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs text-gray-500 font-bold mb-2 block">
-                Price (₹)
-              </label>
-              <input
-                type="number"
-                {...register("price", { valueAsNumber: true })}
-                className="w-full bg-black/50 border border-white/5 p-4 rounded-xl text-white"
-              />
-              {errors.price && (
-                <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="text-xs text-gray-500 font-bold mb-2 block">
-                Category
-              </label>
-              <select
-                {...register("category")}
-                className="w-full bg-black/50 border border-white/5 p-4 rounded-xl text-white"
-              >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option key={cat._id} value={cat._id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
           <div>
@@ -269,11 +334,11 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-3 pt-6 border-t border-white/5">
             <button
               type="button"
               onClick={handleClose}
-              className="px-6 py-3 bg-zinc-800 rounded-xl text-white font-bold hover:bg-zinc-700 transition-colors"
+              className="px-8 py-3 bg-zinc-800 text-white rounded-xl font-bold hover:bg-zinc-700 transition-colors"
             >
               Cancel
             </button>
@@ -281,7 +346,7 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 bg-white text-black rounded-xl font-bold hover:bg-gray-200 transition-colors disabled:opacity-50"
+              className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:bg-gray-200 transition-all disabled:opacity-50 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
             >
               {loading ? "Updating..." : "Update Package"}
             </button>

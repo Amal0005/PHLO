@@ -4,9 +4,13 @@ export interface PackageEntity {
   title: string;
   description: string;
   price: number;
-  category: string; 
-  status: "pending" | "approved" | "rejected";
+  category: string;
   images: string[];
+  location: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
+  placeName?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
