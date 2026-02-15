@@ -234,7 +234,7 @@
 //   return (
 //     <div className="min-h-screen bg-black text-white">
 //       <UserNavbar />
-      
+
 //       {/* Hero Section with Image */}
 //       <div className="relative w-full h-[70vh] overflow-hidden">
 //         {/* Main Hero Image */}
@@ -249,10 +249,10 @@
 //             <PackageIcon className="w-24 h-24 text-gray-700" />
 //           </div>
 //         )}
-        
+
 //         {/* Gradient Overlay */}
 //         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
-        
+
 //         {/* Back Button - Floating */}
 //         <button
 //           onClick={() => navigate(-1)}
@@ -418,7 +418,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Package as PackageIcon, MapPin, Calendar, Image as ImageIcon, X, User } from "lucide-react";
+import { ArrowLeft, Package as PackageIcon, MapPin, Calendar, Image as ImageIcon, X } from "lucide-react";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { UserPackage } from "@/interface/user/userPackageInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
@@ -479,10 +479,10 @@ const PackageDetailPage: React.FC = () => {
     <>
       <div className="min-h-screen bg-black text-white">
         <UserNavbar />
-        
+
         <div className="pt-24 pb-20">
           <div className="max-w-[1600px] mx-auto px-8">
-            
+
             {/* Top Bar */}
             <div className="flex items-center justify-between mb-12">
               <button
@@ -494,7 +494,7 @@ const PackageDetailPage: React.FC = () => {
                 </div>
                 <span className="text-sm font-medium tracking-wide">BACK</span>
               </button>
-              
+
               <span className="px-5 py-2 bg-zinc-900 border border-zinc-800 rounded-full text-xs font-bold uppercase tracking-widest text-gray-400">
                 {typeof packageData.category === 'object'
                   ? packageData.category.name
@@ -504,29 +504,38 @@ const PackageDetailPage: React.FC = () => {
 
             {/* Main Grid Layout */}
             <div className="grid lg:grid-cols-2 gap-16">
-              
+
               {/* LEFT COLUMN - Content First */}
               <div className="space-y-10 lg:pr-8">
-                
+
                 {/* Title Section */}
                 <div className="space-y-6">
                   <h1 className="text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight">
                     {packageData.title}
                   </h1>
-                  
+
                   {/* Creator Info */}
                   {typeof packageData.creatorId === 'object' && (
                     <div className="flex items-center gap-4 pt-4">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xl shadow-xl">
-                        {packageData.creatorId.fullName.charAt(0)}
-                      </div>
+                      {packageData.creatorId.profilePhoto ? (
+                        <div className="w-16 h-16 rounded-full overflow-hidden border border-zinc-800 shadow-xl">
+                          <S3Media
+                            s3Key={packageData.creatorId.profilePhoto}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-xl shadow-xl">
+                          {packageData.creatorId.fullName.charAt(0)}
+                        </div>
+                      )}
                       <div>
                         <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">Creator</div>
                         <div className="font-semibold text-xl">{packageData.creatorId.fullName}</div>
-                        {packageData.creatorId.city && (
+                        {packageData.placeName && (
                           <div className="flex items-center gap-2 text-sm text-gray-400 mt-1">
                             <MapPin className="w-4 h-4" />
-                            <span>{packageData.creatorId.city}</span>
+                            <span>{packageData.placeName}</span>
                           </div>
                         )}
                       </div>
@@ -558,7 +567,7 @@ const PackageDetailPage: React.FC = () => {
                       })}</span>
                     </div>
                   </div>
-                  
+
                   <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6">
                     <div className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Updated</div>
                     <div className="flex items-center gap-2 text-white font-medium">
@@ -589,7 +598,7 @@ const PackageDetailPage: React.FC = () => {
                       <span className="text-gray-500 font-medium text-lg">/pkg</span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <button className="w-full bg-white text-black py-5 rounded-2xl font-bold text-base hover:bg-gray-200 transition-all hover:scale-[1.02] shadow-2xl">
                       Book This Package
@@ -611,7 +620,7 @@ const PackageDetailPage: React.FC = () => {
 
               {/* RIGHT COLUMN - Images */}
               <div className="space-y-4">
-                
+
                 {/* Main Image */}
                 <div className="relative group">
                   <div className="aspect-[3/4] bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800">
@@ -627,7 +636,7 @@ const PackageDetailPage: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  
+
                   {/* Floating View All Button */}
                   {packageData.images?.length > 1 && (
                     <button
@@ -647,11 +656,10 @@ const PackageDetailPage: React.FC = () => {
                       <button
                         key={index}
                         onClick={() => setSelectedImage(index)}
-                        className={`aspect-square rounded-xl overflow-hidden transition-all border-2 ${
-                          selectedImage === index
-                            ? "border-white scale-95 opacity-100"
-                            : "border-transparent opacity-50 hover:opacity-100 hover:scale-105"
-                        }`}
+                        className={`aspect-square rounded-xl overflow-hidden transition-all border-2 ${selectedImage === index
+                          ? "border-white scale-95 opacity-100"
+                          : "border-transparent opacity-50 hover:opacity-100 hover:scale-105"
+                          }`}
                       >
                         <S3Media
                           s3Key={img}
@@ -681,7 +689,7 @@ const PackageDetailPage: React.FC = () => {
       {showGallery && (
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto">
           <div className="min-h-screen p-8">
-            
+
             {/* Modal Header */}
             <div className="max-w-7xl mx-auto mb-8">
               <div className="flex items-center justify-between">

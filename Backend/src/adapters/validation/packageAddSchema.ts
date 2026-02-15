@@ -6,4 +6,9 @@ export const addPackageSchema = z.object({
   price: z.number().positive("Price must be a positive number"),
   category: z.string().min(1, "Category is required"),
   images: z.array(z.string()).optional(),
+  location: z.object({
+    type: z.literal("Point"),
+    coordinates: z.tuple([z.number(), z.number()]),
+  }),
+  placeName: z.string().optional(),
 });

@@ -15,6 +15,11 @@ export interface UserPackage {
     description?: string;
   };
   images: string[];
+  location: {
+    type: "Point";
+    coordinates: [number, number]; // [longitude, latitude]
+  };
+  placeName?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -25,6 +30,11 @@ export interface PackageFilters {
   minPrice?: number;
   maxPrice?: number;
   creatorId?: string;
+  search?: string;
+  sortBy?: "price-asc" | "price-desc" | "newest";
+  lat?: number;
+  lng?: number;
+  radiusInKm?: number;
 }
 
 export interface PackageListResponse {

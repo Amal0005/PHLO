@@ -31,6 +31,8 @@ export class EditPackageUseCase implements IEditPackageUseCase {
       ...(data.price !== undefined && { price: data.price }),
       ...(data.category && { category: data.category }),
       ...(data.images && { images: data.images }),
+      ...(data.location && { location: data.location }),
+      ...(data.placeName && { placeName: data.placeName }),
     };
 
     const updatedPackage = await this._packageRepo.update(packageId, updateData);

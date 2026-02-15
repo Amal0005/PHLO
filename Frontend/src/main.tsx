@@ -8,6 +8,10 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { PersistGate } from "redux-persist/integration/react";
 import { setUpInterceptors } from "./axios/axiosInterceptors";
 
+import "mapbox-gl/dist/mapbox-gl.css";
+import "@mapbox/mapbox-gl-geocoder/lib/mapbox-gl-geocoder.css";
+
+
 setUpInterceptors()
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Package as PackageIcon } from "lucide-react";
+import { Search, Package as PackageIcon, MapPin } from "lucide-react";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { UserPackage } from "@/interface/user/userPackageInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
@@ -8,26 +8,93 @@ import UserNavbar from "@/compoents/reusable/userNavbar";
 
 const PackageListing: React.FC = () => {
   const navigate = useNavigate();
+  const getSavedFilters = () => {
+    const saved = sessionStorage.getItem("packageFilters");
+    return saved ? JSON.parse(saved) : null;
+  };
+
+  const saved = getSavedFilters();
+
   const [packages, setPackages] = useState<UserPackage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState(saved?.search || "");
+  const [selectedCategory, setSelectedCategory] = useState<string>(saved?.category || "");
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({
     min: 0,
     max: 100000,
   });
-  const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "newest">("newest");
+  const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "newest">(saved?.sort || "newest");
+  const [allCategories, setAllCategories] = useState<Array<{ _id: string; name: string }>>([]);
+  const [debouncedSearch, setDebouncedSearch] = useState(saved?.search || "");
+  const [locationFilter, setLocationFilter] = useState<{ lat: number; lng: number } | null>(saved?.location || null);
+  const [isLocating, setIsLocating] = useState(false);
 
+  // Save filters to sessionStorage whenever they change
+  useEffect(() => {
+    const filtersToSave = {
+      search: searchQuery,
+      category: selectedCategory,
+      sort: sortBy,
+      location: locationFilter
+    };
+    sessionStorage.setItem("packageFilters", JSON.stringify(filtersToSave));
+  }, [searchQuery, selectedCategory, sortBy, locationFilter]);
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Fetch packages whenever filters change
   useEffect(() => {
     fetchPackages();
-  }, []);
+  }, [debouncedSearch, selectedCategory, priceRange.min, priceRange.max, sortBy, locationFilter]);
 
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await UserPackageService.listPackages();
+      const filters: any = {
+        sortBy,
+      };
+
+      if (debouncedSearch.trim()) {
+        filters.search = debouncedSearch.trim();
+      }
+      if (selectedCategory) {
+        filters.category = selectedCategory;
+      }
+      if (priceRange.min > 0 || priceRange.max < 100000) {
+        filters.minPrice = priceRange.min;
+        filters.maxPrice = priceRange.max;
+      }
+
+      if (locationFilter) {
+        filters.lat = locationFilter.lat;
+        filters.lng = locationFilter.lng;
+        filters.radiusInKm = 50; // Default radius
+      }
+
+      const response = await UserPackageService.listPackages(filters);
       if (response?.success) {
         setPackages(response.data || []);
+
+        // Extract unique categories for filter dropdown
+        if (!selectedCategory) {
+          const categoryMap = new Map<string, { _id: string; name: string }>();
+          response.data.forEach((pkg: UserPackage) => {
+            if (typeof pkg.category === 'object' && pkg.category._id && pkg.category.name) {
+              categoryMap.set(pkg.category._id, {
+                _id: pkg.category._id,
+                name: pkg.category.name
+              });
+            }
+          });
+          setAllCategories(Array.from(categoryMap.values()));
+        }
       }
     } catch (error) {
       console.error("Failed to fetch packages", error);
@@ -36,57 +103,13 @@ const PackageListing: React.FC = () => {
     }
   };
 
-  // Get unique categories from packages
-const categories = useMemo(() => {
-  const cats = packages.map((pkg) => 
-    typeof pkg.category === 'object' ? pkg.category.name : pkg.category
-  );
-  return Array.from(new Set(cats)).filter(Boolean);
-}, [packages]);
-
-
-  // Filter and sort packages
-  const filteredAndSortedPackages = useMemo(() => {
-    let filtered = packages;
-
-    // Search filter
-    if (searchQuery.trim()) {
-      filtered = filtered.filter(
-        (pkg) =>
-          pkg.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          pkg.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Category filter
-if (selectedCategory) {
-  filtered = filtered.filter((pkg) => {
-    const categoryName = typeof pkg.category === 'object' ? pkg.category.name : pkg.category;
-    return categoryName === selectedCategory;
-  });
-}
-
-    // Price range filter
-    filtered = filtered.filter(
-      (pkg) => pkg.price >= priceRange.min && pkg.price <= priceRange.max
-    );
-
-    // Sort
-    const sorted = [...filtered].sort((a, b) => {
-      if (sortBy === "price-asc") return a.price - b.price;
-      if (sortBy === "price-desc") return b.price - a.price;
-      // newest
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-
-    return sorted;
-  }, [packages, searchQuery, selectedCategory, priceRange, sortBy]);
-
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory("");
     setPriceRange({ min: 0, max: 100000 });
     setSortBy("newest");
+    setLocationFilter(null);
+    sessionStorage.removeItem("packageFilters");
   };
 
   return (
@@ -136,9 +159,9 @@ if (selectedCategory) {
               className="bg-zinc-900 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white/20 transition-colors cursor-pointer"
             >
               <option value="">All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+              {allCategories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
                 </option>
               ))}
             </select>
@@ -154,8 +177,40 @@ if (selectedCategory) {
               <option value="price-desc">Price: High to Low</option>
             </select>
 
+            {/* Near Me Button */}
+            <button
+              onClick={() => {
+                if (locationFilter) {
+                  setLocationFilter(null);
+                  return;
+                }
+                setIsLocating(true);
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    setLocationFilter({
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude,
+                    });
+                    setIsLocating(false);
+                  },
+                  (error) => {
+                    console.error("Error getting location", error);
+                    alert("Unable to get your location. Please check browser permissions.");
+                    setIsLocating(false);
+                  }
+                );
+              }}
+              className={`px-6 py-3 rounded-2xl font-bold transition-all flex items-center gap-2 ${locationFilter
+                ? "bg-white text-black"
+                : "bg-zinc-900 text-white border border-white/10 hover:border-white/20"
+                }`}
+            >
+              <MapPin size={18} className={isLocating ? "animate-bounce" : ""} />
+              {isLocating ? "Locating..." : locationFilter ? "Near Me: ON" : "Near Me"}
+            </button>
+
             {/* Clear Filters */}
-            {(searchQuery || selectedCategory || sortBy !== "newest") && (
+            {(searchQuery || selectedCategory || sortBy !== "newest" || locationFilter) && (
               <button
                 onClick={clearFilters}
                 className="px-6 py-3 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-colors"
@@ -168,8 +223,8 @@ if (selectedCategory) {
             <div className="ml-auto flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
               <span className="text-sm font-bold text-gray-400">
-                {filteredAndSortedPackages.length} Package
-                {filteredAndSortedPackages.length !== 1 ? "s" : ""}
+                {packages.length} Package
+                {packages.length !== 1 ? "s" : ""}
               </span>
             </div>
           </div>
@@ -180,16 +235,14 @@ if (selectedCategory) {
           <div className="flex flex-col items-center justify-center h-[50vh]">
             <div className="w-12 h-12 border-4 border-white/10 border-t-white rounded-full animate-spin" />
           </div>
-        ) : filteredAndSortedPackages.length === 0 ? (
+        ) : packages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[50vh] text-center">
             <PackageIcon size={48} className="text-gray-600 mb-4" />
             <h3 className="text-2xl font-black mb-2">
-              {packages.length === 0 ? "No Packages Available" : "No Matching Packages"}
+              No Matching Packages
             </h3>
             <p className="text-gray-500 mb-4">
-              {packages.length === 0
-                ? "Check back later for new packages"
-                : "Try adjusting your search or filters"}
+              Try adjusting your search or filters
             </p>
             {(searchQuery || selectedCategory) && (
               <button
@@ -202,9 +255,10 @@ if (selectedCategory) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredAndSortedPackages.map((pkg) => (
+            {packages.map((pkg) => (
               <div
                 key={pkg._id}
+                onClick={() => navigate(`/packages/${pkg._id}`)}
                 className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all group cursor-pointer"
               >
                 {/* Package Image */}
@@ -222,9 +276,9 @@ if (selectedCategory) {
 
                   {/* Category Badge */}
                   <div className="absolute top-4 left-4">
-              <span className="px-3 py-1 bg-white/90 text-black text-xs font-bold rounded-full">
-  {typeof pkg.category === 'object' ? pkg.category.name : pkg.category}
-</span>
+                    <span className="px-3 py-1 bg-white/90 text-black text-xs font-bold rounded-full">
+                      {typeof pkg.category === 'object' ? pkg.category.name : pkg.category}
+                    </span>
                   </div>
                 </div>
 
@@ -238,7 +292,7 @@ if (selectedCategory) {
                   {typeof pkg.creatorId === 'object' && (
                     <div className="text-sm text-gray-400 mb-3">
                       by <span className="text-white font-semibold">{pkg.creatorId.fullName}</span>
-                      {pkg.creatorId.city && <span> • {pkg.creatorId.city}</span>}
+                      {pkg.placeName && <span> • {pkg.placeName}</span>}
                     </div>
                   )}
 
@@ -250,33 +304,7 @@ if (selectedCategory) {
                     <div className="text-2xl font-black">
                       ₹ {pkg.price.toLocaleString()}
                     </div>
-
-                    <button
-                      onClick={() => navigate(`/packages/${pkg._id}`)}
-                      className="px-4 py-2 bg-white text-black rounded-xl font-bold hover:bg-gray-200 transition-colors"
-                    >
-                      View Details
-                    </button>
                   </div>
-
-                  {/* Additional Images Preview */}
-                  {pkg.images?.length > 1 && (
-                    <div className="flex -space-x-3 mt-4">
-                      {pkg.images.slice(1, 4).map((img: string, i: number) => (
-                        <div
-                          key={i}
-                          className="w-10 h-10 rounded-full border-2 border-zinc-900 overflow-hidden"
-                        >
-                          <S3Media s3Key={img} className="w-full h-full object-cover" />
-                        </div>
-                      ))}
-                      {pkg.images.length > 4 && (
-                        <div className="w-10 h-10 rounded-full border-2 border-zinc-900 bg-white/10 flex items-center justify-center text-xs font-bold">
-                          +{pkg.images.length - 4}
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               </div>
             ))}

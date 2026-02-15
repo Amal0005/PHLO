@@ -9,4 +9,9 @@ export interface PackageFilters {
   minPrice?: number;
   maxPrice?: number;
   creatorId?: string;
+  search?: string;
+  sortBy?: "price-asc" | "price-desc" | "newest";
+  lat?: number;
+  lng?: number;
+  radiusInKm?: number;
 }

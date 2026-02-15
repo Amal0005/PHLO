@@ -7,15 +7,21 @@ export class AddPackageUseCase implements IAddPackageUseCase {
         private _packageRepo: IPackageRepository
     ) { }
     async addPackage(data: Partial<PackageEntity>): Promise<PackageEntity> {
+        console.log('📦 Received package data:', JSON.stringify(data, null, 2));
+
         const newPackage: PackageEntity = {
             creatorId: data.creatorId!,
             title: data.title!,
             description: data.description!,
             price: data.price!,
             category: data.category!,
-            status: "pending",
             images: data.images || [],
+            location: data.location!,
+            placeName: data.placeName,
         };
+
+        console.log('📦 Creating package with location:', newPackage.location);
+
         return await this._packageRepo.add(newPackage)
     }
 }
