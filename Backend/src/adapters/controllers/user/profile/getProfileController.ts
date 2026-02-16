@@ -1,4 +1,4 @@
-import { UserMapper } from "@/adapters/mapper/user/userMapper";
+import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";

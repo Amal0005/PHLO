@@ -1,10 +1,11 @@
-import { CreatorMapper } from "@/adapters/mapper/creator/creatorMapper";
+import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { CreatorModel, ICreatorModel } from "@/framework/database/model/creatorModel";
 import { paginateMongo } from "@/utils/pagination";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { BaseRepository } from "../BaseRepository";
+import { BaseRepository } from "../baseRepository";
+
 
 export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorModel> implements ICreatorRepository {
   constructor() {

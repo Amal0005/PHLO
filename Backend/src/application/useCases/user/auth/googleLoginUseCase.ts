@@ -1,7 +1,7 @@
 import { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
-import { User } from "../../../domain/entities/userEntities";
-import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
-import { verifyGoogleIdToken } from "../../../framework/google/verifyGoogleIdToken";
+import { User } from "../../../../domain/entities/userEntities";
+import { IJwtServices } from "../../../../domain/interface/service/IJwtServices";
+import { verifyGoogleIdToken } from "../../../../framework/google/verifyGoogleIdToken";
 import { MESSAGES } from "@/utils/commonMessages";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 

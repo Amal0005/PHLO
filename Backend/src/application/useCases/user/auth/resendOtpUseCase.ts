@@ -1,9 +1,9 @@
-import { IMailService } from "../../../domain/interface/service/IMailServices";
-import { IOTPService } from "../../../domain/interface/service/IOtpServices";
-import { IResendOtpUseCase } from "../../../domain/interface/user/auth/IResendOtpUseCase";
+import { IMailService } from "../../../../domain/interface/service/IMailServices";
+import { IOTPService } from "../../../../domain/interface/service/IOtpServices";
+import { IResendOtpUseCase } from "../../../../domain/interface/user/auth/IResendOtpUseCase";
 
 
-import { renderTemplate } from "../../../utils/renderTemplates";
+import { renderTemplate } from "../../../../utils/renderTemplates";
 
 export class ResendOtpUseCase implements IResendOtpUseCase {
   constructor(

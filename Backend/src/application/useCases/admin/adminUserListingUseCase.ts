@@ -1,5 +1,5 @@
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
-import { IAdminUserListingUseCase } from "../../domain/interface/admin/IAdminUserListingUseCase";
+import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IAdminUserListingUseCase";
 
 
 export class AdminUserListingUseCase implements IAdminUserListingUseCase {

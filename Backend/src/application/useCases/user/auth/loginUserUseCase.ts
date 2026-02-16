@@ -1,4 +1,4 @@
-import { UserMapper } from "@/adapters/mapper/user/userMapper";
+import { UserMapper } from "@/application/mapper/user/userMapper";
 import { loginDto } from "@/domain/dto/user/loginDto";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { IJwtServices } from "@/domain/interface/service/IJwtServices";

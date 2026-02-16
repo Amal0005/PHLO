@@ -1,7 +1,7 @@
 import { IAdminLoginUseCase } from "@/domain/interface/admin/IAdminLoginUseCase";
-import { UserResponseDto } from "../../domain/dto/user/userResponseDto";
-import { IJwtServices } from "../../domain/interface/service/IJwtServices";
-import { IPasswordService } from "../../domain/interface/service/IPasswordService";
+import { UserResponseDto } from "../../../domain/dto/user/userResponseDto";
+import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
+import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
 import { MESSAGES } from "@/utils/commonMessages";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 

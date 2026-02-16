@@ -1,6 +1,6 @@
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
-import { IOTPService } from "../../../domain/interface/service/IOtpServices";
-import { IVerifyForgotOtpUseCase } from "../../../domain/interface/user/auth/IVerifyForgotOtpUseCase";
+import { IOTPService } from "../../../../domain/interface/service/IOtpServices";
+import { IVerifyForgotOtpUseCase } from "../../../../domain/interface/user/auth/IVerifyForgotOtpUseCase";
 import { MESSAGES } from "@/utils/commonMessages";
 
 export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {

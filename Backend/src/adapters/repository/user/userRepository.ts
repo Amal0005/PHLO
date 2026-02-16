@@ -2,7 +2,7 @@ import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { User } from "../../../domain/entities/userEntities";
 import { UserModel, IUserModel } from "../../../framework/database/model/userModel";
 import { paginateMongo } from "@/utils/pagination";
-import { UserMapper } from "../../mapper/user/userMapper";
+import { UserMapper } from "../../../application/mapper/user/userMapper";
 import { BaseRepository } from "../BaseRepository";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 

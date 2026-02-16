@@ -3,8 +3,8 @@ import { UploadController } from "@/adapters/controllers/user/s3/uploaderControl
 import { ViewController } from "@/adapters/controllers/user/s3/viewController";
 import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
 import { S3StorageService } from "@/domain/services/s3Services";
-import { GetPresignedViewUrlUseCase } from "@/useCases/getPresignedViewUrlUseCase";
-import { GetPresignedUploadUrlUseCase } from "@/useCases/getUrlUseCase";
+import { GetPresignedViewUrlUseCase } from "@/application/useCases/getPresignedViewUrlUseCase";
+import { GetPresignedUploadUrlUseCase } from "@/application/useCases/getUrlUseCase";
 
 
 const storageService=new S3StorageService
