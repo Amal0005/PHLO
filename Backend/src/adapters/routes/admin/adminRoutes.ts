@@ -1,12 +1,16 @@
 import { Router, Request, Response } from "express";
 import {
   addCategoryController,
+  addSubscriptionController,
   adminCreatorController,
   adminLoginController,
   adminUserController,
   deleteCategoryController,
+  deleteSubscriptionController,
   editCategoryController,
+  editSubscriptionController,
   getCategoryController,
+  getSubscriptionController,
 } from "../../../framework/depInjection/admin/adminInjections";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
@@ -84,6 +88,18 @@ export class AdminRoutes {
     this.adminRouter.patch("/category/:categoryId", (req: Request, res: Response) => {
       editCategoryController.editCategory(req, res);
     });
+    this.adminRouter.post("/subscription",(req:Request,res:Response)=>{
+      addSubscriptionController.addSubscription(req,res)
+    })
+    this.adminRouter.get("/subscription",(req:Request,res:Response)=>{
+      getSubscriptionController.getSubscriptions(req,res)
+    })
+    this.adminRouter.patch("/subscription/:subscriptionId",(req:Request,res:Response)=>{
+      editSubscriptionController.editSubscription(req,res)
+    })
+    this.adminRouter.delete("/subscription/:subscriptionId",(req:Request,res:Response)=>{
+      deleteSubscriptionController.deleteSubscription(req,res)
+    })
   }
 }
 
