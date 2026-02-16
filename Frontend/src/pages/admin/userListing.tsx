@@ -151,7 +151,7 @@ export default function UserListingPage() {
         <h1 className="text-2xl font-bold text-white">Users</h1>
         <select
           value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value as any)}
+          onChange={(e) => setFilterStatus(e.target.value as "all" | "active" | "blocked")}
           className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
         >
           <option value="all">All Status</option>

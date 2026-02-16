@@ -5,14 +5,14 @@ interface EditUserPasswordProps {
     isOpen: boolean;
     onClose: () => void;
     passwordForm: {
-        currentPassword: "";
-        newPassword: "";
-        confirmPassword: "";
+        currentPassword: string;
+        newPassword: string;
+        confirmPassword: string;
     };
     handlePasswordChange: (e: ChangeEvent<HTMLInputElement>) => void;
     handlePasswordSubmit: (e: FormEvent) => void;
     isSaving: boolean;
-    errors?: any;
+    errors?: Record<string, string[] | undefined>;
 }
 
 export const EditUserPassword = ({

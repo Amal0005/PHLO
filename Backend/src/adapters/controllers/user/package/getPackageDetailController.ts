@@ -6,36 +6,37 @@ import { IGetPackageDetailUseCase } from "@/domain/interface/user/packages/IGetP
 export class GetPackageDetailController {
   constructor(
     private _getPackageDetailUseCase: IGetPackageDetailUseCase
-  ) {}
+  ) { }
 
   async getPackageDetail(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      
+
       if (!id) {
-        return res.status(StatusCode.BAD_REQUEST).json({ 
-          success: false, 
-          message: "Package ID is required" 
+        return res.status(StatusCode.BAD_REQUEST).json({
+          success: false,
+          message: "Package ID is required"
         });
       }
 
       const packageData = await this._getPackageDetailUseCase.getPackageById(id);
-      
+
       if (!packageData) {
-        return res.status(StatusCode.NOT_FOUND).json({ 
-          success: false, 
-          message: "Package not found" 
+        return res.status(StatusCode.NOT_FOUND).json({
+          success: false,
+          message: "Package not found"
         });
       }
 
-      res.status(StatusCode.OK).json({ 
-        success: true, 
-        data: packageData 
+      res.status(StatusCode.OK).json({
+        success: true,
+        data: packageData
       });
-    } catch (error: any) {
-      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ 
-        success: false, 
-        message: error.message || MESSAGES.ERROR.INTERNAL_SERVER_ERROR 
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR;
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message
       });
     }
   }

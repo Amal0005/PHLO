@@ -13,6 +13,7 @@ import InputError from "@/compoents/reusable/inputErrors";
 import { setUserAuth } from "@/store/slices/user/userAuthSlice";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
+import { AxiosError } from "axios";
 
 interface loginForm {
   email: string;
@@ -58,9 +59,10 @@ export default function Login() {
         console.error("Login failed: Missing token or user data", data);
         toast.error("Login failed: Invalid server response");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
       const message =
-        error?.response?.data?.message || "Invalid email or password";
+        axiosError.response?.data?.message || "Invalid email or password";
 
       toast.error(message);
     } finally {

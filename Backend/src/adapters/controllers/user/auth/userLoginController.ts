@@ -2,14 +2,14 @@ import { IUserLoginUseCase } from "../../../../domain/interface/user/auth/IUserL
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { MESSAGES } from "@/utils/commonMessages";
+import { AppError } from "@/domain/errors/appError";
 
 export class userLoginController {
   constructor(private _userLoginUseCase: IUserLoginUseCase) { }
 
-  async login(req: Request, res: Response) {
+  async login(req: Request, res: Response): Promise<Response> {
     try {
       const result = await this._userLoginUseCase.loginUser(req.body);
-      console.log(result);
       const { refreshToken } = result;
 
       res.cookie("userRefreshToken", refreshToken, {
@@ -25,10 +25,13 @@ export class userLoginController {
           accessToken: result.accessToken,
         },
       });
-    } catch (error: any) {
-      console.log("Login error:", error);
-      res.status(StatusCode.BAD_REQUEST).json({
-        message: error.message || MESSAGES.ERROR.BAD_REQUEST,
+    } catch (error: unknown) {
+      const statusCode = error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
+      const message = error instanceof Error ? error.message : MESSAGES.ERROR.BAD_REQUEST;
+
+      return res.status(statusCode).json({
+        success: false,
+        message: message,
       });
     }
   }

@@ -11,7 +11,7 @@ export class CreatorRegisterController {
     private _checkCreatorExistsUseCase: ICheckCreatorExistsUseCase,
     private _verifyCreatorOtpUseCase: IVerifyCreatorOtpUseCase,
     private _resendCreatorOtpUseCase: IResendCreatorOtpUseCase
-  ) {}
+  ) { }
 
   async register(req: Request, res: Response) {
     try {
@@ -20,8 +20,9 @@ export class CreatorRegisterController {
         success: true,
         message: "OTP sent to email. Please verify to complete registration."
       });
-    } catch (error: any) {
-      res.status(StatusCode.BAD_REQUEST).json({ success: false, message: error.message });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to register creator";
+      res.status(StatusCode.BAD_REQUEST).json({ success: false, message });
     }
   }
 
@@ -35,10 +36,11 @@ export class CreatorRegisterController {
         message: "Creator registered successfully! Awaiting admin approval.",
         creator
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to verify OTP";
       return res.status(StatusCode.BAD_REQUEST).json({
         success: false,
-        message: error?.message || "OTP Verification Failed"
+        message
       });
     }
   }
@@ -50,10 +52,11 @@ export class CreatorRegisterController {
 
       await this._resendCreatorOtpUseCase.resendOtp(email);
       return res.status(StatusCode.OK).json({ success: true, message: "OTP resent successfully" });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to resend OTP";
       return res.status(StatusCode.BAD_REQUEST).json({
         success: false,
-        message: error?.message || "Failed to resend OTP"
+        message
       });
     }
   }
@@ -65,20 +68,21 @@ export class CreatorRegisterController {
       return res.status(StatusCode.OK).json({
         success: true,
       });
-    } catch (error: any) {
-      if (error.message === "EMAIL_EXISTS") {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to check creator exists";
+      if (message === "EMAIL_EXISTS") {
         return res.status(StatusCode.CONFLICT).json({
           success: false,
           message: "Email already exists",
         });
       }
-      if (error.message === "USER_EMAIL_EXISTS") {
+      if (message === "USER_EMAIL_EXISTS") {
         return res.status(StatusCode.CONFLICT).json({
           success: false,
           message: "This email is already registered as a user",
         });
       }
-      if (error.message === "PHONE_EXISTS") {
+      if (message === "PHONE_EXISTS") {
         return res.status(StatusCode.CONFLICT).json({
           success: false,
           message: "Mobile number already exists",
@@ -86,7 +90,7 @@ export class CreatorRegisterController {
       }
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: error.message || "Something went wrong",
+        message: message === "Failed to check creator exists" ? "Something went wrong" : message,
       });
     }
   }

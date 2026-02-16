@@ -6,7 +6,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 export class GetCategoryController {
     constructor(private _adminCategoryListingUseCase: IAdminCategoryListingUseCase) { }
 
-    async execute(req: Request, res: Response) {
+    async getCategory(req: Request, res: Response) {
         try {
             const page = Math.max(1, Number(req.query.page) || 1);
             const limit = Math.min(50, Number(req.query.limit) || 10);

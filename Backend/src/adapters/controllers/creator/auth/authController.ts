@@ -24,10 +24,11 @@ export class CreatorAuthController {
                 success: true,
                 message: MESSAGES.AUTH.OTP_SENT,
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : MESSAGES.AUTH.SEND_OTP_FAILED;
             return res.status(StatusCode.BAD_REQUEST).json({
                 success: false,
-                message: error?.message || MESSAGES.AUTH.SEND_OTP_FAILED,
+                message,
             });
         }
     }
@@ -37,10 +38,11 @@ export class CreatorAuthController {
             const { email, otp } = req.body;
             await this._verifyForgotOtpUseCase.verify(email, otp);
             return res.status(StatusCode.OK).json({ success: true, message: MESSAGES.AUTH.OTP_VERIFIED });
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : MESSAGES.AUTH.INVALID_OTP;
             return res.status(StatusCode.BAD_REQUEST).json({
                 success: false,
-                message: error?.message || MESSAGES.AUTH.INVALID_OTP,
+                message,
             });
         }
     }
@@ -52,10 +54,11 @@ export class CreatorAuthController {
             return res
                 .status(StatusCode.OK)
                 .json({ success: true, message: MESSAGES.AUTH.PASSWORD_RESET_SUCCESS });
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : MESSAGES.AUTH.PASSWORD_RESET_FAILED;
             return res.status(StatusCode.BAD_REQUEST).json({
                 success: false,
-                message: error?.message || MESSAGES.AUTH.PASSWORD_RESET_FAILED,
+                message,
             });
         }
     }

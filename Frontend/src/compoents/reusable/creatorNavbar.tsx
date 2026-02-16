@@ -10,6 +10,7 @@ import { clearCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
 import { ROUTES } from "@/constants/routes";
 import { confirmActionToast } from "./confirmActionToast";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
+import { S3Media } from "./s3Media";
 
 export default function CreatorNavbar() {
     const [isScrolled, setIsScrolled] = useState(false);

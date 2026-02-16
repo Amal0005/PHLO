@@ -33,7 +33,8 @@ export default function LocationSearchBar({ onChange }: Props) {
 
     const geocoder = new MapboxGeocoder({
       accessToken: import.meta.env.VITE_MAPBOX_TOKEN,
-      mapboxgl: mapboxgl as any,
+      // @ts-expect-error: MapboxGL type mismatch with geocoder
+      mapboxgl: mapboxgl,
       marker: false,
       placeholder: "Search location...",
       collapsed: false,
@@ -42,7 +43,7 @@ export default function LocationSearchBar({ onChange }: Props) {
     geocoderInstanceRef.current = geocoder;
     geocoder.addTo(container);
 
-    geocoder.on("result", (e: any) => {
+    geocoder.on("result", (e: { result: { center: [number, number]; place_name: string } }) => {
       const [lng, lat] = e.result.center;
 
       const locationData = {

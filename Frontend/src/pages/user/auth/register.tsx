@@ -11,6 +11,7 @@ import { setUser } from "@/store/slices/user/userSlice";
 import { setUserAuth } from "@/store/slices/user/userAuthSlice";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
+import { AxiosError } from "axios";
 
 interface RegisterForm {
   name: string;
@@ -69,11 +70,12 @@ export default function Register() {
       navigate(ROUTES.USER.VERIFY_OTP, { state: { email: form.email } });
 
       await new Promise((resolve) => setTimeout(resolve, 1500));
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Registration error:", error);
 
+      const axiosError = error as AxiosError<{ message: string }>;
       const message =
-        error?.response?.data?.message ||
+        axiosError.response?.data?.message ||
         "Registration failed. Please try again.";
 
       toast.error(message);

@@ -8,7 +8,7 @@ interface EditUserProfileProps {
     handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: (e: FormEvent) => void;
     isSaving: boolean;
-    errors?: any;
+    errors?: Record<string, string[] | undefined>;
 }
 
 export const EditUserProfile = ({

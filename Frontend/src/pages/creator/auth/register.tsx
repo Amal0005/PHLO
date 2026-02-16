@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AxiosError } from "axios";
 import {
   Camera,
   ArrowRight,
@@ -24,6 +25,16 @@ import {
 import { ROUTES } from "@/constants/routes";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
 import OtpVerificationModal from "@/compoents/reusable/OtpVerificationModal";
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof AxiosError) {
+    return (error.response?.data as { message?: string })?.message || error.message;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return "An unexpected error occurred";
+}
 
 async function uploadToS3(file: File, type: "profile" | "id"): Promise<string> {
   const url = await S3Service.uploadToS3(file, type);
@@ -119,8 +130,8 @@ export default function CreatorSignup() {
         await CreatorAuthService.resendOtp(formData.email);
         setIsOtpModalOpen(true);
         toast.info("Verification code sent to your email");
-      } catch (error: any) {
-        toast.error(error?.response?.data?.message || "Failed to send OTP");
+      } catch (error) {
+        toast.error(getErrorMessage(error));
       } finally {
         setIsLoading(false);
       }
@@ -147,9 +158,9 @@ export default function CreatorSignup() {
       setIsOtpModalOpen(false);
       setCurrentStep(2);
       toast.success("Email verified successfully!");
-    } catch (error: any) {
+    } catch (error) {
       console.error("OTP verification error:", error);
-      toast.error(error?.response?.data?.message || "Invalid OTP. Please try again.");
+      toast.error(getErrorMessage(error));
     }
   }
 
@@ -225,11 +236,9 @@ export default function CreatorSignup() {
       setTimeout(() => {
         navigate(ROUTES.CREATOR.LOGIN);
       }, 2000);
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      toast.error(
-        error?.response?.data?.message || error.message || "Something went wrong"
-      );
+      toast.error(getErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

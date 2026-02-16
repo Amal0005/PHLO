@@ -19,9 +19,9 @@ import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
 
-import { IUserRepository } from "../../../domain/interface/user/IUserRepository";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
-import { ICreatorRepository } from "@/domain/interface/creator/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 
 export class UserRoutes {
   public userRouter: Router;

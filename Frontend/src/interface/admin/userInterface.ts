@@ -8,6 +8,6 @@ export interface User {
   image?: string;
   status: "active" | "blocked";
   role: "user" | "admin";
-  googleVerified: boolean;
+  googleVerified?: boolean;
   createdAt?: Date;
 }

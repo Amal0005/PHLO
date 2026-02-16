@@ -5,7 +5,7 @@ import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlackli
 export class TokenBlacklistService implements ITokenBlacklistService {
     constructor(
         private _redisService: IRedisService
-    ) { }
+    ) {}
     async blacklistToken(token: string, exp: number): Promise<void> {
         const now = Math.floor(Date.now() / 1000)
         const ttl = exp - now

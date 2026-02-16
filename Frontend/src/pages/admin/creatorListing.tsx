@@ -19,7 +19,7 @@ export default function CreatorListingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filterStatus, setFilterStatus] = useState<
-    "all" | "pending" | "approved" | "rejected"
+    "all" | "pending" | "approved" | "rejected" | "blocked"
   >("all");
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
@@ -98,7 +98,7 @@ export default function CreatorListingPage() {
 
           setCreators((prev) =>
             prev.map((c) =>
-              c._id === creatorId ? { ...c, status: newStatus as any } : c,
+              c._id === creatorId ? { ...c, status: newStatus as Creator["status"] } : c,
             ),
           );
 
@@ -131,10 +131,10 @@ export default function CreatorListingPage() {
       render: (creator) => (
         <span
           className={`px-2.5 py-1 rounded-full text-xs font-medium ${creator.status === "approved"
-              ? "bg-green-500/10 text-green-400"
-              : creator.status === "rejected"
-                ? "bg-red-500/10 text-red-400"
-                : "bg-yellow-500/10 text-yellow-400"
+            ? "bg-green-500/10 text-green-400"
+            : creator.status === "rejected"
+              ? "bg-red-500/10 text-red-400"
+              : "bg-yellow-500/10 text-yellow-400"
             }`}
         >
           {creator.status}
@@ -169,8 +169,8 @@ export default function CreatorListingPage() {
             <button
               onClick={() => handleToggleStatus(creator._id, creator.status)}
               className={`px-3 py-1.5 text-sm rounded-lg border transition-all ${creator.status === "approved"
-                  ? "text-red-400 border-red-400/30 hover:bg-red-500/10 border-red-400/60"
-                  : "text-green-400 border-green-400/30 hover:bg-green-500/10 border-green-400/60"
+                ? "text-red-400 border-red-400/30 hover:bg-red-500/10 border-red-400/60"
+                : "text-green-400 border-green-400/30 hover:bg-green-500/10 border-green-400/60"
                 }`}
             >
               {creator.status === "approved" ? "Block" : "Unblock"}
@@ -197,7 +197,7 @@ export default function CreatorListingPage() {
         <h1 className="text-2xl font-bold text-white">Creators</h1>
         <select
           value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value as any)}
+          onChange={(e) => setFilterStatus(e.target.value as "all" | "pending" | "approved" | "rejected" | "blocked")}
           className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
         >
           <option value="all">All Status</option>

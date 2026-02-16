@@ -5,8 +5,8 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "moduleResolution": "node",
-  
- "baseUrl": "./src",
+
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
     },

@@ -1,4 +1,4 @@
-import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { IJwtServices } from "../../interface/service/IJwtServices";
 import { AuthPayload } from "../../dto/user/authPayload";
 

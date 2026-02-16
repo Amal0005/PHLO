@@ -34,11 +34,12 @@ export class TokenController {
                 success: true,
                 accessToken: newAccessToken
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Invalid or expired refresh token";
             console.error("Refresh token error:", error);
             return res.status(StatusCode.UNAUTHORIZED).json({
                 success: false,
-                message: "Invalid or expired refresh token"
+                message
             });
         }
     }

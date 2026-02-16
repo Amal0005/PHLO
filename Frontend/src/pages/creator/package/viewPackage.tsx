@@ -6,23 +6,31 @@ import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
 import { ROUTES } from "@/constants/routes";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import { EditPackageModal } from "./components/editPackageModal";
+import { PackageData } from "@/interface/creator/creatorPackageInterface";
+
+interface PackageWithId extends Omit<PackageData, 'category'> {
+  _id: string;
+  createdAt?: string;
+  category: string | { _id: string; name: string };
+}
 import { toast } from "react-toastify";
 import { DeleteConfirmModal } from "./components/deleteConfirmationModal";
 import { AddPackageModal } from "./components/addPackageModal";
+import { AxiosError } from "axios";
 
 const ViewPackagesPage: React.FC = () => {
-  const [packages, setPackages] = useState<any[]>([]);
+  const [packages, setPackages] = useState<PackageWithId[]>([]);
   const [loading, setLoading] = useState(true);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<any>(null);
+  const [selectedPackage, setSelectedPackage] = useState<PackageWithId | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [addModalOpen, setAddModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const fetchPackages = async () => {
+  const fetchPackages = React.useCallback(async () => {
     try {
       const response = await CreatorPackageService.getPackage();
       if (response?.success) {
@@ -33,18 +41,18 @@ const ViewPackagesPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchPackages();
-  }, []);
+  }, [fetchPackages]);
 
-  const handleEditClick = (pkg: any) => {
+  const handleEditClick = (pkg: PackageWithId) => {
     setSelectedPackage(pkg);
     setEditModalOpen(true);
   };
 
-  const handleDeleteClick = (pkg: any) => {
+  const handleDeleteClick = (pkg: PackageWithId) => {
     setSelectedPackage(pkg);
     setDeleteModalOpen(true);
   };
@@ -59,8 +67,9 @@ const ViewPackagesPage: React.FC = () => {
       setDeleteModalOpen(false);
       setSelectedPackage(null);
       fetchPackages();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to delete package");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || "Failed to delete package");
     } finally {
       setDeleteLoading(false);
     }
@@ -209,7 +218,7 @@ const ViewPackagesPage: React.FC = () => {
                 className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all group"
               >
                 <div className="h-48 bg-zinc-800 relative">
-                  {pkg.images?.length > 0 ? (
+                  {pkg.images && pkg.images.length > 0 ? (
                     <S3Media
                       s3Key={pkg.images[0]}
                       className="w-full h-full object-cover"
@@ -257,7 +266,7 @@ const ViewPackagesPage: React.FC = () => {
                       ₹ {pkg.price ? pkg.price.toLocaleString() : 0}
                     </div>
 
-                    {pkg.images?.length > 1 && (
+                    {pkg.images && pkg.images.length > 1 && (
                       <div className="flex -space-x-3">
                         {pkg.images.slice(1, 4).map((img: string, i: number) => (
                           <div

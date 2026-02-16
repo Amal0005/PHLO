@@ -1,6 +1,9 @@
 import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
+import { AxiosError } from "axios";
 import { CreatorPackageService } from "@/services/creator/creatorPackageService";
+import { Category } from "@/interface/admin/categoryInterface";
 import { PackageFormData, packageSchema } from "@/validation/packageValidation";
+import { PaginatedResponse } from "@/interface/admin/pagination";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -19,9 +22,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [categories, setCategories] = useState<
-    { _id: string; name: string }[]
-  >([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -51,15 +52,15 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   const locationValue = watch("location");
 
   useEffect(() => {
-    console.log('🔍 Current location in form:', locationValue);
+    console.log('Current location in form:', locationValue);
   }, [locationValue]);
 
   useEffect(() => {
     if (!isOpen) return;
 
     AdminCategoryService.getCategories()
-      .then((data: any) => {
-        setCategories(data?.data || data || []);
+      .then((data: PaginatedResponse<Category>) => {
+        setCategories(data?.data || []);
       })
       .catch(() => setCategories([]));
   }, [isOpen]);
@@ -88,18 +89,14 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   };
 
   const onSubmit = async (data: PackageFormData) => {
-    console.log('🔍 Form data received in onSubmit:', data);
-    console.log('🔍 Location in form data:', data.location);
-
     // Double check with getValues
     const currentFormValues = getValues();
-    console.log('🔍 Current form values from getValues:', currentFormValues);
-    console.log('🔍 Location from getValues:', currentFormValues.location);
+    console.log('Current form values from getValues:', currentFormValues);
 
-    // ✅ Search location validation
+    //Search location validation
     if (!data.location || data.location.coordinates[0] === 0) {
       toast.error("Please search and select a location");
-      console.error('❌ Location validation failed:', data.location);
+      console.error('Location validation failed:', data.location);
       return;
     }
 
@@ -117,8 +114,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
         images: imageUrls,
       };
 
-      console.log('📍 Sending package data with location:', packageData);
-      console.log('📍 Location details:', {
+      console.log('Location details:', {
         coordinates: packageData.location?.coordinates,
         placeName: packageData.placeName
       });
@@ -140,9 +136,10 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
 
       setSelectedImages([]);
       setPreviews([]);
-    } catch (error: any) {
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
       toast.error(
-        error?.response?.data?.message || "Failed to add package"
+        axiosError.response?.data?.message || "Failed to add package"
       );
     } finally {
       setLoading(false);
@@ -215,7 +212,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
+                    <option key={cat.categoryId} value={cat.categoryId}>
                       {cat.name}
                     </option>
                   ))}

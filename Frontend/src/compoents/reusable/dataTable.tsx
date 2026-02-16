@@ -79,7 +79,7 @@ export default function DataTable<T>({
                                                     : "text-left"
                                                 } ${column.className || ""}`}
                                         >
-                                            {column.render ? column.render(item) : (item as any)[column.key] || "-"}
+                                            {column.render ? column.render(item) : (item[column.key as keyof T] as ReactNode) || "-"}
                                         </td>
                                     ))}
                                 </tr>

@@ -16,6 +16,7 @@ import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
 import { UserRepository } from "@/adapters/repository/user/userRepository";
 import { CreatorRepository } from "./adapters/repository/creator/creatorRepository";
 import { loggerMiddleware } from "./adapters/middlewares/loggerMiddleware";
+import path from "path";
 
 
 
@@ -60,10 +61,11 @@ export class App {
       }),
     );
     this.app.use(cookieParser());
-      this.app.use(
-    "/public",
-    express.static(require("path").join(process.cwd(), "public"))
-  );
+this.app.use(
+  "/public",
+  express.static(path.join(process.cwd(), "public"))
+);
+
 
   }
 private setUserRoutes(): void {

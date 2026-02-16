@@ -8,10 +8,15 @@ import { clearUser } from "@/store/slices/user/userSlice";
 import { clearCreator } from "@/store/slices/creator/creatorSlice";
 import { clearAdmin } from "@/store/slices/admin/adminSlice";
 
-let isRefreshing = false;
-let failedQueue: any[] = [];
+interface QueueItem {
+  resolve: (value?: unknown) => void;
+  reject: (reason?: unknown) => void;
+}
 
-const processQueue = (error: any, token: string | null = null) => {
+let isRefreshing = false;
+let failedQueue: QueueItem[] = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
@@ -67,7 +72,7 @@ export const setUpInterceptors = () => {
       if (status === 401 && !originalRequest._retry) {
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
-            failedQueue.push({ resolve, reject });
+            failedQueue.push({ resolve: resolve as (value?: unknown) => void, reject: reject as (reason?: unknown) => void });
           })
             .then((token) => {
               originalRequest.headers.Authorization = `Bearer ${token}`;

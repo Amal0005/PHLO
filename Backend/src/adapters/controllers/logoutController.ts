@@ -36,8 +36,9 @@ export class LogoutController {
         success: true,
         message: "Logged out successfully",
       });
-    } catch (error) {
-      return res.status(StatusCode.UNAUTHORIZED).json({ message: "Logout failed" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Logout failed";
+      return res.status(StatusCode.UNAUTHORIZED).json({ message });
     }
   }
 }

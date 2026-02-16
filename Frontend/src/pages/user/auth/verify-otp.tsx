@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { AxiosError } from "axios";
 import { Mail, Shield, ArrowLeft, Image, Calendar } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -43,10 +44,11 @@ export default function VerifyOtp() {
 
       toast.success("OTP Verified Successfully!");
       navigate(ROUTES.USER.LOGIN);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Verification error:", error);
+      const axiosError = error as AxiosError<{ message: string }>;
       // Handle both Axios errors (with response) and thrown errors (with message)
-      const errorMessage = error.response?.data?.message || error.message || "Invalid OTP. Please try again.";
+      const errorMessage = axiosError.response?.data?.message || (error instanceof Error ? error.message : "Invalid OTP. Please try again.");
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -64,9 +66,10 @@ export default function VerifyOtp() {
       setTimer(60);
       setCanResend(false);
       setOtp("");
-    } catch (error: any) {
+    } catch (error) {
       console.error("Resend error:", error);
-      const errorMessage = error.response?.data?.message || "Failed to resend OTP. Please try again.";
+      const axiosError = error as AxiosError<{ message: string }>;
+      const errorMessage = axiosError.response?.data?.message || "Failed to resend OTP. Please try again.";
       toast.error(errorMessage);
     } finally {
       setIsResending(false);

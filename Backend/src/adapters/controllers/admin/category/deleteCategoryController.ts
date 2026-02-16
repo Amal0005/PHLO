@@ -1,19 +1,24 @@
 import { IDeleteCategoryUseCase } from "@/domain/interface/admin/IDeleteCategoryUseCase";
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
+import { AppError } from "@/domain/errors/appError";
 
 export class DeleteCategoryController {
     constructor(private _deleteCategoryUseCase: IDeleteCategoryUseCase) { }
 
-    async execute(req: Request, res: Response) {
+    async deleteCategory(req: Request, res: Response): Promise<Response> {
         try {
             const { categoryId } = req.params;
             await this._deleteCategoryUseCase.delete(categoryId);
-            res
+            return res
                 .status(StatusCode.OK)
                 .json({ success: true, message: "Category deleted successfully" });
-        } catch (error: any) {
-            res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message });
+        } catch (error: unknown) {
+            const statusCode = error instanceof AppError ? error.statusCode : StatusCode.INTERNAL_SERVER_ERROR;
+            return res.status(statusCode).json({
+                success: false,
+                message: error instanceof Error ? error.message : "Failed to delete category"
+            });
         }
     }
 }

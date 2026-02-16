@@ -14,6 +14,8 @@ import { EditUserProfile } from "./components/editUserProfile";
 import { EditUserPassword } from "./components/editUserPassword";
 import { ViewProfileImage } from "./components/viewProfileImage";
 
+import { User } from "@/interface/admin/userInterface";
+
 interface ProfileForm {
   name: string;
   phone: string;
@@ -32,7 +34,7 @@ export default function UserProfile() {
     phone: "",
     email: ""
   });
-  const [profileData, setProfileData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<User | null>(null);
   const [isViewingImage, setIsViewingImage] = useState<boolean>(false);
   const [isChangingPassword, setIsChangingPassword] = useState<boolean>(false);
   const [passwordForm, setPasswordForm] = useState({
@@ -40,8 +42,8 @@ export default function UserProfile() {
     newPassword: "",
     confirmPassword: "",
   });
-  const [editProfileErrors, setEditProfileErrors] = useState<any>({});
-  const [passwordErrors, setPasswordErrors] = useState<any>({});
+  const [editProfileErrors, setEditProfileErrors] = useState<Record<string, string[]>>({});
+  const [passwordErrors, setPasswordErrors] = useState<Record<string, string[]>>({});
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -79,7 +81,7 @@ export default function UserProfile() {
         }));
         toast.success("Profile photo updated!");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
       toast.error("Failed to upload image");
     } finally {
@@ -89,40 +91,40 @@ export default function UserProfile() {
   };
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    const fetchProfile = async () => {
+      try {
+        setIsLoading(true);
+        const response = await UserProfileService.getProfile();
 
-  const fetchProfile = async () => {
-    try {
-      setIsLoading(true);
-      const response = await UserProfileService.getProfile();
+        if (response.success && response.user) {
+          let userData = response.user;
 
-      if (response.success && response.user) {
-        let userData = response.user;
-
-        if (userData.image && !userData.image.startsWith("http")) {
-          try {
-            const viewUrl = await UserProfileService.getViewUrl(userData.image);
-            userData = { ...userData, image: viewUrl };
-          } catch (err) {
-            console.error("Failed to sign image url", err);
+          if (userData.image && !userData.image.startsWith("http")) {
+            try {
+              const viewUrl = await UserProfileService.getViewUrl(userData.image);
+              userData = { ...userData, image: viewUrl };
+            } catch (err) {
+              console.error("Failed to sign image url", err);
+            }
           }
+          setProfileData(userData);
+          setForm({
+            name: String(userData.name ?? ""),
+            phone: String(userData.phone ?? ""),
+            email: String(userData.email ?? "")
+          });
         }
-        setProfileData(userData);
-        setForm({
-          name: String(userData.name ?? ""),
-          phone: String(userData.phone ?? ""),
-          email: String(userData.email ?? "")
-        });
+      } catch (error: unknown) {
+        const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to load profile";
+        toast.error(message);
+        navigate(ROUTES.USER.HOME);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error: any) {
-      const message = error?.response?.data?.message || "Failed to load profile";
-      toast.error(message);
-      navigate(ROUTES.USER.HOME);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+
+    fetchProfile();
+  }, [navigate]);
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
@@ -152,8 +154,8 @@ export default function UserProfile() {
         });
         toast.success("Password updated successfully!");
       }
-    } catch (error: any) {
-      const message = error?.response?.data?.message || "Failed to update password";
+    } catch (error: unknown) {
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to update password";
       toast.error(message);
     } finally {
       setIsSaving(false);
@@ -167,7 +169,6 @@ export default function UserProfile() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setEditProfileErrors({});
-    console.log("SUBMIT DATA:", form);
 
     const result = editProfileSchema.safeParse(form);
     if (!result.success) {
@@ -189,8 +190,8 @@ export default function UserProfile() {
         setIsEditing(false);
         toast.success("Profile updated successfully!");
       }
-    } catch (error: any) {
-      const message = error?.response?.data?.message || "Failed to update profile";
+    } catch (error: unknown) {
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to update profile";
       toast.error(message);
     } finally {
       setIsSaving(false);
@@ -420,7 +421,7 @@ export default function UserProfile() {
       <ViewProfileImage
         isOpen={isViewingImage}
         onClose={() => setIsViewingImage(false)}
-        imageUrl={profileData?.image}
+        imageUrl={profileData?.image || null}
       />
 
     </div>

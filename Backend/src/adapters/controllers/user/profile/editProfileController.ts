@@ -1,13 +1,19 @@
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
+import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import { MESSAGES } from "@/utils/commonMessages";
 
 export class EditProfileController {
     constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) { }
 
-    async execute(req: Request, res: Response): Promise<void> {
+    async execute(req: AuthRequest, res: Response): Promise<void> {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = req.user?.userId;
+            if (!userId) {
+                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: "Unauthorized" });
+                return;
+            }
 
             const user = await this._editUserProfileUseCase.editProfile(
                 userId,
@@ -17,10 +23,11 @@ export class EditProfileController {
                 success: true,
                 user,
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : MESSAGES.ERROR.BAD_REQUEST;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
-                message: error.message,
+                message,
             });
         }
     }

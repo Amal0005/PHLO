@@ -1,62 +1,82 @@
 import { CategoryEntity } from "@/domain/entities/categoryEntity";
-import { ICategoryRepository, CategoryFilterOptions } from "@/domain/interface/admin/ICategoryRepository";
-import { CategoryModel } from "@/framework/database/model/categoryModel";
+import {
+  CategoryModel,
+  ICategoryModel,
+} from "@/framework/database/model/categoryModel";
+import { SortOrder } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { paginateMongo } from "@/utils/pagination";
+import { BaseRepository } from "../baseRepository";
+import {
+  CategoryFilterOptions,
+  ICategoryRepository,
+} from "@/domain/interface/repositories/ICategoryRepository";
 
-export class CategoryRepository implements ICategoryRepository {
+type CategoryQuery = {
+  name?: string | { $regex: string; $options: string };
+  createdAt?: unknown;
+};
 
-    async create(category: CategoryEntity): Promise<CategoryEntity> {
-        const created = await CategoryModel.create(category)
-        return { ...created.toObject(), categoryId: created._id.toString() }
-    }
-    async findAll(): Promise<CategoryEntity[]> {
-        const categories = await CategoryModel.find().sort({ createdAt: -1 })
-        return categories.map(item => ({ ...item.toObject(), categoryId: item._id.toString() }))
+export class CategoryRepository
+  extends BaseRepository<CategoryEntity, ICategoryModel>
+  implements ICategoryRepository
+{
+  constructor() {
+    super(CategoryModel);
+  }
+
+  protected mapToEntity(doc: ICategoryModel): CategoryEntity {
+    return {
+      ...doc.toObject(),
+      categoryId: doc._id.toString(),
+    };
+  }
+
+  async findAll(): Promise<CategoryEntity[]> {
+    const categories = await this.model.find().sort({ createdAt: -1 }).exec();
+
+    return categories.map((item) => this.mapToEntity(item));
+  }
+
+  async findAllCategories(
+    page: number,
+    limit: number,
+    filters?: CategoryFilterOptions,
+  ): Promise<PaginatedResult<CategoryEntity>> {
+    const query: CategoryQuery = {};
+
+    if (filters?.search) {
+      query.name = {
+        $regex: filters.search,
+        $options: "i",
+      };
     }
 
-    async findAllCategories(
-        page: number,
-        limit: number,
-        filters?: CategoryFilterOptions
-    ): Promise<PaginatedResult<CategoryEntity>> {
-        const query: any = {};
+    const sort: Record<string, SortOrder> = {
+      createdAt: filters?.sort === "oldest" ? 1 : -1,
+    };
 
-        if (filters?.search) {
-            query.name = { $regex: filters.search, $options: "i" };
-        }
+    const result = await paginateMongo(
+      this.model,
+      query as Record<string, unknown>,
+      page,
+      limit,
+      { sort },
+    );
 
-        const sort: any = { createdAt: filters?.sort === 'oldest' ? 1 : -1 };
+    return {
+      ...result,
+      data: result.data.map((item: ICategoryModel) => this.mapToEntity(item)),
+    };
+  }
 
-        const result = await paginateMongo(
-            CategoryModel,
-            query,
-            page,
-            limit,
-            { sort }
-        );
-        return {
-            ...result,
-            data: result.data.map((item: any) =>
-                ({ ...item.toObject(), categoryId: item._id.toString() })
-            )
-        };
-    }
+  async findByCategoryId(categoryId: string): Promise<CategoryEntity | null> {
+    const category = await this.model.findById(categoryId).exec();
+    return category ? this.mapToEntity(category) : null;
+  }
 
-    async findByCategoryId(categoryId: string): Promise<CategoryEntity | null> {
-        const category = await CategoryModel.findById(categoryId)
-        return category ? { ...category.toObject(), categoryId: category._id.toString() } : null
-    }
-    async delete(categoryId: string): Promise<void> {
-        await CategoryModel.findByIdAndDelete(categoryId)
-    }
-    async update(categoryId: string, category: Partial<CategoryEntity>): Promise<CategoryEntity | null> {
-        await CategoryModel.updateOne({ _id: categoryId }, { $set: category })
-        return await CategoryModel.findById(categoryId);
-    }
-    async findByName(name: string): Promise<CategoryEntity | null> {
-        const category = await CategoryModel.findOne({ name });
-        if (!category) return null;
-        return { ...category.toObject(), categoryId: category._id.toString() };
-    }
+  async findByName(name: string): Promise<CategoryEntity | null> {
+    const category = await this.model.findOne({ name }).exec();
+    return category ? this.mapToEntity(category) : null;
+  }
 }
