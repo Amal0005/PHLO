@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { RootState } from "@/store/store";
@@ -27,21 +27,21 @@ export default function AuthInitializer() {
     (state: RootState) => state._persist?.rehydrated
   );
 
-  const handleCreatorLogout = () => {
+  const handleCreatorLogout = useCallback(() => {
     dispatch(clearCreatorAuth());
     navigate("/creator/login", { replace: true });
-  };
+  }, [dispatch, navigate]);
 
-  const handleAdminLogout = () => {
+  const handleAdminLogout = useCallback(() => {
     dispatch(clearAdminAuth());
     navigate("/admin/login", { replace: true });
-  };
+  }, [dispatch, navigate]);
 
-  const handleUserLogout = () => {
+  const handleUserLogout = useCallback(() => {
     dispatch(clearUserAuth());
     dispatch(clearUser());
     navigate("/login", { replace: true });
-  };
+  }, [dispatch, navigate]);
 
   useEffect(() => {
     if (!isRehydrated) return;
@@ -71,7 +71,7 @@ export default function AuthInitializer() {
     }
 
 
-  }, [isRehydrated, location.pathname]);
+  }, [isRehydrated, location.pathname, creatorToken, adminToken, userToken, handleCreatorLogout, handleAdminLogout, handleUserLogout]);
 
   return null;
 }

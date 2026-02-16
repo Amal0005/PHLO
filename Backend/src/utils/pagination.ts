@@ -1,3 +1,6 @@
+import { Model, SortOrder } from "mongoose";
+import { Filter } from "mongodb";
+
 export interface PaginationQuery {
   page?: number;
   limit?: number;
@@ -12,12 +15,12 @@ export interface PaginationResponse<T> {
 }
 
 export async function paginateMongo<T>(
-  model: any,
-  query: any,
+  model: Model<T>,
+  query: Filter<T>,
   page: number = 1,
   limit: number = 10,
   options: {
-    sort?: any;
+    sort?: string | { [key: string]: SortOrder | { $meta: "textScore" } };
     select?: string;
   } = {}
 ): Promise<PaginationResponse<T>> {

@@ -1,6 +1,8 @@
+import { CreatorEntity } from "./creatorEntities";
+
 export interface PackageEntity {
   _id?: string;
-  creatorId: string;
+  creatorId: string | CreatorEntity;
   title: string;
   description: string;
   price: number;

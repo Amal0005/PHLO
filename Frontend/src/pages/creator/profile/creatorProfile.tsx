@@ -9,6 +9,7 @@ import { S3Media } from "@/compoents/reusable/s3Media";
 import { EditCreatorProfileModal } from "./components/EditCreatorProfileModal";
 import { z } from "zod";
 import { creatorProfileSchema } from "@/validation/creatorProfileSchema";
+import { AxiosError } from "axios";
 
 export default function CreatorProfile() {
   const [profile, setProfile] = useState<CreatorProfileResponse | null>(null);
@@ -104,9 +105,10 @@ export default function CreatorProfile() {
         setIsEditModalOpen(false);
         toast.success("Profile updated successfully");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating profile:", error);
-      const serverMessage = error.response?.data?.message || "Failed to update profile";
+      const axiosError = error as AxiosError<{ message: string }>;
+      const serverMessage = axiosError.response?.data?.message || "Failed to update profile";
 
       if (serverMessage.toLowerCase().includes("mobile") || serverMessage.toLowerCase().includes("phone")) {
         setErrors(prev => ({ ...prev, phone: serverMessage }));

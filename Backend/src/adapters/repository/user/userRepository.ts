@@ -3,7 +3,7 @@ import { User } from "../../../domain/entities/userEntities";
 import { UserModel, IUserModel } from "../../../framework/database/model/userModel";
 import { paginateMongo } from "@/utils/pagination";
 import { UserMapper } from "../../../application/mapper/user/userMapper";
-import { BaseRepository } from "../BaseRepository";
+import { BaseRepository } from "../baseRepository";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 
 export class UserRepository extends BaseRepository<User, IUserModel> implements IUserRepository {
@@ -11,7 +11,7 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
     super(UserModel);
   }
 
-  protected mapToEntity(doc: any): User {
+  protected mapToEntity(doc: IUserModel): User {
     return UserMapper.toDomain(doc);
   }
 
@@ -23,8 +23,8 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
   }
 
   async createUser(user: Omit<User, "_id">): Promise<User> {
-    const created = await this.model.create(user as any);
-    return this.mapToEntity(created);
+    const created = await this.model.create(user as unknown as Omit<IUserModel, keyof Document>);
+    return this.mapToEntity(created as IUserModel);
   }
 
   async updatePassword(email: string, hashedPassword: string): Promise<void> {
@@ -33,7 +33,7 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
 
   async findAllUsers(page: number, limit: number): Promise<PaginatedResult<User>> {
     const result = await paginateMongo(this.model, { role: "user" }, page, limit, { select: "-password", sort: { createdAt: -1 } });
-    return { ...result, data: result.data.map((user: any) => this.mapToEntity(user.toObject())) };
+    return { ...result, data: result.data.map((user: IUserModel) => this.mapToEntity(user)) };
   }
 
   async updateUserStatus(userId: string, status: "active" | "blocked"): Promise<void> {

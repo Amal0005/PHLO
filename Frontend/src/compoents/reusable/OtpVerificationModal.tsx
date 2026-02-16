@@ -69,11 +69,11 @@ export default function OtpVerificationModal({
         try {
             setIsVerifying(true);
             await onVerify(otpValue);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Verification error:", error);
             const errorMessage =
-                error.response?.data?.message ||
-                error.message ||
+                (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+                (error as Error).message ||
                 "Invalid OTP. Try again.";
             toast.error(errorMessage);
         } finally {
@@ -91,10 +91,11 @@ export default function OtpVerificationModal({
             setTimer(60);
             setCanResend(false);
             setOtp(["", "", "", "", "", ""]);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Resend error:", error);
             const errorMessage =
-                error.response?.data?.message || "Failed to resend OTP. Try again.";
+                (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+                "Failed to resend OTP. Try again.";
             toast.error(errorMessage);
         } finally {
             setIsResending(false);

@@ -1,3 +1,4 @@
+import { IUserModel } from "../../../framework/database/model/userModel";
 import { UserResponseDto } from "../../../domain/dto/user/userResponseDto";
 import { User } from "../../../domain/entities/userEntities";
 
@@ -16,7 +17,7 @@ export class UserMapper {
     };
   }
 
-  static toDomain(doc: any): User {
+  static toDomain(doc: IUserModel): User {
     return {
       _id: doc._id.toString(),
       name: doc.name,

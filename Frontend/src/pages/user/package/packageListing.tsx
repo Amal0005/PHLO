@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Package as PackageIcon, MapPin } from "lucide-react";
 import { UserPackageService } from "@/services/user/userPackageService";
-import { UserPackage } from "@/interface/user/userPackageInterface";
+import { UserPackage, PackageFilters } from "@/interface/user/userPackageInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import UserNavbar from "@/compoents/reusable/userNavbar";
 
@@ -49,15 +49,10 @@ const PackageListing: React.FC = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch packages whenever filters change
-  useEffect(() => {
-    fetchPackages();
-  }, [debouncedSearch, selectedCategory, priceRange.min, priceRange.max, sortBy, locationFilter]);
-
-  const fetchPackages = async () => {
+  const fetchPackages = useCallback(async () => {
     try {
       setLoading(true);
-      const filters: any = {
+      const filters: PackageFilters = {
         sortBy,
       };
 
@@ -101,7 +96,12 @@ const PackageListing: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [sortBy, debouncedSearch, selectedCategory, priceRange.min, priceRange.max, locationFilter]);
+
+  // Fetch packages whenever filters change
+  useEffect(() => {
+    fetchPackages();
+  }, [fetchPackages]);
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -169,7 +169,7 @@ const PackageListing: React.FC = () => {
             {/* Sort Dropdown */}
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) => setSortBy(e.target.value as "price-asc" | "price-desc" | "newest")}
               className="bg-zinc-900 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white/20 transition-colors cursor-pointer"
             >
               <option value="newest">Newest First</option>

@@ -6,7 +6,7 @@ import { IListUserPackagesUseCase } from "@/domain/interface/user/packages/IList
 export class ListUserPackagesController {
   constructor(
     private _listUserPackagesUseCase: IListUserPackagesUseCase
-  ) {}
+  ) { }
 
   async listPackages(req: Request, res: Response) {
     try {
@@ -31,10 +31,11 @@ export class ListUserPackagesController {
         data: packages,
         count: packages.length
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR;
       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: error.message || MESSAGES.ERROR.INTERNAL_SERVER_ERROR
+        message
       });
     }
   }

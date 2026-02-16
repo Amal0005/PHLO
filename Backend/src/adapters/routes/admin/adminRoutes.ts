@@ -73,16 +73,16 @@ export class AdminRoutes {
       adminCreatorController.changeCreatorStatus(req, res)
     })
     this.adminRouter.post("/category", (req: Request, res: Response) => {
-      addCategoryController.execute(req, res)
+      addCategoryController.addCategory(req, res)
     })
     this.adminRouter.get("/category", (req: Request, res: Response) => {
-      getCategoryController.execute(req, res)
+      getCategoryController.getCategory(req, res)
     })
     this.adminRouter.delete("/category/:categoryId", (req: Request, res: Response) => {
-      deleteCategoryController.execute(req, res)
+      deleteCategoryController.deleteCategory(req, res)
     })
     this.adminRouter.patch("/category/:categoryId", (req: Request, res: Response) => {
-      editCategoryController.execute(req, res);
+      editCategoryController.editCategory(req, res);
     });
   }
 }

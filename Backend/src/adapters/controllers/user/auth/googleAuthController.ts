@@ -28,9 +28,10 @@ export class GoogleAuthController {
         user,
         accessToken,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : MESSAGES.AUTH.GOOGLE_LOGIN_FAILED;
       return res.status(StatusCode.UNAUTHORIZED).json({
-        message: error.message || MESSAGES.AUTH.GOOGLE_LOGIN_FAILED,
+        message,
       });
     }
   }

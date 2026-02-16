@@ -87,9 +87,9 @@ export default function CategoryListingPage() {
         toast.success(`${formData.name} added successfully`)
       }
       fetchCategories();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to submit category", error);
-      toast.error(error.response?.data?.message || "Failed to save category");
+      toast.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to save category");
     }
   };
 
@@ -157,7 +157,7 @@ export default function CategoryListingPage() {
 
         <select
           value={sort}
-          onChange={(e) => setSort(e.target.value as any)}
+          onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
           className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
         >
           <option value="newest">Newest to Oldest</option>

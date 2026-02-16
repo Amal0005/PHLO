@@ -10,7 +10,7 @@ export class userRegisterController {
     private _userRegisterUseCase: IUserRegisterUseCase,
     private _verifyOtpUseCase: IVerifyRegisterOtpUseCase,
     private _resendOtpUseCase: IResendOtpUseCase
-  ) {}
+  ) { }
 
   async register(req: Request, res: Response) {
     try {
@@ -23,10 +23,11 @@ export class userRegisterController {
         message: MESSAGES.AUTH.OTP_SENT,
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : MESSAGES.ERROR.BAD_REQUEST;
       return res.status(StatusCode.BAD_REQUEST).json({
         success: false,
-        message: error.message || MESSAGES.ERROR.BAD_REQUEST,
+        message,
       });
     }
   }
@@ -39,10 +40,11 @@ export class userRegisterController {
 
       return res.status(StatusCode.OK).json({ success: true, message: "Email Send Successfully" })
 
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : MESSAGES.AUTH.SEND_OTP_FAILED;
       return res.status(StatusCode.BAD_REQUEST).json({
         success: false,
-        message: MESSAGES.AUTH.SEND_OTP_FAILED
+        message
       })
 
     }
@@ -64,10 +66,11 @@ export class userRegisterController {
         user
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : MESSAGES.AUTH.INVALID_OTP;
       return res.status(StatusCode.OK).json({
         success: false,
-        message: error?.message || MESSAGES.AUTH.INVALID_OTP
+        message
       });
     }
   }

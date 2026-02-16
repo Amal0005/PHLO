@@ -10,3 +10,4 @@ export class AdminCategoryListingUseCase implements IAdminCategoryListingUseCase
         return this._categoryRepo.findAllCategories(page, limit, filters);
     }
 }
+

@@ -1,7 +1,8 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import { ICreatorModel } from "@/framework/database/model/creatorModel";
 
 export class CreatorMapper {
-  static toDomain(doc: any): CreatorEntity {
+  static toDomain(doc: ICreatorModel): CreatorEntity {
     return {
       _id: doc._id?.toString(),
       fullName: doc.fullName,

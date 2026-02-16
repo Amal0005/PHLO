@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { creatorStep1Schema, creatorStep2Schema, creatorStep3Schema, creatorStep4Schema } from "./registerCreatorValidationSchema";
 
 
 export async function validateStep1(
-  formData: any,
+  formData: unknown,
   checkCreatorExists: (email: string, phone: string) => Promise<void>
 ): Promise<boolean> {
   const result = creatorStep1Schema.safeParse(formData);
@@ -20,10 +20,11 @@ export async function validateStep1(
 
     return false;
   }
- try {
-    await checkCreatorExists(formData.email, formData.phone);
-  } catch (error: any) {
-    toast.error(error?.response?.data?.message || "Validation failed");
+  try {
+    await checkCreatorExists(result.data.email, result.data.phone);
+  } catch (error) {
+    const axiosError = error as AxiosError<{ message: string }>;
+    toast.error(axiosError.response?.data?.message || "Validation failed");
     return false;
   }
 
@@ -31,12 +32,12 @@ export async function validateStep1(
 
 }
 
-export function validateStep2(formData: any): boolean {
+export function validateStep2(formData: unknown): boolean {
   const result = creatorStep2Schema.safeParse(formData);
 
   if (!result.success) {
     const errors = result.error.flatten().fieldErrors;
-    
+
     if (errors.city) {
       toast.error(errors.city[0]);
       return false;
@@ -45,19 +46,19 @@ export function validateStep2(formData: any): boolean {
       toast.error(errors.yearsOfExperience[0]);
       return false;
     }
-    
+
     return false;
   }
 
   return true;
 }
 
-export function validateStep3(formData: any): boolean {
+export function validateStep3(formData: unknown): boolean {
   const result = creatorStep3Schema.safeParse(formData);
 
   if (!result.success) {
     const errors = result.error.flatten().fieldErrors;
-    
+
     if (errors.bio) {
       toast.error(errors.bio[0]);
       return false;
@@ -70,19 +71,19 @@ export function validateStep3(formData: any): boolean {
       toast.error(errors.specialties[0]);
       return false;
     }
-    
+
     return false;
   }
 
   return true;
 }
 
-export function validateStep4(formData: any): boolean {
+export function validateStep4(formData: unknown): boolean {
   const result = creatorStep4Schema.safeParse(formData);
 
   if (!result.success) {
     const errors = result.error.flatten().fieldErrors;
-    
+
     if (errors.profilePhoto) {
       toast.error(errors.profilePhoto[0]);
       return false;
@@ -91,7 +92,7 @@ export function validateStep4(formData: any): boolean {
       toast.error(errors.governmentId[0]);
       return false;
     }
-    
+
     return false;
   }
 

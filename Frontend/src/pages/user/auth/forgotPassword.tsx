@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
+import { AxiosError } from "axios";
 import { Mail, ArrowLeft, X } from "lucide-react";
 import { passwordService } from "@/services/user/passwordService";
 import { toast } from "react-toastify";
@@ -47,9 +48,10 @@ export default function ForgotPassword() {
       setShowOtpModal(true);
       setTimer(60);
       setCanResend(false);
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      const errorMessage = error.response?.data?.message || "Failed to send OTP. Try again.";
+      const axiosError = error as AxiosError<{ message: string }>;
+      const errorMessage = axiosError.response?.data?.message || "Failed to send OTP. Try again.";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -95,9 +97,10 @@ export default function ForgotPassword() {
       toast.success("OTP Verified");
       setShowOtpModal(false);
       setShowResetForm(true);
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      const errorMessage = error.response?.data?.message || error.message || "Invalid OTP. Try again.";
+      const axiosError = error as AxiosError<{ message: string }>;
+      const errorMessage = axiosError.response?.data?.message || (error instanceof Error ? error.message : "Invalid OTP. Try again.");
       toast.error(errorMessage);
     } finally {
       setIsVerifying(false);
@@ -125,9 +128,10 @@ export default function ForgotPassword() {
 
       toast.success("Password reset successful!");
       navigate(ROUTES.USER.LOGIN)
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      const errorMessage = error.response?.data?.message || "Failed to reset password";
+      const axiosError = error as AxiosError<{ message: string }>;
+      const errorMessage = axiosError.response?.data?.message || "Failed to reset password";
       toast.error(errorMessage);
     } finally {
       setIsResetting(false);

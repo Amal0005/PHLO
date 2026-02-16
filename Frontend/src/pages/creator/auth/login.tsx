@@ -1,4 +1,5 @@
 import { ChangeEvent, useState } from "react";
+import { AxiosError } from "axios";
 import { Camera, CameraOff, Users, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -59,28 +60,36 @@ export default function CreatorLogin() {
         responseData.creator &&
         responseData.token
       ) {
-        dispatch(setCreator(responseData.creator));
+        dispatch(setCreator({ ...responseData.creator, status: "approved" }));
         dispatch(setCreatorAuth(responseData.token));
 
         toast.success("Logged in successfully");
         navigate(ROUTES.CREATOR.DASHBOARD, { replace: true });
       }
-    } catch (error: any) {
-      const data = error?.response?.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const data = error.response?.data as {
+          status?: string;
+          message?: string;
+          reason?: string;
+        };
 
-      if (data?.status === "blocked") {
-        toast.error(data.message || "Your account blocked by admin");
-        return;
+        if (data?.status === "blocked") {
+          toast.error(data.message || "Your account blocked by admin");
+          return;
+        }
+        if (data?.status === "pending" || data?.status === "rejected") {
+          setStatus({
+            status: data.status as "pending" | "rejected",
+            message: data.message || "Authentication failed",
+            reason: data.reason,
+          });
+          return;
+        }
+        toast.error(data?.message || "Login failed");
+      } else {
+        toast.error("An unexpected error occurred");
       }
-      if (data?.status === "pending" || data?.status === "rejected") {
-        setStatus({
-          status: data.status,
-          message: data.message || "Authentication failed",
-          reason: data.reason,
-        });
-        return;
-      }
-      toast.error(data?.message || "Login failed");
     } finally {
       setIsLoading(false);
     }

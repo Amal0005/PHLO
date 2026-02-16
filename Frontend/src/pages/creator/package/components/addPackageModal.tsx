@@ -1,6 +1,9 @@
 import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
+import { AxiosError } from "axios";
 import { CreatorPackageService } from "@/services/creator/creatorPackageService";
+import { Category } from "@/interface/admin/categoryInterface";
 import { PackageFormData, packageSchema } from "@/validation/packageValidation";
+import { PaginatedResponse } from "@/interface/admin/pagination";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -19,9 +22,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const [categories, setCategories] = useState<
-    { _id: string; name: string }[]
-  >([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -58,8 +59,8 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
     if (!isOpen) return;
 
     AdminCategoryService.getCategories()
-      .then((data: any) => {
-        setCategories(data?.data || data || []);
+      .then((data: PaginatedResponse<Category>) => {
+        setCategories(data?.data || []);
       })
       .catch(() => setCategories([]));
   }, [isOpen]);
@@ -135,9 +136,10 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
 
       setSelectedImages([]);
       setPreviews([]);
-    } catch (error: any) {
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
       toast.error(
-        error?.response?.data?.message || "Failed to add package"
+        axiosError.response?.data?.message || "Failed to add package"
       );
     } finally {
       setLoading(false);
@@ -210,7 +212,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
+                    <option key={cat.categoryId} value={cat.categoryId}>
                       {cat.name}
                     </option>
                   ))}

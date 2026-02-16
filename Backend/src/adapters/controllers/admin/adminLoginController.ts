@@ -2,15 +2,20 @@ import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { MESSAGES } from "@/utils/commonMessages";
 import { IAdminLoginUseCase } from "../../../domain/interface/admin/IAdminLoginUseCase";
-import { ILogoutUseCase } from "../../../domain/interface/ILogoutUseCase";
+import { AppError } from "@/domain/errors/appError";
+
+interface LoginRequestBody {
+  email: string;
+  password: string;
+}
 
 export class AdminLoginController {
   constructor(
     private _adminLoginUseCase: IAdminLoginUseCase,
-  ) {}
-  async login(req: Request, res: Response) {
+  ) { }
+  async login(req: Request, res: Response): Promise<Response> {
     try {
-      const { email, password } = req.body;
+      const { email, password } = req.body as LoginRequestBody;
       const result = await this._adminLoginUseCase.login(email, password);
 
       res.cookie("adminRefreshToken", result.refreshToken, {
@@ -29,10 +34,11 @@ export class AdminLoginController {
         },
       });
 
-    } catch (error: any) {
-      return res.status(StatusCode.UNAUTHORIZED).json({
+    } catch (error) {
+      const statusCode = error instanceof AppError ? error.statusCode : StatusCode.UNAUTHORIZED;
+      return res.status(statusCode).json({
         success: false,
-        message: error.message,
+        message: error instanceof Error ? error.message : "Authentication failed",
       });
     }
   }

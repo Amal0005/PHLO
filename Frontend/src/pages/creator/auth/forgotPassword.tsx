@@ -49,9 +49,9 @@ export default function ForgotPassword() {
       setTimer(60);
       setCanResend(false);
       setOtp(["", "", "", "", "", ""]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(error?.response?.data?.message || "Failed to send OTP. Try again.");
+      toast.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to send OTP. Try again.");
     } finally {
       setIsLoading(false);
     }
@@ -92,9 +92,9 @@ export default function ForgotPassword() {
       toast.success("OTP Verified");
       setShowOtpModal(false);
       setShowResetForm(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(error?.response?.data?.message || "Invalid OTP. Try again.");
+      toast.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Invalid OTP. Try again.");
     } finally {
       setIsVerifying(false);
     }
@@ -121,9 +121,9 @@ export default function ForgotPassword() {
 
       toast.success("Password reset successful!");
       navigate(ROUTES.CREATOR.LOGIN)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(error?.response?.data?.message || "Failed to reset password");
+      toast.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to reset password");
     } finally {
       setIsResetting(false);
     }

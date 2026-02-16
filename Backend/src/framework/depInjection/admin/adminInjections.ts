@@ -15,7 +15,6 @@ import { ToggleCreatorStatusUseCase } from "@/application/useCases/admin/toggleC
 import { MailService } from "@/domain/services/user/mailServices";
 import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
 import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseCase";
-import { GetCategoryUseCase } from "@/application/useCases/admin/getCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
 import { AddCategoryController } from "@/adapters/controllers/admin/category/addCategoryController";
 import { GetCategoryController } from "@/adapters/controllers/admin/category/getCategoryController";
@@ -40,7 +39,6 @@ const approveCreatorUseCase = new ApproveCreatorUseCase(creatorRepo, mailService
 const rejectCreatorUseCase = new RejectCreatorUseCase(creatorRepo);
 const toggleCreatorStatusUseCase = new ToggleCreatorStatusUseCase(creatorRepo)
 const addCategoryUseCase = new AddCategoryUseCase(categoryRepo)
-const getCategoryUseCase = new GetCategoryUseCase(categoryRepo)
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo)
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepo)
 const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepo)

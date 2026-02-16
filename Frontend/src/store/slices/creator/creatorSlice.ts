@@ -8,6 +8,7 @@ export type Creator = {
   profilePhoto?: string;
   city?: string;
   status: "pending" | "approved" | "rejected";
+  role?: string;
   specialties?: string[];
 };
 

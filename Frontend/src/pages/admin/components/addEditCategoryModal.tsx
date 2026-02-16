@@ -31,19 +31,20 @@ export default function AddEditCategoryModal({ isOpen, onClose, onSubmit, catego
     setErrors({});
     const result = categorySchema.safeParse(formData);
     if (!result.success) {
-      const formattedErrors: any = {};
+      const formattedErrors: Partial<Record<keyof CategoryForm, string>> = {};
       result.error.issues.forEach((issue) => {
-        formattedErrors[issue.path[0]] = issue.message;
+        const key = issue.path[0] as keyof CategoryForm;
+        formattedErrors[key] = issue.message;
       });
       setErrors(formattedErrors);
-      return; 
+      return;
     }
     setLoading(true);
     try {
       await onSubmit(formData);
       onClose();
-    } catch (error: any) {
-       toast.error(error.response?.data?.message || "Failed to save category");
+    } catch (error: unknown) {
+      toast.error((error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to save category");
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,8 @@
 import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
 import { CreatorPackageService } from "@/services/creator/creatorPackageService";
+import { Category } from "@/interface/admin/categoryInterface";
 import { EditPackageFormData, editPackageSchema } from "@/validation/packageValidation";
+import { PaginatedResponse } from "@/interface/admin/pagination";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -8,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { S3Service } from "@/services/s3Service";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import LocationSearchBar from "./locationSearchBar";
+import { AxiosError } from "axios";
 
 interface EditPackageModalProps {
   isOpen: boolean;
@@ -38,7 +41,7 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
   onSuccess,
   packageData,
 }) => {
-  const [categories, setCategories] = useState<{ _id: string; name: string }[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -61,8 +64,8 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
     if (!isOpen) return;
 
     AdminCategoryService.getCategories()
-      .then((data: any) => {
-        setCategories(data?.data || data || []);
+      .then((data: PaginatedResponse<Category>) => {
+        setCategories(data?.data || []);
       })
       .catch(() => setCategories([]));
   }, [isOpen]);
@@ -150,8 +153,9 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
       toast.success("Package updated successfully!");
       onSuccess();
       handleClose();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to update package");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError.response?.data?.message || "Failed to update package");
     } finally {
       setLoading(false);
     }
@@ -225,7 +229,7 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
+                    <option key={cat.categoryId} value={cat.categoryId}>
                       {cat.name}
                     </option>
                   ))}

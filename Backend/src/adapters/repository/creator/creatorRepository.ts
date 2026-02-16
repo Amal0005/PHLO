@@ -12,7 +12,7 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
     super(CreatorModel);
   }
 
-  protected mapToEntity(doc: any): CreatorEntity {
+  protected mapToEntity(doc: ICreatorModel): CreatorEntity {
     return CreatorMapper.toDomain(doc);
   }
 
@@ -29,11 +29,11 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
   }
 
   async createCreator(creator: Omit<CreatorEntity, "_id">): Promise<CreatorEntity> {
-    const created = await this.model.create(creator as any);
-    return this.mapToEntity(created as any);
+    const created = await this.model.create(creator as unknown as Omit<ICreatorModel, keyof Document>);
+    return this.mapToEntity(created as ICreatorModel);
   }
 
-  async updateStatus(creatorId: string, status: any, reason?: string): Promise<void> {
+  async updateStatus(creatorId: string, status: "pending" | "approved" | "rejected" | "blocked", reason?: string): Promise<void> {
     await this.model.updateOne({ _id: creatorId }, { $set: { status, rejectionReason: reason } });
   }
 
@@ -43,7 +43,7 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
 
   async findAllCreators(page: number, limit: number): Promise<PaginatedResult<CreatorEntity>> {
     const result = await paginateMongo(this.model, {}, page, limit, { select: "-password", sort: { createdAt: -1 } });
-    return { ...result, data: result.data.map((c: any) => this.mapToEntity(c)) };
+    return { ...result, data: result.data.map((c: ICreatorModel) => this.mapToEntity(c)) };
   }
 
   async updateProfile(creatorId: string, data: Partial<CreatorEntity>): Promise<CreatorEntity | null> {

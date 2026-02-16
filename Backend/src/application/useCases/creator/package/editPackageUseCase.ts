@@ -17,8 +17,8 @@ export class EditPackageUseCase implements IEditPackageUseCase {
     }
 
     // Handle populated creatorId (object) or unpopulated (string)
-    const existingCreatorId = typeof existingPackage.creatorId === 'object'
-      ? (existingPackage.creatorId as any)._id?.toString()
+    const existingCreatorId = (typeof existingPackage.creatorId === 'object' && existingPackage.creatorId !== null)
+      ? existingPackage.creatorId._id?.toString()
       : existingPackage.creatorId.toString();
 
     if (existingCreatorId !== creatorId.toString()) {
