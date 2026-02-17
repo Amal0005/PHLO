@@ -7,6 +7,7 @@ import { clearAdminAuth, setAdminAuth } from "@/store/slices/admin/adminAuthSlic
 import { clearUser } from "@/store/slices/user/userSlice";
 import { clearCreator } from "@/store/slices/creator/creatorSlice";
 import { clearAdmin } from "@/store/slices/admin/adminSlice";
+import { toast } from "react-toastify";
 
 interface QueueItem {
   resolve: (value?: unknown) => void;
@@ -134,7 +135,7 @@ export const setUpInterceptors = () => {
       }
 
       if (status === 403) {
-        alert(message);
+        toast.info(message)
         if (url.includes("/admin")) {
           store.dispatch(clearAdminAuth());
           store.dispatch(clearAdmin());

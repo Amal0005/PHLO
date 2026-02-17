@@ -4,9 +4,12 @@ import { IGetSubscriptionUseCase } from "@/domain/interface/admin/IGetSubscripti
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
 
 export class GetSubscriptionUseCase implements IGetSubscriptionUseCase {
-  constructor(private _subscriptionRepo: ISubscriptionRepository) {}
-  async getSubscription(): Promise<SubscriptionDTO[]> {
-    const res = await this._subscriptionRepo.findAll();
+  constructor(private _subscriptionRepo: ISubscriptionRepository) { }
+  async getSubscription(type?: string): Promise<SubscriptionDTO[]> {
+    const res = type
+      ? await this._subscriptionRepo.findByType(type)
+      : await this._subscriptionRepo.findAll();
+
     if (!res || res.length === 0) throw new Error("No subscriptions found");
     return SubscriptionDtoMapper.toDTOList(res);
   }

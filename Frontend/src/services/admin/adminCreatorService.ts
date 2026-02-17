@@ -14,17 +14,11 @@ export const fetchAdminCreators = async (
   return res.data;
 };
 
-
-export const approveCreator = async (
-  creatorId: string
-): Promise<void> => {
+export const approveCreator = async (creatorId: string): Promise<void> => {
   await api.patch(`/admin/creators/${creatorId}/approve`);
 };
 
-export const rejectCreator = async (
-  creatorId: string,
-  reason: string
-): Promise<void> => {
+export const rejectCreator = async (creatorId: string,reason: string): Promise<void> => {
   await api.patch(`/admin/creators/${creatorId}/reject`, { reason });
 };
 export const toggleCreatorStatus=async(creatorId:string,status:"approved"|"blocked")=>{

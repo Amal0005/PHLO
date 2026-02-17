@@ -7,9 +7,9 @@ export const ROUTES = {
     FORGOT_PASSWORD: "/forgot-password",
     HOME: "/home",
     PROFILE: "/profile",
-    PACKAGES:"/packages",
-    PACKAGE_DETAIL:"/packages/:packageId",
-    NOT_FOUND: "*"
+    PACKAGES: "/packages",
+    PACKAGE_DETAIL: "/packages/:packageId",
+    NOT_FOUND: "*",
   },
 
   CREATOR: {
@@ -21,7 +21,7 @@ export const ROUTES = {
     PROFILE: "/creator/profile",
     CONTENT: "/creator/content",
     ANALYTICS: "/creator/analytics",
-    PACKAGES: "/creator/packages"
+    PACKAGES: "/creator/packages",
   },
 
   ADMIN: {
@@ -30,6 +30,7 @@ export const ROUTES = {
     DASHBOARD: "/admin/dashboard",
     USERS: "/admin/users",
     CREATORS: "/admin/creators",
-    CATEGORIES: "/admin/category"
+    CATEGORIES: "/admin/category",
+    SUBSCRIPTIONS: "/admin/subscription",
   },
 };

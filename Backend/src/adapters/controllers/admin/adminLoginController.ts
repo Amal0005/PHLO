@@ -22,7 +22,7 @@ export class AdminLoginController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: Number(process.env.REFRESH_TOKEN_MAX_AGE) || 7 * 24 * 60 * 60 * 1000
       });
 
       return res.status(StatusCode.OK).json({
@@ -34,7 +34,7 @@ export class AdminLoginController {
         },
       });
 
-    } catch (error) {
+    } catch (error: unknown) {
       const statusCode = error instanceof AppError ? error.statusCode : StatusCode.UNAUTHORIZED;
       return res.status(statusCode).json({
         success: false,

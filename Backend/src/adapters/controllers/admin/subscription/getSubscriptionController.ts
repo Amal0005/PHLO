@@ -2,17 +2,19 @@ import { IGetSubscriptionUseCase } from "@/domain/interface/admin/IGetSubscripti
 import { StatusCode } from "@/utils/statusCodes";
 import { Request, Response } from "express";
 
-export class GetSubscriptionController{
+export class GetSubscriptionController {
     constructor(
-        private _getSubscriptionUseCase:IGetSubscriptionUseCase
-    ){}
-    async getSubscriptions(req:Request,res:Response){
+        private _getSubscriptionUseCase: IGetSubscriptionUseCase
+    ) { }
+
+    async getSubscriptions(req: Request, res: Response) {
         try {
-            const result=await this._getSubscriptionUseCase.getSubscription()
-            return res.status(StatusCode.OK).json({success :true,message:"Subscriptions listed",result})
+            const { type } = req.query;
+            const result = await this._getSubscriptionUseCase.getSubscription(type as string);
+            return res.status(StatusCode.OK).json({ success: true, message: "Subscriptions listed", result });
         } catch (error) {
-            console.log(error)
-            throw new Error("failed to fetch subscriptions")
+            console.error("GetSubscriptions Error:", error);
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: "Failed to fetch subscriptions" });
         }
     }
 }
