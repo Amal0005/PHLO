@@ -6,7 +6,7 @@ import { IGetPackageDetailUseCase } from "@/domain/interface/user/packages/IGetP
 export class GetPackageDetailController {
   constructor(
     private _getPackageDetailUseCase: IGetPackageDetailUseCase
-  ) { }
+  ) {}
 
   async getPackageDetail(req: Request, res: Response) {
     try {

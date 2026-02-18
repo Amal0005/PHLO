@@ -4,7 +4,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
 
 export class GoogleAuthController {
-  constructor(private _googleLoginUseCase: IGoogleLoginUseCase) { }
+  constructor(private _googleLoginUseCase: IGoogleLoginUseCase) {}
 
   async googleLogin(req: Request, res: Response) {
     try {

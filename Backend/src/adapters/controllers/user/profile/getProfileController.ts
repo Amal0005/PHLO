@@ -6,7 +6,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class GetProfileController {
-    constructor(private _getUserProfileUsecase: IGetUserProfileUseCase) { }
+    constructor(private _getUserProfileUsecase: IGetUserProfileUseCase) {}
 
     async execute(req: AuthRequest, res: Response): Promise<void> {
         try {

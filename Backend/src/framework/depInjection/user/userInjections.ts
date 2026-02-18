@@ -16,7 +16,10 @@ import { RedisService } from "../../../domain/services/user/redisServices";
 import { UserProfileController } from "@/adapters/controllers/user/profile/userProfileController";
 import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
 import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminCategoryListingUseCase";
-import { GetCategoryController } from "@/adapters/controllers/admin/category/getCategoryController";
+import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseCase";
+import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
+import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
+import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
 import { LogoutUseCase } from "../../../application/useCases/logoutUseCase";
 import { ForgotPasswordUseCase } from "../../../application/useCases/user/auth/forgotPasswordUseCase";
 import { GoogleLoginUseCase } from "../../../application/useCases/user/auth/googleLoginUseCase";
@@ -66,7 +69,9 @@ const editUserProfileUseCase = new EditUserProfileUsecase(userRepo, creatorRepos
 const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
 const listUserPackagesUseCase = new ListUserPackagesUseCase(packageRepository)
 const getPackageDetailUseCase = new GetPackageDetailUseCase(packageRepository);
-
+const addCategoryUseCase = new AddCategoryUseCase(categoryRepository);
+const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
+const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
@@ -79,7 +84,12 @@ export const editProfileController = new EditProfileController(editUserProfileUs
 export const changePasswordController = new ChangePasswordController(changePasswordUseCase)
 export const listUserPackagesController = new ListUserPackagesController(listUserPackagesUseCase)
 export const getPackageDetailController = new GetPackageDetailController(getPackageDetailUseCase)
-export const getCategoryController = new GetCategoryController(adminCategoryListingUseCase);
+export const getCategoryController = new CategoryController(
+    addCategoryUseCase,
+    editCategoryUseCase,
+    deleteCategoryUseCase,
+    adminCategoryListingUseCase
+);
 
 export const userProfileController = new UserProfileController(
     getUserProfileUseCase,

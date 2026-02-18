@@ -16,7 +16,6 @@ export const UserProfileService = {
     const res = await api.patch(API_ENDPOINTS.USER.CHANGE_PASSWORD, payload);
     return res.data;
   },
-  // Check if a new email is available before sending OTP
   checkEmailAvailability: async (email: string): Promise<{ success: boolean; message: string }> => {
     const res = await api.post(API_ENDPOINTS.USER.CHECK_EMAIL, { email });
     return res.data;

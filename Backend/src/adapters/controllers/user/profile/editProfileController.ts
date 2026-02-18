@@ -5,7 +5,7 @@ import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/utils/commonMessages";
 
 export class EditProfileController {
-    constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) { }
+    constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) {}
 
     async execute(req: AuthRequest, res: Response): Promise<void> {
         try {

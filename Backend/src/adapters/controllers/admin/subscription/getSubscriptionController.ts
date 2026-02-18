@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 export class GetSubscriptionController {
     constructor(
         private _getSubscriptionUseCase: IGetSubscriptionUseCase
-    ) { }
+    ) {}
 
     async getSubscriptions(req: Request, res: Response) {
         try {

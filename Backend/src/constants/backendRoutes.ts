@@ -17,6 +17,7 @@ export const BACKEND_ROUTES = {
         PACKAGE_DETAIL: "/packages/:id",
         VERIFY_EMAIL_OTP: "/verify-email-otp",
         CHECK_EMAIL: "/check-email",
+        CATEGORY: "/category",
     },
     CREATOR: {
         BASE: "/creator",

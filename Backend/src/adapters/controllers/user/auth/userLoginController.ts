@@ -5,7 +5,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { AppError } from "@/domain/errors/appError";
 
 export class userLoginController {
-  constructor(private _userLoginUseCase: IUserLoginUseCase) { }
+  constructor(private _userLoginUseCase: IUserLoginUseCase) {}
 
   async login(req: Request, res: Response): Promise<Response> {
     try {

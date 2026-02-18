@@ -3,7 +3,7 @@ import { StatusCode } from "@/utils/statusCodes";
 import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 
 export class TokenController {
-    constructor(private _jwtService: IJwtServices) { }
+    constructor(private _jwtService: IJwtServices) {}
 
     async refreshToken(req: Request, res: Response) {
         try {

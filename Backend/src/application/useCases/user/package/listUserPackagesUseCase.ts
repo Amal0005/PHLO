@@ -4,7 +4,7 @@ import { IListUserPackagesUseCase, PackageFilters } from "@/domain/interface/use
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class ListUserPackagesUseCase implements IListUserPackagesUseCase {
-  constructor(private packageRepository: IPackageRepository) { }
+  constructor(private packageRepository: IPackageRepository) {}
 
   async listPackages(filters?: PackageFilters): Promise<PaginatedResult<PackageEntity>> {
     return await this.packageRepository.findAllPackages(filters);

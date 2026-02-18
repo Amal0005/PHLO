@@ -15,7 +15,7 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
     return UserMapper.toDomain(doc);
   }
 
-  // Inherited: findById, update, delete, create, findAll
+  
 
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.model.findOne({ email });

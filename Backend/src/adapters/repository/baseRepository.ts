@@ -2,8 +2,7 @@ import { IBaseRepository } from "@/domain/interface/repositories/IBaseRepository
 import { Model, Document, UpdateQuery } from "mongoose";
 
 export abstract class BaseRepository<T, M extends Document>
-  implements IBaseRepository<T>
-{
+  implements IBaseRepository<T> {
   protected model: Model<M>;
 
   constructor(model: Model<M>) {
@@ -12,7 +11,6 @@ export abstract class BaseRepository<T, M extends Document>
 
   protected abstract mapToEntity(doc: M): T;
 
-  // --- Common CRUD Methods ---
 
   async create(data: Partial<T>): Promise<T> {
     const doc = new this.model(data);

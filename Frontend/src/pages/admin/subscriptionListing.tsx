@@ -74,8 +74,9 @@ export default function SubscriptionListingPage() {
         toast.success("Subscription added successfully");
       }
       fetchSubscriptions();
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to save subscription");
+    } catch (error:unknown) {
+      const message = error instanceof Error ? error.message : "Failed to save subscription";
+      toast.error(message);
     }
   };
 

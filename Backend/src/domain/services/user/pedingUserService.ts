@@ -2,7 +2,7 @@ import { IPendingUserService } from "@/domain/interface/service/IPendingUserServ
 import { IRedisService } from "../../interface/service/IRedisServices";
 
 export class PendingUserService implements IPendingUserService {
-    constructor(private _redisService: IRedisService) { }
+    constructor(private _redisService: IRedisService) {}
     async getPending(email: string): Promise<string | null> {
         return this._redisService.getValue(`PENDING_USER_${email}`)
     }

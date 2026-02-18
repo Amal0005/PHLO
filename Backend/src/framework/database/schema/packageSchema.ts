@@ -16,7 +16,7 @@ export const packageSchema = new Schema(
         required: true,
       },
       coordinates: {
-        type: [Number], // [longitude, latitude]
+        type: [Number], 
         required: true,
       },
     },
@@ -25,5 +25,5 @@ export const packageSchema = new Schema(
   { timestamps: true }
 );
 
-// CRITICAL: Add the 2dsphere index for geospatial queries
+
 packageSchema.index({ location: "2dsphere" });

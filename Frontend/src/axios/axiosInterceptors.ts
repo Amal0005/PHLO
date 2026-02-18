@@ -30,9 +30,6 @@ const getRoleFromUrl = (url: string): "admin" | "creator" | "user" => {
   return "user";
 };
 
-/**
- * Helper to perform a forced logout based on the role.
- */
 const forceLogout = () => {
   store.dispatch(removeUser())
 };
@@ -66,14 +63,12 @@ export const setUpInterceptors = () => {
       const isLoginRequest = url.endsWith("/login") || url.includes("/login?");
       const isRefreshRequest = url.includes("/refresh-token");
 
-      // Don't intercept login or refresh requests
       if (isLoginRequest || isRefreshRequest) {
         return Promise.reject(err);
       }
 
       const role = getRoleFromUrl(url);
 
-      // Handle 401 Unauthorized (Token Expiration)
       if (status === 401 && !originalRequest._retry) {
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
@@ -94,7 +89,6 @@ export const setUpInterceptors = () => {
         isRefreshing = true;
 
         try {
-          // Using a single refresh token endpoint for all roles
           const response = await axios.post(
             `${import.meta.env.VITE_BASE_URL}/refresh-token`,
             {},
@@ -117,7 +111,6 @@ export const setUpInterceptors = () => {
         }
       }
 
-      // Handle 403 Forbidden (Blocked/Restricted)
       if (status === 403) {
         toast.info(message || "Your account has been restricted.");
         forceLogout();

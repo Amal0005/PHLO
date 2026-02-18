@@ -12,7 +12,7 @@ export class SubscriptionController {
         private _editSubscriptionUseCase: IEditSubscriptionUseCase,
         private _deleteSubscriptionUseCase: IDeleteSubscriptionUseCase,
         private _getSubscriptionUseCase: IGetSubscriptionUseCase
-    ) { }
+    ) {}
 
     async addSubscription(req: Request, res: Response): Promise<Response> {
         try {

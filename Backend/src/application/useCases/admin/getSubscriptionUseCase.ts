@@ -5,7 +5,7 @@ import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscr
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetSubscriptionUseCase implements IGetSubscriptionUseCase {
-  constructor(private _subscriptionRepo: ISubscriptionRepository) { }
+  constructor(private _subscriptionRepo: ISubscriptionRepository) {}
   async getSubscription(type?: 'User' | 'Creator', page: number = 1, limit: number = 10): Promise<PaginatedResult<SubscriptionDTO>> {
     const res = await this._subscriptionRepo.findSubscriptions(type, page, limit);
 

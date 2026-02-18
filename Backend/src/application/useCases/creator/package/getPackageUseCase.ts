@@ -6,7 +6,7 @@ import { PaginatedResult } from "@/domain/types/paginationTypes";
 export class GetPackagesUseCase implements IgetPackagesUseCase {
   constructor(
     private packageRepository: IPackageRepository
-  ) { }
+  ) {}
   async getPackage(creatorId: string, page: number, limit: number, search?: string, sortBy?: string): Promise<PaginatedResult<PackageEntity>> {
     return await this.packageRepository.findAllPackages({
       creatorId,

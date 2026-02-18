@@ -12,7 +12,7 @@ interface LoginRequestBody {
 export class AdminLoginController {
   constructor(
     private _adminLoginUseCase: IAdminLoginUseCase,
-  ) { }
+  ) {}
   async login(req: Request, res: Response): Promise<Response> {
     try {
       const { email, password } = req.body as LoginRequestBody;

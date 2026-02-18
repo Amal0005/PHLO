@@ -3,12 +3,13 @@ import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/I
 import { IGetCreatorProfileUseCase } from "@/domain/interface/creator/profile/IGetCreatorProfileUseCase";
 import { Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
+import { unstable_DecodeFormStateFunction } from "react-router-dom";
 
 export class CreatorProfileController {
     constructor(
         private _getCreatorProfileUseCase: IGetCreatorProfileUseCase,
         private _editCreatorProfileUseCase: IeditCreatorProfileUseCase
-    ) {}
+    ) { }
     async getProfile(req: AuthRequest, res: Response) {
         try {
             const creator = await this._getCreatorProfileUseCase.getProfile(req.user!.userId)

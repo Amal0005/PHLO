@@ -12,7 +12,6 @@ export const CreatorProfileServices = {
         const res = await api.patch(API_ENDPOINTS.CREATOR.PROFILE, payload)
         return res.data
     },
-    // Delegate S3 operations to the unified service
     getUploadUrl: S3Service.getPresignedUrl,
     uploadToS3: S3Service.uploadFile,
     getViewUrl: S3Service.getViewUrl,

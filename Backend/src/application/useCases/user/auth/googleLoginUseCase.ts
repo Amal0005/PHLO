@@ -10,7 +10,7 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _jwtService: IJwtServices
-  ) { }
+  ) {}
 
   async execute(idToken: string): Promise<{ user: User; accessToken: string; refreshToken: string }> {
 
@@ -28,7 +28,7 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
         status: "active",
       });
     } else if (!user.image && googleUser.picture) {
-      // Update image if missing for existing user
+      
       const updatedUser = await this._userRepo.editProfile(user._id!.toString(), { image: googleUser.picture });
       if (updatedUser) user = updatedUser;
     }

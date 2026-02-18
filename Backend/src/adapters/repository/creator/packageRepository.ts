@@ -24,7 +24,7 @@ export class PackageRepository
     return { ...rest, _id: _id.toString() } as PackageEntity;
   }
 
-  // Override findById with population
+
   async findById(packageId: string): Promise<PackageEntity | null> {
     const pkg = await this.model
       .findById(packageId)
@@ -57,7 +57,7 @@ export class PackageRepository
     const limit = Math.max(1, filters?.limit || 10);
     const skip = (page - 1) * limit;
 
-    // If location filter is present, use aggregation with $geoNear
+
     if (filters?.lat !== undefined && filters?.lng !== undefined) {
       const pipeline: any[] = [
         {
@@ -73,7 +73,7 @@ export class PackageRepository
         }
       ];
 
-      // Add match conditions
+
       const matchConditions: any = {};
 
       if (filters?.category) matchConditions.category = new Types.ObjectId(filters.category);
@@ -98,7 +98,7 @@ export class PackageRepository
         pipeline.push({ $match: matchConditions });
       }
 
-      // Add population stages
+
       pipeline.push(
         {
           $lookup: {
@@ -120,7 +120,7 @@ export class PackageRepository
         { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } }
       );
 
-      // Project only needed fields from populated documents
+
       pipeline.push({
         $project: {
           creatorId: {
@@ -145,12 +145,12 @@ export class PackageRepository
         }
       });
 
-      // Count total before pagination
+
       const countPipeline = [...pipeline, { $count: "total" }];
       const countResult = await this.model.aggregate(countPipeline);
       const total = countResult[0]?.total || 0;
 
-      // Add pagination
+
       pipeline.push({ $skip: skip }, { $limit: limit });
 
       const packages = await this.model.aggregate(pipeline);
@@ -167,7 +167,7 @@ export class PackageRepository
       };
     }
 
-    // Regular query without geolocation
+
     const query: Record<string, any> = {};
 
     if (filters?.category) query.category = filters.category;

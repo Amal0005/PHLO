@@ -24,6 +24,7 @@ import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistSe
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 
 export class UserRoutes {
   public userRouter: Router;
@@ -40,46 +41,51 @@ export class UserRoutes {
 
   private setRoutes(): void {
     this.userRouter.post(
-      "/register",
+      BACKEND_ROUTES.USER.REGISTER,
       validate(registerUserSchema),
       (req: Request, res: Response) => registerController.register(req, res),
     );
 
-    this.userRouter.post("/verify-otp", (req: Request, res: Response) =>
-      registerController.verifyOtp(req, res),
-    );
-
-    this.userRouter.post("/resend-otp", (req: Request, res: Response) =>
-      registerController.resendOtp(req, res),
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.VERIFY_OTP,
+      (req: Request, res: Response) => registerController.verifyOtp(req, res),
     );
 
     this.userRouter.post(
-      "/login",
+      BACKEND_ROUTES.USER.RESEND_OTP,
+      (req: Request, res: Response) => registerController.resendOtp(req, res),
+    );
+
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.LOGIN,
       validate(loginUserSchema),
       (req: Request, res: Response) => loginController.login(req, res),
     );
-    this.userRouter.post("/refresh-token", (req, res) =>
+    this.userRouter.post(BACKEND_ROUTES.USER.REFRESH_TOKEN, (req, res) =>
       tokenController.refreshToken(req, res),
     );
 
-    this.userRouter.post("/forgot-password", (req: Request, res: Response) =>
-      userAuthController.forgotPassword(req, res),
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.FORGOT_PASSWORD,
+      (req: Request, res: Response) => userAuthController.forgotPassword(req, res),
     );
 
-    this.userRouter.post("/verify-forgot-otp", (req: Request, res: Response) =>
-      userAuthController.verifyForgotOtp(req, res),
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.VERIFY_FORGOT_OTP,
+      (req: Request, res: Response) => userAuthController.verifyForgotOtp(req, res),
     );
 
-    this.userRouter.post("/reset-password", (req: Request, res: Response) =>
-      userAuthController.resetPassword(req, res),
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.RESET_PASSWORD,
+      (req: Request, res: Response) => userAuthController.resetPassword(req, res),
     );
 
-    this.userRouter.post("/auth/google", (req: Request, res: Response) =>
+    this.userRouter.post(BACKEND_ROUTES.USER.GOOGLE_AUTH, (req: Request, res: Response) =>
       userGoogleController.googleLogin(req, res),
     );
 
     this.userRouter.post(
-      "/logout",
+      BACKEND_ROUTES.USER.LOGOUT,
       jwtAuthMiddleware(
         this._jwtService,
         this._tokenBlacklistService,
@@ -90,7 +96,7 @@ export class UserRoutes {
       logoutController.logout.bind(logoutController),
     );
     this.userRouter.get(
-      "/profile",
+      BACKEND_ROUTES.USER.PROFILE,
       jwtAuthMiddleware(
         this._jwtService,
         this._tokenBlacklistService,
@@ -101,7 +107,7 @@ export class UserRoutes {
       (req: Request, res: Response) => getProfileController.execute(req, res),
     );
     this.userRouter.patch(
-      "/profile",
+      BACKEND_ROUTES.USER.PROFILE,
       jwtAuthMiddleware(
         this._jwtService,
         this._tokenBlacklistService,
@@ -112,7 +118,7 @@ export class UserRoutes {
       (req: Request, res: Response) => editProfileController.execute(req, res),
     );
     this.userRouter.patch(
-      "/change-password",
+      BACKEND_ROUTES.USER.CHANGE_PASSWORD,
       jwtAuthMiddleware(
         this._jwtService,
         this._tokenBlacklistService,
@@ -124,7 +130,7 @@ export class UserRoutes {
         changePasswordController.execute(req, res),
     );
     this.userRouter.get(
-      "/packages",
+      BACKEND_ROUTES.USER.PACKAGES,
       jwtAuthMiddleware(
         this._jwtService,
         this._tokenBlacklistService,
@@ -135,21 +141,21 @@ export class UserRoutes {
       (req: Request, res: Response) =>
         listUserPackagesController.listPackages(req, res),
     );
-    this.userRouter.get("/packages/:id", (req: Request, res: Response) =>
+    this.userRouter.get(BACKEND_ROUTES.USER.PACKAGE_DETAIL, (req: Request, res: Response) =>
       getPackageDetailController.getPackageDetail(req, res),
     );
-    this.userRouter.get("/category", (req: Request, res: Response) =>
+    this.userRouter.get(BACKEND_ROUTES.USER.CATEGORY, (req: Request, res: Response) =>
       getCategoryController.getCategory(req, res),
     );
 
     this.userRouter.post(
-      "/check-email",
+      BACKEND_ROUTES.USER.CHECK_EMAIL,
       jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
       (req: Request, res: Response) => userProfileController.checkEmail(req, res)
     );
 
     this.userRouter.post(
-      "/verify-email-otp",
+      BACKEND_ROUTES.USER.VERIFY_EMAIL_OTP,
       jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
       (req: Request, res: Response) => userProfileController.verifyEmailChangeOtp(req, res)
     );

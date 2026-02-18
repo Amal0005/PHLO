@@ -16,7 +16,7 @@ export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
     private _otpService: IOTPService,
     private _mailService: IMailService,
     private _redisService: IRedisService
-  ) { }
+  ) {}
 
   async registerCreator(data: CreatorEntity): Promise<CreatorEntity> {
     const email = data.email.trim().toLowerCase();

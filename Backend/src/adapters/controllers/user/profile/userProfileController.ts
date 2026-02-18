@@ -18,9 +18,9 @@ export class UserProfileController {
         private _otpService: IOTPService,
         private _userRepo: IUserRepository,
         private _creatorRepo: ICreatorRepository,
-    ) { }
+    ) {}
 
-    // GET /profile
+    
     async getProfile(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
@@ -41,7 +41,7 @@ export class UserProfileController {
         }
     }
 
-    // PATCH /profile
+    
     async editProfile(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
@@ -57,7 +57,7 @@ export class UserProfileController {
         }
     }
 
-    // PATCH /change-password
+    
     async changePassword(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
@@ -78,8 +78,8 @@ export class UserProfileController {
         }
     }
 
-    // POST /verify-email-otp
-    // Verifies OTP for email change — only checks Redis, does NOT look up pending users
+    
+    
     async verifyEmailChangeOtp(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
@@ -109,8 +109,8 @@ export class UserProfileController {
         }
     }
 
-    // POST /check-email
-    // Checks if a new email is available before sending OTP
+    
+    
     async checkEmail(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
