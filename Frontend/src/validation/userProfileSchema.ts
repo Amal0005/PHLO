@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const editProfileSchema = z.object({
-  name: z.string().trim().min(2, "Name must be at least 2 characters"),
-phone: z.string().regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits"),
- email: z.string().email("Invalid email address")
+  name: z.string().trim().min(2, "Name must be at least 2 characters").regex(/^[a-zA-Z\s]+$/, "Name must only contain letters"),
+  phone: z.string().regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits"),
+  email: z.string().email("Invalid email address")
 });
 
 export const changePasswordSchema = z

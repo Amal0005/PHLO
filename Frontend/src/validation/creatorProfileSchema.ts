@@ -1,8 +1,10 @@
 import { z } from "zod";
 
 export const creatorProfileSchema = z.object({
-  fullName: z.string().trim().min(3, "Full name must be at least 3 characters"),
-  phone: z.string().regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
+  fullName: z.string().trim().min(3, "Full name must be at least 3 characters").regex(/^[a-zA-Z\s]+$/, "Full name must only contain letters"),
+  phone: z
+    .string()
+    .regex(/^(?!0{10}$)\d{10}$/, "Phone number must be 10 digits and cannot be all zeros"),
   city: z.string().min(2, "City name is too short"),
   yearsOfExperience: z
     .number()

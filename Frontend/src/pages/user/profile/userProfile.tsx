@@ -13,6 +13,7 @@ import { UserProfileService } from "@/services/user/userProfileServices";
 import { EditUserProfile } from "./components/editUserProfile";
 import { EditUserPassword } from "./components/editUserPassword";
 import { ViewProfileImage } from "./components/viewProfileImage";
+import OtpVerificationModal from "@/compoents/reusable/OtpVerificationModal";
 
 import { User } from "@/interface/admin/userInterface";
 
@@ -44,6 +45,10 @@ export default function UserProfile() {
   });
   const [editProfileErrors, setEditProfileErrors] = useState<Record<string, string[]>>({});
   const [passwordErrors, setPasswordErrors] = useState<Record<string, string[]>>({});
+
+  // Email change OTP flow
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState<boolean>(false);
+  const [pendingForm, setPendingForm] = useState<ProfileForm | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -78,6 +83,7 @@ export default function UserProfile() {
         dispatch(updateUserProfile({
           name: response.user.name,
           phone: response.user.phone,
+          image: response.user.image,
         }));
         toast.success("Profile photo updated!");
       }
@@ -163,7 +169,14 @@ export default function UserProfile() {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Only allow alphabets and spaces for name
+    if (name === "name" && value !== "" && !/^[a-zA-Z\s]*$/.test(value)) {
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -177,8 +190,36 @@ export default function UserProfile() {
       return;
     }
 
-    setIsSaving(true);
+    const emailChanged = form.email.trim().toLowerCase() !== profileData?.email?.trim().toLowerCase();
 
+    if (emailChanged) {
+      setIsSaving(true);
+      try {
+        // Step 1: Check if the new email is already taken — show error inline before sending OTP
+        const checkRes = await UserProfileService.checkEmailAvailability(form.email);
+        if (!checkRes.success) {
+          setEditProfileErrors({ email: [checkRes.message] });
+          return;
+        }
+        // Step 2: Email is available — send OTP
+        await UserProfileService.sendEmailChangeOtp(form.email);
+        setPendingForm(form);
+        setIsVerifyingEmail(true);
+        toast.info(`OTP sent to ${form.email}`);
+      } catch (error: unknown) {
+        const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to send OTP";
+        if (message.toLowerCase().includes("email") || message.toLowerCase().includes("already")) {
+          setEditProfileErrors({ email: [message] });
+        } else {
+          toast.error(message);
+        }
+      } finally {
+        setIsSaving(false);
+      }
+      return;
+    }
+
+    setIsSaving(true);
     try {
       const response = await UserProfileService.editProfile(form);
       if (response.success && response.user) {
@@ -186,16 +227,48 @@ export default function UserProfile() {
           name: response.user.name,
           phone: response.user.phone,
         }));
-        setProfileData(response.user);
+        setProfileData({ ...response.user, image: profileData?.image });
         setIsEditing(false);
         toast.success("Profile updated successfully!");
       }
     } catch (error: unknown) {
       const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to update profile";
-      toast.error(message);
+      // Show email-specific error inline
+      if (message.toLowerCase().includes("email") || message.toLowerCase().includes("already")) {
+        setEditProfileErrors({ email: [message] });
+      } else {
+        toast.error(message);
+      }
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleEmailOtpVerify = async (otp: string) => {
+    if (!pendingForm) return;
+    // Verify OTP first
+    const verifyRes = await UserProfileService.verifyEmailChangeOtp(pendingForm.email, otp);
+    if (!verifyRes.success) {
+      throw new Error(verifyRes.message || "Invalid OTP");
+    }
+    // OTP verified — now save the profile with the new email
+    const response = await UserProfileService.editProfile(pendingForm);
+    if (response.success && response.user) {
+      dispatch(updateUserProfile({
+        name: response.user.name,
+        phone: response.user.phone,
+      }));
+      setProfileData({ ...response.user, image: profileData?.image });
+      setIsVerifyingEmail(false);
+      setPendingForm(null);
+      setIsEditing(false);
+      toast.success("Profile updated successfully!");
+    }
+  };
+
+  const handleEmailOtpResend = async () => {
+    if (!pendingForm) return;
+    await UserProfileService.sendEmailChangeOtp(pendingForm.email);
   };
 
   const formatDate = (date: Date | undefined) => {
@@ -264,15 +337,17 @@ export default function UserProfile() {
                     </span>
                     Edit Profile
                   </button>
-                  <button
-                    onClick={() => setIsChangingPassword(true)}
-                    className="flex items-center gap-2 text-white text-sm uppercase tracking-wider hover:text-gray-300 transition-colors group"
-                  >
-                    <span className="w-8 h-8 rounded-full border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                      <Lock className="w-4 h-4" />
-                    </span>
-                    Change Password
-                  </button>
+                  {!profileData?.googleVerified && (
+                    <button
+                      onClick={() => setIsChangingPassword(true)}
+                      className="flex items-center gap-2 text-white text-sm uppercase tracking-wider hover:text-gray-300 transition-colors group"
+                    >
+                      <span className="w-8 h-8 rounded-full border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                        <Lock className="w-4 h-4" />
+                      </span>
+                      Change Password
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -399,12 +474,29 @@ export default function UserProfile() {
       {/* EDIT MODAL */}
       <EditUserProfile
         isOpen={isEditing}
-        onClose={() => setIsEditing(false)}
+        onClose={() => {
+          setIsEditing(false);
+          setEditProfileErrors({});
+        }}
         form={form}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         isSaving={isSaving}
         errors={editProfileErrors}
+      />
+
+      {/* EMAIL CHANGE OTP MODAL */}
+      <OtpVerificationModal
+        isOpen={isVerifyingEmail}
+        email={pendingForm?.email || ""}
+        onClose={() => {
+          setIsVerifyingEmail(false);
+          setPendingForm(null);
+        }}
+        onVerify={handleEmailOtpVerify}
+        onResend={handleEmailOtpResend}
+        title="Verify New Email"
+        description="Enter the 6-digit code sent to your new email"
       />
 
       {/* PASSWORD CHANGE MODAL */}

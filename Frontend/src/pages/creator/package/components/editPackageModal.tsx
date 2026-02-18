@@ -1,4 +1,4 @@
-import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
+import { CreatorCategoryService } from "@/services/creator/creatorCategoryService";
 import { CreatorPackageService } from "@/services/creator/creatorPackageService";
 import { Category } from "@/interface/admin/categoryInterface";
 import { EditPackageFormData, editPackageSchema } from "@/validation/packageValidation";
@@ -63,7 +63,7 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    AdminCategoryService.getCategories()
+    CreatorCategoryService.getCategories()
       .then((data: PaginatedResponse<Category>) => {
         setCategories(data?.data || []);
       })
@@ -225,7 +225,8 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
                 </label>
                 <select
                   {...register("category")}
-                  className="w-full bg-black/50 border border-white/5 p-4 rounded-xl text-white focus:border-white/20 outline-none transition-colors appearance-none"
+                  className={`w-full bg-black/50 border p-4 rounded-xl text-white focus:border-white/20 outline-none transition-colors appearance-none ${errors.category ? "border-red-500/60" : "border-white/5"
+                    }`}
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
@@ -234,6 +235,11 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
                     </option>
                   ))}
                 </select>
+                {errors.category && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.category.message}
+                  </p>
+                )}
               </div>
 
               {/* LOCATION SEARCH */}

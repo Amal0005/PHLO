@@ -31,14 +31,20 @@ export interface PackageFilters {
   maxPrice?: number;
   creatorId?: string;
   search?: string;
-  sortBy?: "price-asc" | "price-desc" | "newest";
+  sortBy?: "price-asc" | "price-desc" | "newest" | "oldest";
   lat?: number;
   lng?: number;
   radiusInKm?: number;
+  page?: number;
+  limit?: number;
 }
 
 export interface PackageListResponse {
   success: boolean;
   data: UserPackage[];
-  count: number;
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
+

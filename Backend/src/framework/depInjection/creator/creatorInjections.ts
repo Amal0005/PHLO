@@ -28,10 +28,14 @@ import { EditPackageUseCase } from "@/application/useCases/creator/package/editP
 import { EditPackageController } from "@/adapters/controllers/creator/package/editPackageController";
 import { DeletePackageUseCase } from "@/application/useCases/creator/package/deletePackageUseCase";
 import { DeletePackageController } from "@/adapters/controllers/creator/package/deletePackageController";
+import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
+import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminCategoryListingUseCase";
+import { GetCategoryController } from "@/adapters/controllers/admin/category/getCategoryController";
 
 const creatorRepository = new CreatorRepository();
 const userRepository = new UserRepository();
-const packageRepository = new PackageRepository()
+const packageRepository = new PackageRepository();
+const categoryRepo = new CategoryRepository();
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
 const redisService = new RedisService();
@@ -51,7 +55,8 @@ const editCreatorProfileUseCase = new EditCreatorProfileUseCase(creatorRepositor
 const addPackageUseCase = new AddPackageUseCase(packageRepository)
 const getPackageUseCase = new GetPackagesUseCase(packageRepository)
 const editPackageUseCase = new EditPackageUseCase(packageRepository)
-const deletePackageUseCase= new DeletePackageUseCase(packageRepository)
+const deletePackageUseCase = new DeletePackageUseCase(packageRepository)
+const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepo);
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
@@ -60,6 +65,7 @@ export const creatorProfileController = new CreatorProfileController(getCreatorP
 export const addPackageController = new AddPackageController(addPackageUseCase);
 export const getPackagesController = new GetPackagesController(getPackageUseCase);
 export const editPackagesController = new EditPackageController(editPackageUseCase)
-export const deletePackageController= new DeletePackageController(deletePackageUseCase)
+export const deletePackageController = new DeletePackageController(deletePackageUseCase)
+export const getCategoryController = new GetCategoryController(adminCategoryListingUseCase);
 
 

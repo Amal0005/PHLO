@@ -10,7 +10,7 @@ import { setUser } from "@/store/slices/user/userSlice";
 import GoogleLoginButton from "../../../compoents/reusable/googleButton";
 import { AppDispatch } from "@/store/store";
 import InputError from "@/compoents/reusable/inputErrors";
-import { setUserAuth } from "@/store/slices/user/userAuthSlice";
+import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
 import { AxiosError } from "axios";
@@ -51,7 +51,8 @@ export default function Login() {
       const data = await UserAuthService.login(form);
       if (data?.data?.accessToken && data?.data?.user) {
         dispatch(setUser(data.data.user));
-        dispatch(setUserAuth(data.data.accessToken));
+        dispatch(setToken(data.data.accessToken));
+        dispatch(setRole("user"));
 
         toast.success("Login Successful");
         navigate(ROUTES.USER.HOME, { replace: true });
@@ -253,7 +254,8 @@ export default function Login() {
 
                       if (response?.accessToken && response?.user) {
                         dispatch(setUser(response.user));
-                        dispatch(setUserAuth(response.accessToken));
+                        dispatch(setToken(response.accessToken));
+                        dispatch(setRole("user"));
                         navigate(ROUTES.USER.HOME, { replace: true });
                       } else {
                         console.error(

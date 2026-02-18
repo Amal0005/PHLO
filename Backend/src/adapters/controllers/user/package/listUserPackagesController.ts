@@ -10,7 +10,7 @@ export class ListUserPackagesController {
 
   async listPackages(req: Request, res: Response) {
     try {
-      const { category, minPrice, maxPrice, creatorId, search, sortBy, lat, lng, radiusInKm } = req.query;
+      const { category, minPrice, maxPrice, creatorId, search, sortBy, lat, lng, radiusInKm, page, limit } = req.query;
 
       const filters = {
         category: category as string | undefined,
@@ -22,14 +22,19 @@ export class ListUserPackagesController {
         lat: lat ? parseFloat(lat as string) : undefined,
         lng: lng ? parseFloat(lng as string) : undefined,
         radiusInKm: radiusInKm ? parseFloat(radiusInKm as string) : undefined,
+        page: page ? parseInt(page as string) : 1,
+        limit: limit ? parseInt(limit as string) : 10,
       };
 
       const packages = await this._listUserPackagesUseCase.listPackages(filters);
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: packages,
-        count: packages.length
+        data: packages.data,
+        total: packages.total,
+        page: packages.page,
+        limit: packages.limit,
+        totalPages: packages.totalPages
       });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR;

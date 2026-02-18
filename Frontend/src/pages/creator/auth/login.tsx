@@ -8,7 +8,7 @@ import { setCreator } from "@/store/slices/creator/creatorSlice";
 import { toast } from "react-toastify";
 import StatusModal from "./statusModal";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
-import { setCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
+import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { ROUTES } from "@/constants/routes";
 
 export default function CreatorLogin() {
@@ -61,7 +61,8 @@ export default function CreatorLogin() {
         responseData.token
       ) {
         dispatch(setCreator({ ...responseData.creator, status: "approved" }));
-        dispatch(setCreatorAuth(responseData.token));
+        dispatch(setToken(responseData.token));
+        dispatch(setRole("creator"));
 
         toast.success("Logged in successfully");
         navigate(ROUTES.CREATOR.DASHBOARD, { replace: true });

@@ -45,6 +45,12 @@ export default function CreatorProfile() {
 
   const handleEditChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
+    // Only allow alphabets and spaces for full name
+    if (name === "fullName" && value !== "" && !/^[a-zA-Z\s]*$/.test(value)) {
+      return;
+    }
+
     setEditForm((prev) => ({
       ...prev,
       [name]: name === "yearsOfExperience" ? parseInt(value) || 0 : value,

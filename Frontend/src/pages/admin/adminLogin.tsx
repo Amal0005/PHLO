@@ -9,7 +9,7 @@ import { AppDispatch } from "@/store/store";
 import { loginUserSchema } from "@/validation/loginUserSchema";
 import { AdminAuthService } from "@/services/admin/adminAuthService";
 import { setAdmin } from "@/store/slices/admin/adminSlice";
-import { setAdminAuth } from "@/store/slices/admin/adminAuthSlice";
+import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { ROUTES } from "@/constants/routes";
 
 interface loginForm {
@@ -48,7 +48,8 @@ export default function AdminLogin() {
       const data = await AdminAuthService.login(form);
 
       dispatch(setAdmin(data.data.admin));
-      dispatch(setAdminAuth(data.data.accessToken));
+      dispatch(setToken(data.data.accessToken));
+      dispatch(setRole("admin"));
 
 
       console.log("skdlf", data);

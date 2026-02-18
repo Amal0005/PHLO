@@ -2,15 +2,18 @@ import { SubscriptionDtoMapper } from "@/application/mapper/admin/subscriptionMa
 import { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
 import { IGetSubscriptionUseCase } from "@/domain/interface/admin/IGetSubscriptionUseCase";
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
+import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetSubscriptionUseCase implements IGetSubscriptionUseCase {
   constructor(private _subscriptionRepo: ISubscriptionRepository) { }
-  async getSubscription(type?: string): Promise<SubscriptionDTO[]> {
-    const res = type
-      ? await this._subscriptionRepo.findByType(type)
-      : await this._subscriptionRepo.findAll();
+  async getSubscription(type?: 'User' | 'Creator', page: number = 1, limit: number = 10): Promise<PaginatedResult<SubscriptionDTO>> {
+    const res = await this._subscriptionRepo.findSubscriptions(type, page, limit);
 
-    if (!res || res.length === 0) throw new Error("No subscriptions found");
-    return SubscriptionDtoMapper.toDTOList(res);
+    if (!res.data || res.data.length === 0) throw new Error("No subscriptions found");
+
+    return {
+      ...res,
+      data: SubscriptionDtoMapper.toDTOList(res.data)
+    };
   }
 }

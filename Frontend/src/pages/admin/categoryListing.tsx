@@ -3,7 +3,7 @@ import { Plus, Edit2, Trash2, Search, Filter, X } from "lucide-react";
 import { Category, CategoryForm } from "@/interface/admin/categoryInterface";
 import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
 import { toast } from "react-toastify";
-import { confirmActionToast } from "@/compoents/reusable/confirmActionToast";
+import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import AddEditCategoryModal from "./components/addEditCategoryModal";
 import Pagination from "@/compoents/reusable/pagination";
 
@@ -16,6 +16,7 @@ export default function CategoryListingPage() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   // Simplified Filter States
   const [search, setSearch] = useState("");
@@ -55,26 +56,24 @@ export default function CategoryListingPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (categoryId: string) => {
-    confirmActionToast(
-      "Are you sure you want to delete this category?",
-      async () => {
-        try {
-          await AdminCategoryService.deleteCategory(categoryId);
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    try {
+      await AdminCategoryService.deleteCategory(deleteId);
 
-          if (categories.length === 1 && page > 1) {
-            setPage(prev => prev - 1);
-          } else {
-            fetchCategories();
-          }
-
-          toast.success("Category deleted successfully");
-        } catch (error) {
-          console.error("Failed to delete category", error);
-          toast.error("Failed to delete category");
-        }
+      if (categories.length === 1 && page > 1) {
+        setPage((prev) => prev - 1);
+      } else {
+        fetchCategories();
       }
-    );
+
+      toast.success("Category deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete category", error);
+      toast.error("Failed to delete category");
+    } finally {
+      setDeleteId(null);
+    }
   };
 
   const handleModalSubmit = async (formData: CategoryForm) => {
@@ -119,7 +118,7 @@ export default function CategoryListingPage() {
             <Edit2 className="w-4 h-4" />
           </button>
           <button
-            onClick={() => handleDelete(category.categoryId)}
+            onClick={() => setDeleteId(category.categoryId)}
             className="p-2 hover:bg-white/10 rounded-lg text-gray-400 hover:text-red-500 transition-all"
           >
             <Trash2 className="w-4 h-4" />
@@ -185,6 +184,17 @@ export default function CategoryListingPage() {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleModalSubmit}
         category={selectedCategory}
+      />
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
+        title="Delete Category"
+        message="Are you sure you want to delete this category? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        icon={<Trash2 size={28} />}
       />
     </div>
   );

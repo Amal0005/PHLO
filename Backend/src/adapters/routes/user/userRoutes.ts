@@ -13,6 +13,8 @@ import {
   changePasswordController,
   listUserPackagesController,
   getPackageDetailController,
+  getCategoryController,
+  userProfileController,
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
@@ -135,6 +137,21 @@ export class UserRoutes {
     );
     this.userRouter.get("/packages/:id", (req: Request, res: Response) =>
       getPackageDetailController.getPackageDetail(req, res),
+    );
+    this.userRouter.get("/category", (req: Request, res: Response) =>
+      getCategoryController.getCategory(req, res),
+    );
+
+    this.userRouter.post(
+      "/check-email",
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
+      (req: Request, res: Response) => userProfileController.checkEmail(req, res)
+    );
+
+    this.userRouter.post(
+      "/verify-email-otp",
+      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
+      (req: Request, res: Response) => userProfileController.verifyEmailChangeOtp(req, res)
     );
   }
 }

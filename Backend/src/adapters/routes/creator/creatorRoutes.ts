@@ -8,6 +8,7 @@ import {
   getPackagesController,
   editPackagesController,
   deletePackageController,
+  getCategoryController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
@@ -97,27 +98,30 @@ export class CreatorRoutes {
     this.creatorRouter.patch("/profile", (req: Request, res: Response) =>
       creatorProfileController.editProfile(req, res),
     );
-  this.creatorRouter.post(
-  "/package",
-  validate(addPackageSchema),
-  (req: Request, res: Response) => {
-    addPackageController.addPackage(req, res)
-  }
-)
+    this.creatorRouter.get("/category", (req: Request, res: Response) => {
+      getCategoryController.getCategory(req, res);
+    });
+    this.creatorRouter.post(
+      "/package",
+      validate(addPackageSchema),
+      (req: Request, res: Response) => {
+        addPackageController.addPackage(req, res)
+      }
+    )
     this.creatorRouter.get("/package", (req: Request, res: Response) => {
       getPackagesController.getPackage(req, res);
     });
-       this.creatorRouter.patch(
+    this.creatorRouter.patch(
       "/package/:packageId",
       validate(editPackageSchema),
       (req: Request, res: Response) => {
         editPackagesController.editPackage(req, res);
       });
-      this.creatorRouter.delete(
-  "/package/:packageId",
-  (req: Request, res: Response) => {
-    deletePackageController.deletePackage(req, res);
-  });
+    this.creatorRouter.delete(
+      "/package/:packageId",
+      (req: Request, res: Response) => {
+        deletePackageController.deletePackage(req, res);
+      });
   }
 
 }

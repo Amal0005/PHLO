@@ -14,7 +14,7 @@ export class CreatorLoginUseCase implements ICreatorLoginUseCase {
     private _creatorRepo: ICreatorRepository,
     private IjwtService: IJwtServices,
     private _passwordService: IPasswordService,
-  ) {}
+  ) { }
   async login(
     email: string,
     password: string,
@@ -60,7 +60,7 @@ export class CreatorLoginUseCase implements ICreatorLoginUseCase {
 
     return {
       status: "approved",
-
+          
       creator: {
         id: creator._id as string,
         fullName: creator.fullName,

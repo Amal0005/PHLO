@@ -67,7 +67,7 @@ export default function AuthInitializer() {
     } else if (path.startsWith("/admin") && adminToken) {
       api.get("/admin/me").catch(handleAdminLogout);
     } else if (!path.startsWith("/creator") && !path.startsWith("/admin") && userToken) {
-      api.get("/me").catch(handleUserLogout);
+      api.get("/profile").catch(handleUserLogout);
     }
 
 

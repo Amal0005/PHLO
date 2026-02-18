@@ -13,6 +13,10 @@ import { OtpServices } from "../../../domain/services/user/otpServices";
 import { PasswordService } from "../../../domain/services/user/passwordService";
 import { PendingUserService } from "../../../domain/services/user/pedingUserService";
 import { RedisService } from "../../../domain/services/user/redisServices";
+import { UserProfileController } from "@/adapters/controllers/user/profile/userProfileController";
+import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
+import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminCategoryListingUseCase";
+import { GetCategoryController } from "@/adapters/controllers/admin/category/getCategoryController";
 import { LogoutUseCase } from "../../../application/useCases/logoutUseCase";
 import { ForgotPasswordUseCase } from "../../../application/useCases/user/auth/forgotPasswordUseCase";
 import { GoogleLoginUseCase } from "../../../application/useCases/user/auth/googleLoginUseCase";
@@ -43,7 +47,9 @@ const jwtService = new JwtServices()
 const mailService = new MailService()
 const tokenBlacklistService = new TokenBlacklistService(redisService)
 const creatorRepository = new CreatorRepository()
-const packageRepository=new PackageRepository()
+const packageRepository = new PackageRepository()
+const categoryRepository = new CategoryRepository();
+const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepository);
 
 
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
@@ -58,7 +64,7 @@ const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepo)
 const editUserProfileUseCase = new EditUserProfileUsecase(userRepo, creatorRepository)
 const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
-const listUserPackagesUseCase=new ListUserPackagesUseCase(packageRepository)
+const listUserPackagesUseCase = new ListUserPackagesUseCase(packageRepository)
 const getPackageDetailUseCase = new GetPackageDetailUseCase(packageRepository);
 
 
@@ -71,5 +77,15 @@ export const tokenController = new TokenController(jwtService)
 export const getProfileController = new GetProfileController(getUserProfileUseCase)
 export const editProfileController = new EditProfileController(editUserProfileUseCase)
 export const changePasswordController = new ChangePasswordController(changePasswordUseCase)
-export const listUserPackagesController=new ListUserPackagesController(listUserPackagesUseCase)
-export const getPackageDetailController=new GetPackageDetailController(getPackageDetailUseCase)
+export const listUserPackagesController = new ListUserPackagesController(listUserPackagesUseCase)
+export const getPackageDetailController = new GetPackageDetailController(getPackageDetailUseCase)
+export const getCategoryController = new GetCategoryController(adminCategoryListingUseCase);
+
+export const userProfileController = new UserProfileController(
+    getUserProfileUseCase,
+    editUserProfileUseCase,
+    changePasswordUseCase,
+    otpServices,
+    userRepo,
+    creatorRepository
+);

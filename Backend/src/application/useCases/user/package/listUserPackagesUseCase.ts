@@ -1,11 +1,12 @@
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { IListUserPackagesUseCase, PackageFilters } from "@/domain/interface/user/packages/IListUserPackagesUseCase";
+import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class ListUserPackagesUseCase implements IListUserPackagesUseCase {
-  constructor(private packageRepository: IPackageRepository) {}
+  constructor(private packageRepository: IPackageRepository) { }
 
-  async listPackages(filters?: PackageFilters): Promise<PackageEntity[]> {
+  async listPackages(filters?: PackageFilters): Promise<PaginatedResult<PackageEntity>> {
     return await this.packageRepository.findAllPackages(filters);
   }
 }

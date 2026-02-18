@@ -1,4 +1,3 @@
-import { selectAuthByRole } from "@/store/selectors/authSelector";
 import { RootState } from "@/store/store";
 import { Role } from "@/types/role";
 import { useSelector } from "react-redux";
@@ -24,9 +23,9 @@ type Props = {
 };
 
 export default function ProtectedRoute({ role, requireAuth = true }: Props) {
-  const auth = useSelector((state: RootState) => selectAuthByRole(state, role));
+  const auth = useSelector((state: RootState) => state.auth);
 
-  const isAuthenticated = auth?.isAuthenticated;
+  const isAuthenticated = auth?.token !== null && auth.role === role;
 
   if (requireAuth && !isAuthenticated) {
     return <Navigate to={loginRoute[role]} replace />;

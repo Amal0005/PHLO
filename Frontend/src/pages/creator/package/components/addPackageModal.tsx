@@ -1,4 +1,4 @@
-import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
+import { CreatorCategoryService } from "@/services/creator/creatorCategoryService";
 import { AxiosError } from "axios";
 import { CreatorPackageService } from "@/services/creator/creatorPackageService";
 import { Category } from "@/interface/admin/categoryInterface";
@@ -58,7 +58,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    AdminCategoryService.getCategories()
+    CreatorCategoryService.getCategories()
       .then((data: PaginatedResponse<Category>) => {
         setCategories(data?.data || []);
       })
@@ -208,7 +208,8 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
                 </label>
                 <select
                   {...register("category")}
-                  className="w-full bg-black/50 border border-white/5 p-4 rounded-xl focus:border-white/20 outline-none transition-colors appearance-none"
+                  className={`w-full bg-black/50 border p-4 rounded-xl focus:border-white/20 outline-none transition-colors appearance-none ${errors.category ? "border-red-500/60" : "border-white/5"
+                    }`}
                 >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
@@ -217,6 +218,11 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
                     </option>
                   ))}
                 </select>
+                {errors.category && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.category.message}
+                  </p>
+                )}
               </div>
 
               {/* LOCATION SEARCH */}
@@ -237,9 +243,9 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
                   }}
                 />
 
-                {errors.location && (
+                {(errors.location || errors.placeName) && (
                   <p className="text-red-500 text-xs mt-1">
-                    Please select a location
+                    {errors.placeName?.message || "Please search and select a location"}
                   </p>
                 )}
               </div>
