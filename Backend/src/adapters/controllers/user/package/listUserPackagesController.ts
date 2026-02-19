@@ -23,7 +23,7 @@ export class ListUserPackagesController {
         lng: lng ? parseFloat(lng as string) : undefined,
         radiusInKm: radiusInKm ? parseFloat(radiusInKm as string) : undefined,
         page: page ? parseInt(page as string) : 1,
-        limit: limit ? parseInt(limit as string) : 10,
+        limit: limit ? parseInt(limit as string) : 6,
       };
 
       const packages = await this._listUserPackagesUseCase.listPackages(filters);

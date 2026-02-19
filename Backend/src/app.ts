@@ -21,6 +21,8 @@ import { loggerMiddleware } from "./adapters/middlewares/loggerMiddleware";
 import path from "path";
 
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
+import { errorHandler } from "./adapters/middlewares/errorHandler";
+import { logger } from "./utils/logger";
 
 
 export class App {
@@ -50,6 +52,7 @@ export class App {
     this.setCreatorRoutes();
     this.setViewRouter();
     this.setAdminRouter();
+    this.app.use(errorHandler);
   }
   private setMiddlewares(): void {
     this.app.use(loggerMiddleware)
@@ -110,10 +113,11 @@ export class App {
     try {
       await this.database.connect();
       this.app.listen(port, () =>
-        console.log("server running", process.env.PORT),
+        logger.info("server running", process.env.PORT),
       );
     } catch (error) {
-      console.error(error);
+      logger.error("Server failed to start", { error });
+
     }
   }
 }

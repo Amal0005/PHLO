@@ -34,7 +34,6 @@ const PackageListing: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const limit = 9;
 
-  // Save filters to sessionStorage
   useEffect(() => {
     const filtersToSave = {
       search: searchQuery,
@@ -45,7 +44,6 @@ const PackageListing: React.FC = () => {
     sessionStorage.setItem("packageFilters", JSON.stringify(filtersToSave));
   }, [searchQuery, selectedCategory, sortBy, locationFilter]);
 
-  // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
