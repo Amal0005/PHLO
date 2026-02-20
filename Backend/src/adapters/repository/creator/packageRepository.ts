@@ -10,6 +10,7 @@ import {
 import { BaseRepository } from "../baseRepository";
 import { SortOrder, Document, Types } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
+import { PackageMapper } from "@/application/mapper/user/packageMapper";
 
 export class PackageRepository
   extends BaseRepository<PackageEntity, IPackageModel>
@@ -18,11 +19,9 @@ export class PackageRepository
     super(PackageModel);
   }
 
-  protected mapToEntity(pkg: IPackageModel): PackageEntity {
-    const obj = pkg.toObject();
-    const { _id, ...rest } = obj;
-    return { ...rest, _id: _id.toString() } as PackageEntity;
-  }
+protected mapToEntity(pkg: IPackageModel): PackageEntity {
+  return PackageMapper.toEntity(pkg);
+}
 
 
   async findById(packageId: string): Promise<PackageEntity | null> {

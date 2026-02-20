@@ -9,6 +9,9 @@ export const ROUTES = {
     PROFILE: "/profile",
     PACKAGES: "/packages",
     PACKAGE_DETAIL: "/packages/:packageId",
+    PAYMENT_SUCCESS: "/payment-success",
+    PAYMENT_CANCEL: "/payment-cancel",
+
     NOT_FOUND: "*",
   },
 

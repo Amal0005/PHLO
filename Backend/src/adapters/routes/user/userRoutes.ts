@@ -15,9 +15,13 @@ import {
   getPackageDetailController,
   getCategoryController,
   userProfileController,
+  bookingController,
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
-import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
+import {
+  AuthRequest,
+  jwtAuthMiddleware,
+} from "../../middlewares/jwtAuthMiddleware";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
 
@@ -67,21 +71,26 @@ export class UserRoutes {
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.FORGOT_PASSWORD,
-      (req: Request, res: Response) => userAuthController.forgotPassword(req, res),
+      (req: Request, res: Response) =>
+        userAuthController.forgotPassword(req, res),
     );
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.VERIFY_FORGOT_OTP,
-      (req: Request, res: Response) => userAuthController.verifyForgotOtp(req, res),
+      (req: Request, res: Response) =>
+        userAuthController.verifyForgotOtp(req, res),
     );
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.RESET_PASSWORD,
-      (req: Request, res: Response) => userAuthController.resetPassword(req, res),
+      (req: Request, res: Response) =>
+        userAuthController.resetPassword(req, res),
     );
 
-    this.userRouter.post(BACKEND_ROUTES.USER.GOOGLE_AUTH, (req: Request, res: Response) =>
-      userGoogleController.googleLogin(req, res),
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.GOOGLE_AUTH,
+      (req: Request, res: Response) =>
+        userGoogleController.googleLogin(req, res),
     );
 
     this.userRouter.post(
@@ -141,23 +150,68 @@ export class UserRoutes {
       (req: Request, res: Response) =>
         listUserPackagesController.listPackages(req, res),
     );
-    this.userRouter.get(BACKEND_ROUTES.USER.PACKAGE_DETAIL, (req: Request, res: Response) =>
-      getPackageDetailController.getPackageDetail(req, res),
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.PACKAGE_DETAIL,
+      (req: Request, res: Response) =>
+        getPackageDetailController.getPackageDetail(req, res),
     );
-    this.userRouter.get(BACKEND_ROUTES.USER.CATEGORY, (req: Request, res: Response) =>
-      getCategoryController.getCategory(req, res),
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.CATEGORY,
+      (req: Request, res: Response) =>
+        getCategoryController.getCategory(req, res),
     );
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.CHECK_EMAIL,
-      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
-      (req: Request, res: Response) => userProfileController.checkEmail(req, res)
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      (req: Request, res: Response) =>
+        userProfileController.checkEmail(req, res),
     );
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.VERIFY_EMAIL_OTP,
-      jwtAuthMiddleware(this._jwtService, this._tokenBlacklistService, this._userRepo, this._creatorRepo),
-      (req: Request, res: Response) => userProfileController.verifyEmailChangeOtp(req, res)
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      (req: Request, res: Response) =>
+        userProfileController.verifyEmailChangeOtp(req, res),
+    );
+    this.userRouter.post(
+      "/bookings/create",
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        bookingController.CreateBooking(req, res),
+    );
+    this.userRouter.post(
+      "/bookings/webhook",
+      (req: AuthRequest, res: Response) =>
+        bookingController.handleWebhook(req, res),
+    );
+      this.userRouter.get(
+      "/bookings",
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        bookingController.ListBookings(req, res),
     );
   }
 }

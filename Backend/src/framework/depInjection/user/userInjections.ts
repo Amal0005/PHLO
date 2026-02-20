@@ -40,6 +40,12 @@ import { ListUserPackagesController } from "@/adapters/controllers/user/package/
 import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
 import { GetPackageDetailUseCase } from "@/application/useCases/user/package/getPackageDetailUseCase";
 import { GetPackageDetailController } from "@/adapters/controllers/user/package/getPackageDetailController";
+import { BookingRepository } from "@/adapters/repository/user/bookingRepository";
+import { StripeService } from "@/domain/services/stripeService";
+import { CreateBookingUseCase } from "@/application/useCases/user/booking/createBookingUseCase";
+import { BookingController } from "@/adapters/controllers/booking/bookingController";
+import { BookingWebhookUseCase } from "@/application/useCases/user/booking/bookingWebhookUseCase";
+import { ListBookingUseCase } from "@/application/useCases/user/booking/listbookingUseCase";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -52,8 +58,8 @@ const tokenBlacklistService = new TokenBlacklistService(redisService)
 const creatorRepository = new CreatorRepository()
 const packageRepository = new PackageRepository()
 const categoryRepository = new CategoryRepository();
-const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepository);
-
+const bookingRepo = new BookingRepository()
+const stripeService = new StripeService()
 
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
@@ -69,9 +75,14 @@ const editUserProfileUseCase = new EditUserProfileUsecase(userRepo, creatorRepos
 const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
 const listUserPackagesUseCase = new ListUserPackagesUseCase(packageRepository)
 const getPackageDetailUseCase = new GetPackageDetailUseCase(packageRepository);
+const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepository);
 const addCategoryUseCase = new AddCategoryUseCase(categoryRepository);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
+const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, stripeService)
+const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService)
+const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
+
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
@@ -99,3 +110,4 @@ export const userProfileController = new UserProfileController(
     userRepo,
     creatorRepository
 );
+export const bookingController = new BookingController(createBookingUseCase, bookingWebhookUseCase, listBookingsUseCase)

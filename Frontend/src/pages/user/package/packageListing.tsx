@@ -239,7 +239,13 @@ const PackageListing: React.FC = () => {
               {packages.map((pkg) => (
                 <div
                   key={pkg._id}
-                  onClick={() => navigate(`/packages/${pkg._id}`)}
+                  onClick={() => {
+  console.log("FULL PKG:", pkg);
+  console.log("TYPE OF _id:", typeof pkg._id);
+  console.log("VALUE OF _id:", pkg._id);
+  navigate(`/packages/${pkg._id}`);
+}}
+
                   className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group"
                 >
                   <div className="h-56 bg-zinc-800 relative overflow-hidden">

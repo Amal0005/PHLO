@@ -16,6 +16,8 @@ export const API_ENDPOINTS = {
         VERIFY_EMAIL_OTP: "/verify-email-otp",
         CHECK_EMAIL: "/check-email",
         CATEGORY: "/category",
+        CREATE_BOOKING: "/bookings/create",
+
     },
     ADMIN: {
         LOGIN: "/admin/login",
