@@ -51,6 +51,9 @@ export const creatorSchema = new Schema(
       default: ''
     },
     specialties: [{ type: String }],
+    subscriptionId: { type: Schema.Types.ObjectId, ref: "Subscription" },
+    subscriptionExpiry: { type: Date },
   },
   { timestamps: true },
+
 );

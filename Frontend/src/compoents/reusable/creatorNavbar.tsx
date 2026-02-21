@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { Menu, X, LayoutDashboard, User, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, LayoutDashboard, User, LogOut, ChevronDown, CreditCard } from "lucide-react";
 import { useRef } from "react";
 import LogoWhite from "../../../public/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
@@ -63,6 +63,7 @@ export default function CreatorNavbar() {
 
     const navLinks = [
         { name: "Dashboard", path: ROUTES.CREATOR.DASHBOARD, icon: LayoutDashboard, active: isDashboardPage },
+        { name: "Subscription", path: ROUTES.CREATOR.SUBSCRIPTIONS, icon: CreditCard, active: location.pathname === ROUTES.CREATOR.SUBSCRIPTIONS }
     ];
 
     return (

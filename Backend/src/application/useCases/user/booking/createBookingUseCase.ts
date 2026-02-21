@@ -25,10 +25,12 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
         })
         const session = await this._stripeService.createCheckoutSession({
             bookingId: booking.id!,
+            creatorId: typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as any)._id || (pkg.creatorId as any).id,
             packageName: pkg.title,
             amount: pkg.price,
             successUrl: `${data.baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${data.baseUrl}/payment-cancel?booking_id=${booking.id}`,
+            type: "booking"
         })
         await this._bookingRepo.update(booking.id!, { stripeSessionId: session.id })
         return session

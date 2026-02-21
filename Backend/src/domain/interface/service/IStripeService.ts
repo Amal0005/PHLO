@@ -1,5 +1,5 @@
 import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
-import { CreateCheckoutSessionDTO } from "@/domain/dto/payment/createCheckoutSessionDTO";
+import { CreateCheckoutSessionDTO } from "@/domain/dto/payment/createCheckoutSessionDto";
 import Stripe from "stripe";
 
 export interface IStripeService {

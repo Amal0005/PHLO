@@ -25,6 +25,10 @@ export const ROUTES = {
     CONTENT: "/creator/content",
     ANALYTICS: "/creator/analytics",
     PACKAGES: "/creator/packages",
+    SUBSCRIPTIONS: "/creator/subscriptions",
+    SUBSCRIPTION_SUCCESS: "/creator/subscription-success",
+    SUBSCRIPTION_CANCEL: "/creator/subscription-cancel",
+
   },
 
   ADMIN: {

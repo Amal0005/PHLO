@@ -1,6 +1,6 @@
 import Stripe from "stripe";
-import {IStripeService} from "../interface/service/IStripeService";
-import { CreateCheckoutSessionDTO } from "../dto/payment/createCheckoutSessionDTO";
+import { IStripeService } from "../interface/service/IStripeService";
+import { CreateCheckoutSessionDTO } from "../dto/payment/createCheckoutSessionDto";
 import { CheckoutSessionResponseDTO } from "../dto/payment/checkoutSessionResponseDto";
 
 export class StripeService implements IStripeService {
@@ -13,16 +13,19 @@ export class StripeService implements IStripeService {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     if (!secretKey) {
-      throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");
+      throw new Error(
+        "STRIPE_SECRET_KEY is not defined in environment variables",
+      );
     }
 
     if (!webhookSecret) {
-      throw new Error("STRIPE_WEBHOOK_SECRET is not defined in environment variables");
+      throw new Error(
+        "STRIPE_WEBHOOK_SECRET is not defined in environment variables",
+      );
     }
 
     this.stripe = new Stripe(secretKey, {
       apiVersion: "2026-01-28.clover",
-
     });
 
     this.webhookSecret = webhookSecret;
@@ -30,7 +33,7 @@ export class StripeService implements IStripeService {
   }
 
   async createCheckoutSession(
-    data: CreateCheckoutSessionDTO
+    data: CreateCheckoutSessionDTO,
   ): Promise<CheckoutSessionResponseDTO> {
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -39,10 +42,8 @@ export class StripeService implements IStripeService {
         {
           price_data: {
             currency: this.currency,
-            product_data: {
-              name: data.packageName,
-            },
-            unit_amount: data.amount * 100, // convert to paise
+            product_data: { name: data.packageName },
+            unit_amount: Math.round(data.amount * 100),
           },
           quantity: 1,
         },
@@ -50,24 +51,20 @@ export class StripeService implements IStripeService {
       success_url: data.successUrl,
       cancel_url: data.cancelUrl,
       metadata: {
-        bookingId: data.bookingId,
+        type: data.type,
+        bookingId: data.bookingId || "",
+        subscriptionId: data.subscriptionId || "",
+        creatorId: data.creatorId,
       },
     });
-
-    return {
-      id: session.id,
-      url: session.url,
-    };
+    return { id: session.id, url: session.url };
   }
 
-  constructEvent(
-    payload: string | Buffer,
-    signature: string
-  ): Stripe.Event {
+  constructEvent(payload: string | Buffer, signature: string): Stripe.Event {
     return this.stripe.webhooks.constructEvent(
       payload,
       signature,
-      this.webhookSecret
+      this.webhookSecret,
     );
   }
 }

@@ -15,4 +15,6 @@ export interface CreatorEntity {
   specialties?: string[];
   createdAt?: Date;
   updatedAt?: Date;
+  subscriptionId?: string;
+  subscriptionExpiry?: Date
 }

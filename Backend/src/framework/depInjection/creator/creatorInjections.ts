@@ -31,16 +31,25 @@ import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseC
 import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
 import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
+import { BuySubscriptionUseCase } from "@/application/useCases/payment/buySubscriptionUseCase";
+import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/payment/creatorSubscriptionWebhookUseCase";
+import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
+import { StripeService } from "@/domain/services/stripeService";
+import { CreatorSubscriptionController } from "@/adapters/controllers/subscription/creatorSubscriptionController";
+import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscriptionUseCase";
 
 const creatorRepository = new CreatorRepository();
 const userRepository = new UserRepository();
 const packageRepository = new PackageRepository();
 const categoryRepo = new CategoryRepository();
+const subscriptionRepo = new SubscriptionRepository()
+
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
 const redisService = new RedisService();
 const otpService = new OtpServices(redisService);
 const mailService = new MailService();
+const stripeService = new StripeService()
 
 const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService);
 const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository, userRepository);
@@ -52,7 +61,7 @@ const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpService, redisServi
 const resetPasswordUseCase = new ResetPasswordUseCase(creatorRepository, passwordService, redisService);
 const getCreatorProfileUseCase = new GetCreatorProfileUseCase(creatorRepository)
 const editCreatorProfileUseCase = new EditCreatorProfileUseCase(creatorRepository)
-const addPackageUseCase = new AddPackageUseCase(packageRepository)
+const addPackageUseCase = new AddPackageUseCase(packageRepository, creatorRepository)
 const getPackageUseCase = new GetPackagesUseCase(packageRepository)
 const editPackageUseCase = new EditPackageUseCase(packageRepository)
 const deletePackageUseCase = new DeletePackageUseCase(packageRepository)
@@ -60,22 +69,16 @@ const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepo
 const addCategoryUseCase = new AddCategoryUseCase(categoryRepo);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepo);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
+const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
+const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
 export const creatorAuthController = new CreatorAuthController(forgotPasswordUseCase, verifyForgotOtpUseCase, resetPasswordUseCase);
 export const creatorProfileController = new CreatorProfileController(getCreatorProfileUseCase, editCreatorProfileUseCase)
-export const packageController = new PackageController(
-    addPackageUseCase,
-    deletePackageUseCase,
-    editPackageUseCase,
-    getPackageUseCase
-);
-export const getCategoryController = new CategoryController(
-    addCategoryUseCase,
-    editCategoryUseCase,
-    deleteCategoryUseCase,
-    adminCategoryListingUseCase
-);
+export const packageController = new PackageController(addPackageUseCase, deletePackageUseCase, editPackageUseCase, getPackageUseCase);
+export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
+export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase)
 
 
