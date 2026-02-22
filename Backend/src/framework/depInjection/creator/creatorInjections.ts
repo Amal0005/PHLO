@@ -32,6 +32,7 @@ import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUs
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
 import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
 import { BuySubscriptionUseCase } from "@/application/useCases/payment/buySubscriptionUseCase";
+import { ConfirmSubscriptionUseCase } from "@/application/useCases/payment/confirmSubscriptionUseCase";
 import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/payment/creatorSubscriptionWebhookUseCase";
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { StripeService } from "@/domain/services/stripeService";
@@ -70,6 +71,7 @@ const addCategoryUseCase = new AddCategoryUseCase(categoryRepo);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepo);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService)
+const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(creatorRepository, subscriptionRepo, stripeService)
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
 
@@ -79,6 +81,6 @@ export const creatorAuthController = new CreatorAuthController(forgotPasswordUse
 export const creatorProfileController = new CreatorProfileController(getCreatorProfileUseCase, editCreatorProfileUseCase)
 export const packageController = new PackageController(addPackageUseCase, deletePackageUseCase, editPackageUseCase, getPackageUseCase);
 export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
-export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase)
+export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase, confirmSubscriptionUseCase)
 
 

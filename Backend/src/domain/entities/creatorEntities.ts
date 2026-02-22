@@ -1,3 +1,12 @@
+export interface SubscriptionDetails {
+  planId: string;
+  planName: string;
+  status: "active" | "expired" | "cancelled";
+  startDate: Date;
+  endDate: Date;
+  stripeSessionId: string;
+}
+
 export interface CreatorEntity {
   _id?: string;
   fullName: string;
@@ -15,6 +24,5 @@ export interface CreatorEntity {
   specialties?: string[];
   createdAt?: Date;
   updatedAt?: Date;
-  subscriptionId?: string;
-  subscriptionExpiry?: Date
+  subscription?: SubscriptionDetails
 }

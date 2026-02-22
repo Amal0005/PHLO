@@ -20,6 +20,14 @@ export class CreatorMapper {
       specialties: doc.specialties,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
+      subscription: doc.subscription ? {
+        planId: doc.subscription.planId.toString(),
+        planName: doc.subscription.planName,
+        status: doc.subscription.status,
+        startDate: doc.subscription.startDate,
+        endDate: doc.subscription.endDate,
+        stripeSessionId: doc.subscription.stripeSessionId,
+      } : undefined,
     };
   }
 }

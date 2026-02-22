@@ -7,6 +7,8 @@ export interface IStripeService {
     data: CreateCheckoutSessionDTO
   ): Promise<CheckoutSessionResponseDTO>;
 
+  retrieveCheckoutSession(sessionId: string): Promise<Stripe.Checkout.Session | null>;
+
   constructEvent(
     payload: string | Buffer,
     signature: string

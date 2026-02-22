@@ -37,6 +37,7 @@ export const BACKEND_ROUTES = {
     CATEGORY: "/category",
     SUBSCRIPTION: "/subscription",
     SUBSCRIPTION_BUY: "/subscription/buy",
+    SUBSCRIPTION_CONFIRM: "/subscription/confirm",
   },
   ADMIN: {
     BASE: "/admin",

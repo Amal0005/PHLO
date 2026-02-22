@@ -201,7 +201,7 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         bookingController.handleWebhook(req, res),
     );
-      this.userRouter.get(
+    this.userRouter.get(
       "/bookings",
       jwtAuthMiddleware(
         this._jwtService,

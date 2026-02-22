@@ -1,0 +1,3 @@
+﻿error TS6059: File 'C:/Users/amalf/Desktop/PHLO/Backend/eslint.config.ts' is not under 'rootDir' 'C:/Users/amalf/Desktop/PHLO/Backend/src'. 'rootDir' is expected to contain all source files.
+  The file is in the program because:
+    Matched by default include pattern '**/*'

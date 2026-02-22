@@ -16,7 +16,7 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
     return CreatorMapper.toDomain(doc);
   }
 
-  
+
 
   async findByEmail(email: string): Promise<CreatorEntity | null> {
     const creator = await this.model.findOne({ email });

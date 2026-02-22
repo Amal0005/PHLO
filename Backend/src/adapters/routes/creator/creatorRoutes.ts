@@ -154,5 +154,10 @@ export class CreatorRoutes {
       (req: Request, res: Response) =>
         creatorSubscriptionController.buySubscription(req, res),
     );
+    this.creatorRouter.post(
+      BACKEND_ROUTES.CREATOR.SUBSCRIPTION_CONFIRM,
+      (req: Request, res: Response) =>
+        creatorSubscriptionController.confirmSubscription(req, res),
+    );
   }
 }

@@ -1,5 +1,15 @@
 import { Schema } from "mongoose";
 
+const subscriptionDetailsSchema = new Schema({
+  planId: { type: Schema.Types.ObjectId, ref: "subscription", required: true },
+  planName: { type: String, required: true },
+  status: { type: String, enum: ["active", "expired", "cancelled"], default: "active" },
+  startDate: { type: Date, required: true },
+  endDate: { type: Date, required: true },
+  stripeSessionId: { type: String, required: true },
+}, { _id: false });
+
+
 export const creatorSchema = new Schema(
   {
     fullName: { type: String, required: true },
@@ -43,7 +53,7 @@ export const creatorSchema = new Schema(
 
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected","blocked"],
+      enum: ["pending", "approved", "rejected", "blocked"],
       default: "pending",
     },
     rejectionReason: {
@@ -51,8 +61,7 @@ export const creatorSchema = new Schema(
       default: ''
     },
     specialties: [{ type: String }],
-    subscriptionId: { type: Schema.Types.ObjectId, ref: "Subscription" },
-    subscriptionExpiry: { type: Date },
+    subscription: { type: subscriptionDetailsSchema },
   },
   { timestamps: true },
 

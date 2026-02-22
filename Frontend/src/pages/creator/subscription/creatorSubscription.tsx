@@ -24,6 +24,7 @@ export default function CreatorSubscription() {
 
   const handleBuy = async (id: string) => {
     try {
+        console.log("iddddd",id)
       const res = await CreatorSubscriptionService.buySubscription(id);
       if (res.url) {
         window.location.href = res.url;
@@ -62,7 +63,7 @@ export default function CreatorSubscription() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => handleBuy(plan._id)}
+                  onClick={() => handleBuy(plan.id)}
                   className="w-full py-4 bg-white text-black font-bold rounded-2xl hover:bg-gray-200 transition-colors"
                 >
                   Get Started

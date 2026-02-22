@@ -1,5 +1,6 @@
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { AppError } from "@/domain/errors/appError";
+import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
 import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
 import { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBookingUseCase";
 import { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
@@ -10,9 +11,9 @@ export class BookingController {
   constructor(
     private _createBookingUseCase: ICreateBookingUseCase,
     private _webhookUseCase: IBookingWebhookUseCase,
-    private _listBookingsUseCase: IListBookingsUseCase
-
-  ) {}
+    private _listBookingsUseCase: IListBookingsUseCase,
+    private _creatorSubscriptionWebhookUseCase: ICreatorSubscriptionWebhookUseCase,
+  ) { }
   async CreateBooking(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.userId;
@@ -35,7 +36,7 @@ export class BookingController {
       }
     }
   }
-    async ListBookings(req: AuthRequest, res: Response) {
+  async ListBookings(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.userId;
       if (!userId) {
@@ -56,6 +57,7 @@ export class BookingController {
       const payload = (req as any).rawBody || req.body;
       console.log("Payload type:", typeof payload);
       await this._webhookUseCase.handleWebhook(payload, sig);
+      await this._creatorSubscriptionWebhookUseCase.handle(payload, sig);
       res.status(200).json({ received: true });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
