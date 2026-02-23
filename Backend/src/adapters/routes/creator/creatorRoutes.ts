@@ -7,6 +7,7 @@ import {
   packageController,
   getCategoryController,
   creatorSubscriptionController,
+  wallpaperController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
@@ -14,10 +15,7 @@ import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { JwtServices } from "@/domain/services/user/jwtServices";
 import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
-import {
-  logoutController,
-  tokenController,
-} from "@/framework/depInjection/user/userInjections";
+import {logoutController,tokenController} from "@/framework/depInjection/user/userInjections";
 import { editPackageSchema } from "@/adapters/validation/packageEditSchema";
 import { addPackageSchema } from "@/adapters/validation/packageAddSchema";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
@@ -154,5 +152,10 @@ export class CreatorRoutes {
       (req: Request, res: Response) =>
         creatorSubscriptionController.buySubscription(req, res),
     );
+    this.creatorRouter.post(
+      BACKEND_ROUTES.CREATOR.WALLPAPER,
+      (req:Request,res:Response)=>
+        wallpaperController.addWallpaper(req,res)
+    )
   }
 }

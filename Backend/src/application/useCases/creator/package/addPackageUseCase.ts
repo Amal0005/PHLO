@@ -21,8 +21,8 @@ export class AddPackageUseCase implements IAddPackageUseCase {
     const creator = await this._creatorRepo.findById(data.creatorId as string);
     if (
       !creator ||
-      !creator.subscriptionExpiry ||
-      creator.subscriptionExpiry < new Date()
+      !creator.subscription?.planId ||
+      creator.subscription.endDate < new Date()
     ) {
       throw new Error("Active subscription required to add packages.");
     }

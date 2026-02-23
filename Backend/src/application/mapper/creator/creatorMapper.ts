@@ -18,6 +18,14 @@ export class CreatorMapper {
       status: doc.status,
       rejectionReason: doc.rejectionReason,
       specialties: doc.specialties,
+      subscription: doc.subscription ? {
+        planId: doc.subscription.planId?.toString(),
+        planName: doc.subscription.planName,
+        status: doc.subscription.status,
+        startDate: doc.subscription.startDate,
+        endDate: doc.subscription.endDate,
+        stripeSessionId: doc.subscription.stripeSessionId,
+      } : undefined,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };

@@ -43,7 +43,7 @@ export const creatorSchema = new Schema(
 
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected","blocked"],
+      enum: ["pending", "approved", "rejected", "blocked"],
       default: "pending",
     },
     rejectionReason: {
@@ -51,8 +51,14 @@ export const creatorSchema = new Schema(
       default: ''
     },
     specialties: [{ type: String }],
-    subscriptionId: { type: Schema.Types.ObjectId, ref: "Subscription" },
-    subscriptionExpiry: { type: Date },
+    subscription: {
+      planId: { type: Schema.Types.ObjectId, ref: "Subscription" },
+      planName: { type: String },
+      status: { type: String, default: "inactive" },
+      startDate: { type: Date },
+      endDate: { type: Date },
+      stripeSessionId: { type: String },
+    },
   },
   { timestamps: true },
 

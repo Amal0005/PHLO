@@ -37,12 +37,16 @@ import { SubscriptionRepository } from "@/adapters/repository/admin/subscription
 import { StripeService } from "@/domain/services/stripeService";
 import { CreatorSubscriptionController } from "@/adapters/controllers/subscription/creatorSubscriptionController";
 import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscriptionUseCase";
+import { AddWallpaperUseCase } from "@/application/useCases/creator/wallpaper/addWallpaperUseCase";
+import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
+import { WallpaperController } from "@/adapters/controllers/creator/wallpaper/wallpaperController";
 
 const creatorRepository = new CreatorRepository();
 const userRepository = new UserRepository();
 const packageRepository = new PackageRepository();
 const categoryRepo = new CategoryRepository();
 const subscriptionRepo = new SubscriptionRepository()
+const wallpaperRepo = new WallpaperRepository()
 
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
@@ -70,8 +74,8 @@ const addCategoryUseCase = new AddCategoryUseCase(categoryRepo);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepo);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService)
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
+const addWallpaperUseCase= new AddWallpaperUseCase(wallpaperRepo,creatorRepository) 
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
@@ -80,5 +84,5 @@ export const creatorProfileController = new CreatorProfileController(getCreatorP
 export const packageController = new PackageController(addPackageUseCase, deletePackageUseCase, editPackageUseCase, getPackageUseCase);
 export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
 export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase)
-
+export const wallpaperController = new WallpaperController(addWallpaperUseCase)
 

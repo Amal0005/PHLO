@@ -22,6 +22,7 @@ export class CreatorSubscriptionController {
     async buySubscription(req: AuthRequest, res: Response) {
         try {
             const { subscriptionId, successUrl, cancelUrl } = req.body;
+            console.log("Bodyyyyyyyyy",subscriptionId)
             const result = await this._buySubscriptionUseCase.buySubscription(req.user!.userId, subscriptionId, successUrl, cancelUrl);
             return res.status(StatusCode.OK).json(result);
         } catch (error) {

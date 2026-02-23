@@ -52,7 +52,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   const locationValue = watch("location");
 
   useEffect(() => {
-    console.log('Current location in form:', locationValue);
+    console.log('Current location in form', locationValue);
   }, [locationValue]);
 
   useEffect(() => {

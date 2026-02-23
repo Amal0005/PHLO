@@ -10,11 +10,17 @@ export interface CreatorEntity {
   bio: string;
   portfolioLink?: string;
   governmentId: string;
-  status: "pending" | "approved" | "rejected"|"blocked";
-   rejectionReason?: string;
+  status: "pending" | "approved" | "rejected" | "blocked";
+  rejectionReason?: string;
   specialties?: string[];
   createdAt?: Date;
   updatedAt?: Date;
-  subscriptionId?: string;
-  subscriptionExpiry?: Date
+  subscription?: {
+    planId: string;
+    planName: string;
+    status: string;
+    startDate: Date;
+    endDate: Date;
+    stripeSessionId: string;
+  };
 }
