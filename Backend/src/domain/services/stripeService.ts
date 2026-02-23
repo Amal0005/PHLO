@@ -26,6 +26,7 @@ export class StripeService implements IStripeService {
 
     this.stripe = new Stripe(secretKey, {
       apiVersion: "2026-01-28.clover",
+      // apiVersion: "2024-06-20",
     });
 
     this.webhookSecret = webhookSecret;
@@ -35,29 +36,46 @@ export class StripeService implements IStripeService {
   async createCheckoutSession(
     data: CreateCheckoutSessionDTO,
   ): Promise<CheckoutSessionResponseDTO> {
-    const session = await this.stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-      line_items: [
-        {
-          price_data: {
-            currency: this.currency,
-            product_data: { name: data.packageName },
-            unit_amount: Math.round(data.amount * 100),
+    try {
+      console.log("StripeService: Creating checkout session with data:", JSON.stringify(data, null, 2));
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: this.currency,
+              product_data: { name: data.packageName },
+              unit_amount: Math.round(data.amount * 100),
+            },
+            quantity: 1,
           },
-          quantity: 1,
+        ],
+        success_url: data.successUrl,
+        cancel_url: data.cancelUrl,
+        metadata: {
+          type: data.type,
+          bookingId: data.bookingId || "",
+          subscriptionId: data.subscriptionId || "",
+          creatorId: data.creatorId,
         },
-      ],
-      success_url: data.successUrl,
-      cancel_url: data.cancelUrl,
-      metadata: {
-        type: data.type,
-        bookingId: data.bookingId || "",
-        subscriptionId: data.subscriptionId || "",
-        creatorId: data.creatorId,
-      },
-    });
-    return { id: session.id, url: session.url };
+      });
+      console.log("StripeService: Session created successfully:", session.id);
+      return { id: session.id, url: session.url };
+    } catch (error) {
+      console.error("StripeService: Error creating checkout session:", error);
+      throw error;
+    }
+  }
+
+  async retrieveCheckoutSession(sessionId: string): Promise<Stripe.Checkout.Session | null> {
+    try {
+      const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+      return session;
+    } catch (error) {
+      console.error("StripeService: Error retrieving session:", error);
+      return null;
+    }
   }
 
   constructEvent(payload: string | Buffer, signature: string): Stripe.Event {

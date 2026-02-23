@@ -21,8 +21,9 @@ export class SubscriptionRepository extends BaseRepository<SubscriptionEntity, I
     return result.map((item) => this.mapToEntity(item))
   }
 
-  async findSubscriptions(type?: 'User' | 'Creator', page: number = 1, limit: number = 10): Promise<PaginatedResult<SubscriptionEntity>> {
+  async findSubscriptions(type?: 'User' | 'Creator', page: number = 1, limit: number = 10, isActive?: boolean): Promise<PaginatedResult<SubscriptionEntity>> {
     const query: Filter<ISubscriptionModel> = type ? { type } : {};
+    if (isActive !== undefined) query.isActive = isActive;
     const result = await paginateMongo<ISubscriptionModel>(this.model, query, page, limit, { sort: { createdAt: -1 } });
 
     return {

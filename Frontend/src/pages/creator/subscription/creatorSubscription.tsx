@@ -25,6 +25,7 @@ export default function CreatorSubscription() {
   const handleBuy = async (id: string) => {
     console.log("iddddddd",id)
     try {
+        console.log("iddddd",id)
       const res = await CreatorSubscriptionService.buySubscription(id);
       if (res.url) {
         window.location.href = res.url;

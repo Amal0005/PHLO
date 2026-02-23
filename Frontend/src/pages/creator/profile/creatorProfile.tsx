@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import { CreatorProfileResponse, EditCreatorProfilePayload } from "@/interface/creator/creatorProfileInterface";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
@@ -199,6 +199,28 @@ export default function CreatorProfile() {
                     )}
                   </div>
                 </section>
+
+                {profile?.subscription && (
+                  <section className="bg-white/5 border border-white/10 rounded-2xl p-6 mt-8">
+                    <h2 className="text-sm uppercase tracking-widest text-gray-500 mb-4 font-semibold">Active Subscription</h2>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-xl font-bold text-white tracking-tight">{profile.subscription.planName} Plan</p>
+                        <p className="text-sm text-gray-400 mt-1">
+                          Valid until <span className="text-gray-300">{new Date(profile.subscription.endDate).toLocaleDateString(undefined, { dateStyle: 'long' })}</span>
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${profile.subscription.status === 'active'
+                          ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                          : 'bg-red-500/10 text-red-400 border-red-500/20'
+                          }`}>
+                          {profile.subscription.status}
+                        </span>
+                      </div>
+                    </div>
+                  </section>
+                )}
               </div>
 
               <div className="space-y-8">

@@ -7,7 +7,7 @@ export class AddPackageUseCase implements IAddPackageUseCase {
   constructor(
     private _packageRepo: IPackageRepository,
     private _creatorRepo: ICreatorRepository,
-  ) {}
+  ) { }
   async addPackage(data: Partial<PackageEntity>): Promise<PackageEntity> {
     if (
       !data.title ||
@@ -22,6 +22,7 @@ export class AddPackageUseCase implements IAddPackageUseCase {
     if (
       !creator ||
       !creator.subscription?.planId ||
+      !creator.subscription?.endDate ||
       creator.subscription.endDate < new Date()
     ) {
       throw new Error("Active subscription required to add packages.");

@@ -41,10 +41,12 @@ import { PackageRepository } from "@/adapters/repository/creator/packageReposito
 import { GetPackageDetailUseCase } from "@/application/useCases/user/package/getPackageDetailUseCase";
 import { GetPackageDetailController } from "@/adapters/controllers/user/package/getPackageDetailController";
 import { BookingRepository } from "@/adapters/repository/user/bookingRepository";
+import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { StripeService } from "@/domain/services/stripeService";
 import { CreateBookingUseCase } from "@/application/useCases/user/booking/createBookingUseCase";
 import { BookingController } from "@/adapters/controllers/booking/bookingController";
 import { BookingWebhookUseCase } from "@/application/useCases/user/booking/bookingWebhookUseCase";
+import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/payment/creatorSubscriptionWebhookUseCase";
 import { ListBookingUseCase } from "@/application/useCases/user/booking/listbookingUseCase";
 
 const userRepo = new UserRepository();
@@ -59,6 +61,7 @@ const creatorRepository = new CreatorRepository()
 const packageRepository = new PackageRepository()
 const categoryRepository = new CategoryRepository();
 const bookingRepo = new BookingRepository()
+const subscriptionRepo = new SubscriptionRepository()
 const stripeService = new StripeService()
 
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
@@ -81,6 +84,7 @@ const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
 const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, stripeService)
 const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
 
 
@@ -110,4 +114,4 @@ export const userProfileController = new UserProfileController(
     userRepo,
     creatorRepository
 );
-export const bookingController = new BookingController(createBookingUseCase, bookingWebhookUseCase, listBookingsUseCase)
+export const bookingController = new BookingController(createBookingUseCase, bookingWebhookUseCase, listBookingsUseCase, creatorSubscriptionWebhookUseCase)

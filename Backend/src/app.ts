@@ -56,6 +56,11 @@ export class App {
   }
   private setMiddlewares(): void {
     this.app.use(loggerMiddleware)
+    // Stripe webhook needs raw body for signature verification - must be before express.json()
+    this.app.use(
+      `${BACKEND_ROUTES.BASE}/bookings/webhook`,
+      express.raw({ type: "application/json" })
+    );
     this.app.use(express.json());
     this.app.use(
       cors({

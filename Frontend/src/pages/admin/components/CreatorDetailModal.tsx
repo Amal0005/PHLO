@@ -172,6 +172,30 @@ export const CreatorDetailModal = ({
                       )}
                     </div>
 
+                    {creator.subscription && (
+                      <div className="space-y-2">
+                        <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                          Active Subscription
+                        </h5>
+                        <div className="bg-gray-50/50 rounded-2xl p-5 border border-gray-100 flex justify-between items-center">
+                          <div>
+                            <p className="text-gray-900 font-bold text-base">
+                              {creator.subscription.planName} Plan
+                            </p>
+                            <p className="text-gray-500 text-xs mt-1 font-medium">
+                              Expires on {new Date(creator.subscription.endDate).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${creator.subscription.status === 'active'
+                              ? 'bg-green-100 text-green-700 border-green-200'
+                              : 'bg-red-100 text-red-700 border-red-200'
+                            }`}>
+                            {creator.subscription.status}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider">

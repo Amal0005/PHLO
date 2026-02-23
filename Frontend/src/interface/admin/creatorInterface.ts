@@ -11,5 +11,12 @@ export interface Creator {
   yearsOfExperience?: string;
   portfolioLink?: string;
   specialties?: string[];
-
+  subscription?: {
+    planId: string;
+    planName: string;
+    status: "active" | "expired" | "cancelled";
+    startDate: string;
+    endDate: string;
+    stripeSessionId: string;
+  };
 }

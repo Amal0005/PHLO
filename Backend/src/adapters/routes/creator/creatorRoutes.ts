@@ -153,9 +153,15 @@ export class CreatorRoutes {
         creatorSubscriptionController.buySubscription(req, res),
     );
     this.creatorRouter.post(
+      BACKEND_ROUTES.CREATOR.SUBSCRIPTION_CONFIRM,
+      (req: Request, res: Response) =>
+        creatorSubscriptionController.confirmSubscription(req, res),
+    );
+    this.creatorRouter.post(
       BACKEND_ROUTES.CREATOR.WALLPAPER,
-      (req:Request,res:Response)=>
-        wallpaperController.addWallpaper(req,res)
-    )
+      (req: Request, res: Response) => {
+        wallpaperController.addWallpaper(req, res);
+      },
+    );
   }
 }
