@@ -8,10 +8,10 @@ import { registerUserSchema } from "../../../validation/registerUserSchema";
 import GoogleLoginButton from "@/compoents/reusable/googleButton";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/user/userSlice";
-import { setUserAuth } from "@/store/slices/user/userAuthSlice";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
 import { AxiosError } from "axios";
+import { removeUser } from "@/store/slices/auth/authSlice";
 
 interface RegisterForm {
   name: string;
@@ -358,7 +358,7 @@ export default function Register() {
 
                       if (response?.accessToken && response?.user) {
                         dispatch(setUser(response.user));
-                        dispatch(setUserAuth(response.accessToken));
+                        dispatch(removeUser(response.accessToken));
                         navigate(ROUTES.USER.HOME, { replace: true });
                       } else {
                         console.error("Google Login: Missing token/user", response);

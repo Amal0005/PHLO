@@ -1,4 +1,5 @@
 import api from "@/axios/axiosConfig";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
 export const S3Service = {
     /**
@@ -9,7 +10,7 @@ export const S3Service = {
     getViewUrl: async (key: string): Promise<string> => {
         try {
             if (!key) return "";
-            const response = await api.get("/upload/view-url", {
+            const response = await api.get(API_ENDPOINTS.UPLOAD.VIEW_URL, {
                 params: { key }
             });
             return response.data.viewUrl;
@@ -28,7 +29,7 @@ export const S3Service = {
         fileType: string,
         folder: string
     ): Promise<{ uploadUrl: string; publicUrl: string }> => {
-        const res = await api.post("/upload/presign", { fileType, folder });
+        const res = await api.post(API_ENDPOINTS.UPLOAD.PRESIGN, { fileType, folder });
         return res.data;
     },
 
@@ -54,7 +55,7 @@ export const S3Service = {
      */
     uploadToS3: async (
         file: File,
-        folder: "profile" | "id" | "user-profiles" | "creator-profiles"|"packages"
+        folder: "profile" | "id" | "user-profiles" | "creator-profiles" | "packages"
     ): Promise<string> => {
         const { uploadUrl, publicUrl } = await S3Service.getPresignedUrl(
             file.type,

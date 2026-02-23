@@ -1,12 +1,13 @@
 import { Router, Request, Response } from "express";
 import {
-  addCategoryController,
-  adminCreatorController,
   adminLoginController,
   adminUserController,
-  deleteCategoryController,
-  editCategoryController,
-  getCategoryController,
+  adminCreatorController,
+  categoryController,
+  deleteSubscriptionController,
+  editSubscriptionController,
+  getSubscriptionController,
+  addSubscriptionController,
 } from "../../../framework/depInjection/admin/adminInjections";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
@@ -15,6 +16,7 @@ import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistSe
 import { logoutController, tokenController } from "../../../framework/depInjection/user/userInjections";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 
 export class AdminRoutes {
   public adminRouter: Router;
@@ -30,11 +32,11 @@ export class AdminRoutes {
   }
   private setRoutes(): void {
     this.adminRouter.post(
-      "/login",
+      BACKEND_ROUTES.ADMIN.LOGIN,
       (req: Request, res: Response) =>
         adminLoginController.login(req, res)
     );
-    this.adminRouter.post("/refresh-token", (req, res) =>
+    this.adminRouter.post(BACKEND_ROUTES.ADMIN.REFRESH_TOKEN, (req, res) =>
       tokenController.refreshToken(req, res)
     );
     this.adminRouter.use(
@@ -42,48 +44,60 @@ export class AdminRoutes {
       authorizeRoles("admin")
     );
     this.adminRouter.post(
-      "/logout",
+      BACKEND_ROUTES.ADMIN.LOGOUT,
       logoutController.logout.bind(logoutController)
     );
 
     this.adminRouter.get(
-      "/users",
+      BACKEND_ROUTES.ADMIN.USERS,
       (req: Request, res: Response) =>
         adminUserController.getUsers(req, res)
     );
     this.adminRouter.get(
-      "/creators",
+      BACKEND_ROUTES.ADMIN.CREATORS,
       (req: Request, res: Response) =>
         adminCreatorController.getCreators(req, res)
     );
     this.adminRouter.patch(
-      "/creators/:id/approve",
+      BACKEND_ROUTES.ADMIN.APPROVE_CREATOR,
       (req: Request, res: Response) =>
         adminCreatorController.approve(req, res)
     );
     this.adminRouter.patch(
-      "/creators/:id/reject",
+      BACKEND_ROUTES.ADMIN.REJECT_CREATOR,
       (req: Request, res: Response) =>
         adminCreatorController.reject(req, res)
     );
-    this.adminRouter.patch("/users/:userId/status", (req: Request, res: Response) => {
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.USER_STATUS, (req: Request, res: Response) => {
       adminUserController.changeUserStatus(req, res)
     })
-    this.adminRouter.patch("/creators/:creatorId/status", (req: Request, res: Response) => {
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.CREATOR_STATUS, (req: Request, res: Response) => {
       adminCreatorController.changeCreatorStatus(req, res)
     })
-    this.adminRouter.post("/category", (req: Request, res: Response) => {
-      addCategoryController.addCategory(req, res)
+    this.adminRouter.post(BACKEND_ROUTES.ADMIN.CATEGORY, (req: Request, res: Response) => {
+      categoryController.addCategory(req, res)
     })
-    this.adminRouter.get("/category", (req: Request, res: Response) => {
-      getCategoryController.getCategory(req, res)
+    this.adminRouter.get(BACKEND_ROUTES.ADMIN.CATEGORY, (req: Request, res: Response) => {
+      categoryController.getCategory(req, res)
     })
-    this.adminRouter.delete("/category/:categoryId", (req: Request, res: Response) => {
-      deleteCategoryController.deleteCategory(req, res)
+    this.adminRouter.delete(BACKEND_ROUTES.ADMIN.CATEGORY_DETAIL, (req: Request, res: Response) => {
+      categoryController.deleteCategory(req, res)
     })
-    this.adminRouter.patch("/category/:categoryId", (req: Request, res: Response) => {
-      editCategoryController.editCategory(req, res);
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.CATEGORY_DETAIL, (req: Request, res: Response) => {
+      categoryController.editCategory(req, res);
     });
+    this.adminRouter.post(BACKEND_ROUTES.ADMIN.SUBSCRIPTION, (req: Request, res: Response) => {
+      addSubscriptionController.addSubscription(req, res)
+    })
+    this.adminRouter.get(BACKEND_ROUTES.ADMIN.SUBSCRIPTION, (req: Request, res: Response) => {
+      getSubscriptionController.getSubscriptions(req, res)
+    })
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.SUBSCRIPTION_DETAIL, (req: Request, res: Response) => {
+      editSubscriptionController.editSubscription(req, res)
+    })
+    this.adminRouter.delete(BACKEND_ROUTES.ADMIN.SUBSCRIPTION_DETAIL, (req: Request, res: Response) => {
+      deleteSubscriptionController.deleteSubscription(req, res)
+    })
   }
 }
 

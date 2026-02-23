@@ -1,13 +1,14 @@
+import { useState } from "react";
 import { Menu, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LogoWhite from "../../assets/images/Logo_white.png";
 import type { RootState } from "@/store/store";
 import { clearAdmin } from "@/store/slices/admin/adminSlice";
-import { clearAdminAuth } from "@/store/slices/admin/adminAuthSlice";
 import { ROUTES } from "@/constants/routes";
 import { AdminAuthService } from "@/services/admin/adminAuthService";
-import { confirmActionToast } from "../reusable/confirmActionToast";
+import ConfirmModal from "../reusable/ConfirmModal";
+import { removeUser } from "@/store/slices/auth/authSlice";
 
 interface AdminNavbarProps {
   onMenuToggle: () => void;
@@ -16,27 +17,22 @@ interface AdminNavbarProps {
 export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const admin = useSelector((state: RootState) => state.admin.admin);
 
 
-  const handleLogout = () => {
-    confirmActionToast(
-      "Are you sure you want to logout?",
-      async () => {
-        try {
-          await AdminAuthService.logOut();
+  const handleLogout = async () => {
+    try {
+      await AdminAuthService.logOut();
 
-          dispatch(clearAdminAuth());
-          dispatch(clearAdmin());
+      dispatch(removeUser());
+      dispatch(clearAdmin());
 
-          navigate(ROUTES.ADMIN.LOGIN, { replace: true });
-        } catch (err) {
-          console.error("Logout failed", err);
-        }
-      },
-      "Logout"
-    );
+      navigate(ROUTES.ADMIN.LOGIN, { replace: true });
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
   };
 
 
@@ -92,7 +88,7 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
             )}
 
             <button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutModal(true)}
               className="text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-lg"
               title="Logout"
             >
@@ -102,6 +98,16 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
 
         </div>
       </div>
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleLogout}
+        title="Admin Logout"
+        message="Are you sure you want to exit the admin portal?"
+        confirmLabel="Logout"
+        variant="danger"
+        icon={<LogOut size={28} />}
+      />
     </nav>
   );
 }

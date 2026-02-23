@@ -10,7 +10,7 @@ export class userRegisterController {
     private _userRegisterUseCase: IUserRegisterUseCase,
     private _verifyOtpUseCase: IVerifyRegisterOtpUseCase,
     private _resendOtpUseCase: IResendOtpUseCase
-  ) { }
+  ) {}
 
   async register(req: Request, res: Response) {
     try {

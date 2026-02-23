@@ -9,8 +9,9 @@ import {
 import { Creator } from "@/interface/admin/creatorInterface";
 import { toast } from "react-toastify";
 import { CreatorDetailModal } from "./components/CreatorDetailModal";
-import { confirmActionToast } from "../../compoents/reusable/confirmActionToast";
+import ConfirmModal from "../../compoents/reusable/ConfirmModal";
 import Pagination from "@/compoents/reusable/pagination";
+import { UserX, UserCheck } from "lucide-react";
 
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
 
@@ -25,6 +26,7 @@ export default function CreatorListingPage() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedCreator, setSelectedCreator] = useState<Creator | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [confirmData, setConfirmData] = useState<{ creatorId: string; newStatus: "approved" | "blocked" } | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
@@ -87,31 +89,28 @@ export default function CreatorListingPage() {
     }
   };
 
-  const handleToggleStatus = (creatorId: string, currentStatus: string) => {
-    const newStatus = currentStatus === "approved" ? "blocked" : "approved";
+  const handleToggleStatus = async () => {
+    if (!confirmData) return;
+    const { creatorId, newStatus } = confirmData;
+    try {
+      await toggleCreatorStatus(creatorId, newStatus);
 
-    confirmActionToast(
-      `Are you sure you want to ${newStatus === "blocked" ? "block" : "unblock"} this creator?`,
-      async () => {
-        try {
-          await toggleCreatorStatus(creatorId, newStatus);
+      setCreators((prev) =>
+        prev.map((c) =>
+          c._id === creatorId ? { ...c, status: newStatus as Creator["status"] } : c,
+        ),
+      );
 
-          setCreators((prev) =>
-            prev.map((c) =>
-              c._id === creatorId ? { ...c, status: newStatus as Creator["status"] } : c,
-            ),
-          );
-
-          toast.success(
-            newStatus === "blocked"
-              ? "Creator blocked successfully"
-              : "Creator unblocked successfully",
-          );
-        } catch {
-          toast.error("Failed to update creator status");
-        }
-      },
-    );
+      toast.success(
+        newStatus === "blocked"
+          ? "Creator blocked successfully"
+          : "Creator unblocked successfully",
+      );
+    } catch {
+      toast.error("Failed to update creator status");
+    } finally {
+      setConfirmData(null);
+    }
   };
 
   const columns: Column<Creator>[] = [
@@ -167,7 +166,10 @@ export default function CreatorListingPage() {
           </button>
           {creator.status !== "pending" && creator.status !== "rejected" && (
             <button
-              onClick={() => handleToggleStatus(creator._id, creator.status)}
+              onClick={() => setConfirmData({
+                creatorId: creator._id,
+                newStatus: creator.status === "approved" ? "blocked" : "approved"
+              })}
               className={`px-3 py-1.5 text-sm rounded-lg border transition-all ${creator.status === "approved"
                 ? "text-red-400 border-red-400/30 hover:bg-red-500/10 border-red-400/60"
                 : "text-green-400 border-green-400/30 hover:bg-green-500/10 border-green-400/60"
@@ -282,6 +284,16 @@ export default function CreatorListingPage() {
           </div>
         </div>
       )}
+      <ConfirmModal
+        isOpen={!!confirmData}
+        onClose={() => setConfirmData(null)}
+        onConfirm={handleToggleStatus}
+        title={`${confirmData?.newStatus === "blocked" ? "Block" : "Unblock"} Creator`}
+        message={`Are you sure you want to ${confirmData?.newStatus === "blocked" ? "block" : "unblock"} this creator?`}
+        confirmLabel={confirmData?.newStatus === "blocked" ? "Block" : "Unblock"}
+        variant={confirmData?.newStatus === "blocked" ? "danger" : "info"}
+        icon={confirmData?.newStatus === "blocked" ? <UserX size={28} /> : <UserCheck size={28} />}
+      />
     </div>
   );
 }

@@ -21,7 +21,7 @@ export class AdminCreatorController {
     private _rejectCreatorUseCase: IRejectCreatorUseCase,
     private _adminCreatorListingUseCase: IAdminCreatorListingUseCase,
     private _toggleCreatorStatusUseCase: IToggleCreatorStatusUseCase,
-  ) { }
+  ) {}
 
   async getCreators(req: Request, res: Response): Promise<Response> {
     try {

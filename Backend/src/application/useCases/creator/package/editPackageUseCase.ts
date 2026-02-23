@@ -3,7 +3,7 @@ import { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPac
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 
 export class EditPackageUseCase implements IEditPackageUseCase {
-  constructor(private _packageRepo: IPackageRepository) { }
+  constructor(private _packageRepo: IPackageRepository) {}
 
   async editPackage(
     packageId: string,
@@ -16,7 +16,7 @@ export class EditPackageUseCase implements IEditPackageUseCase {
       throw new Error("Package not found");
     }
 
-    // Handle populated creatorId (object) or unpopulated (string)
+    
     const existingCreatorId = (typeof existingPackage.creatorId === 'object' && existingPackage.creatorId !== null)
       ? existingPackage.creatorId._id?.toString()
       : existingPackage.creatorId.toString();

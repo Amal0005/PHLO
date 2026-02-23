@@ -1,5 +1,6 @@
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { IBaseRepository } from "./IBaseRepository";
+import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export interface PackageFilters {
   category?: string;
@@ -7,14 +8,17 @@ export interface PackageFilters {
   maxPrice?: number;
   creatorId?: string;
   search?: string;
-  sortBy?: "price-asc" | "price-desc" | "newest";
+  sortBy?: "price-asc" | "price-desc" | "newest" | "oldest";
   lat?: number;
   lng?: number;
   radiusInKm?: number;
+  page?: number;
+  limit?: number;
 }
 
 export interface IPackageRepository extends IBaseRepository<PackageEntity> {
   add(data: PackageEntity): Promise<PackageEntity>;
   findByCreatorId(creatorId: string): Promise<PackageEntity[]>;
-  findAllPackages(filters?: PackageFilters): Promise<PackageEntity[]>;
+  findAllPackages(filters?: PackageFilters): Promise<PaginatedResult<PackageEntity>>;
 }
+

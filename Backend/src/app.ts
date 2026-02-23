@@ -1,7 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { connectDB } from "@/framework/database/connectDB/connectDB";
 import express, { Express } from "express";
 import http from "http";
-import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import redis from "@/framework/redis/redisClient";
@@ -18,6 +20,9 @@ import { CreatorRepository } from "./adapters/repository/creator/creatorReposito
 import { loggerMiddleware } from "./adapters/middlewares/loggerMiddleware";
 import path from "path";
 
+import { BACKEND_ROUTES } from "@/constants/backendRoutes";
+import { errorHandler } from "./adapters/middlewares/errorHandler";
+import { logger } from "./utils/logger";
 
 
 export class App {
@@ -29,10 +34,9 @@ export class App {
   private _redisService: RedisService;
   private _tokenBlacklistService: TokenBlacklistService;
   private _userRepository: UserRepository;
-  private _creatorRepository:CreatorRepository
+  private _creatorRepository: CreatorRepository
 
   constructor() {
-    dotenv.config();
     this.app = express();
     this.database = new connectDB();
 
@@ -40,7 +44,7 @@ export class App {
     this._redisService = new RedisService();
     this._tokenBlacklistService = new TokenBlacklistService(this._redisService);
     this._userRepository = new UserRepository();
-    this._creatorRepository=new CreatorRepository()
+    this._creatorRepository = new CreatorRepository()
 
     this.setMiddlewares();
     this.setUserRoutes();
@@ -48,9 +52,15 @@ export class App {
     this.setCreatorRoutes();
     this.setViewRouter();
     this.setAdminRouter();
+    this.app.use(errorHandler);
   }
   private setMiddlewares(): void {
     this.app.use(loggerMiddleware)
+    // Stripe webhook needs raw body for signature verification - must be before express.json()
+    this.app.use(
+      `${BACKEND_ROUTES.BASE}/bookings/webhook`,
+      express.raw({ type: "application/json" })
+    );
     this.app.use(express.json());
     this.app.use(
       cors({
@@ -61,21 +71,21 @@ export class App {
       }),
     );
     this.app.use(cookieParser());
-this.app.use(
-  "/public",
-  express.static(path.join(process.cwd(), "public"))
-);
+    this.app.use(
+      "/public",
+      express.static(path.join(process.cwd(), "public"))
+    );
 
 
   }
-private setUserRoutes(): void {
+  private setUserRoutes(): void {
     const userRoutes = new UserRoutes(
       this._jwtService,
       this._tokenBlacklistService,
       this._userRepository,
       this._creatorRepository
     );
-    this.app.use("/api", userRoutes.userRouter);
+    this.app.use(BACKEND_ROUTES.BASE, userRoutes.userRouter);
   }
   private setCreatorRoutes(): void {
     const creatorRoutes = new CreatorRoutes(
@@ -84,14 +94,14 @@ private setUserRoutes(): void {
       this._userRepository,
       this._creatorRepository
     );
-    this.app.use("/api/creator", creatorRoutes.creatorRouter);
+    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.CREATOR.BASE}`, creatorRoutes.creatorRouter);
   }
 
   private setUploadRouter() {
-    this.app.use("/api/upload", new UploadRoutes().uploadRouter);
+    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.UPLOAD.BASE}`, new UploadRoutes().uploadRouter);
   }
   private setViewRouter() {
-    this.app.use("/api/upload", new ViewRoutes().viewRoutes);
+    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.UPLOAD.BASE}`, new ViewRoutes().viewRoutes);
   }
   private setAdminRouter() {
     const adminRoutes = new AdminRoutes(
@@ -100,7 +110,7 @@ private setUserRoutes(): void {
       this._userRepository,
       this._creatorRepository
     );
-    this.app.use("/api/admin", adminRoutes.adminRouter);
+    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.ADMIN.BASE}`, adminRoutes.adminRouter);
   }
 
   public async listen(): Promise<void> {
@@ -108,10 +118,11 @@ private setUserRoutes(): void {
     try {
       await this.database.connect();
       this.app.listen(port, () =>
-        console.log("server running", process.env.PORT),
+        logger.info("server running", process.env.PORT),
       );
     } catch (error) {
-      console.error(error);
+      logger.error("Server failed to start", { error });
+
     }
   }
 }

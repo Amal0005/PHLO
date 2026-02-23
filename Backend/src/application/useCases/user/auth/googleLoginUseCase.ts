@@ -27,6 +27,10 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
         role: "user",
         status: "active",
       });
+    } else if (!user.image && googleUser.picture) {
+      
+      const updatedUser = await this._userRepo.editProfile(user._id!.toString(), { image: googleUser.picture });
+      if (updatedUser) user = updatedUser;
     }
 
 
@@ -55,4 +59,3 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
     }
   }
 }
-

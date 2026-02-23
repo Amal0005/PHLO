@@ -1,23 +1,28 @@
 import { Request, Response, NextFunction } from "express";
+import { logger } from "@/utils/logger";
 
 export const loggerMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   const start = Date.now();
 
-  console.log("📥 Incoming Request");
-  console.log(`${req.method} ${req.originalUrl}`);
-  console.log("Time:", new Date().toISOString());
+  logger.info("Incoming Request", {
+    method: req.method,
+    url: req.originalUrl,
+    ip: req.ip,
+  });
 
   res.on("finish", () => {
     const duration = Date.now() - start;
 
-    console.log("📤 Response Sent");
-    console.log("Status:", res.statusCode);
-    console.log("Duration:", duration + "ms");
-    console.log("---------------------------");
+    logger.info("Response Sent", {
+      method: req.method,
+      url: req.originalUrl,
+      status: res.statusCode,
+      duration: `${duration}ms`,
+    });
   });
 
   next();

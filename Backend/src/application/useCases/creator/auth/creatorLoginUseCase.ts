@@ -60,7 +60,7 @@ export class CreatorLoginUseCase implements ICreatorLoginUseCase {
 
     return {
       status: "approved",
-
+          
       creator: {
         id: creator._id as string,
         fullName: creator.fullName,

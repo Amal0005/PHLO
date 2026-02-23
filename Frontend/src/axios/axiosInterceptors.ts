@@ -1,12 +1,8 @@
 import { store } from "@/store/store";
 import api from "./axiosConfig";
 import axios from "axios";
-import { clearCreatorAuth, setCreatorAuth } from "@/store/slices/creator/creatorAuthSlice";
-import { clearUserAuth, setUserAuth } from "@/store/slices/user/userAuthSlice";
-import { clearAdminAuth, setAdminAuth } from "@/store/slices/admin/adminAuthSlice";
-import { clearUser } from "@/store/slices/user/userSlice";
-import { clearCreator } from "@/store/slices/creator/creatorSlice";
-import { clearAdmin } from "@/store/slices/admin/adminSlice";
+import { toast } from "react-toastify";
+import { removeUser, setToken } from "@/store/slices/auth/authSlice";
 
 interface QueueItem {
   resolve: (value?: unknown) => void;
@@ -27,24 +23,26 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
+
+const getRoleFromUrl = (url: string): "admin" | "creator" | "user" => {
+  if (url.startsWith("/admin") || url.includes("/admin/")) return "admin";
+  if (url.startsWith("/creator") || url.includes("/creator/")) return "creator";
+  return "user";
+};
+
+const forceLogout = () => {
+  store.dispatch(removeUser())
+};
+
 export const setUpInterceptors = () => {
   api.interceptors.request.use((config) => {
     const state = store.getState();
-
     const url = config.url || "";
 
     if (url.startsWith("http")) return config;
     if (config.headers?.Authorization) return config;
 
-    let token: string | null = null;
-
-    if (url.startsWith("/admin") || url.includes("/admin/")) {
-      token = state.adminAuth.adminToken;
-    } else if (url.startsWith("/creator") || url.includes("/creator/")) {
-      token = state.creatorAuth.creatorToken;
-    } else {
-      token = state.userAuth.userToken;
-    }
+    const token = state.auth.token;
 
     if (token) {
       config.headers = config.headers ?? {};
@@ -60,7 +58,7 @@ export const setUpInterceptors = () => {
       const originalRequest = err.config;
       const status = err.response?.status;
       const url = err.config?.url || "";
-      const message = err.response?.data?.message || "Your account has been restricted.";
+      const message = err.response?.data?.message;
 
       const isLoginRequest = url.endsWith("/login") || url.includes("/login?");
       const isRefreshRequest = url.includes("/refresh-token");
@@ -69,12 +67,18 @@ export const setUpInterceptors = () => {
         return Promise.reject(err);
       }
 
+      const role = getRoleFromUrl(url);
+
       if (status === 401 && !originalRequest._retry) {
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
-            failedQueue.push({ resolve: resolve as (value?: unknown) => void, reject: reject as (reason?: unknown) => void });
+            failedQueue.push({
+              resolve: resolve as (value?: unknown) => void,
+              reject: reject as (reason?: unknown) => void,
+            });
           })
             .then((token) => {
+              originalRequest._retry = true;
               originalRequest.headers.Authorization = `Bearer ${token}`;
               return api(originalRequest);
             })
@@ -85,48 +89,22 @@ export const setUpInterceptors = () => {
         isRefreshing = true;
 
         try {
-          let refreshUrl = "/refresh-token";
-          if (url.includes("/admin")) {
-            refreshUrl = "/admin/refresh-token";
-          } else if (url.includes("/creator")) {
-            refreshUrl = "/creator/refresh-token";
-          }
-
           const response = await axios.post(
-            `${import.meta.env.VITE_BASE_URL}${refreshUrl}`,
+            `${import.meta.env.VITE_BASE_URL}/refresh-token`,
             {},
             { withCredentials: true }
           );
 
           const { accessToken } = response.data;
 
-          if (url.includes("/admin")) {
-            store.dispatch(setAdminAuth(accessToken));
-          } else if (url.includes("/creator")) {
-            store.dispatch(setCreatorAuth(accessToken));
-          } else {
-            store.dispatch(setUserAuth(accessToken));
-          }
+          store.dispatch(setToken(accessToken));
 
           processQueue(null, accessToken);
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return api(originalRequest);
         } catch (refreshError) {
           processQueue(refreshError, null);
-
-          if (url.includes("/admin")) {
-            store.dispatch(clearAdminAuth());
-            store.dispatch(clearAdmin());
-            window.location.href = "/admin/login";
-          } else if (url.includes("/creator")) {
-            store.dispatch(clearCreatorAuth());
-            store.dispatch(clearCreator());
-            window.location.href = "/creator/login";
-          } else {
-            store.dispatch(clearUserAuth());
-            store.dispatch(clearUser());
-            window.location.href = "/login";
-          }
+          forceLogout();
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
@@ -134,20 +112,8 @@ export const setUpInterceptors = () => {
       }
 
       if (status === 403) {
-        alert(message);
-        if (url.includes("/admin")) {
-          store.dispatch(clearAdminAuth());
-          store.dispatch(clearAdmin());
-          window.location.href = "/admin/login";
-        } else if (url.includes("/creator")) {
-          store.dispatch(clearCreatorAuth());
-          store.dispatch(clearCreator());
-          window.location.href = "/creator/login";
-        } else {
-          store.dispatch(clearUserAuth());
-          store.dispatch(clearUser());
-          window.location.href = "/login";
-        }
+        toast.info(message || "Your account has been restricted.");
+        forceLogout();
       }
 
       return Promise.reject(err);

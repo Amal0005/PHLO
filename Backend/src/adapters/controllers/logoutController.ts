@@ -4,7 +4,7 @@ import { ILogoutUseCase } from "../../domain/interface/ILogoutUseCase";
 import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
 
 export class LogoutController {
-  constructor(private _logoutUseCase: ILogoutUseCase) { }
+  constructor(private _logoutUseCase: ILogoutUseCase) {}
 
   async logout(req: AuthRequest, res: Response) {
     try {
@@ -22,11 +22,7 @@ export class LogoutController {
 
       await this._logoutUseCase.logout(token, exp);
 
-      let cookieName = "userRefreshToken";
-      if (req.user?.role === "admin") cookieName = "adminRefreshToken";
-      else if (req.user?.role === "creator") cookieName = "creatorRefreshToken";
-
-      res.clearCookie(cookieName, {
+      res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",

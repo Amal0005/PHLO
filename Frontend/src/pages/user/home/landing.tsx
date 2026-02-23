@@ -13,112 +13,53 @@ import {
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import UserNavbar from "@/compoents/reusable/userNavbar";
+import { UserPackageService } from "@/services/user/userPackageService";
+import { UserPackage } from "@/interface/user/userPackageInterface";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
+import { S3Service } from "@/services/s3Service";
 
 export default function LandingPage() {
-  const packages = [
-    {
-      id: 1,
-      name: "Wedding Photography",
-      price: "$1,299",
-      duration: "Full Day",
-      photos: "300+ Photos",
-      image:
-        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800",
-      features: [
-        "Pre-wedding Shoot",
-        "Full Day Coverage",
-        "Professional Editing",
-        "Premium Photo Album",
-        "All Digital Files",
-      ],
-      popular: true,
-    },
-    {
-      id: 2,
-      name: "Birthday Party",
-      price: "$299",
-      duration: "3 Hours",
-      photos: "80 Photos",
-      image:
-        "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800",
-      features: [
-        "Event Coverage",
-        "Candid Shots",
-        "Group Photos",
-        "Edited Photos",
-        "Digital Download",
-      ],
-      popular: false,
-    },
-    {
-      id: 3,
-      name: "Corporate Events",
-      price: "$599",
-      duration: "Half Day",
-      photos: "150 Photos",
-      image:
-        "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800",
-      features: [
-        "Professional Coverage",
-        "Headshots Available",
-        "Event Highlights",
-        "Same Day Delivery",
-        "Social Media Ready",
-      ],
-      popular: false,
-    },
-    {
-      id: 4,
-      name: "Maternity Shoot",
-      price: "$399",
-      duration: "2 Hours",
-      photos: "60 Photos",
-      image:
-        "https://images.unsplash.com/photo-1493894473891-10fc1e5dbd22?w=800",
-      features: [
-        "Indoor/Outdoor Options",
-        "Wardrobe Assistance",
-        "Partner Photos",
-        "Premium Editing",
-        "Printed Portraits",
-      ],
-      popular: false,
-    },
-    {
-      id: 5,
-      name: "Family Portrait",
-      price: "$199",
-      duration: "1.5 Hours",
-      photos: "40 Photos",
-      image:
-        "https://images.unsplash.com/photo-1511895426328-dc8714191300?w=800",
-      features: [
-        "Multiple Locations",
-        "All Ages Welcome",
-        "Natural & Posed",
-        "Retouching Included",
-        "Wall Art Options",
-      ],
-      popular: false,
-    },
-    {
-      id: 6,
-      name: "Graduation Photos",
-      price: "$149",
-      duration: "1 Hour",
-      photos: "30 Photos",
-      image:
-        "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
-      features: [
-        "Cap & Gown Photos",
-        "Campus Locations",
-        "Individual & Group",
-        "Quick Turnaround",
-        "Print Packages",
-      ],
-      popular: false,
-    },
-  ];
+  const navigate = useNavigate();
+  const [packages, setPackages] = useState<UserPackage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const response = await UserPackageService.listPackages();
+        if (response.success && Array.isArray(response.data)) {
+          const packagesWithSignedUrls = await Promise.all(
+            response.data.map(async (pkg) => {
+              const images = pkg.images || [];
+              const signedImages = await Promise.all(
+                images.map(async (img) => {
+                  if (img && typeof img === 'string' && !img.startsWith("http")) {
+                    try {
+                      const signedUrl = await S3Service.getViewUrl(img);
+                      return signedUrl || null;
+                    } catch (err) {
+                      console.error("Error signing image:", img, err);
+                      return null;
+                    }
+                  }
+                  return img;
+                })
+              );
+              return { ...pkg, images: signedImages.filter(img => img !== null) };
+            })
+          );
+          setPackages(packagesWithSignedUrls);
+        }
+      } catch (error) {
+        console.error("Error fetching packages:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPackages();
+  }, []);
 
   const wallpapers = [
     {
@@ -255,56 +196,50 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {packages.map((pkg) => (
-              <div
-                key={pkg.id}
-                className={`relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
-                  pkg.popular
-                    ? "border-white shadow-xl shadow-white/10"
-                    : "border-white/10"
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-white text-black text-sm font-semibold rounded-full">
-                    Most Popular
+            {loading ? (
+              [1, 2, 3].map((i) => (
+                <div key={i} className="bg-zinc-900/50 animate-pulse rounded-2xl p-8 h-96" />
+              ))
+            ) : packages.length > 0 ? (
+              packages.map((pkg) => (
+                <div
+                  key={pkg._id}
+                  className="relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                >
+                  <img
+                    src={(pkg.images && pkg.images.length > 0) ? pkg.images[0] : "https://images.unsplash.com/photo-1519741497674-611481863552?w=800"}
+                    alt={pkg.title}
+                    className="w-full h-48 object-cover rounded-xl mb-6"
+                  />
+
+                  <div className="text-center mb-6">
+                    <h3 className="text-2xl font-bold mb-2 line-clamp-1">{pkg.title}</h3>
+                    <div className="text-4xl font-bold mb-2">₹{pkg.price}</div>
+                    <p className="text-gray-400 capitalize">
+                      {typeof pkg.category === 'object' ? pkg.category.name : pkg.category}
+                    </p>
                   </div>
-                )}
-                <img
-                  src={pkg.image}
-                  alt={pkg.name}
-                  className="w-full h-48 object-cover rounded-xl mb-6"
-                />
 
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
-                  <div className="text-4xl font-bold mb-2">{pkg.price}</div>
-                  <p className="text-gray-400">{pkg.duration}</p>
-                </div>
-
-                <div className="mb-6">
-                  <div className="flex items-center justify-center gap-2 text-gray-300 mb-4">
-                    <Camera size={20} />
-                    <span>{pkg.photos}</span>
+                  <div className="mb-6">
+                    <div className="flex items-center justify-center gap-2 text-gray-300 mb-4">
+                      <Camera size={20} />
+                      <span className="text-sm line-clamp-2">{pkg.description}</span>
+                    </div>
                   </div>
+
+                  <button
+                    onClick={() => navigate(`${ROUTES.USER.PACKAGES}/${pkg._id}`)}
+                    className="w-full py-3 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all"
+                  >
+                    View Details
+                  </button>
                 </div>
-
-                <ul className="space-y-3 mb-8">
-                  {pkg.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-3">
-                      <CheckCircle
-                        size={20}
-                        className="text-white flex-shrink-0"
-                      />
-                      <span className="text-gray-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button className="w-full py-3 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all">
-                  Book Now
-                </button>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-gray-500 py-10">
+                No packages available at the moment.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>

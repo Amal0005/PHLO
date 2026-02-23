@@ -27,7 +27,7 @@ export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
     const existingUser = await this._userRepo.findByEmail(email);
     if (existingUser) throw new Error("This email is already registered as a user");
 
-    if (!data.password) throw new Error("Password requires");
+    if (!data.password) throw new Error("Password required");
     const hashedPassword = await this._passwordService.hash(data.password);
 
     const pendingCreator = {

@@ -10,7 +10,7 @@ export interface PackageEntity {
   images: string[];
   location: {
     type: "Point";
-    coordinates: [number, number]; // [longitude, latitude]
+    coordinates: [number, number]; 
   };
   placeName?: string;
   createdAt?: Date;

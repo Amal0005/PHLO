@@ -30,7 +30,9 @@
     "nodemailer": "^7.0.12",
     "nodemon": "^3.1.11",
     "redis": "^5.10.0",
+    "stripe": "^20.3.1",
     "tsconfig-paths": "^4.2.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "zod": "^4.3.4"
   },
   "devDependencies": {

@@ -5,7 +5,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { AppError } from "@/domain/errors/appError";
 
 export class userLoginController {
-  constructor(private _userLoginUseCase: IUserLoginUseCase) { }
+  constructor(private _userLoginUseCase: IUserLoginUseCase) {}
 
   async login(req: Request, res: Response): Promise<Response> {
     try {
@@ -16,7 +16,7 @@ export class userLoginController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: Number(process.env.REFRESH_TOKEN_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
       });
       return res.status(StatusCode.OK).json({
         success: true,

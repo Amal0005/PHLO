@@ -4,7 +4,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
 
 export class GoogleAuthController {
-  constructor(private _googleLoginUseCase: IGoogleLoginUseCase) { }
+  constructor(private _googleLoginUseCase: IGoogleLoginUseCase) {}
 
   async googleLogin(req: Request, res: Response) {
     try {
@@ -21,7 +21,7 @@ export class GoogleAuthController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: Number(process.env.REFRESH_TOKEN_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
       });
 
       return res.status(StatusCode.OK).json({

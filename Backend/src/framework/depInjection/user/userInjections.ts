@@ -13,6 +13,13 @@ import { OtpServices } from "../../../domain/services/user/otpServices";
 import { PasswordService } from "../../../domain/services/user/passwordService";
 import { PendingUserService } from "../../../domain/services/user/pedingUserService";
 import { RedisService } from "../../../domain/services/user/redisServices";
+import { UserProfileController } from "@/adapters/controllers/user/profile/userProfileController";
+import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
+import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminCategoryListingUseCase";
+import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseCase";
+import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
+import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
+import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
 import { LogoutUseCase } from "../../../application/useCases/logoutUseCase";
 import { ForgotPasswordUseCase } from "../../../application/useCases/user/auth/forgotPasswordUseCase";
 import { GoogleLoginUseCase } from "../../../application/useCases/user/auth/googleLoginUseCase";
@@ -33,6 +40,14 @@ import { ListUserPackagesController } from "@/adapters/controllers/user/package/
 import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
 import { GetPackageDetailUseCase } from "@/application/useCases/user/package/getPackageDetailUseCase";
 import { GetPackageDetailController } from "@/adapters/controllers/user/package/getPackageDetailController";
+import { BookingRepository } from "@/adapters/repository/user/bookingRepository";
+import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
+import { StripeService } from "@/domain/services/stripeService";
+import { CreateBookingUseCase } from "@/application/useCases/user/booking/createBookingUseCase";
+import { BookingController } from "@/adapters/controllers/booking/bookingController";
+import { BookingWebhookUseCase } from "@/application/useCases/user/booking/bookingWebhookUseCase";
+import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/payment/creatorSubscriptionWebhookUseCase";
+import { ListBookingUseCase } from "@/application/useCases/user/booking/listbookingUseCase";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -43,8 +58,11 @@ const jwtService = new JwtServices()
 const mailService = new MailService()
 const tokenBlacklistService = new TokenBlacklistService(redisService)
 const creatorRepository = new CreatorRepository()
-const packageRepository=new PackageRepository()
-
+const packageRepository = new PackageRepository()
+const categoryRepository = new CategoryRepository();
+const bookingRepo = new BookingRepository()
+const subscriptionRepo = new SubscriptionRepository()
+const stripeService = new StripeService()
 
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
@@ -58,8 +76,16 @@ const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepo)
 const editUserProfileUseCase = new EditUserProfileUsecase(userRepo, creatorRepository)
 const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
-const listUserPackagesUseCase=new ListUserPackagesUseCase(packageRepository)
+const listUserPackagesUseCase = new ListUserPackagesUseCase(packageRepository)
 const getPackageDetailUseCase = new GetPackageDetailUseCase(packageRepository);
+const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepository);
+const addCategoryUseCase = new AddCategoryUseCase(categoryRepository);
+const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
+const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
+const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, stripeService)
+const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
+const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
 
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
@@ -71,5 +97,21 @@ export const tokenController = new TokenController(jwtService)
 export const getProfileController = new GetProfileController(getUserProfileUseCase)
 export const editProfileController = new EditProfileController(editUserProfileUseCase)
 export const changePasswordController = new ChangePasswordController(changePasswordUseCase)
-export const listUserPackagesController=new ListUserPackagesController(listUserPackagesUseCase)
-export const getPackageDetailController=new GetPackageDetailController(getPackageDetailUseCase)
+export const listUserPackagesController = new ListUserPackagesController(listUserPackagesUseCase)
+export const getPackageDetailController = new GetPackageDetailController(getPackageDetailUseCase)
+export const getCategoryController = new CategoryController(
+    addCategoryUseCase,
+    editCategoryUseCase,
+    deleteCategoryUseCase,
+    adminCategoryListingUseCase
+);
+
+export const userProfileController = new UserProfileController(
+    getUserProfileUseCase,
+    editUserProfileUseCase,
+    changePasswordUseCase,
+    otpServices,
+    userRepo,
+    creatorRepository
+);
+export const bookingController = new BookingController(createBookingUseCase, bookingWebhookUseCase, listBookingsUseCase, creatorSubscriptionWebhookUseCase)

@@ -3,7 +3,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { Shield, Edit2, Camera, Lock } from "lucide-react";
+import { Shield, Edit2, Camera, Lock, Package } from "lucide-react";
 import { AppDispatch } from "@/store/store";
 import { updateUserProfile } from "@/store/slices/user/userSlice";
 import { ROUTES } from "@/constants/routes";
@@ -13,6 +13,7 @@ import { UserProfileService } from "@/services/user/userProfileServices";
 import { EditUserProfile } from "./components/editUserProfile";
 import { EditUserPassword } from "./components/editUserPassword";
 import { ViewProfileImage } from "./components/viewProfileImage";
+import OtpVerificationModal from "@/compoents/reusable/OtpVerificationModal";
 
 import { User } from "@/interface/admin/userInterface";
 
@@ -44,6 +45,10 @@ export default function UserProfile() {
   });
   const [editProfileErrors, setEditProfileErrors] = useState<Record<string, string[]>>({});
   const [passwordErrors, setPasswordErrors] = useState<Record<string, string[]>>({});
+
+  // Email change OTP flow
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState<boolean>(false);
+  const [pendingForm, setPendingForm] = useState<ProfileForm | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -78,6 +83,7 @@ export default function UserProfile() {
         dispatch(updateUserProfile({
           name: response.user.name,
           phone: response.user.phone,
+          image: response.user.image,
         }));
         toast.success("Profile photo updated!");
       }
@@ -163,7 +169,14 @@ export default function UserProfile() {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Only allow alphabets and spaces for name
+    if (name === "name" && value !== "" && !/^[a-zA-Z\s]*$/.test(value)) {
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -177,8 +190,36 @@ export default function UserProfile() {
       return;
     }
 
-    setIsSaving(true);
+    const emailChanged = form.email.trim().toLowerCase() !== profileData?.email?.trim().toLowerCase();
 
+    if (emailChanged) {
+      setIsSaving(true);
+      try {
+        // Step 1: Check if the new email is already taken — show error inline before sending OTP
+        const checkRes = await UserProfileService.checkEmailAvailability(form.email);
+        if (!checkRes.success) {
+          setEditProfileErrors({ email: [checkRes.message] });
+          return;
+        }
+        // Step 2: Email is available — send OTP
+        await UserProfileService.sendEmailChangeOtp(form.email);
+        setPendingForm(form);
+        setIsVerifyingEmail(true);
+        toast.info(`OTP sent to ${form.email}`);
+      } catch (error: unknown) {
+        const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to send OTP";
+        if (message.toLowerCase().includes("email") || message.toLowerCase().includes("already")) {
+          setEditProfileErrors({ email: [message] });
+        } else {
+          toast.error(message);
+        }
+      } finally {
+        setIsSaving(false);
+      }
+      return;
+    }
+
+    setIsSaving(true);
     try {
       const response = await UserProfileService.editProfile(form);
       if (response.success && response.user) {
@@ -186,16 +227,48 @@ export default function UserProfile() {
           name: response.user.name,
           phone: response.user.phone,
         }));
-        setProfileData(response.user);
+        setProfileData({ ...response.user, image: profileData?.image });
         setIsEditing(false);
         toast.success("Profile updated successfully!");
       }
     } catch (error: unknown) {
       const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to update profile";
-      toast.error(message);
+      // Show email-specific error inline
+      if (message.toLowerCase().includes("email") || message.toLowerCase().includes("already")) {
+        setEditProfileErrors({ email: [message] });
+      } else {
+        toast.error(message);
+      }
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleEmailOtpVerify = async (otp: string) => {
+    if (!pendingForm) return;
+    // Verify OTP first
+    const verifyRes = await UserProfileService.verifyEmailChangeOtp(pendingForm.email, otp);
+    if (!verifyRes.success) {
+      throw new Error(verifyRes.message || "Invalid OTP");
+    }
+    // OTP verified — now save the profile with the new email
+    const response = await UserProfileService.editProfile(pendingForm);
+    if (response.success && response.user) {
+      dispatch(updateUserProfile({
+        name: response.user.name,
+        phone: response.user.phone,
+      }));
+      setProfileData({ ...response.user, image: profileData?.image });
+      setIsVerifyingEmail(false);
+      setPendingForm(null);
+      setIsEditing(false);
+      toast.success("Profile updated successfully!");
+    }
+  };
+
+  const handleEmailOtpResend = async () => {
+    if (!pendingForm) return;
+    await UserProfileService.sendEmailChangeOtp(pendingForm.email);
   };
 
   const formatDate = (date: Date | undefined) => {
@@ -242,50 +315,56 @@ export default function UserProfile() {
         <div className="w-full max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
 
-            {/* LEFT SIDE - Name & Tagline */}
-            <div className="lg:col-span-4 space-y-4 order-2 lg:order-1 text-center lg:text-left">
-              <div>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light text-white uppercase tracking-tight mb-2">
-                  {profileData?.name?.split(' ')[0] || "User"}
+            {/* LEFT SIDE - Info & Back to Home */}
+            <div className="lg:col-span-4 space-y-12 order-2 lg:order-1 text-center lg:text-left flex flex-col justify-center">
+              <div className="space-y-2">
+                <h1 className="text-5xl lg:text-7xl font-light text-white uppercase tracking-tighter">
+                  {profileData?.name || "User"}
                 </h1>
-                <p className="text-gray-500 text-sm tracking-wide">
+                <p className="text-zinc-500 text-[10px] tracking-[0.4em] uppercase font-bold">
                   Think more, design less.
                 </p>
               </div>
 
-              {!isEditing && (
-                <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 text-white text-sm uppercase tracking-wider hover:text-gray-300 transition-colors group"
-                  >
-                    <span className="w-8 h-8 rounded-full border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                      <Edit2 className="w-4 h-4" />
-                    </span>
-                    Edit Profile
-                  </button>
-                  <button
-                    onClick={() => setIsChangingPassword(true)}
-                    className="flex items-center gap-2 text-white text-sm uppercase tracking-wider hover:text-gray-300 transition-colors group"
-                  >
-                    <span className="w-8 h-8 rounded-full border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                      <Lock className="w-4 h-4" />
-                    </span>
-                    Change Password
-                  </button>
+              {/* Profile Details grouped on left */}
+              <div className="space-y-10">
+                <div>
+                  <p className="text-[10px] text-zinc-600 uppercase tracking-[0.3em] mb-2 font-black">Email</p>
+                  <p className="text-base lg:text-xl text-zinc-200 font-light break-all lowercase tracking-tight">{profileData?.email || "N/A"}</p>
                 </div>
-              )}
+                <div>
+                  <p className="text-[10px] text-zinc-600 uppercase tracking-[0.3em] mb-2 font-black">Phone</p>
+                  <p className="text-base lg:text-xl text-zinc-200 font-light tracking-tight">{profileData?.phone || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-zinc-600 uppercase tracking-[0.3em] mb-2 font-black">Member Since</p>
+                  <p className="text-base lg:text-xl text-zinc-200 font-light tracking-tight">{formatDate(profileData?.createdAt)}</p>
+                </div>
+              </div>
+
+              {/* Back to Home Button on left */}
+              <div className="flex justify-center lg:justify-start pt-4">
+                <button
+                  onClick={() => navigate(ROUTES.USER.HOME)}
+                  className="flex items-center gap-4 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:text-zinc-400 transition-all group"
+                >
+                  <span>Back to Home</span>
+                  <span className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white group-hover:bg-white group-hover:text-black transition-all duration-500">
+                    <span className="text-xl">→</span>
+                  </span>
+                </button>
+              </div>
             </div>
 
             {/* CENTER - Profile Image */}
             <div className="lg:col-span-4 flex justify-center order-1 lg:order-2">
               <div className="relative group">
                 {/* Main Profile Circle */}
-                <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full overflow-hidden shadow-2xl">
+                <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden shadow-2xl transition-all duration-700 hover:shadow-white/5">
                   {/* Outer white ring */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-white rounded-full p-2">
+                  <div className="absolute inset-0 bg-gradient-to-br from-zinc-700 via-zinc-400 to-zinc-800 rounded-full p-[2px]">
                     {/* Inner image container */}
-                    <div className="w-full h-full rounded-full overflow-hidden bg-zinc-900 relative">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-zinc-950 relative">
                       <div
                         className="w-full h-full cursor-pointer"
                         onClick={() => {
@@ -296,11 +375,11 @@ export default function UserProfile() {
                           <img
                             src={profileData.image}
                             alt={profileData.name}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-700 flex items-center justify-center">
-                            <span className="text-white text-5xl sm:text-6xl lg:text-7xl font-bold">
+                          <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+                            <span className="text-white text-5xl sm:text-6xl lg:text-8xl font-black tracking-tighter">
                               {getInitials(profileData?.name || "U")}
                             </span>
                           </div>
@@ -309,17 +388,17 @@ export default function UserProfile() {
 
                       {/* Camera Icon Overlay */}
                       <div
-                        className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none"
+                        className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center pointer-events-none"
                       >
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             fileInputRef.current?.click();
                           }}
-                          className="pointer-events-auto p-4 rounded-full hover:bg-white/10 transition-colors"
+                          className="pointer-events-auto p-6 rounded-full hover:bg-white/10 transition-colors group/cam"
                           title="Change Profile Photo"
                         >
-                          <Camera className="w-10 h-10 text-white" />
+                          <Camera className="w-12 h-12 text-white/50 group-hover/cam:text-white transition-colors" />
                         </button>
                         {/* Hidden Input */}
                         <input
@@ -336,36 +415,43 @@ export default function UserProfile() {
               </div>
             </div>
 
-            {/* RIGHT SIDE - Profile Info */}
-            <div className="lg:col-span-4 space-y-10 order-3 text-center lg:text-right">
-              {/* Profile Details */}
-              <div className="space-y-6">
-                <div>
-                  <p className="text-sm text-gray-500 uppercase tracking-wider mb-2">Email</p>
-                  <p className="text-base lg:text-lg text-gray-200 font-light break-all">{profileData?.email || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 uppercase tracking-wider mb-2">Phone</p>
-                  <p className="text-base lg:text-lg text-gray-200 font-light">{profileData?.phone || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 uppercase tracking-wider mb-2">Member Since</p>
-                  <p className="text-base lg:text-lg text-gray-200 font-light">{formatDate(profileData?.createdAt)}</p>
-                </div>
-              </div>
+            {/* RIGHT SIDE - Action Buttons Stacked Vertically */}
+            <div className="lg:col-span-4 space-y-8 order-3 text-center lg:text-right flex flex-col items-center lg:items-end justify-center h-full">
+              {!isEditing && (
+                <>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center gap-5 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:text-zinc-400 transition-all group w-fit"
+                  >
+                    Edit Profile
+                    <span className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center group-hover:border-white group-hover:bg-white group-hover:text-black transition-all duration-500">
+                      <Edit2 className="w-5 h-5" />
+                    </span>
+                  </button>
 
-              {/* Back to Home Button */}
-              <div className="flex justify-center lg:justify-end pt-8">
-                <button
-                  onClick={() => navigate(ROUTES.USER.HOME)}
-                  className="flex items-center gap-3 text-white text-sm uppercase tracking-wider hover:text-gray-300 transition-colors group"
-                >
-                  <span>Back to Home</span>
-                  <span className="w-8 h-8 rounded-full border border-white flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                    →
-                  </span>
-                </button>
-              </div>
+                  {!profileData?.googleVerified && (
+                    <button
+                      onClick={() => setIsChangingPassword(true)}
+                      className="flex items-center gap-5 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:text-zinc-400 transition-all group w-fit"
+                    >
+                      Change Password
+                      <span className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center group-hover:border-white group-hover:bg-white group-hover:text-black transition-all duration-500">
+                        <Lock className="w-5 h-5" />
+                      </span>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => navigate("/bookings")}
+                    className="flex items-center gap-5 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:text-zinc-400 transition-all group w-fit"
+                  >
+                    My Bookings
+                    <span className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center group-hover:border-white group-hover:bg-white group-hover:text-black transition-all duration-500">
+                      <Package className="w-5 h-5" />
+                    </span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -399,12 +485,29 @@ export default function UserProfile() {
       {/* EDIT MODAL */}
       <EditUserProfile
         isOpen={isEditing}
-        onClose={() => setIsEditing(false)}
+        onClose={() => {
+          setIsEditing(false);
+          setEditProfileErrors({});
+        }}
         form={form}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         isSaving={isSaving}
         errors={editProfileErrors}
+      />
+
+      {/* EMAIL CHANGE OTP MODAL */}
+      <OtpVerificationModal
+        isOpen={isVerifyingEmail}
+        email={pendingForm?.email || ""}
+        onClose={() => {
+          setIsVerifyingEmail(false);
+          setPendingForm(null);
+        }}
+        onVerify={handleEmailOtpVerify}
+        onResend={handleEmailOtpResend}
+        title="Verify New Email"
+        description="Enter the 6-digit code sent to your new email"
       />
 
       {/* PASSWORD CHANGE MODAL */}
