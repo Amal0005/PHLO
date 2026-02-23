@@ -1,6 +1,6 @@
 import { SubscriptionDtoMapper } from "@/application/mapper/admin/subscriptionMapper";
 import { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
-import { IGetSubscriptionUseCase } from "@/domain/interface/admin/IGetSubscriptionUseCase";
+import { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 

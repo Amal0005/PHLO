@@ -1,5 +1,5 @@
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { IGetSubscriptionUseCase } from "@/domain/interface/admin/IGetSubscriptionUseCase";
+import { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
 import { IBuySubscriptionUseCase } from "@/domain/interface/creator/payment/IBuySubscriptionUseCase";
 import { IConfirmSubscriptionUseCase } from "@/domain/interface/creator/payment/IConfirmSubscriptionUseCase";
 import { StatusCode } from "@/utils/statusCodes";

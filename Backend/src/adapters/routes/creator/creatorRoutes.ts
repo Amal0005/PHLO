@@ -163,5 +163,17 @@ export class CreatorRoutes {
         wallpaperController.addWallpaper(req, res);
       },
     );
+    this.creatorRouter.get(
+      BACKEND_ROUTES.CREATOR.WALLPAPER,
+       (req:Request,res:Response)=>{
+        wallpaperController.getWallpapper(req,res)
+       }
+    )
+    this.creatorRouter.delete(
+      BACKEND_ROUTES.CREATOR.WALLPAPER_DETAIL,
+      (req:Request,res:Response)=>{
+        wallpaperController.deleteWallpaper(req,res)
+      }
+    )
   }
 }

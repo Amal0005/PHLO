@@ -1,5 +1,5 @@
 import { AppError } from "@/domain/errors/appError";
-import { IEditSubscriptionUseCase } from "@/domain/interface/admin/IEditSubscriptionUseCase";
+import { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
 import { StatusCode } from "@/utils/statusCodes";
 import { Request, Response } from "express";
 

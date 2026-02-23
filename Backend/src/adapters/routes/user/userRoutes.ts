@@ -16,6 +16,7 @@ import {
   getCategoryController,
   userProfileController,
   bookingController,
+  userWallpaperController,
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import {
@@ -212,6 +213,11 @@ export class UserRoutes {
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
         bookingController.ListBookings(req, res),
+    );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.WALLPAPERS,
+      (req: AuthRequest, res: Response) =>
+        userWallpaperController.getWallpaper(req, res),
     );
   }
 }

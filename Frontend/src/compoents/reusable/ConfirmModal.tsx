@@ -77,7 +77,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                                         onConfirm();
                                         onClose();
                                     }}
-                                    className={`flex-1 px-6 py-3.5 rounded-2xl text-white font-semibold shadow-lg shadow-red-500/10 transition-all text-center ${variant === 'danger' ? 'bg-red-600 hover:bg-red-500 active:scale-95' :
+                                    className={`flex-1 px-6 py-3.5 rounded-2xl font-semibold shadow-lg shadow-red-500/10 transition-all text-center ${variant === 'danger' ? 'bg-red-600 hover:bg-red-500 active:scale-95 text-white' :
                                         variant === 'warning' ? 'bg-yellow-600 hover:bg-yellow-500 text-black' :
                                             'bg-white hover:bg-gray-200 text-black'
                                         }`}

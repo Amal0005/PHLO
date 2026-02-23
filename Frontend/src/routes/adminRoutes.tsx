@@ -8,6 +8,7 @@ import ProtectedRoute from "./protectedRoute";
 import { ROUTES } from "../constants/routes";
 import CategoryListing from "@/pages/admin/categoryListing";
 import SubscriptionListingPage from "@/pages/admin/subscriptionListing";
+import WallpaperListingPage from "@/pages/admin/wallpaper/wallpaperListing";
 
 export function AdminRoutes() {
   return (
@@ -30,6 +31,7 @@ export function AdminRoutes() {
             element={<CreatorListingPage />}
           />
           <Route path={ROUTES.ADMIN.SUBSCRIPTIONS} element={<SubscriptionListingPage/>}/>
+          <Route path={ROUTES.ADMIN.WALLPAPERS} element={<WallpaperListingPage />} />
 
         </Route>
       </Route>

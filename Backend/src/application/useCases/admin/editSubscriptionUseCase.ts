@@ -1,5 +1,5 @@
 import { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
-import { IEditSubscriptionUseCase } from "@/domain/interface/admin/IEditSubscriptionUseCase";
+import { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
 
 export class EditSubscriptionUseCase implements IEditSubscriptionUseCase{

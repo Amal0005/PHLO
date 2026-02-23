@@ -41,6 +41,8 @@ import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscrip
 import { AddWallpaperUseCase } from "@/application/useCases/creator/wallpaper/addWallpaperUseCase";
 import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
 import { WallpaperController } from "@/adapters/controllers/creator/wallpaper/wallpaperController";
+import { DeleteWallpaperUseCase } from "@/application/useCases/creator/wallpaper/deleteWallpaperUseCase";
+import { GetCreatorWallpaperUseCase } from "@/application/useCases/creator/wallpaper/getCreatorWallpaperUseCase";
 
 const creatorRepository = new CreatorRepository();
 const userRepository = new UserRepository();
@@ -79,6 +81,8 @@ const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(creatorRepository, subscriptionRepo, stripeService)
 const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository)
+const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)
+const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRepo)
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
@@ -87,6 +91,6 @@ export const creatorProfileController = new CreatorProfileController(getCreatorP
 export const packageController = new PackageController(addPackageUseCase, deletePackageUseCase, editPackageUseCase, getPackageUseCase);
 export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
 export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase, confirmSubscriptionUseCase)
-export const wallpaperController = new WallpaperController(addWallpaperUseCase)
+export const wallpaperController = new WallpaperController(addWallpaperUseCase,deleteWallpaperUseCase,getCreatorWallpapaperUseCase)
 
 

@@ -117,18 +117,12 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
             >
               Packages
             </button>
-            {/* <button
-              onClick={() => scrollToSection("wallpapers")}
+            <button
+              onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
               className="text-gray-300 hover:text-white transition-colors"
             >
               Wallpapers
             </button>
-            <button
-              onClick={() => scrollToSection("creators")}
-              className="text-gray-300 hover:text-white transition-colors"
-            >
-              Creators
-            </button> */}
             {user ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -207,7 +201,10 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
               Packages
             </button>
             <button
-              onClick={() => handleMenuClick("wallpapers")}
+              onClick={() => {
+                navigate(ROUTES.USER.WALLPAPERS);
+                setMobileMenuOpen(false);
+              }}
               className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               Wallpapers

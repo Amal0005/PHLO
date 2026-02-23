@@ -1,4 +1,4 @@
-import { IGetSubscriptionUseCase } from "@/domain/interface/admin/IGetSubscriptionUseCase";
+import { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
 import { StatusCode } from "@/utils/statusCodes";
 import { Request, Response } from "express";
 

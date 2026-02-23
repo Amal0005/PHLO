@@ -12,8 +12,7 @@ import { WallpaperStatus } from "@/utils/wallpaperStatus";
 
 export class WallpaperRepository
   extends BaseRepository<WallpaperEntity, IWallpaperModel>
-  implements IWallpaperRepository
-{
+  implements IWallpaperRepository {
   constructor() {
     super(WallpaperModel);
   }
@@ -84,7 +83,7 @@ export class WallpaperRepository
     limit: number,
     search?: string,
   ): Promise<PaginatedResult<WallpaperEntity>> {
-    return await this.findByStatus("approved", page, limit);
+    return await this.findAllWallpapers(page, limit, "approved", search);
   }
   async updateStatus(
     id: string,
@@ -103,5 +102,36 @@ export class WallpaperRepository
       .exec();
     return updated ? this.mapToEntity(updated) : null;
   }
+  async findAllWallpapers(
+    page: number,
+    limit: number,
+    status?: WallpaperStatus,
+    search?: string,
+  ): Promise<PaginatedResult<WallpaperEntity>> {
+    const query: Record<string, any> = {};
+    if (status) {
+      query.status = status;
+    }
+    if (search?.trim()) {
+      query.title = { $regex: search, $options: "i" };
+    }
+    const skip = (page - 1) * limit;
+    const [docs, total] = await Promise.all([
+      this.model
+        .find(query)
+        .populate("creatorId", "fullName profilePhoto")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.model.countDocuments(query),
+    ]);
+    return {
+      data: docs.map((d) => this.mapToEntity(d)),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 }
-    

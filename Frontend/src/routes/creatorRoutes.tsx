@@ -10,6 +10,8 @@ import ViewPackagesPage from "@/pages/creator/package/viewPackage";
 import CreatorSubscription from "@/pages/creator/subscription/creatorSubscription";
 import SubscriptionSuccess from "@/pages/creator/subscription/subscriptionSuccess";
 import SubscriptionCancel from "@/pages/creator/subscription/subscriptionCancel";
+import ViewWallpapersPage from "@/pages/creator/wallpaper/viewWallpapers";
+
 export function CreatorRoutes() {
   return (
     <Routes>
@@ -30,7 +32,7 @@ export function CreatorRoutes() {
         <Route path={ROUTES.CREATOR.SUBSCRIPTIONS} element={<CreatorSubscription />} />
         <Route path={ROUTES.CREATOR.SUBSCRIPTION_SUCCESS} element={<SubscriptionSuccess />} />
         <Route path={ROUTES.CREATOR.SUBSCRIPTION_CANCEL} element={<SubscriptionCancel />} />
-
+        <Route path={ROUTES.CREATOR.WALLPAPERS} element={<ViewWallpapersPage />} />
 
       </Route>
     </Routes>

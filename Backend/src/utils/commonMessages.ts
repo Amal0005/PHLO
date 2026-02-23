@@ -21,6 +21,7 @@ export const MESSAGES = {
     },
     CREATOR: {
         NOT_FOUND: "Creator not found",
+
     },
     ADMIN: {
         LOGIN_SUCCESS: "Admin login successful",
@@ -45,5 +46,15 @@ export const MESSAGES = {
     SUCCESS: {
         LOGIN_SUCCESSFUL: "Login successful",
         OPERATION_SUCCESSFUL: "Operation successful",
+    },
+    WALLPAPER:{
+        NOT_FOUND:"Wallpaper not found",
+        ID_REQUIRED:"wallpaper ID is required",
+        DELETED:"Wallpaper Deleted",
+        REJECTION_REASON_REQUIRED:"Rejection Reason Required",
+        APPROVED :"Wallpapper Approved",
+        APPROVE_ERROR:"Error When Approving",
+        REJECTED:"Wallpaper Rejected",
+        REJECT_ERROR:"Error When Rejecting"
     }
-};
+}
