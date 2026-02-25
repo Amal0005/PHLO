@@ -1,12 +1,15 @@
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
-import { useState } from "react";
-import { Package, Image as ImageIcon } from "lucide-react";
-import { PackageOptionModal } from "./package/components/packageOptionModal";
+import { useState, useEffect } from "react";
+import { Package, Image as ImageIcon, Eye, Plus } from "lucide-react";
 import { AddPackageModal } from "./package/components/addPackageModal";
+import { AddWallpaperModal } from "./wallpaper/components/addWallpaperModal";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
+import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
+import ConfirmModal from "@/compoents/reusable/ConfirmModal";
+import OptionModal from "@/compoents/reusable/OptionModal";
 
 export default function CreatorDashboard() {
   const creator = useSelector((state: RootState) => state.creator.creator);
@@ -14,6 +17,26 @@ export default function CreatorDashboard() {
 
   const [isOptionModalOpen, setIsOptionModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isWallpaperOptionModalOpen, setIsWallpaperOptionModalOpen] = useState(false);
+  const [isAddWallpaperModalOpen, setIsAddWallpaperModalOpen] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [showSubModal, setShowSubModal] = useState(false);
+
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const response = await CreatorProfileServices.getProfile();
+        if (response.success) {
+          const sub = response.creator.subscription;
+          const isActive = sub?.status === 'active' && new Date(sub.endDate) > new Date();
+          setIsSubscribed(!!isActive);
+        }
+      } catch (error) {
+        console.error("Failed to check subscription", error);
+      }
+    };
+    checkSubscription();
+  }, []);
 
   const handleSelectView = () => {
     console.log("View Packages selected");
@@ -21,6 +44,10 @@ export default function CreatorDashboard() {
 
   const handleAddSuccess = () => {
     console.log("Package added successfully");
+  };
+
+  const handleWallpaperAddSuccess = () => {
+    console.log("Wallpaper added successfully");
   };
 
   return (
@@ -66,7 +93,7 @@ export default function CreatorDashboard() {
 
           {/* Wallpapers Card */}
           <div
-            onClick={() => navigate(ROUTES.CREATOR.WALLPAPERS)}
+            onClick={() => setIsWallpaperOptionModalOpen(true)}
             className="h-48 bg-white/5 border border-white/10 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-all group relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -86,17 +113,84 @@ export default function CreatorDashboard() {
           </div>
         </div>
 
-        <PackageOptionModal
+        <OptionModal
           isOpen={isOptionModalOpen}
           onClose={() => setIsOptionModalOpen(false)}
-          onSelectAdd={() => setIsAddModalOpen(true)}
-          onSelectView={handleSelectView}
+          title="Package Options"
+          options={[
+            {
+              label: "View Packages",
+              description: "List and manage your existing packages",
+              icon: <Eye size={20} className="text-gray-400" />,
+              onClick: () => {
+                handleSelectView();
+                navigate(ROUTES.CREATOR.PACKAGES);
+              }
+            },
+            {
+              label: "Add Package",
+              description: "Create a new photography package",
+              icon: <Plus size={20} />,
+              isPrimary: true,
+              onClick: () => {
+                if (isSubscribed) {
+                  setIsAddModalOpen(true);
+                } else {
+                  setShowSubModal(true);
+                }
+              }
+            }
+          ]}
         />
+
+        <ConfirmModal
+          isOpen={showSubModal}
+          onClose={() => setShowSubModal(false)}
+          onConfirm={() => navigate(ROUTES.CREATOR.SUBSCRIPTIONS)}
+          title="Subscription Required"
+          message="You need an active subscription to add new content. Buy a plan to continue."
+          confirmLabel="View Plans"
+          variant="warning"
+        />
+
 
         <AddPackageModal
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
           onSuccess={handleAddSuccess}
+        />
+
+        <OptionModal
+          isOpen={isWallpaperOptionModalOpen}
+          onClose={() => setIsWallpaperOptionModalOpen(false)}
+          title="Wallpaper Options"
+          options={[
+            {
+              label: "View Wallpapers",
+              description: "List and manage your uploaded wallpapers",
+              icon: <Eye size={20} className="text-gray-400" />,
+              onClick: () => navigate(ROUTES.CREATOR.WALLPAPERS)
+            },
+            {
+              label: "Add Wallpaper",
+              description: "Upload a new wallpaper to your gallery",
+              icon: <Plus size={20} />,
+              isPrimary: true,
+              onClick: () => {
+                if (isSubscribed) {
+                  setIsAddWallpaperModalOpen(true);
+                } else {
+                  setShowSubModal(true);
+                }
+              }
+            }
+          ]}
+        />
+
+        <AddWallpaperModal
+          isOpen={isAddWallpaperModalOpen}
+          onClose={() => setIsAddWallpaperModalOpen(false)}
+          onSuccess={handleWallpaperAddSuccess}
         />
       </main>
     </div>

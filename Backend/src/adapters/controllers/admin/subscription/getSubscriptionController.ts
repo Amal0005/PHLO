@@ -5,13 +5,12 @@ import { Request, Response } from "express";
 export class GetSubscriptionController {
     constructor(
         private _getSubscriptionUseCase: IGetSubscriptionUseCase
-    ) {}
+    ) { }
 
     async getSubscriptions(req: Request, res: Response) {
         try {
-            const { type, page, limit } = req.query;
+            const { page, limit } = req.query;
             const result = await this._getSubscriptionUseCase.getSubscription(
-                type as 'User' | 'Creator',
                 Number(page) || 1,
                 Number(limit) || 10
             );

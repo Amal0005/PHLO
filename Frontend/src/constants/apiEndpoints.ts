@@ -18,7 +18,7 @@ export const API_ENDPOINTS = {
         CATEGORY: "/category",
         CREATE_BOOKING: "/bookings/create",
         WALLPAPERS: "/wallpapers",
-
+        WALLPAPER_DOWNLOAD: (id: string) => `/wallpapers/${id}/download`,
     },
     ADMIN: {
         LOGIN: "/admin/login",

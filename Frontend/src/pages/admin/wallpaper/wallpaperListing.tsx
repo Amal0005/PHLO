@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { AlertCircle, Search, X, Eye, CheckCircle } from "lucide-react";
+import { AlertCircle, Search, X, Eye, CheckCircle, Download } from "lucide-react";
 import { AdminWallpaperService } from "@/services/admin/adminWallpaperService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 import { toast } from "react-toastify";
@@ -124,7 +124,7 @@ export default function WallpaperListingPage() {
           onClick={() => setPreviewWallpaper(wp)}
           className="w-16 h-12 rounded-lg overflow-hidden border border-white/10 cursor-pointer hover:border-white/30 hover:scale-105 transition-all relative group"
         >
-          <S3Media s3Key={wp.imageUrl} className="w-full h-full object-cover" />
+          <S3Media s3Key={wp.watermarkedUrl || wp.imageUrl} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <Eye size={14} className="text-white" />
           </div>
@@ -142,6 +142,47 @@ export default function WallpaperListingPage() {
       render: (wp) => (
         <span className="text-gray-400 text-sm">
           {typeof wp.creatorId === "object" ? wp.creatorId.fullName : wp.creatorId}
+        </span>
+      ),
+    },
+    {
+      header: "Price",
+      key: "price",
+      render: (wp) => (
+        <span className={`text-sm font-bold ${wp.price > 0 ? 'text-green-400' : 'text-gray-500'}`}>
+          {wp.price > 0 ? `₹${wp.price}` : 'FREE'}
+        </span>
+      ),
+    },
+    {
+      header: "Hashtags",
+      key: "hashtags",
+      render: (wp) => (
+        <div className="flex flex-wrap gap-1">
+          {wp.hashtags && wp.hashtags.length > 0 ? (
+            <>
+              {wp.hashtags.slice(0, 2).map((tag, i) => (
+                <span key={i} className="text-xs text-blue-400/80 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                  #{tag}
+                </span>
+              ))}
+              {wp.hashtags.length > 2 && (
+                <span className="text-xs text-gray-500">+{wp.hashtags.length - 2}</span>
+              )}
+            </>
+          ) : (
+            <span className="text-xs text-gray-600">—</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      header: "Downloads",
+      key: "downloadCount",
+      render: (wp) => (
+        <span className="text-gray-300 text-sm font-medium flex items-center gap-1">
+          <Download size={14} className="text-gray-500" />
+          {wp.downloadCount ?? 0}
         </span>
       ),
     },
@@ -323,7 +364,7 @@ export default function WallpaperListingPage() {
             {/* Image */}
             <div className="w-full max-h-[60vh] overflow-hidden bg-black flex items-center justify-center">
               <S3Media
-                s3Key={previewWallpaper.imageUrl}
+                s3Key={previewWallpaper.watermarkedUrl || previewWallpaper.imageUrl}
                 className="w-full h-full object-contain max-h-[60vh]"
               />
             </div>
@@ -333,16 +374,30 @@ export default function WallpaperListingPage() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h3 className="text-white text-lg font-bold">{previewWallpaper.title}</h3>
-                  <p className="text-gray-400 text-sm mt-1">
-                    By {typeof previewWallpaper.creatorId === "object" ? previewWallpaper.creatorId.fullName : previewWallpaper.creatorId}
-                    {previewWallpaper.createdAt && (
-                      <span className="text-gray-600 ml-2">• {new Date(previewWallpaper.createdAt).toLocaleDateString()}</span>
-                    )}
-                  </p>
+                  <div className="flex items-center gap-3 mt-1">
+                    <p className="text-gray-400 text-sm">
+                      By {typeof previewWallpaper.creatorId === "object" ? previewWallpaper.creatorId.fullName : previewWallpaper.creatorId}
+                      {previewWallpaper.createdAt && (
+                        <span className="text-gray-600 ml-2">• {new Date(previewWallpaper.createdAt).toLocaleDateString()}</span>
+                      )}
+                    </p>
+                    <span className={`text-sm font-bold ${previewWallpaper.price > 0 ? 'text-green-400' : 'text-gray-500'}`}>
+                      {previewWallpaper.price > 0 ? `₹${previewWallpaper.price}` : 'FREE'}
+                    </span>
+                  </div>
                 </div>
                 {getStatusBadge(previewWallpaper.status)}
               </div>
 
+              {previewWallpaper.hashtags && previewWallpaper.hashtags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {previewWallpaper.hashtags.map((tag, i) => (
+                    <span key={i} className="text-xs text-blue-400/80 bg-blue-500/10 px-2.5 py-1 rounded-full">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               {previewWallpaper.status === "rejected" && previewWallpaper.rejectionReason && (
                 <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-3">
                   <p className="text-red-400 text-xs font-semibold mb-1">Rejection Reason</p>

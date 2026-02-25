@@ -197,11 +197,7 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         bookingController.CreateBooking(req, res),
     );
-    this.userRouter.post(
-      "/bookings/webhook",
-      (req: AuthRequest, res: Response) =>
-        bookingController.handleWebhook(req, res),
-    );
+
     this.userRouter.get(
       "/bookings",
       jwtAuthMiddleware(
@@ -219,5 +215,18 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         userWallpaperController.getWallpaper(req, res),
     );
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.WALLPAPER_DOWNLOAD,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        userWallpaperController.recordDownload(req, res),
+    );
+
   }
 }

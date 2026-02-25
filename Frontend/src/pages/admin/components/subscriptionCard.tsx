@@ -15,20 +15,20 @@ export default function SubscriptionCard({ subscription, onEdit, onDelete }: Pro
           INACTIVE
         </div>
       )}
-      
+
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-xl font-bold text-white">{subscription.name}</h3>
-          <p className="text-sm text-gray-500 uppercase tracking-wider">{subscription.type} Plan</p>
+          <p className="text-sm text-gray-500 uppercase tracking-wider">Creator Plan</p>
         </div>
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={() => onEdit(subscription)}
             className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-all"
           >
             <Edit2 className="w-4 h-4" />
           </button>
-          <button 
+          <button
             onClick={() => onDelete(subscription.subscriptionId)}
             className="p-2 bg-white/5 hover:bg-red-500/10 rounded-lg text-gray-400 hover:text-red-500 transition-all"
           >

@@ -30,10 +30,14 @@ export class WallpaperRepository
     page: number,
     limit: number,
     search?: string,
+    status?: WallpaperStatus,
   ): Promise<PaginatedResult<WallpaperEntity>> {
     const query: Record<string, any> = { creatorId };
     if (search?.trim()) {
       query.title = { $regex: search, $options: "i" };
+    }
+    if (status) {
+      query.status = status;
     }
     const skip = (page - 1) * limit;
     const [docs, total] = await Promise.all([
@@ -82,8 +86,11 @@ export class WallpaperRepository
     page: number,
     limit: number,
     search?: string,
+    hashtag?: string,
+    minPrice?: number,
+    maxPrice?: number,
   ): Promise<PaginatedResult<WallpaperEntity>> {
-    return await this.findAllWallpapers(page, limit, "approved", search);
+    return await this.findAllWallpapers(page, limit, "approved", search, hashtag, minPrice, maxPrice);
   }
   async updateStatus(
     id: string,
@@ -107,6 +114,9 @@ export class WallpaperRepository
     limit: number,
     status?: WallpaperStatus,
     search?: string,
+    hashtag?: string,
+    minPrice?: number,
+    maxPrice?: number,
   ): Promise<PaginatedResult<WallpaperEntity>> {
     const query: Record<string, any> = {};
     if (status) {
@@ -114,6 +124,14 @@ export class WallpaperRepository
     }
     if (search?.trim()) {
       query.title = { $regex: search, $options: "i" };
+    }
+    if (hashtag?.trim()) {
+      query.hashtags = { $regex: `^${hashtag}$`, $options: "i" };
+    }
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      query.price = {};
+      if (minPrice !== undefined) query.price.$gte = minPrice;
+      if (maxPrice !== undefined) query.price.$lte = maxPrice;
     }
     const skip = (page - 1) * limit;
     const [docs, total] = await Promise.all([

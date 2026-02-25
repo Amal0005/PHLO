@@ -25,7 +25,6 @@ export default function InputError({
         w-full rounded-lg
         bg-zinc-800/50
         border
-        px-3.5
         ${error ? "border-red-500" : "border-zinc-700"}
       `}
     >
@@ -43,9 +42,10 @@ export default function InputError({
         maxLength={maxLength}
         placeholder={placeholder}
         className="
-          w-full py-3.5 pr-12
+          w-full py-3.5 px-3.5
           bg-transparent
           text-sm text-white
+          rounded-lg
           outline-none
         "
       />

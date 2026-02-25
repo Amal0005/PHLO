@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { ArrowLeft, Image as ImageIcon, Trash2, Search, Plus } from "lucide-react";
+import { ArrowLeft, Image as ImageIcon, Trash2, Search, Plus, X, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { CreatorWallpaperService } from "@/services/creator/creatorWallpaperService";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
@@ -11,6 +11,7 @@ import { AxiosError } from "axios";
 import Pagination from "@/compoents/reusable/pagination";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import { AddWallpaperModal } from "./components/addWallpaperModal";
+import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 
 const ViewWallpapersPage: React.FC = () => {
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
@@ -23,6 +24,11 @@ const ViewWallpapersPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [previewWallpaper, setPreviewWallpaper] = useState<WallpaperData | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [showSubModal, setShowSubModal] = useState(false);
+
   const limit = 9;
   const navigate = useNavigate();
 
@@ -39,6 +45,7 @@ const ViewWallpapersPage: React.FC = () => {
       setLoading(true);
       const response = await CreatorWallpaperService.getWallpapers(page, limit, {
         search: debouncedSearch,
+        status: statusFilter || undefined,
       });
       if (response?.success) {
         setWallpapers(response.data || []);
@@ -50,7 +57,7 @@ const ViewWallpapersPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, debouncedSearch]);
+  }, [page, debouncedSearch, statusFilter]);
 
   useEffect(() => {
     fetchWallpapers();
@@ -84,6 +91,21 @@ const ViewWallpapersPage: React.FC = () => {
       </span>
     );
   };
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const response = await CreatorProfileServices.getProfile();
+        if (response.success) {
+          const sub = response.creator.subscription;
+          const isActive = sub?.status === 'active' && new Date(sub.endDate) > new Date();
+          setIsSubscribed(!!isActive);
+        }
+      } catch (error) {
+        console.error("Failed to check subscription", error);
+      }
+    };
+    checkSubscription();
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -107,7 +129,13 @@ const ViewWallpapersPage: React.FC = () => {
             </div>
 
             <button
-              onClick={() => setAddModalOpen(true)}
+              onClick={() => {
+                if (isSubscribed) {
+                  setAddModalOpen(true);
+                } else {
+                  setShowSubModal(true);
+                }
+              }}
               className="px-6 py-3 bg-white text-black rounded-2xl hover:bg-zinc-200 transition-all flex items-center gap-2 font-black shadow-[0_0_20px_rgba(255,255,255,0.15)] group"
             >
               <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
@@ -123,8 +151,7 @@ const ViewWallpapersPage: React.FC = () => {
           </div>
         </div>
 
-        {/* SEARCH */}
-        <div className="mb-8">
+        <div className="mb-8 flex flex-wrap items-center gap-4">
           <div className="flex-1 relative max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
             <input
@@ -135,6 +162,33 @@ const ViewWallpapersPage: React.FC = () => {
               className="w-full bg-zinc-900 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white/20 transition-colors"
             />
           </div>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setPage(1);
+            }}
+            className="bg-zinc-900 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white/20 transition-colors appearance-none cursor-pointer"
+          >
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+
+          {(searchQuery || statusFilter) && (
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setStatusFilter("");
+                setPage(1);
+              }}
+              className="px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-gray-400 hover:bg-white/10 hover:text-white transition-colors text-sm font-bold"
+            >
+              Clear Filters
+            </button>
+          )}
         </div>
 
         {loading ? (
@@ -163,24 +217,58 @@ const ViewWallpapersPage: React.FC = () => {
                   className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all group"
                 >
                   <div className="h-52 bg-zinc-800 relative">
-                    <S3Media s3Key={wp.imageUrl} className="w-full h-full object-cover" />
-                    <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div
+                      className="w-full h-full cursor-pointer"
+                      onClick={() => setPreviewWallpaper(wp)}
+                    >
+                      <S3Media s3Key={wp.watermarkedUrl || wp.imageUrl} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      </div>
+                    </div>
+
+                    <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                       <button
-                        onClick={() => setDeleteTarget(wp)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteTarget(wp);
+                        }}
                         className="p-2 bg-red-500 text-white rounded-full hover:scale-110 transition-transform"
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
-                    <div className="absolute top-4 left-4">
+
+                    <div className="absolute top-4 left-4 z-10">
                       {getStatusBadge(wp.status)}
                     </div>
                   </div>
+
                   <div className="p-5">
-                    <h4 className="font-black text-lg mb-1 line-clamp-1">{wp.title}</h4>
+                    <div className="flex items-center justify-between mb-1">
+                      <h4 className="font-black text-lg line-clamp-1">{wp.title}</h4>
+                      <span className={`text-sm font-bold ${wp.price > 0 ? 'text-green-400' : 'text-gray-500'}`}>
+                        {wp.price > 0 ? `₹${wp.price}` : 'FREE'}
+                      </span>
+                    </div>
                     <p className="text-gray-500 text-xs">
                       {wp.createdAt ? new Date(wp.createdAt).toLocaleDateString() : ""}
                     </p>
+                    <div className="flex items-center gap-1 text-gray-500 text-xs mt-0.5">
+                      <Download size={12} />
+                      <span>{wp.downloadCount ?? 0} downloads</span>
+                    </div>
+                    {wp.hashtags && wp.hashtags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {wp.hashtags.slice(0, 3).map((tag, i) => (
+                          <span key={i} className="text-xs text-blue-400/80 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                            #{tag}
+                          </span>
+                        ))}
+                        {wp.hashtags.length > 3 && (
+                          <span className="text-xs text-gray-500">+{wp.hashtags.length - 3}</span>
+                        )}
+                      </div>
+                    )}
                     {wp.status === "rejected" && wp.rejectionReason && (
                       <p className="text-red-400/80 text-xs mt-2 line-clamp-2">
                         Reason: {wp.rejectionReason}
@@ -190,6 +278,38 @@ const ViewWallpapersPage: React.FC = () => {
                 </div>
               ))}
             </div>
+            {previewWallpaper && (
+              <div
+                className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+                onClick={() => setPreviewWallpaper(null)}
+              >
+                <button
+                  className="absolute top-6 right-6 p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors z-10"
+                  onClick={() => setPreviewWallpaper(null)}
+                >
+                  <X size={24} />
+                </button>
+
+                <div
+                  className="max-w-4xl w-full max-h-[90vh] flex flex-col items-center gap-4"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <S3Media
+                    s3Key={previewWallpaper.watermarkedUrl || previewWallpaper.imageUrl}
+                    className="max-w-full max-h-[75vh] rounded-2xl object-contain"
+                  />
+                  <div className="text-center">
+                    <h3 className="text-xl font-black">{previewWallpaper.title}</h3>
+                    <div className="mt-2">{getStatusBadge(previewWallpaper.status)}</div>
+                    {previewWallpaper.status === "rejected" && previewWallpaper.rejectionReason && (
+                      <p className="text-red-400/80 text-sm mt-2">
+                        Reason: {previewWallpaper.rejectionReason}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <Pagination
               page={page}
@@ -219,7 +339,18 @@ const ViewWallpapersPage: React.FC = () => {
         variant="danger"
         loading={deleteLoading}
       />
+      <ConfirmModal
+        isOpen={showSubModal}
+        onClose={() => setShowSubModal(false)}
+        onConfirm={() => navigate(ROUTES.CREATOR.SUBSCRIPTIONS)}
+        title="Subscription Required"
+        message="You need an active subscription to upload wallpapers. Buy a plan to continue."
+        confirmLabel="View Plans"
+        variant="warning"
+      />
+
     </div>
+
   );
 };
 

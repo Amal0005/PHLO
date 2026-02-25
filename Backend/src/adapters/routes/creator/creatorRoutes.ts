@@ -15,7 +15,7 @@ import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { JwtServices } from "@/domain/services/user/jwtServices";
 import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
-import {logoutController,tokenController} from "@/framework/depInjection/user/userInjections";
+import { logoutController, tokenController } from "@/framework/depInjection/user/userInjections";
 import { editPackageSchema } from "@/adapters/validation/packageEditSchema";
 import { addPackageSchema } from "@/adapters/validation/packageAddSchema";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
@@ -152,11 +152,7 @@ export class CreatorRoutes {
       (req: Request, res: Response) =>
         creatorSubscriptionController.buySubscription(req, res),
     );
-    this.creatorRouter.post(
-      BACKEND_ROUTES.CREATOR.SUBSCRIPTION_CONFIRM,
-      (req: Request, res: Response) =>
-        creatorSubscriptionController.confirmSubscription(req, res),
-    );
+
     this.creatorRouter.post(
       BACKEND_ROUTES.CREATOR.WALLPAPER,
       (req: Request, res: Response) => {
@@ -165,14 +161,14 @@ export class CreatorRoutes {
     );
     this.creatorRouter.get(
       BACKEND_ROUTES.CREATOR.WALLPAPER,
-       (req:Request,res:Response)=>{
-        wallpaperController.getWallpapper(req,res)
-       }
+      (req: Request, res: Response) => {
+        wallpaperController.getWallpapper(req, res)
+      }
     )
     this.creatorRouter.delete(
       BACKEND_ROUTES.CREATOR.WALLPAPER_DETAIL,
-      (req:Request,res:Response)=>{
-        wallpaperController.deleteWallpaper(req,res)
+      (req: Request, res: Response) => {
+        wallpaperController.deleteWallpaper(req, res)
       }
     )
   }

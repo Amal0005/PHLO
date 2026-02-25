@@ -19,6 +19,7 @@ export const BACKEND_ROUTES = {
     CHECK_EMAIL: "/check-email",
     CATEGORY: "/category",
     WALLPAPERS: "/wallpapers",
+    WALLPAPER_DOWNLOAD: "/wallpapers/:id/download"
   },
   CREATOR: {
     BASE: "/creator",
@@ -38,7 +39,7 @@ export const BACKEND_ROUTES = {
     CATEGORY: "/category",
     SUBSCRIPTION: "/subscription",
     SUBSCRIPTION_BUY: "/subscription/buy",
-    SUBSCRIPTION_CONFIRM: "/subscription/confirm",
+
     WALLPAPER: "/wallpaper",
     WALLPAPER_DETAIL: "/wallpaper/:wallpaperId",
   },

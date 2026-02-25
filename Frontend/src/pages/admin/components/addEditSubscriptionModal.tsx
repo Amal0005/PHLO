@@ -13,7 +13,6 @@ interface Props {
 
 interface FormErrors {
   name?: string;
-  type?: string;
   price?: string;
   duration?: string;
   features?: string[];
@@ -23,7 +22,6 @@ interface FormErrors {
 export default function AddEditSubscriptionModal({ isOpen, onClose, onSubmit, subscription }: Props) {
   const [formData, setFormData] = useState<SubscriptionForm>({
     name: "",
-    type: "User",
     price: 0,
     duration: 1,
     features: [""],
@@ -36,7 +34,6 @@ export default function AddEditSubscriptionModal({ isOpen, onClose, onSubmit, su
     if (subscription) {
       setFormData({
         name: subscription.name,
-        type: subscription.type,
         price: subscription.price,
         duration: subscription.duration,
         features: subscription.features.length > 0 ? subscription.features : [""],
@@ -45,7 +42,6 @@ export default function AddEditSubscriptionModal({ isOpen, onClose, onSubmit, su
     } else {
       setFormData({
         name: "",
-        type: "User",
         price: 0,
         duration: 1,
         features: [""],
@@ -144,21 +140,6 @@ export default function AddEditSubscriptionModal({ isOpen, onClose, onSubmit, su
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Type</label>
-              <select
-                value={formData.type}
-                onChange={(e) => {
-                  setFormData({ ...formData, type: e.target.value as "User" | "Creator" });
-                  setErrors({ ...errors, type: "" });
-                }}
-                className={`w-full bg-black border ${errors.type ? 'border-red-500' : 'border-white/10'} rounded-lg px-4 py-2 text-white focus:border-white/20 outline-none transition-colors pointer-events-auto`}
-              >
-                <option value="User">User</option>
-                <option value="Creator">Creator</option>
-              </select>
-              {errors.type && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.type}</p>}
-            </div>
-            <div>
               <label className="block text-sm font-medium text-gray-400 mb-1">Price (₹)</label>
               <input
                 type="number"
@@ -171,20 +152,19 @@ export default function AddEditSubscriptionModal({ isOpen, onClose, onSubmit, su
               />
               {errors.price && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.price}</p>}
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Duration (Months)</label>
-            <input
-              type="number"
-              value={formData.duration}
-              onChange={(e) => {
-                setFormData({ ...formData, duration: Number(e.target.value) });
-                setErrors({ ...errors, duration: "" });
-              }}
-              className={`w-full bg-black border ${errors.duration ? 'border-red-500/50' : 'border-white/10'} rounded-lg px-4 py-2 text-white focus:border-white/20 outline-none transition-colors`}
-            />
-            {errors.duration && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.duration}</p>}
+            <div>
+              <label className="block text-sm font-medium text-gray-400 mb-1">Duration (Months)</label>
+              <input
+                type="number"
+                value={formData.duration}
+                onChange={(e) => {
+                  setFormData({ ...formData, duration: Number(e.target.value) });
+                  setErrors({ ...errors, duration: "" });
+                }}
+                className={`w-full bg-black border ${errors.duration ? 'border-red-500/50' : 'border-white/10'} rounded-lg px-4 py-2 text-white focus:border-white/20 outline-none transition-colors`}
+              />
+              {errors.duration && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {errors.duration}</p>}
+            </div>
           </div>
 
           <div>

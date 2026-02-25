@@ -1,7 +1,6 @@
 export interface Subscription {
   subscriptionId: string;
   name: string;
-  type: "User" | "Creator";
   price: number;
   duration: number;
   features: string[];
@@ -12,7 +11,6 @@ export interface Subscription {
 
 export interface SubscriptionForm {
   name: string;
-  type: "User" | "Creator";
   price: number;
   duration: number;
   features: string[];

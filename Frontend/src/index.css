@@ -40,24 +40,6 @@
 }
 
 
-/* @keyframes welcomeReveal {
-  0% {
-    opacity: 0;
-    transform: translateY(16px);
-    letter-spacing: 0.6em;
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-    letter-spacing: 0.4em;
-  }
-}
-
-.animate-welcome {
-  animation: welcomeReveal 1s ease-out forwards;
-  animation-delay: 0.2s;
-} */
-
 @keyframes floatText {
   0% {
     transform: translateY(0);
@@ -80,7 +62,6 @@
   animation: floatText 3.5s ease-in-out infinite;
 }
 
-/* Mapbox Geocoder Premium Styling */
 .location-geocoder-container {
   width: 100%;
 }
@@ -150,12 +131,10 @@
   display: block !important;
 }
 
-/* Hover and Active states - Extra specific to override default Mapbox CSS */
 .mapboxgl-ctrl-geocoder--suggestion:hover,
 .mapboxgl-ctrl-geocoder .suggestions>li>a:hover,
 .mapboxgl-ctrl-geocoder .suggestions>.active>a {
   background-color: #27272a !important;
-  /* Zinc 800 */
   color: #ffffff !important;
   text-decoration: none !important;
 }
@@ -168,10 +147,8 @@
 .mapboxgl-ctrl-geocoder .suggestions>.active>a .mapboxgl-ctrl-geocoder--suggestion-address,
 .mapboxgl-ctrl-geocoder--suggestion:hover .mapboxgl-ctrl-geocoder--suggestion-address {
   color: #e4e4e7 !important;
-  /* Zinc 200 */
 }
 
-/* Ensure the list itself is dark and solid */
 .mapboxgl-ctrl-geocoder .suggestions {
   background-color: #121212 !important;
   margin: 0 !important;
@@ -192,12 +169,10 @@
   display: block !important;
 }
 
-/* Remove default mapbox attribution in search */
 .mapboxgl-ctrl-geocoder--powered-by {
   display: none !important;
 }
 
-/* Scrollbar Hider Utility */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -205,4 +180,17 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 100px #27272a inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.bg-zinc-900 input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px #18181b inset !important;
 }

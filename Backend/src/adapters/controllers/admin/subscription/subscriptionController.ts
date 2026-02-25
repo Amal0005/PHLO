@@ -12,7 +12,7 @@ export class SubscriptionController {
         private _editSubscriptionUseCase: IEditSubscriptionUseCase,
         private _deleteSubscriptionUseCase: IDeleteSubscriptionUseCase,
         private _getSubscriptionUseCase: IGetSubscriptionUseCase
-    ) {}
+    ) { }
 
     async addSubscription(req: Request, res: Response): Promise<Response> {
         try {
@@ -29,9 +29,8 @@ export class SubscriptionController {
 
     async getSubscriptions(req: Request, res: Response): Promise<Response> {
         try {
-            const { type, page, limit } = req.query;
+            const { page, limit } = req.query;
             const result = await this._getSubscriptionUseCase.getSubscription(
-                type as "User" | "Creator",
                 Number(page) || 1,
                 Number(limit) || 10
             );

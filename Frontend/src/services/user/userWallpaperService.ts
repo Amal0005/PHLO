@@ -10,4 +10,9 @@ export const UserWallpaperService = {
     });
     return res.data;
   },
+
+  recordDownload: async (wallpaperId: string, creatorId: string): Promise<{ success: boolean; downloadCount: number }> => {
+    const res = await api.post(API_ENDPOINTS.USER.WALLPAPER_DOWNLOAD(wallpaperId), { creatorId });
+    return res.data;
+  },
 };

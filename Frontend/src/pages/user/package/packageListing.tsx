@@ -33,7 +33,7 @@ const PackageListing: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 9;
-
+console.log(packages,"pack")
   useEffect(() => {
     const filtersToSave = {
       search: searchQuery,
@@ -257,18 +257,12 @@ const PackageListing: React.FC = () => {
                       </div>
                     )}
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-white/90 text-black text-xs font-bold rounded-full">
-                        {typeof pkg.category === 'object' ? pkg.category.name : pkg.category}
-                      </span>
+                     
                     </div>
                   </div>
                   <div className="p-6">
                     <h4 className="font-black text-xl mb-2 line-clamp-1">{pkg.title}</h4>
-                    {typeof pkg.creatorId === 'object' && (
-                      <div className="text-sm text-gray-400 mb-3">
-                        by <span className="text-white font-semibold">{pkg.creatorId.fullName}</span>
-                      </div>
-                    )}
+                 
                     <p className="text-gray-500 text-sm line-clamp-2 mb-4">{pkg.description}</p>
 
                     {/* Location Display */}

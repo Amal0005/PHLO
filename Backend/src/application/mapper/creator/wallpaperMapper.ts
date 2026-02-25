@@ -9,8 +9,12 @@ export class WallpaperMapper {
       creatorId: obj.creatorId,
       title: obj.title,
       imageUrl: obj.imageUrl,
+      watermarkedUrl: obj.watermarkedUrl ?? undefined,
+      price: obj.price,
+      hashtags: obj.hashtags || [],
       status: obj.status,
       rejectionReason: obj.rejectionReason ?? undefined,
+      downloadCount: obj.downloadCount ?? 0,
       createdAt: obj.createdAt,
     };
   }

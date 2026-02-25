@@ -4,6 +4,7 @@ import { IDeleteWallpaperUseCase } from "@/domain/interface/creator/walpapper/ID
 import { IGetCreatorWallpapersUseCase } from "@/domain/interface/creator/walpapper/IGetCreatorWallpaperUseCase";
 import { MESSAGES } from "@/utils/commonMessages";
 import { StatusCode } from "@/utils/statusCodes";
+import { WallpaperStatus } from "@/utils/wallpaperStatus";
 import { Response } from "express";
 
 export class WallpaperController {
@@ -41,12 +42,14 @@ export class WallpaperController {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       const search = req.query.search as string;
+      const status = req.query.status as WallpaperStatus | undefined;
 
       const result = await this.getCreatorWallpapaperUseCase.getWallpapers(
         creatorId,
         page,
         limit,
         search,
+        status
       );
       return res
         .status(StatusCode.OK)
