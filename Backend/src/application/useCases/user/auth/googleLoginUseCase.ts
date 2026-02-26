@@ -12,7 +12,7 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
     private _jwtService: IJwtServices
   ) {}
 
-  async execute(idToken: string): Promise<{ user: User; accessToken: string; refreshToken: string }> {
+  async login(idToken: string): Promise<{ user: User; accessToken: string; refreshToken: string }> {
 
     const googleUser = await verifyGoogleIdToken(idToken);
 

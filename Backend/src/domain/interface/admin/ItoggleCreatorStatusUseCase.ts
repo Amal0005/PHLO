@@ -1,3 +1,3 @@
 export interface IToggleCreatorStatusUseCase {
-    execute(creatorId: string, status: "approved" | "blocked"): Promise<void>;
+    toggleStatus(creatorId: string, status: "approved" | "blocked"): Promise<void>;
 }

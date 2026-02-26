@@ -19,7 +19,10 @@ export const BACKEND_ROUTES = {
     CHECK_EMAIL: "/check-email",
     CATEGORY: "/category",
     WALLPAPERS: "/wallpapers",
-    WALLPAPER_DOWNLOAD: "/wallpapers/:id/download"
+    WALLPAPER_DOWNLOAD: "/wallpapers/:id/download",
+    WISHLIST: "/wishlist",
+    WISHLIST_TOGGLE: "/wishlist/toggle",
+    WISHLIST_IDS: "/wishlist/ids"
   },
   CREATOR: {
     BASE: "/creator",

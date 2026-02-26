@@ -6,7 +6,7 @@ export class ToggleCreatorStatusUseCase implements IToggleCreatorStatusUseCase {
         private _creatorRepo: ICreatorRepository
     ) {}
 
-    async execute(creatorId: string, status: "approved" | "blocked"): Promise<void> {
+    async toggleStatus(creatorId: string, status: "approved" | "blocked"): Promise<void> {
         await this._creatorRepo.updateStatus(creatorId, status)
     }
 

@@ -47,8 +47,7 @@ export class UserWallpaperController {
   async recordDownload(req: Request, res: Response) {
     try {
       const wallpaperId = req.params.id;
-      const userId = (req as any).user?.id;
-      console.log(userId)
+      const userId = (req as any).user?.userId;
       const { creatorId } = req.body;
       if (!wallpaperId) {
         return res.status(StatusCode.BAD_REQUEST).json({

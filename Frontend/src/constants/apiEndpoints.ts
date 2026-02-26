@@ -19,6 +19,9 @@ export const API_ENDPOINTS = {
         CREATE_BOOKING: "/bookings/create",
         WALLPAPERS: "/wallpapers",
         WALLPAPER_DOWNLOAD: (id: string) => `/wallpapers/${id}/download`,
+        WISHLIST: "/wishlist",
+        WISHLIST_TOGGLE: "/wishlist/toggle",
+        WISHLIST_IDS: "/wishlist/ids",
     },
     ADMIN: {
         LOGIN: "/admin/login",

@@ -14,6 +14,7 @@ import PaymentSuccess from "@/pages/user/payment/paymentSuccess";
 import PaymentCancel from "@/pages/user/payment/paymentCancel";
 import BookingsPage from "@/pages/user/booking/bookings";
 import WallpaperGallery from "@/pages/user/wallpaper/wallpaperGallery";
+import WishlistPage from "@/pages/user/wishlist/wishlistPage";
 // import NotFound from "@/pages/user/404";
 
 export function UserRoutes() {
@@ -45,6 +46,7 @@ export function UserRoutes() {
         <Route path={ROUTES.USER.PAYMENT_CANCEL} element={<PaymentCancel />} />
         <Route path="/bookings" element={<BookingsPage />} />
         <Route path={ROUTES.USER.WALLPAPERS} element={<WallpaperGallery />} />
+        <Route path={ROUTES.USER.WISHLIST} element={<WishlistPage />} />
       </Route>
     </Routes>
   );

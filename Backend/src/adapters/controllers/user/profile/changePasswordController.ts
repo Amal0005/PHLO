@@ -7,7 +7,7 @@ import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 export class ChangePasswordController {
     constructor(private _changePasswordUseCase: IChangePasswordUseCase) {}
 
-    async execute(req: AuthRequest, res: Response): Promise<void> {
+    async changePassword(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
             if (!userId) {

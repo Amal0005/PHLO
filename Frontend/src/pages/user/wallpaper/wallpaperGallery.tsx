@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Search, Image as ImageIcon, Download, X } from "lucide-react";
+import { Search, Image as ImageIcon, Download, X, Heart } from "lucide-react";
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
+import { WishlistService } from "@/services/user/wishlistService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 import Pagination from "@/compoents/reusable/pagination";
 import { S3Media } from "@/compoents/reusable/s3Media";
@@ -20,6 +21,7 @@ const WallpaperGallery: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedWallpaper, setSelectedWallpaper] = useState<WallpaperData | null>(null);
+  const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
   const limit = 12;
 
   useEffect(() => {
@@ -61,6 +63,38 @@ const WallpaperGallery: React.FC = () => {
   useEffect(() => {
     fetchWallpapers();
   }, [fetchWallpapers]);
+
+  useEffect(() => {
+    const fetchWishlistIds = async () => {
+      try {
+        const res = await WishlistService.getWishlistIds("wallpaper");
+        if (res.success) {
+          setWishlistedIds(new Set(res.ids));
+        }
+      } catch {
+        // User might not be logged in
+      }
+    };
+    fetchWishlistIds();
+  }, []);
+
+  const handleToggleWishlist = async (e: React.MouseEvent, wallpaperId: string) => {
+    e.stopPropagation();
+    try {
+      const res = await WishlistService.toggle(wallpaperId, "wallpaper");
+      setWishlistedIds((prev) => {
+        const next = new Set(prev);
+        if (res.wishlisted) {
+          next.add(wallpaperId);
+        } else {
+          next.delete(wallpaperId);
+        }
+        return next;
+      });
+    } catch {
+      console.error("Failed to toggle wishlist");
+    }
+  };
 
   const handleDownload = async (wp: WallpaperData) => {
     try {
@@ -237,6 +271,16 @@ const WallpaperGallery: React.FC = () => {
                       >
                         <Download size={16} />
                       </button>
+                      <button
+                        onClick={(e) => handleToggleWishlist(e, wp._id)}
+                        className={`absolute top-3 right-16 p-2.5 backdrop-blur-md border rounded-2xl hover:scale-110 transition-all duration-300 active:scale-95 ${wishlistedIds.has(wp._id)
+                            ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
+                            : "bg-white/10 border-white/20 text-white hover:bg-white hover:text-black"
+                          }`}
+                        title="Wishlist"
+                      >
+                        <Heart size={16} fill={wishlistedIds.has(wp._id) ? "currentColor" : "none"} />
+                      </button>
                       <div className="absolute bottom-3 left-3 right-3">
                         <p className="text-white font-bold text-sm line-clamp-1">{wp.title}</p>
                         <p className="text-gray-300 text-xs">
@@ -320,6 +364,16 @@ const WallpaperGallery: React.FC = () => {
                   >
                     <Download size={18} />
                     <span>Download</span>
+                  </button>
+                  <button
+                    onClick={(e) => handleToggleWishlist(e, selectedWallpaper._id)}
+                    className={`p-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${wishlistedIds.has(selectedWallpaper._id)
+                        ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                        : "bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    title="Wishlist"
+                  >
+                    <Heart size={20} fill={wishlistedIds.has(selectedWallpaper._id) ? "currentColor" : "none"} />
                   </button>
                   <button
                     onClick={() => setSelectedWallpaper(null)}

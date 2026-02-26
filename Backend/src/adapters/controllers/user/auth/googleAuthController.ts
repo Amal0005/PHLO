@@ -15,7 +15,7 @@ export class GoogleAuthController {
       }
 
       const { user, accessToken, refreshToken } =
-        await this._googleLoginUseCase.execute(idToken);
+        await this._googleLoginUseCase.login(idToken);
 
       res.cookie("userRefreshToken", refreshToken, {
         httpOnly: true,

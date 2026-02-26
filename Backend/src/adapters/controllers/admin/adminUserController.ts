@@ -35,7 +35,7 @@ export class AdminUserController {
     try {
       const { userId } = req.params;
       const { status } = req.body;
-      await this._toggleUserStatusUseCase.execute(userId, status);
+      await this._toggleUserStatusUseCase.toggleStatus(userId, status);
       return res.status(StatusCode.OK).json({ success: true, message: `User ${status} successfully` });
     } catch (error:unknown) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error });
