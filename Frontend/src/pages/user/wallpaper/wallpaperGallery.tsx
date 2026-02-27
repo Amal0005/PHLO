@@ -7,6 +7,7 @@ import Pagination from "@/compoents/reusable/pagination";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import { S3Service } from "@/services/s3Service";
 import UserNavbar from "@/compoents/reusable/userNavbar";
+import { toast } from "react-toastify";
 
 const WallpaperGallery: React.FC = () => {
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
@@ -91,8 +92,9 @@ const WallpaperGallery: React.FC = () => {
         }
         return next;
       });
+      toast.success(res.wishlisted ? "Added to wishlist" : "Removed from wishlist");
     } catch {
-      console.error("Failed to toggle wishlist");
+      toast.error("Failed to update wishlist");
     }
   };
 
@@ -121,8 +123,9 @@ const WallpaperGallery: React.FC = () => {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
+      toast.success(`"${wp.title}" downloaded successfully`);
     } catch {
-      console.error("Download failed");
+      toast.error("Download failed. Please try again.");
     }
   };
 
@@ -274,8 +277,8 @@ const WallpaperGallery: React.FC = () => {
                       <button
                         onClick={(e) => handleToggleWishlist(e, wp._id)}
                         className={`absolute top-3 right-16 p-2.5 backdrop-blur-md border rounded-2xl hover:scale-110 transition-all duration-300 active:scale-95 ${wishlistedIds.has(wp._id)
-                            ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
-                            : "bg-white/10 border-white/20 text-white hover:bg-white hover:text-black"
+                          ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
+                          : "bg-white/10 border-white/20 text-white hover:bg-white hover:text-black"
                           }`}
                         title="Wishlist"
                       >
@@ -368,8 +371,8 @@ const WallpaperGallery: React.FC = () => {
                   <button
                     onClick={(e) => handleToggleWishlist(e, selectedWallpaper._id)}
                     className={`p-3 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 ${wishlistedIds.has(selectedWallpaper._id)
-                        ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
-                        : "bg-white/10 text-white hover:bg-white/20"
+                      ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                      : "bg-white/10 text-white hover:bg-white/20"
                       }`}
                     title="Wishlist"
                   >

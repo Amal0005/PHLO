@@ -7,6 +7,7 @@ import { UserPackage, PackageFilters } from "@/interface/user/userPackageInterfa
 import { S3Media } from "@/compoents/reusable/s3Media";
 import UserNavbar from "@/compoents/reusable/userNavbar";
 import Pagination from "@/compoents/reusable/pagination";
+import { toast } from "react-toastify";
 
 const PackageListing: React.FC = () => {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const PackageListing: React.FC = () => {
       if (locationFilter) {
         filters.lat = locationFilter.lat;
         filters.lng = locationFilter.lng;
-        filters.radiusInKm = 50;
+        // filters.radiusInKm = 50;
       }
 
       const response = await UserPackageService.listPackages(filters);
@@ -137,8 +138,9 @@ const PackageListing: React.FC = () => {
         }
         return next;
       });
+      toast.success(res.wishlisted ? "Added to wishlist" : "Removed from wishlist");
     } catch {
-      console.error("Failed to toggle wishlist");
+      toast.error("Failed to update wishlist");
     }
   };
 

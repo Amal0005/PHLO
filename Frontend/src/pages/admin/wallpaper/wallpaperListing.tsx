@@ -86,6 +86,7 @@ export default function WallpaperListingPage() {
     } catch {
       toast.error("Failed to approve wallpaper");
     } finally {
+      setShowApproveConfirm(false);
       setApproveTarget(null);
     }
   }
