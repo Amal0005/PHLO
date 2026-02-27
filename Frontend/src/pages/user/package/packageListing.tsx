@@ -294,8 +294,8 @@ const PackageListing: React.FC = () => {
                       <button
                         onClick={(e) => handleToggleWishlist(e, pkg._id)}
                         className={`p-2.5 backdrop-blur-md border rounded-2xl hover:scale-110 transition-all duration-300 active:scale-95 ${wishlistedIds.has(pkg._id)
-                            ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
-                            : "bg-black/30 border-white/20 text-white hover:bg-white hover:text-black"
+                          ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
+                          : "bg-black/30 border-white/20 text-white hover:bg-white hover:text-black"
                           }`}
                         title="Wishlist"
                       >

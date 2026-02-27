@@ -125,10 +125,10 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
             </button>
             <button
               onClick={() => navigate(ROUTES.USER.WISHLIST)}
-              className="text-gray-300 hover:text-white transition-colors flex items-center gap-1.5"
+              className="text-gray-300 hover:text-white transition-all hover:scale-110"
+              title="Wishlist"
             >
-              <Heart size={16} />
-              Wishlist
+              <Heart size={18} />
             </button>
             {user ? (
               <div className="relative" ref={dropdownRef}>
@@ -224,7 +224,6 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
               className="w-full flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               <Heart size={16} />
-              Wishlist
             </button>
             <button
               onClick={() => handleMenuClick("creators")}
