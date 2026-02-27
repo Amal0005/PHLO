@@ -48,6 +48,16 @@ import { BookingController } from "@/adapters/controllers/booking/bookingControl
 import { BookingWebhookUseCase } from "@/application/useCases/user/booking/bookingWebhookUseCase";
 import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/payment/creatorSubscriptionWebhookUseCase";
 import { ListBookingUseCase } from "@/application/useCases/user/booking/listbookingUseCase";
+import { GetApprovedWallpaperUseCase } from "@/application/useCases/user/wallpaper/getApprovedWallpaperUseCase";
+import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
+import { UserWallpaperController } from "@/adapters/controllers/user/userWallpaperController";
+import { RecordDownloadUseCase } from "@/application/useCases/creator/wallpaper/recordDownloadUseCase";
+import { WallpaperDownloadRepository } from "@/adapters/repository/creator/wallpaperDownloadRepository";
+import { WishlistRepository } from "@/adapters/repository/user/wishlistRepository";
+import { ToggleWishlistUseCase } from "@/application/useCases/user/wishlist/toggleWishlistUseCase";
+import { GetWishlistUseCase } from "@/application/useCases/user/wishlist/getWishlistUseCase";
+import { GetWishlistIdsUseCase } from "@/application/useCases/user/wishlist/getWishlistIdsUseCase";
+import { WishlistController } from "@/adapters/controllers/user/wishlistController";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -62,7 +72,10 @@ const packageRepository = new PackageRepository()
 const categoryRepository = new CategoryRepository();
 const bookingRepo = new BookingRepository()
 const subscriptionRepo = new SubscriptionRepository()
+const wallpaperRepo = new WallpaperRepository()
 const stripeService = new StripeService()
+const wallpaperDownloadRepo = new WallpaperDownloadRepository()
+const wishlistRepo = new WishlistRepository()
 
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
@@ -86,6 +99,12 @@ const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageReposi
 const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService)
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
+const getApprovedWallpapers = new GetApprovedWallpaperUseCase(wallpaperRepo)
+const recordDownloadUseCase = new RecordDownloadUseCase(wallpaperDownloadRepo)
+const toggleWishlistUseCase = new ToggleWishlistUseCase(wishlistRepo)
+const getWishlistUseCase = new GetWishlistUseCase(wishlistRepo)
+const getWishlistIdsUseCase = new GetWishlistIdsUseCase(wishlistRepo)
+
 
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
@@ -99,19 +118,8 @@ export const editProfileController = new EditProfileController(editUserProfileUs
 export const changePasswordController = new ChangePasswordController(changePasswordUseCase)
 export const listUserPackagesController = new ListUserPackagesController(listUserPackagesUseCase)
 export const getPackageDetailController = new GetPackageDetailController(getPackageDetailUseCase)
-export const getCategoryController = new CategoryController(
-    addCategoryUseCase,
-    editCategoryUseCase,
-    deleteCategoryUseCase,
-    adminCategoryListingUseCase
-);
-
-export const userProfileController = new UserProfileController(
-    getUserProfileUseCase,
-    editUserProfileUseCase,
-    changePasswordUseCase,
-    otpServices,
-    userRepo,
-    creatorRepository
-);
-export const bookingController = new BookingController(createBookingUseCase, bookingWebhookUseCase, listBookingsUseCase, creatorSubscriptionWebhookUseCase)
+export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
+export const userProfileController = new UserProfileController(getUserProfileUseCase, editUserProfileUseCase, changePasswordUseCase, otpServices, userRepo, creatorRepository);
+export const bookingController = new BookingController(createBookingUseCase, bookingWebhookUseCase, listBookingsUseCase, creatorSubscriptionWebhookUseCase, stripeService)
+export const userWallpaperController = new UserWallpaperController(getApprovedWallpapers, recordDownloadUseCase)
+export const wishlistController = new WishlistController(toggleWishlistUseCase, getWishlistUseCase, getWishlistIdsUseCase)

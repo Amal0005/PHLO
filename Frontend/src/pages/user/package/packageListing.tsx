@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Package as PackageIcon, MapPin, X } from "lucide-react";
+import { Search, Package as PackageIcon, MapPin, X, Heart } from "lucide-react";
 import { UserPackageService } from "@/services/user/userPackageService";
+import { WishlistService } from "@/services/user/wishlistService";
 import { UserPackage, PackageFilters } from "@/interface/user/userPackageInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import UserNavbar from "@/compoents/reusable/userNavbar";
 import Pagination from "@/compoents/reusable/pagination";
+import { toast } from "react-toastify";
 
 const PackageListing: React.FC = () => {
   const navigate = useNavigate();
@@ -32,8 +34,9 @@ const PackageListing: React.FC = () => {
   const [isLocating, setIsLocating] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
   const limit = 9;
-
+  console.log(packages, "pack")
   useEffect(() => {
     const filtersToSave = {
       search: searchQuery,
@@ -70,7 +73,7 @@ const PackageListing: React.FC = () => {
       if (locationFilter) {
         filters.lat = locationFilter.lat;
         filters.lng = locationFilter.lng;
-        filters.radiusInKm = 50;
+        // filters.radiusInKm = 50;
       }
 
       const response = await UserPackageService.listPackages(filters);
@@ -107,6 +110,39 @@ const PackageListing: React.FC = () => {
     };
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    const fetchWishlistIds = async () => {
+      try {
+        const res = await WishlistService.getWishlistIds("package");
+        if (res.success) {
+          setWishlistedIds(new Set(res.ids));
+        }
+      } catch {
+        // User might not be logged in
+      }
+    };
+    fetchWishlistIds();
+  }, []);
+
+  const handleToggleWishlist = async (e: React.MouseEvent, packageId: string) => {
+    e.stopPropagation();
+    try {
+      const res = await WishlistService.toggle(packageId, "package");
+      setWishlistedIds((prev) => {
+        const next = new Set(prev);
+        if (res.wishlisted) {
+          next.add(packageId);
+        } else {
+          next.delete(packageId);
+        }
+        return next;
+      });
+      toast.success(res.wishlisted ? "Added to wishlist" : "Removed from wishlist");
+    } catch {
+      toast.error("Failed to update wishlist");
+    }
+  };
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -240,11 +276,11 @@ const PackageListing: React.FC = () => {
                 <div
                   key={pkg._id}
                   onClick={() => {
-  console.log("FULL PKG:", pkg);
-  console.log("TYPE OF _id:", typeof pkg._id);
-  console.log("VALUE OF _id:", pkg._id);
-  navigate(`/packages/${pkg._id}`);
-}}
+                    console.log("FULL PKG:", pkg);
+                    console.log("TYPE OF _id:", typeof pkg._id);
+                    console.log("VALUE OF _id:", pkg._id);
+                    navigate(`/packages/${pkg._id}`);
+                  }}
 
                   className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group"
                 >
@@ -257,18 +293,21 @@ const PackageListing: React.FC = () => {
                       </div>
                     )}
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-white/90 text-black text-xs font-bold rounded-full">
-                        {typeof pkg.category === 'object' ? pkg.category.name : pkg.category}
-                      </span>
+                      <button
+                        onClick={(e) => handleToggleWishlist(e, pkg._id)}
+                        className={`p-2.5 backdrop-blur-md border rounded-2xl hover:scale-110 transition-all duration-300 active:scale-95 ${wishlistedIds.has(pkg._id)
+                          ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
+                          : "bg-black/30 border-white/20 text-white hover:bg-white hover:text-black"
+                          }`}
+                        title="Wishlist"
+                      >
+                        <Heart size={16} fill={wishlistedIds.has(pkg._id) ? "currentColor" : "none"} />
+                      </button>
                     </div>
                   </div>
                   <div className="p-6">
                     <h4 className="font-black text-xl mb-2 line-clamp-1">{pkg.title}</h4>
-                    {typeof pkg.creatorId === 'object' && (
-                      <div className="text-sm text-gray-400 mb-3">
-                        by <span className="text-white font-semibold">{pkg.creatorId.fullName}</span>
-                      </div>
-                    )}
+
                     <p className="text-gray-500 text-sm line-clamp-2 mb-4">{pkg.description}</p>
 
                     {/* Location Display */}

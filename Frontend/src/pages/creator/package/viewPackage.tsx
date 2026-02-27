@@ -8,10 +8,11 @@ import { S3Media } from "@/compoents/reusable/s3Media";
 import { EditPackageModal } from "./components/editPackageModal";
 import { PackageData } from "@/interface/creator/creatorPackageInterface";
 import { toast } from "react-toastify";
-import { DeleteConfirmModal } from "./components/deleteConfirmationModal";
 import { AddPackageModal } from "./components/addPackageModal";
 import { AxiosError } from "axios";
 import Pagination from "@/compoents/reusable/pagination";
+import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
+import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 
 interface PackageWithId extends Omit<PackageData, 'category'> {
   _id: string;
@@ -33,6 +34,9 @@ const ViewPackagesPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [showSubModal, setShowSubModal] = useState(false);
+
   const limit = 9;
   const navigate = useNavigate();
 
@@ -101,6 +105,21 @@ const ViewPackagesPage: React.FC = () => {
   const handleEditSuccess = () => {
     fetchPackages();
   };
+  useEffect(() => {
+    const checkSubscription = async () => {
+      try {
+        const response = await CreatorProfileServices.getProfile();
+        if (response.success) {
+          const sub = response.creator.subscription;
+          const isActive = sub?.status === 'active' && new Date(sub.endDate) > new Date();
+          setIsSubscribed(!!isActive);
+        }
+      } catch (error) {
+        console.error("Failed to check subscription", error);
+      }
+    };
+    checkSubscription();
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -124,7 +143,14 @@ const ViewPackagesPage: React.FC = () => {
             </div>
 
             <button
-              onClick={() => setAddModalOpen(true)}
+              onClick={() => {
+                if (isSubscribed) {
+                  setAddModalOpen(true);
+                } else {
+                  setShowSubModal(true);
+                }
+              }
+              }
               className="px-6 py-3 bg-white text-black rounded-2xl hover:bg-zinc-200 transition-all flex items-center gap-2 font-black shadow-[0_0_20px_rgba(255,255,255,0.15)] group"
             >
               <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
@@ -252,11 +278,24 @@ const ViewPackagesPage: React.FC = () => {
         packageData={selectedPackage}
       />
 
-      <DeleteConfirmModal
+      <ConfirmModal
+        isOpen={showSubModal}
+        onClose={() => setShowSubModal(false)}
+        onConfirm={() => navigate(ROUTES.CREATOR.SUBSCRIPTIONS)}
+        title="Subscription Required"
+        message="You need an active subscription to add new Packages. Buy a plan to continue."
+        confirmLabel="View Plans"
+        variant="warning"
+      />
+
+      <ConfirmModal
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
-        packageTitle={selectedPackage?.title || ""}
+        title="Delete Package?"
+        message={`Are you sure you want to delete "${selectedPackage?.title}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
         loading={deleteLoading}
       />
 
@@ -265,6 +304,7 @@ const ViewPackagesPage: React.FC = () => {
         onClose={() => setAddModalOpen(false)}
         onSuccess={fetchPackages}
       />
+
     </div>
   );
 };

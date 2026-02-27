@@ -8,14 +8,9 @@ export const CreatorPackageService = {
     return res.data
   },
   getPackage: async (params?: { page?: number; limit?: number; search?: string; sortBy?: string }) => {
-    const queryParams = new URLSearchParams();
-    if (params?.page) queryParams.append("page", params.page.toString());
-    if (params?.limit) queryParams.append("limit", params.limit.toString());
-    if (params?.search) queryParams.append("search", params.search);
-    if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
-
-    const url = queryParams.toString() ? `${API_ENDPOINTS.CREATOR.PACKAGE}?${queryParams.toString()}` : API_ENDPOINTS.CREATOR.PACKAGE;
-    const res = await api.get(url);
+    const res = await api.get(API_ENDPOINTS.CREATOR.PACKAGE, {
+      params: { ...params },
+    });
     return res.data;
   },
   editPackage: async (packageId: string, data: Partial<PackageData>) => {

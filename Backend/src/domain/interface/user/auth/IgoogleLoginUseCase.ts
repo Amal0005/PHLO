@@ -1,7 +1,7 @@
 import { User } from "../../../entities/userEntities";
 
 export interface IGoogleLoginUseCase {
-  execute(
+  login(
     idToken: string
   ): Promise<{
     user: User;

@@ -8,7 +8,7 @@ import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 export class GetProfileController {
     constructor(private _getUserProfileUsecase: IGetUserProfileUseCase) {}
 
-    async execute(req: AuthRequest, res: Response): Promise<void> {
+    async getProfile(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
             if (!userId) {

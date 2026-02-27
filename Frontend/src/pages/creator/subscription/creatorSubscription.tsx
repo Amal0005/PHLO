@@ -23,6 +23,7 @@ export default function CreatorSubscription() {
   };
 
   const handleBuy = async (id: string) => {
+    console.log("iddddddd",id)
     try {
         console.log("iddddd",id)
       const res = await CreatorSubscriptionService.buySubscription(id);
@@ -63,7 +64,7 @@ export default function CreatorSubscription() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => handleBuy(plan.id)}
+                  onClick={() => handleBuy(plan.subscriptionId)}
                   className="w-full py-4 bg-white text-black font-bold rounded-2xl hover:bg-gray-200 transition-colors"
                 >
                   Get Started

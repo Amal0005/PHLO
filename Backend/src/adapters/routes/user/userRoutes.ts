@@ -16,6 +16,8 @@ import {
   getCategoryController,
   userProfileController,
   bookingController,
+  userWallpaperController,
+  wishlistController,
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import {
@@ -113,7 +115,7 @@ export class UserRoutes {
         this._creatorRepo,
       ),
       authorizeRoles("user"),
-      (req: Request, res: Response) => getProfileController.execute(req, res),
+      (req: Request, res: Response) => getProfileController.getProfile(req, res),
     );
     this.userRouter.patch(
       BACKEND_ROUTES.USER.PROFILE,
@@ -124,7 +126,7 @@ export class UserRoutes {
         this._creatorRepo,
       ),
       authorizeRoles("user"),
-      (req: Request, res: Response) => editProfileController.execute(req, res),
+      (req: Request, res: Response) => editProfileController.editProfile(req, res),
     );
     this.userRouter.patch(
       BACKEND_ROUTES.USER.CHANGE_PASSWORD,
@@ -136,7 +138,7 @@ export class UserRoutes {
       ),
       authorizeRoles("user"),
       (req: Request, res: Response) =>
-        changePasswordController.execute(req, res),
+        changePasswordController.changePassword(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.PACKAGES,
@@ -196,11 +198,7 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         bookingController.CreateBooking(req, res),
     );
-    this.userRouter.post(
-      "/bookings/webhook",
-      (req: AuthRequest, res: Response) =>
-        bookingController.handleWebhook(req, res),
-    );
+
     this.userRouter.get(
       "/bookings",
       jwtAuthMiddleware(
@@ -213,5 +211,60 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         bookingController.ListBookings(req, res),
     );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.WALLPAPERS,
+      (req: AuthRequest, res: Response) =>
+        userWallpaperController.getWallpaper(req, res),
+    );
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.WALLPAPER_DOWNLOAD,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        userWallpaperController.recordDownload(req, res),
+    );
+
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.WISHLIST_TOGGLE,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        wishlistController.toggle(req, res),
+    );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.WISHLIST,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        wishlistController.getWishlist(req, res),
+    );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.WISHLIST_IDS,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        wishlistController.getWishlistIds(req, res),
+    );
+
   }
 }

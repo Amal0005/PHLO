@@ -7,7 +7,7 @@ export class ToggleUserStatusUseCase implements IToggleUserStatusUseCase {
 
     ) {}
 
-    async execute(userId: string, status: "active" | "blocked"): Promise<void> {
+    async toggleStatus(userId: string, status: "active" | "blocked"): Promise<void> {
         await this._userRepo.updateUserStatus(userId, status);
     }
 }

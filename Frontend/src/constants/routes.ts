@@ -11,6 +11,8 @@ export const ROUTES = {
     PACKAGE_DETAIL: "/packages/:packageId",
     PAYMENT_SUCCESS: "/payment-success",
     PAYMENT_CANCEL: "/payment-cancel",
+    WALLPAPERS: "/wallpapers",
+    WISHLIST: "/wishlist",
 
     NOT_FOUND: "*",
   },
@@ -28,6 +30,7 @@ export const ROUTES = {
     SUBSCRIPTIONS: "/creator/subscriptions",
     SUBSCRIPTION_SUCCESS: "/creator/subscription-success",
     SUBSCRIPTION_CANCEL: "/creator/subscription-cancel",
+    WALLPAPERS: "/creator/wallpapers"
 
   },
 
@@ -39,5 +42,6 @@ export const ROUTES = {
     CREATORS: "/admin/creators",
     CATEGORIES: "/admin/category",
     SUBSCRIPTIONS: "/admin/subscription",
+    WALLPAPERS: "/admin/wallpapers"
   },
 };

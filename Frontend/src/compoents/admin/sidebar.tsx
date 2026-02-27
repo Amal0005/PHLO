@@ -1,4 +1,4 @@
-import { Shield, Users, LayoutDashboard, Camera, FolderTree, CreditCard } from "lucide-react";
+import { Shield, Users, LayoutDashboard, Camera, FolderTree, CreditCard, Image as ImageIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 
@@ -24,16 +24,21 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       icon: Camera,
       to: ROUTES.ADMIN.CREATORS,
     },
-        {
+    {
       label: "Categories",
       icon: FolderTree,
       to: ROUTES.ADMIN.CATEGORIES,
     },
     {
-  label: "Subscriptions",
-  icon: CreditCard,
-  to: ROUTES.ADMIN.SUBSCRIPTIONS,
-}
+      label: "Subscriptions",
+      icon: CreditCard,
+      to: ROUTES.ADMIN.SUBSCRIPTIONS,
+    },
+    {
+      label: "Wallpapers",
+      icon: ImageIcon,
+      to: ROUTES.ADMIN.WALLPAPERS,
+    },
   ];
 
   return (

@@ -4,8 +4,10 @@ import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/p
 import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
 import { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBookingUseCase";
 import { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
+import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { StatusCode } from "@/utils/statusCodes";
 import { Response } from "express";
+import { logger } from "@/utils/logger";
 
 export class BookingController {
   constructor(
@@ -13,7 +15,8 @@ export class BookingController {
     private _webhookUseCase: IBookingWebhookUseCase,
     private _listBookingsUseCase: IListBookingsUseCase,
     private _creatorSubscriptionWebhookUseCase: ICreatorSubscriptionWebhookUseCase,
-  ) { }
+    private _stripeService: IStripeService,
+  ) {}
   async CreateBooking(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.userId;
@@ -52,16 +55,33 @@ export class BookingController {
   }
   async handleWebhook(req: AuthRequest, res: Response): Promise<void> {
     const sig = req.headers["stripe-signature"] as string;
-    console.log("Webhook received with signature:", sig ? "Yes" : "No");
+    if (!sig) {
+      res.status(400).send("Missing stripe-signature header");
+      return;
+    }
     try {
       const payload = (req as any).rawBody || req.body;
-      console.log("Payload type:", typeof payload);
-      await this._webhookUseCase.handleWebhook(payload, sig);
-      await this._creatorSubscriptionWebhookUseCase.handle(payload, sig);
+
+      // Construct event ONCE and pass the parsed event to handlers
+      const event = this._stripeService.constructEvent(payload, sig);
+
+      logger.info("Webhook received", { type: event.type, id: event.id });
+
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object as any;
+        const metadataType = session.metadata?.type;
+
+        if (metadataType === "subscription") {
+          await this._creatorSubscriptionWebhookUseCase.handleEvent(event);
+        } else {
+          await this._webhookUseCase.handleEvent(event);
+        }
+      }
+
       res.status(200).json({ received: true });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
-      console.error("Webhook controller error:", message);
+      logger.error("Webhook error", { error: message });
       res.status(400).send(`Webhook Error: ${message}`);
     }
   }

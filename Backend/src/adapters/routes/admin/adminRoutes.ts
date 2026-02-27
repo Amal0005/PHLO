@@ -8,6 +8,7 @@ import {
   editSubscriptionController,
   getSubscriptionController,
   addSubscriptionController,
+  adminWallpaperController,
 } from "../../../framework/depInjection/admin/adminInjections";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
@@ -98,6 +99,14 @@ export class AdminRoutes {
     this.adminRouter.delete(BACKEND_ROUTES.ADMIN.SUBSCRIPTION_DETAIL, (req: Request, res: Response) => {
       deleteSubscriptionController.deleteSubscription(req, res)
     })
+    this.adminRouter.get(BACKEND_ROUTES.ADMIN.WALLPAPERS,(req:Request,res:Response)=>{
+      adminWallpaperController.getWallpaper(req,res)
+    })
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.APPROVE_WALLPAPER,(req:Request,res:Response)=>{
+      adminWallpaperController.approveWallpaper(req,res)
+    })
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.REJECT_WALLPAPER,(req:Request,res:Response)=>{
+      adminWallpaperController.rejectWallpaper(req,res)
+    })
   }
 }
-

@@ -17,7 +17,11 @@ export const API_ENDPOINTS = {
         CHECK_EMAIL: "/check-email",
         CATEGORY: "/category",
         CREATE_BOOKING: "/bookings/create",
-
+        WALLPAPERS: "/wallpapers",
+        WALLPAPER_DOWNLOAD: (id: string) => `/wallpapers/${id}/download`,
+        WISHLIST: "/wishlist",
+        WISHLIST_TOGGLE: "/wishlist/toggle",
+        WISHLIST_IDS: "/wishlist/ids",
     },
     ADMIN: {
         LOGIN: "/admin/login",
@@ -27,6 +31,8 @@ export const API_ENDPOINTS = {
         CREATORS: "/admin/creators",
         CATEGORY: "/admin/category",
         SUBSCRIPTION: "/admin/subscription",
+        WALLPAPERS: "/admin/wallpapers",
+
     },
     CREATOR: {
         REGISTER: "/creator/register",
@@ -42,6 +48,7 @@ export const API_ENDPOINTS = {
         PROFILE: "/creator/profile",
         PACKAGE: "/creator/package",
         CATEGORY: "/creator/category",
+        WALLPAPER: "/creator/wallpaper",
     },
     UPLOAD: {
         VIEW_URL: "/upload/view-url",

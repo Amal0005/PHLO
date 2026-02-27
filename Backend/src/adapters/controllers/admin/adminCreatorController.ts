@@ -105,7 +105,7 @@ export class AdminCreatorController {
     try {
       const { creatorId } = req.params;
       const { status } = req.body as ChangeStatusRequestBody;
-      await this._toggleCreatorStatusUseCase.execute(creatorId, status);
+      await this._toggleCreatorStatusUseCase.toggleStatus(creatorId, status);
       return res
         .status(StatusCode.OK)
         .json({ success: true, message: `Creator ${status} successfully` });

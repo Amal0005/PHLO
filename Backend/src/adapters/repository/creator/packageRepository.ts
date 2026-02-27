@@ -19,9 +19,9 @@ export class PackageRepository
     super(PackageModel);
   }
 
-protected mapToEntity(pkg: IPackageModel): PackageEntity {
-  return PackageMapper.toEntity(pkg);
-}
+  protected mapToEntity(pkg: IPackageModel): PackageEntity {
+    return PackageMapper.toEntity(pkg);
+  }
 
 
   async findById(packageId: string): Promise<PackageEntity | null> {

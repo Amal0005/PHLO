@@ -1,5 +1,5 @@
 import { ISubscriptionRepository } from "../repositories/ISubscriptionRepositories";
-import { IDeleteSubscriptionUseCase } from "./IDeleteSubscriptionUseCase";
+import { IDeleteSubscriptionUseCase } from "./subscription/IDeleteSubscriptionUseCase";
 
 export class DeleteSubscriptionUseCase implements IDeleteSubscriptionUseCase{
     constructor(

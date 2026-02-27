@@ -6,7 +6,7 @@ import {
 import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
 export const AdminSubscriptionService = {
-  getSubscriptions: async (type?: string, page: number = 1, limit: number = 10) => {
+  getSubscriptions: async (page: number = 1, limit: number = 10) => {
     const res = await api.get<{
       success: boolean;
       result: {
@@ -16,7 +16,7 @@ export const AdminSubscriptionService = {
         limit: number;
         totalPages: number;
       };
-    }>(API_ENDPOINTS.ADMIN.SUBSCRIPTION, { params: { type, page, limit } });
+    }>(API_ENDPOINTS.ADMIN.SUBSCRIPTION, { params: { page, limit } });
     return res.data;
   },
   addSubscription: async (data: SubscriptionForm) => {

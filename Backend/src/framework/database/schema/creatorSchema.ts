@@ -61,7 +61,7 @@ export const creatorSchema = new Schema(
       default: ''
     },
     specialties: [{ type: String }],
-    subscription: { type: subscriptionDetailsSchema },
+    subscription: subscriptionDetailsSchema,
   },
   { timestamps: true },
 

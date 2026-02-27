@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { AppError } from "@/domain/errors/appError";
-import { IAddSubscriptionUseCase } from "@/domain/interface/admin/IAddSubscriptionUseCase";
-import { IEditSubscriptionUseCase } from "@/domain/interface/admin/IEditSubscriptionUseCase";
-import { IDeleteSubscriptionUseCase } from "@/domain/interface/admin/IDeleteSubscriptionUseCase";
-import { IGetSubscriptionUseCase } from "@/domain/interface/admin/IGetSubscriptionUseCase";
+import { IAddSubscriptionUseCase } from "@/domain/interface/admin/subscription/IAddSubscriptionUseCase";
+import { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
+import { IDeleteSubscriptionUseCase } from "@/domain/interface/admin/subscription/IDeleteSubscriptionUseCase";
+import { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
 
 export class SubscriptionController {
     constructor(
@@ -12,7 +12,7 @@ export class SubscriptionController {
         private _editSubscriptionUseCase: IEditSubscriptionUseCase,
         private _deleteSubscriptionUseCase: IDeleteSubscriptionUseCase,
         private _getSubscriptionUseCase: IGetSubscriptionUseCase
-    ) {}
+    ) { }
 
     async addSubscription(req: Request, res: Response): Promise<Response> {
         try {
@@ -29,9 +29,8 @@ export class SubscriptionController {
 
     async getSubscriptions(req: Request, res: Response): Promise<Response> {
         try {
-            const { type, page, limit } = req.query;
+            const { page, limit } = req.query;
             const result = await this._getSubscriptionUseCase.getSubscription(
-                type as "User" | "Creator",
                 Number(page) || 1,
                 Number(limit) || 10
             );

@@ -15,8 +15,4 @@ export const CreatorSubscriptionService = {
     });
     return res.data;
   },
-  async confirmSubscription(sessionId: string) {
-    const res = await api.post("/creator/subscription/confirm", { sessionId });
-    return res.data;
-  },
 };

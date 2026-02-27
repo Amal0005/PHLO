@@ -32,18 +32,25 @@ import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUs
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
 import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
 import { BuySubscriptionUseCase } from "@/application/useCases/payment/buySubscriptionUseCase";
-import { ConfirmSubscriptionUseCase } from "@/application/useCases/payment/confirmSubscriptionUseCase";
+
 import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/payment/creatorSubscriptionWebhookUseCase";
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { StripeService } from "@/domain/services/stripeService";
 import { CreatorSubscriptionController } from "@/adapters/controllers/subscription/creatorSubscriptionController";
 import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscriptionUseCase";
+import { AddWallpaperUseCase } from "@/application/useCases/creator/wallpaper/addWallpaperUseCase";
+import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
+import { WallpaperController } from "@/adapters/controllers/creator/wallpaper/wallpaperController";
+import { DeleteWallpaperUseCase } from "@/application/useCases/creator/wallpaper/deleteWallpaperUseCase";
+import { GetCreatorWallpaperUseCase } from "@/application/useCases/creator/wallpaper/getCreatorWallpaperUseCase";
+import { WatermarkService } from "@/domain/services/watermarkService";
 
 const creatorRepository = new CreatorRepository();
 const userRepository = new UserRepository();
 const packageRepository = new PackageRepository();
 const categoryRepo = new CategoryRepository();
 const subscriptionRepo = new SubscriptionRepository()
+const wallpaperRepo = new WallpaperRepository()
 
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
@@ -51,6 +58,7 @@ const redisService = new RedisService();
 const otpService = new OtpServices(redisService);
 const mailService = new MailService();
 const stripeService = new StripeService()
+const watermarkService = new WatermarkService()
 
 const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService);
 const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository, userRepository);
@@ -71,9 +79,12 @@ const addCategoryUseCase = new AddCategoryUseCase(categoryRepo);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepo);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService)
-const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(creatorRepository, subscriptionRepo, stripeService)
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
+
+const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService)
+const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)
+const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRepo)
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
@@ -81,6 +92,7 @@ export const creatorAuthController = new CreatorAuthController(forgotPasswordUse
 export const creatorProfileController = new CreatorProfileController(getCreatorProfileUseCase, editCreatorProfileUseCase)
 export const packageController = new PackageController(addPackageUseCase, deletePackageUseCase, editPackageUseCase, getPackageUseCase);
 export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
-export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase, confirmSubscriptionUseCase)
+export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase)
+export const wallpaperController = new WallpaperController(addWallpaperUseCase, deleteWallpaperUseCase, getCreatorWallpapaperUseCase,)
 
 

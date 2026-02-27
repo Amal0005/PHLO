@@ -7,7 +7,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 export class EditProfileController {
     constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) {}
 
-    async execute(req: AuthRequest, res: Response): Promise<void> {
+    async editProfile(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
             if (!userId) {

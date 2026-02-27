@@ -6,7 +6,7 @@ import { IListUserPackagesUseCase } from "@/domain/interface/user/packages/IList
 export class ListUserPackagesController {
   constructor(
     private _listUserPackagesUseCase: IListUserPackagesUseCase
-  ) {}
+  ) { }
 
   async listPackages(req: Request, res: Response) {
     try {

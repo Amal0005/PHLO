@@ -8,7 +8,6 @@ export class SubscriptionDtoMapper {
       id: entity._id ?? "",
       subscriptionId: entity.subscriptionId,
       name: entity.name,
-      type: entity.type,
       price: entity.price,
       duration: entity.duration,
       features: entity.features,

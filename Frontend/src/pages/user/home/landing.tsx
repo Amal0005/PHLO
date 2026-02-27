@@ -8,8 +8,7 @@ import {
   Instagram,
   Twitter,
   Facebook,
-  Mail,
-  ArrowRight,
+  Mail,ArrowRight,
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import UserNavbar from "@/compoents/reusable/userNavbar";
@@ -19,11 +18,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { S3Service } from "@/services/s3Service";
+import { UserWallpaperService } from "@/services/user/userWallpaperService";
+import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const [packages, setPackages] = useState<UserPackage[]>([]);
+  const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [wallpaperLoading, setWallpaperLoading] = useState(true);
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -50,7 +53,7 @@ export default function LandingPage() {
               return { ...pkg, images: signedImages.filter(img => img !== null) };
             })
           );
-          setPackages(packagesWithSignedUrls);
+          setPackages(packagesWithSignedUrls.slice(0, 3));
         }
       } catch (error) {
         console.error("Error fetching packages:", error);
@@ -58,39 +61,39 @@ export default function LandingPage() {
         setLoading(false);
       }
     };
+
+    const fetchWallpapers = async () => {
+      try {
+        setWallpaperLoading(true);
+        const response = await UserWallpaperService.getApprovedWallpapers(1, 4);
+        if (response.success && Array.isArray(response.data)) {
+          const wallpapersWithSignedUrls = await Promise.all(
+            response.data.map(async (wp) => {
+              if (wp.imageUrl && !wp.imageUrl.startsWith("http")) {
+                try {
+                  const signedUrl = await S3Service.getViewUrl(wp.imageUrl);
+                  return { ...wp, imageUrl: signedUrl };
+                } catch (err) {
+                  console.error("Error signing wallpaper:", wp.imageUrl, err);
+                  return wp;
+                }
+              }
+              return wp;
+            })
+          );
+          setWallpapers(wallpapersWithSignedUrls);
+        }
+      } catch (error) {
+        console.error("Error fetching wallpapers:", error);
+      } finally {
+        setWallpaperLoading(false);
+      }
+    };
+
     fetchPackages();
+    fetchWallpapers();
   }, []);
 
-  const wallpapers = [
-    {
-      id: 1,
-      image:
-        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
-      title: "Mountain Sunrise",
-      downloads: "2.5K",
-    },
-    {
-      id: 2,
-      image:
-        "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800",
-      title: "Ocean Waves",
-      downloads: "3.2K",
-    },
-    {
-      id: 3,
-      image:
-        "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800",
-      title: "Forest Path",
-      downloads: "1.8K",
-    },
-    {
-      id: 4,
-      image:
-        "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800",
-      title: "City Lights",
-      downloads: "4.1K",
-    },
-  ];
 
   const creators = [
     {
@@ -216,7 +219,7 @@ export default function LandingPage() {
                     <h3 className="text-2xl font-bold mb-2 line-clamp-1">{pkg.title}</h3>
                     <div className="text-4xl font-bold mb-2">₹{pkg.price}</div>
                     <p className="text-gray-400 capitalize">
-                      {typeof pkg.category === 'object' ? pkg.category.name : pkg.category}
+                      {pkg.category && typeof pkg.category === 'object' ? pkg.category.name : pkg.category}
                     </p>
                   </div>
 
@@ -257,38 +260,52 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {wallpapers.map((wallpaper) => (
-              <div
-                key={wallpaper.id}
-                className="group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-              >
-                <img
-                  src={wallpaper.image}
-                  alt={wallpaper.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-xl font-bold mb-2">
-                      {wallpaper.title}
-                    </h3>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-300 flex items-center gap-2">
-                        <Download size={16} />
-                        {wallpaper.downloads}
-                      </span>
-                      <button className="px-4 py-2 bg-white text-black rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors">
-                        Download
-                      </button>
+            {wallpaperLoading ? (
+              [1, 2, 3, 4].map((i) => (
+                <div key={i} className="aspect-[3/4] bg-zinc-900/50 animate-pulse rounded-2xl" />
+              ))
+            ) : wallpapers.length > 0 ? (
+              wallpapers.map((wallpaper) => (
+                <div
+                  key={wallpaper._id}
+                  className="group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                  onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
+                >
+                  <img
+                    src={wallpaper.imageUrl}
+                    alt={wallpaper.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <h3 className="text-xl font-bold mb-2">
+                        {wallpaper.title}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-300 flex items-center gap-2">
+                          <Download size={16} />
+                          Featured
+                        </span>
+                        <button className="px-4 py-2 bg-white text-black rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors">
+                          View
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center text-gray-500 py-10">
+                No wallpapers available at the moment.
               </div>
-            ))}
+            )}
           </div>
 
           <div className="text-center mt-12">
-            <button className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg font-semibold hover:bg-white/20 transition-all inline-flex items-center gap-2">
+            <button
+              onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
+              className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg font-semibold hover:bg-white/20 transition-all inline-flex items-center gap-2"
+            >
               View All Wallpapers
               <ArrowRight size={20} />
             </button>

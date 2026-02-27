@@ -10,7 +10,6 @@ import Pagination from "@/compoents/reusable/pagination";
 
 export default function SubscriptionListingPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [type, setType] = useState<"User" | "Creator">("User");
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSubscription, setSelectedSubscription] = useState<Subscription | null>(null);
@@ -21,7 +20,7 @@ export default function SubscriptionListingPage() {
   const fetchSubscriptions = async () => {
     try {
       setLoading(true);
-      const response = await AdminSubscriptionService.getSubscriptions(type, page, 10);
+      const response = await AdminSubscriptionService.getSubscriptions(page, 10);
       setSubscriptions(response.result.data);
       setTotalPages(response.result.totalPages);
     } catch (error) {
@@ -34,12 +33,7 @@ export default function SubscriptionListingPage() {
 
   useEffect(() => {
     fetchSubscriptions();
-  }, [type, page]);
-
-  const handleTypeChange = (newType: "User" | "Creator") => {
-    setType(newType);
-    setPage(1); // Reset to first page when type changes
-  };
+  }, [page]);
 
   const handleAdd = () => {
     setSelectedSubscription(null);
@@ -74,7 +68,7 @@ export default function SubscriptionListingPage() {
         toast.success("Subscription added successfully");
       }
       fetchSubscriptions();
-    } catch (error:unknown) {
+    } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to save subscription";
       toast.error(message);
     }
@@ -82,7 +76,6 @@ export default function SubscriptionListingPage() {
 
   const columns: Column<Subscription>[] = [
     { header: "Plan Name", key: "name", className: "font-medium text-white" },
-    { header: "Type", key: "type", render: (sub) => <span className="text-gray-400">{sub.type}</span> },
     { header: "Price", key: "price", render: (sub) => <span className="text-white">₹{sub.price}</span> },
     { header: "Duration", key: "duration", render: (sub) => <span className="text-gray-400">{sub.duration} Months</span> },
     {
@@ -127,27 +120,12 @@ export default function SubscriptionListingPage() {
         </button>
       </div>
 
-      <div className="flex gap-4 border-b border-white/10">
-        <button
-          onClick={() => handleTypeChange("User")}
-          className={`px-6 py-3 font-medium transition-all ${type === "User" ? "text-white border-b-2 border-white" : "text-gray-500 hover:text-gray-300"}`}
-        >
-          User Plans
-        </button>
-        <button
-          onClick={() => handleTypeChange("Creator")}
-          className={`px-6 py-3 font-medium transition-all ${type === "Creator" ? "text-white border-b-2 border-white" : "text-gray-500 hover:text-gray-300"}`}
-        >
-          Creator Plans
-        </button>
-      </div>
-
       <DataTable
         columns={columns}
         data={subscriptions}
         loading={loading}
         keyExtractor={(sub) => sub.subscriptionId}
-        emptyMessage={`No ${type} subscriptions found.`}
+        emptyMessage="No subscriptions found."
       />
 
       <Pagination

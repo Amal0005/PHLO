@@ -7,7 +7,7 @@ export class AddPackageUseCase implements IAddPackageUseCase {
   constructor(
     private _packageRepo: IPackageRepository,
     private _creatorRepo: ICreatorRepository,
-  ) {}
+  ) { }
   async addPackage(data: Partial<PackageEntity>): Promise<PackageEntity> {
     if (
       !data.title ||
@@ -21,6 +21,7 @@ export class AddPackageUseCase implements IAddPackageUseCase {
     const creator = await this._creatorRepo.findById(data.creatorId as string);
     if (
       !creator ||
+      !creator.subscription?.planId ||
       !creator.subscription?.endDate ||
       creator.subscription.endDate < new Date()
     ) {

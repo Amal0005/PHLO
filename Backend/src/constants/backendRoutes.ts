@@ -18,6 +18,11 @@ export const BACKEND_ROUTES = {
     VERIFY_EMAIL_OTP: "/verify-email-otp",
     CHECK_EMAIL: "/check-email",
     CATEGORY: "/category",
+    WALLPAPERS: "/wallpapers",
+    WALLPAPER_DOWNLOAD: "/wallpapers/:id/download",
+    WISHLIST: "/wishlist",
+    WISHLIST_TOGGLE: "/wishlist/toggle",
+    WISHLIST_IDS: "/wishlist/ids"
   },
   CREATOR: {
     BASE: "/creator",
@@ -37,7 +42,9 @@ export const BACKEND_ROUTES = {
     CATEGORY: "/category",
     SUBSCRIPTION: "/subscription",
     SUBSCRIPTION_BUY: "/subscription/buy",
-    SUBSCRIPTION_CONFIRM: "/subscription/confirm",
+
+    WALLPAPER: "/wallpaper",
+    WALLPAPER_DETAIL: "/wallpaper/:wallpaperId",
   },
   ADMIN: {
     BASE: "/admin",
@@ -54,6 +61,9 @@ export const BACKEND_ROUTES = {
     CATEGORY_DETAIL: "/category/:categoryId",
     SUBSCRIPTION: "/subscription",
     SUBSCRIPTION_DETAIL: "/subscription/:subscriptionId",
+    WALLPAPERS: "/wallpapers",
+    APPROVE_WALLPAPER: "/wallpapers/:id/approve",
+    REJECT_WALLPAPER: "/wallpapers/:id/reject",
   },
   UPLOAD: {
     BASE: "/upload",

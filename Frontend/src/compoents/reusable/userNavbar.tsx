@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Heart } from "lucide-react";
 import { useRef } from "react";
 import LogoWhite from "../../../public/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
@@ -117,18 +117,19 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
             >
               Packages
             </button>
-            {/* <button
-              onClick={() => scrollToSection("wallpapers")}
+            <button
+              onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
               className="text-gray-300 hover:text-white transition-colors"
             >
               Wallpapers
             </button>
             <button
-              onClick={() => scrollToSection("creators")}
-              className="text-gray-300 hover:text-white transition-colors"
+              onClick={() => navigate(ROUTES.USER.WISHLIST)}
+              className="text-gray-300 hover:text-white transition-all hover:scale-110"
+              title="Wishlist"
             >
-              Creators
-            </button> */}
+              <Heart size={18} />
+            </button>
             {user ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -207,10 +208,22 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
               Packages
             </button>
             <button
-              onClick={() => handleMenuClick("wallpapers")}
+              onClick={() => {
+                navigate(ROUTES.USER.WALLPAPERS);
+                setMobileMenuOpen(false);
+              }}
               className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               Wallpapers
+            </button>
+            <button
+              onClick={() => {
+                navigate(ROUTES.USER.WISHLIST);
+                setMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            >
+              <Heart size={16} />
             </button>
             <button
               onClick={() => handleMenuClick("creators")}

@@ -12,6 +12,7 @@ interface ConfirmModalProps {
     cancelLabel?: string;
     variant?: 'danger' | 'warning' | 'info';
     icon?: React.ReactNode;
+    loading?: boolean;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -23,7 +24,8 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     confirmLabel = "Confirm",
     cancelLabel = "Cancel",
     variant = 'danger',
-    icon
+    icon,
+    loading = false
 }) => {
     return (
         <AnimatePresence>
@@ -68,21 +70,25 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                             <div className="flex gap-4">
                                 <button
                                     onClick={onClose}
-                                    className="flex-1 px-6 py-3.5 rounded-2xl bg-zinc-900 text-white font-semibold hover:bg-zinc-800 border border-white/5 transition-all text-center"
+                                    disabled={loading}
+                                    className="flex-1 px-6 py-3.5 rounded-2xl bg-zinc-900 text-white font-semibold hover:bg-zinc-800 border border-white/5 transition-all text-center disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {cancelLabel}
                                 </button>
                                 <button
-                                    onClick={() => {
-                                        onConfirm();
-                                        onClose();
-                                    }}
-                                    className={`flex-1 px-6 py-3.5 rounded-2xl text-white font-semibold shadow-lg shadow-red-500/10 transition-all text-center ${variant === 'danger' ? 'bg-red-600 hover:bg-red-500 active:scale-95' :
+                                    onClick={onConfirm}
+                                    disabled={loading}
+                                    className={`flex-1 px-6 py-3.5 rounded-2xl font-semibold shadow-lg shadow-red-500/10 transition-all text-center disabled:opacity-50 disabled:cursor-not-allowed ${variant === 'danger' ? 'bg-red-600 hover:bg-red-500 active:scale-95 text-white' :
                                         variant === 'warning' ? 'bg-yellow-600 hover:bg-yellow-500 text-black' :
                                             'bg-white hover:bg-gray-200 text-black'
                                         }`}
                                 >
-                                    {confirmLabel}
+                                    {loading ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                            Processing...
+                                        </span>
+                                    ) : confirmLabel}
                                 </button>
                             </div>
                         </div>
