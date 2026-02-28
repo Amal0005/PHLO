@@ -5,27 +5,24 @@ import { IStripeService } from "@/domain/interface/service/IStripeService";
 
 export class BuySubscriptionUseCase implements IBuySubscriptionUseCase {
     constructor(
-        private _subscriptionRepo:ISubscriptionRepository,
-        private _stripeService:IStripeService
-    ){}
-    async buySubscription(creatorId: string, subscriptionId: string, successUrl: string, cancelUrl: string): Promise<CheckoutSessionResponseDTO> {
-        console.log("subIddddddddddddddd",subscriptionId);
-        
+        private _subscriptionRepo: ISubscriptionRepository,
+        private _stripeService: IStripeService
+    ) {}
+    async buySubscription(creatorId: string, subscriptionId: string): Promise<CheckoutSessionResponseDTO> {
         const plan = await this._subscriptionRepo.findById(subscriptionId)
-        console.log("plammmmm",plan)
         if (!plan) {
-            console.error("BuySubscriptionUseCase: Plan not found for ID:", subscriptionId);
             throw new Error("Subscription plan is not found")
         }
-        console.log("BuySubscriptionUseCase: Found plan:", plan.name, "Price:", plan.price);
+
+        const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
         return await this._stripeService.createCheckoutSession({
             subscriptionId,
             creatorId,
             packageName: plan.name,
             amount: plan.price,
-            successUrl,
-            cancelUrl,
+            successUrl: `${FRONTEND_URL}/creator/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancelUrl: `${FRONTEND_URL}/creator/subscription-cancel`,
             type: "subscription"
         })
     }

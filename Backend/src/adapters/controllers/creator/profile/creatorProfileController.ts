@@ -11,11 +11,27 @@ export class CreatorProfileController {
     ) { }
     async getProfile(req: AuthRequest, res: Response) {
         try {
-            const creator = await this._getCreatorProfileUseCase.getProfile(req.user!.userId)
+            let creator = await this._getCreatorProfileUseCase.getProfile(req.user!.userId)
             if (!creator) {
                 return res.status(StatusCode.NOT_FOUND).json({ success: false, message: "Creator not found" });
             }
-            const subscription = creator.subscription;
+
+            // Expiry Enforcement
+            if (
+                creator.subscription?.status === "active" &&
+                new Date(creator.subscription.endDate) < new Date()
+            ) {
+                await this._editCreatorProfileUseCase.editProfile(req.user!.userId, {
+                    subscription: {
+                        ...creator.subscription,
+                        status: "expired"
+                    }
+                } as any);
+                // Re-fetch creator after update
+                creator = await this._getCreatorProfileUseCase.getProfile(req.user!.userId);
+            }
+
+            const subscription = creator?.subscription;
             const isSubscribed = !!(subscription && subscription.status === "active" && new Date(subscription.endDate) > new Date());
             const creatorWithSubStatus = { ...creator, isSubscribed };
             res.status(StatusCode.OK).json({ success: true, creator: creatorWithSubStatus });

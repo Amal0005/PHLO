@@ -10,4 +10,5 @@ export interface ICreatorRepository extends IBaseRepository<CreatorEntity> {
   findAllCreators(page: number, limit: number): Promise<PaginatedResult<CreatorEntity>>;
   findByPhone(phone: string | undefined): Promise<CreatorEntity | null>
   updateProfile(creatorId: string, data: Partial<CreatorEntity>): Promise<CreatorEntity | null>
+  findBySubscriptionId(subscriptionId: string): Promise<CreatorEntity | null>
 }

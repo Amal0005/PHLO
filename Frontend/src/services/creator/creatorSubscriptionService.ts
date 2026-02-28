@@ -6,12 +6,8 @@ export const CreatorSubscriptionService = {
     return res.data;
   },
   async buySubscription(subscriptionId: string) {
-    const successUrl = `${window.location.origin}/creator/subscription-success?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${window.location.origin}/creator/subscription-cancel`;
     const res = await api.post("/creator/subscription/buy", {
       subscriptionId,
-      successUrl,
-      cancelUrl,
     });
     return res.data;
   },

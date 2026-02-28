@@ -37,22 +37,26 @@ export class StripeService implements IStripeService {
     data: CreateCheckoutSessionDTO,
   ): Promise<CheckoutSessionResponseDTO> {
     try {
-      console.log("StripeService: Creating checkout session with data:", JSON.stringify(data, null, 2));
+      const isSubscription = data.type === "subscription";
+
       const session = await this.stripe.checkout.sessions.create({
         payment_method_types: ["card"],
-        mode: "payment",
+        mode: isSubscription ? "subscription" : "payment",
         line_items: [
           {
             price_data: {
               currency: this.currency,
               product_data: { name: data.packageName },
               unit_amount: Math.round(data.amount * 100),
+              ...(isSubscription && {
+                recurring: { interval: "month" },
+              }),
             },
             quantity: 1,
           },
         ],
         success_url: data.successUrl,
-        cancel_url: data.cancelUrl,
+        cancel_url: (data as any).cancel_url || data.cancelUrl,
         metadata: {
           type: data.type,
           bookingId: data.bookingId || "",
@@ -60,9 +64,8 @@ export class StripeService implements IStripeService {
           creatorId: data.creatorId,
         },
       });
-      console.log("StripeService: Session created successfully:", session.id);
       return { id: session.id, url: session.url };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("StripeService: Error creating checkout session:", error);
       throw error;
     }
@@ -72,8 +75,18 @@ export class StripeService implements IStripeService {
     try {
       const session = await this.stripe.checkout.sessions.retrieve(sessionId);
       return session;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("StripeService: Error retrieving session:", error);
+      return null;
+    }
+  }
+
+  async retrieveSubscription(subscriptionId: string): Promise<Stripe.Subscription | null> {
+    try {
+      const subscription = await this.stripe.subscriptions.retrieve(subscriptionId);
+      return subscription;
+    } catch (error: unknown) {
+      console.error("StripeService: Error retrieving subscription:", error);
       return null;
     }
   }

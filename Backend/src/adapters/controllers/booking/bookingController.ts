@@ -16,7 +16,7 @@ export class BookingController {
     private _listBookingsUseCase: IListBookingsUseCase,
     private _creatorSubscriptionWebhookUseCase: ICreatorSubscriptionWebhookUseCase,
     private _stripeService: IStripeService,
-  ) {}
+  ) { }
   async CreateBooking(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.userId;
@@ -76,6 +76,14 @@ export class BookingController {
         } else {
           await this._webhookUseCase.handleEvent(event);
         }
+      } else if (
+        event.type === "invoice.payment_succeeded" ||
+        event.type === "invoice.payment_failed" ||
+        event.type === "customer.subscription.deleted" ||
+        event.type === "customer.subscription.updated"
+      ) {
+        // These are related to recurring subscriptions
+        await this._creatorSubscriptionWebhookUseCase.handleEvent(event);
       }
 
       res.status(200).json({ received: true });

@@ -8,7 +8,7 @@ export class CreatorSubscriptionController {
     constructor(
         private _buySubscriptionUseCase: IBuySubscriptionUseCase,
         private _getSubscriptionUseCase: IGetSubscriptionUseCase
-    ) {}
+    ) { }
 
     async getSubscriptions(req: Request, res: Response) {
         try {
@@ -22,9 +22,11 @@ export class CreatorSubscriptionController {
 
     async buySubscription(req: AuthRequest, res: Response) {
         try {
-            const { subscriptionId, successUrl, cancelUrl } = req.body;
-            console.log("Bodyyyyyyyyy", subscriptionId)
-            const result = await this._buySubscriptionUseCase.buySubscription(req.user!.userId, subscriptionId, successUrl, cancelUrl);
+            const { subscriptionId } = req.body;
+            if (!subscriptionId) {
+                return res.status(StatusCode.BAD_REQUEST).json({ message: "Subscription ID is required" });
+            }
+            const result = await this._buySubscriptionUseCase.buySubscription(req.user!.userId, subscriptionId);
             return res.status(StatusCode.OK).json(result);
         } catch (error: any) {
             console.error("Error in buySubscription:", error);

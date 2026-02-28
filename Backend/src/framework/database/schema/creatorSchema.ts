@@ -6,7 +6,8 @@ const subscriptionDetailsSchema = new Schema({
   status: { type: String, enum: ["active", "expired", "cancelled"], default: "active" },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  stripeSessionId: { type: String, required: true },
+  stripeSessionId: { type: String },
+  stripeSubscriptionId: { type: String },
 }, { _id: false });
 
 

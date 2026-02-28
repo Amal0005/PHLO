@@ -1,0 +1,828 @@
+# Stripe Payment Integration — Complete Code Reference
+
+All Stripe-related code across the PHLO project, organized by architectural layer.
+
+---
+
+## Architecture Overview
+
+```mermaid
+graph TB
+    subgraph Frontend
+        A[creatorSubscription.tsx] -->|POST /subscription/buy| B[creatorSubscriptionService.ts]
+        C[subscriptionSuccess.tsx] -->|GET /profile| D[creatorProfileService.ts]
+        E[subscriptionCancel.tsx]
+    end
+
+    subgraph Backend - Routes & Middleware
+        F["app.ts — /webhook raw body middleware"]
+        G["creatorRoutes.ts — /subscription routes"]
+    end
+
+    subgraph Backend - Controllers
+        H[creatorSubscriptionController.ts]
+        I["bookingController.ts — handleWebhook"]
+    end
+
+    subgraph Backend - Use Cases
+        J[buySubscriptionUseCase.ts]
+        K[creatorSubscriptionWebhookUseCase.ts]
+        L[bookingWebhookUseCase.ts]
+    end
+
+    subgraph Backend - Services
+        M[stripeService.ts]
+    end
+
+    subgraph Backend - Data Layer
+        N[subscriptionRepository.ts]
+        O[subscriptionSchema.ts]
+        P["creatorRepository — updateProfile"]
+    end
+
+    B --> G --> H --> J --> M
+    F --> I --> K --> P
+    I --> L
+    J --> N
+    K --> N
+    M -->|Stripe API| Q[Stripe]
+    Q -->|Webhook| F
+```
+
+---
+
+## Payment Flow
+
+```mermaid
+sequenceDiagram
+    participant Creator as Creator Browser
+    participant FE as Frontend Service
+    participant API as Backend API
+    participant Stripe as Stripe API
+    participant WH as Webhook Handler
+    participant DB as MongoDB
+
+    Creator->>FE: Click "Get Started" on plan
+    FE->>API: POST /api/creator/subscription/buy
+    Note right of FE: {subscriptionId, successUrl, cancelUrl}
+    API->>DB: Find plan by ID
+    API->>Stripe: Create Checkout Session
+    Note right of API: metadata: {type, creatorId, subscriptionId}
+    Stripe-->>API: {sessionId, url}
+    API-->>FE: {url}
+    FE->>Creator: Redirect to Stripe Checkout
+
+    Creator->>Stripe: Complete payment
+    Stripe->>WH: POST /webhook (checkout.session.completed)
+    WH->>WH: Verify signature
+    WH->>WH: Route by metadata.type
+    WH->>DB: Find plan, check idempotency
+    WH->>DB: Update creator profile (subscription: active)
+
+    Stripe-->>Creator: Redirect to success URL
+    Creator->>FE: Load subscriptionSuccess.tsx
+    FE->>API: GET /api/creator/profile
+    API-->>FE: Creator with active subscription
+    FE->>Creator: Show "Payment Successful!"
+```
+
+---
+
+## Environment Variables
+
+```env
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_CURRENCY=inr                 # defaults to "inr" if not set
+```
+
+---
+
+## Backend Code
+
+### DTOs
+
+#### [createCheckoutSessionDto.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/dto/payment/createCheckoutSessionDto.ts)
+
+```typescript
+export interface CreateCheckoutSessionDTO {
+  bookingId?: string;
+  subscriptionId?: string;
+  creatorId: string;
+  packageName: string;
+  amount: number;
+  successUrl: string;
+  cancelUrl: string;
+  type: "booking" | "subscription";
+}
+```
+
+#### [checkoutSessionResponseDto.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/dto/payment/checkoutSessionResponseDto.ts)
+
+```typescript
+export interface CheckoutSessionResponseDTO {
+  id: string;
+  url: string | null;
+}
+```
+
+---
+
+### Interfaces
+
+#### [IStripeService.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/service/IStripeService.ts)
+
+```typescript
+import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
+import { CreateCheckoutSessionDTO } from "@/domain/dto/payment/createCheckoutSessionDto";
+import Stripe from "stripe";
+
+export interface IStripeService {
+  createCheckoutSession(data: CreateCheckoutSessionDTO): Promise<CheckoutSessionResponseDTO>;
+  retrieveCheckoutSession(sessionId: string): Promise<Stripe.Checkout.Session | null>;
+  constructEvent(payload: string | Buffer, signature: string): Stripe.Event;
+}
+```
+
+#### [IBuySubscriptionUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/creator/payment/IBuySubscriptionUseCase.ts)
+
+```typescript
+import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
+
+export interface IBuySubscriptionUseCase {
+  buySubscription(
+    creatorId: string,
+    subscriptionId: string,
+    successUrl: string,
+    cancelUrl: string
+  ): Promise<CheckoutSessionResponseDTO>;
+}
+```
+
+#### [ICreatorSubscriptionWebhookUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase.ts)
+
+```typescript
+import Stripe from "stripe";
+
+export interface ICreatorSubscriptionWebhookUseCase {
+  handle(payload: string | Buffer, signature: string): Promise<void>;
+  handleEvent(event: Stripe.Event): Promise<void>;
+}
+```
+
+#### [IBookingWebhookUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/booking/IBookingWebhookUseCase%20.ts)
+
+```typescript
+import Stripe from "stripe";
+
+export interface IBookingWebhookUseCase {
+  handleWebhook(payload: string | Buffer, signature: string): Promise<void>;
+  handleEvent(event: Stripe.Event): Promise<void>;
+}
+```
+
+---
+
+### Stripe Service (Core)
+
+#### [stripeService.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/services/stripeService.ts)
+
+```typescript
+import Stripe from "stripe";
+import { IStripeService } from "../interface/service/IStripeService";
+import { CreateCheckoutSessionDTO } from "../dto/payment/createCheckoutSessionDto";
+import { CheckoutSessionResponseDTO } from "../dto/payment/checkoutSessionResponseDto";
+
+export class StripeService implements IStripeService {
+  private stripe: Stripe;
+  private webhookSecret: string;
+  private currency: string;
+
+  constructor() {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!secretKey) {
+      throw new Error("STRIPE_SECRET_KEY is not defined in environment variables");
+    }
+    if (!webhookSecret) {
+      throw new Error("STRIPE_WEBHOOK_SECRET is not defined in environment variables");
+    }
+
+    this.stripe = new Stripe(secretKey, {
+      apiVersion: "2026-01-28.clover",
+    });
+
+    this.webhookSecret = webhookSecret;
+    this.currency = process.env.STRIPE_CURRENCY || "inr";
+  }
+
+  async createCheckoutSession(
+    data: CreateCheckoutSessionDTO
+  ): Promise<CheckoutSessionResponseDTO> {
+    try {
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        mode: "payment",
+        line_items: [
+          {
+            price_data: {
+              currency: this.currency,
+              product_data: { name: data.packageName },
+              unit_amount: Math.round(data.amount * 100),
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: data.successUrl,
+        cancel_url: data.cancelUrl,
+        metadata: {
+          type: data.type,
+          bookingId: data.bookingId || "",
+          subscriptionId: data.subscriptionId || "",
+          creatorId: data.creatorId,
+        },
+      });
+      return { id: session.id, url: session.url };
+    } catch (error) {
+      console.error("StripeService: Error creating checkout session:", error);
+      throw error;
+    }
+  }
+
+  async retrieveCheckoutSession(
+    sessionId: string
+  ): Promise<Stripe.Checkout.Session | null> {
+    try {
+      const session = await this.stripe.checkout.sessions.retrieve(sessionId);
+      return session;
+    } catch (error) {
+      console.error("StripeService: Error retrieving session:", error);
+      return null;
+    }
+  }
+
+  constructEvent(payload: string | Buffer, signature: string): Stripe.Event {
+    return this.stripe.webhooks.constructEvent(
+      payload,
+      signature,
+      this.webhookSecret
+    );
+  }
+}
+```
+
+---
+
+### Use Cases
+
+#### [buySubscriptionUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/application/useCases/payment/buySubscriptionUseCase.ts)
+
+```typescript
+import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
+import { IBuySubscriptionUseCase } from "@/domain/interface/creator/payment/IBuySubscriptionUseCase";
+import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
+import { IStripeService } from "@/domain/interface/service/IStripeService";
+
+export class BuySubscriptionUseCase implements IBuySubscriptionUseCase {
+  constructor(
+    private _subscriptionRepo: ISubscriptionRepository,
+    private _stripeService: IStripeService
+  ) {}
+
+  async buySubscription(
+    creatorId: string,
+    subscriptionId: string,
+    successUrl: string,
+    cancelUrl: string
+  ): Promise<CheckoutSessionResponseDTO> {
+    const plan = await this._subscriptionRepo.findById(subscriptionId);
+    if (!plan) {
+      throw new Error("Subscription plan is not found");
+    }
+
+    return await this._stripeService.createCheckoutSession({
+      subscriptionId,
+      creatorId,
+      packageName: plan.name,
+      amount: plan.price,
+      successUrl,
+      cancelUrl,
+      type: "subscription",
+    });
+  }
+}
+```
+
+#### [creatorSubscriptionWebhookUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/application/useCases/payment/creatorSubscriptionWebhookUseCase.ts)
+
+```typescript
+import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
+import { IStripeService } from "@/domain/interface/service/IStripeService";
+import { logger } from "@/utils/logger";
+import Stripe from "stripe";
+
+export class CreatorSubscriptionWebhookUseCase
+  implements ICreatorSubscriptionWebhookUseCase
+{
+  constructor(
+    private _creatorRepo: ICreatorRepository,
+    private _subscriptionRepo: ISubscriptionRepository,
+    private _stripeService: IStripeService
+  ) {}
+
+  async handle(payload: string | Buffer, signature: string) {
+    const event = this._stripeService.constructEvent(payload, signature);
+    await this.handleEvent(event);
+  }
+
+  async handleEvent(event: Stripe.Event) {
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as any;
+      if (session.metadata?.type === "subscription") {
+        const { creatorId, subscriptionId } = session.metadata;
+
+        if (!creatorId || !subscriptionId) {
+          logger.warn("Webhook missing creatorId or subscriptionId in metadata");
+          return;
+        }
+
+        const plan = await this._subscriptionRepo.findById(subscriptionId);
+        if (!plan) {
+          logger.warn("Subscription plan not found", { subscriptionId });
+          return;
+        }
+
+        // Idempotency: check if already activated with this session
+        const creator = await this._creatorRepo.findById(creatorId);
+        if (creator?.subscription?.stripeSessionId === session.id) {
+          logger.info("Subscription already activated for this session", {
+            sessionId: session.id,
+          });
+          return;
+        }
+
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setDate(startDate.getDate() + plan.duration * 30);
+
+        await this._creatorRepo.updateProfile(creatorId, {
+          subscription: {
+            planId: subscriptionId,
+            planName: plan.name,
+            status: "active",
+            startDate,
+            endDate,
+            stripeSessionId: session.id,
+          },
+        });
+
+        logger.info("Creator subscription activated", {
+          creatorId,
+          planName: plan.name,
+        });
+      }
+    }
+  }
+}
+```
+
+#### [bookingWebhookUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/application/useCases/user/booking/bookingWebhookUseCase.ts)
+
+```typescript
+import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
+import { IStripeService } from "@/domain/interface/service/IStripeService";
+import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
+import { BookingStatus } from "@/utils/bookingStatus";
+import { logger } from "@/utils/logger";
+import Stripe from "stripe";
+
+export class BookingWebhookUseCase implements IBookingWebhookUseCase {
+  constructor(
+    private _bookingRepo: IBookingRepository,
+    private _stripeService: IStripeService
+  ) {}
+
+  async handleWebhook(
+    payload: string | Buffer,
+    signature: string
+  ): Promise<void> {
+    const event = this._stripeService.constructEvent(payload, signature);
+    await this.handleEvent(event);
+  }
+
+  async handleEvent(event: Stripe.Event): Promise<void> {
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as Stripe.Checkout.Session;
+      const bookingId = session.metadata?.bookingId;
+      if (bookingId) {
+        // Idempotency: check current status before updating
+        const booking = await this._bookingRepo.findById(bookingId);
+        if (booking && booking.status === BookingStatus.COMPLETED) {
+          logger.info("Booking already completed", { bookingId });
+          return;
+        }
+        await this._bookingRepo.updateStatus(bookingId, BookingStatus.COMPLETED);
+        logger.info("Booking completed via webhook", { bookingId });
+      }
+    }
+  }
+}
+```
+
+---
+
+### Controllers
+
+#### [creatorSubscriptionController.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/controllers/subscription/creatorSubscriptionController.ts)
+
+```typescript
+import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
+import { IBuySubscriptionUseCase } from "@/domain/interface/creator/payment/IBuySubscriptionUseCase";
+import { StatusCode } from "@/utils/statusCodes";
+import { Request, Response } from "express";
+
+export class CreatorSubscriptionController {
+  constructor(
+    private _buySubscriptionUseCase: IBuySubscriptionUseCase,
+    private _getSubscriptionUseCase: IGetSubscriptionUseCase
+  ) {}
+
+  async getSubscriptions(req: Request, res: Response) {
+    try {
+      const result = await this._getSubscriptionUseCase.getSubscription(1, 10, true);
+      return res.status(StatusCode.OK).json(result);
+    } catch (error: any) {
+      return res
+        .status(StatusCode.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message || "Internal Server Error" });
+    }
+  }
+
+  async buySubscription(req: AuthRequest, res: Response) {
+    try {
+      const { subscriptionId, successUrl, cancelUrl } = req.body;
+      const result = await this._buySubscriptionUseCase.buySubscription(
+        req.user!.userId,
+        subscriptionId,
+        successUrl,
+        cancelUrl
+      );
+      return res.status(StatusCode.OK).json(result);
+    } catch (error: any) {
+      return res
+        .status(StatusCode.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message || "Internal Server Error" });
+    }
+  }
+}
+```
+
+#### [bookingController.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/controllers/booking/bookingController.ts) — Webhook Handler
+
+```typescript
+// Only showing the webhook-relevant portion
+async handleWebhook(req: AuthRequest, res: Response): Promise<void> {
+  const sig = req.headers["stripe-signature"] as string;
+  if (!sig) {
+    res.status(400).send("Missing stripe-signature header");
+    return;
+  }
+  try {
+    const payload = (req as any).rawBody || req.body;
+
+    // Construct event ONCE and pass the parsed event to handlers
+    const event = this._stripeService.constructEvent(payload, sig);
+
+    logger.info("Webhook received", { type: event.type, id: event.id });
+
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as any;
+      const metadataType = session.metadata?.type;
+
+      if (metadataType === "subscription") {
+        await this._creatorSubscriptionWebhookUseCase.handleEvent(event);
+      } else {
+        await this._webhookUseCase.handleEvent(event);
+      }
+    }
+
+    res.status(200).json({ received: true });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    logger.error("Webhook error", { error: message });
+    res.status(400).send(`Webhook Error: ${message}`);
+  }
+}
+```
+
+---
+
+### Routes & Middleware Setup
+
+#### [app.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/app.ts) — Webhook Middleware (lines 58–68)
+
+```typescript
+// Stripe webhook needs raw body for signature verification — must be before express.json()
+this.app.use(
+  "/webhook",
+  express.raw({ type: "application/json" })
+);
+// Webhook route — registered here so it uses raw body, not parsed JSON
+this.app.post("/webhook", (req, res) =>
+  bookingController.handleWebhook(req as any, res)
+);
+this.app.use(express.json());
+```
+
+> [!IMPORTANT]
+> The `/webhook` route with `express.raw()` **must** be registered **before** `express.json()` — otherwise the raw body is parsed as JSON and Stripe signature verification fails.
+
+#### [creatorRoutes.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/routes/creator/creatorRoutes.ts) — Subscription Routes (lines 145–154)
+
+```typescript
+this.creatorRouter.get(
+  BACKEND_ROUTES.CREATOR.SUBSCRIPTION,  // GET /api/creator/subscription
+  (req: Request, res: Response) =>
+    creatorSubscriptionController.getSubscriptions(req, res),
+);
+this.creatorRouter.post(
+  BACKEND_ROUTES.CREATOR.SUBSCRIPTION_BUY,  // POST /api/creator/subscription/buy
+  (req: Request, res: Response) =>
+    creatorSubscriptionController.buySubscription(req, res),
+);
+```
+
+#### [backendRoutes.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/constants/backendRoutes.ts) — Route Constants
+
+```typescript
+CREATOR: {
+  BASE: "/creator",
+  SUBSCRIPTION: "/subscription",
+  SUBSCRIPTION_BUY: "/subscription/buy",
+  // ...other routes
+}
+```
+
+---
+
+### Data Layer
+
+#### [subscriptionSchema.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/framework/database/schema/subscriptionSchema.ts)
+
+```typescript
+import { Schema } from "mongoose";
+
+export const subscriptionSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    duration: { type: Number, required: true },
+    features: [{ type: String }],
+    isActive: { type: Boolean, default: true },
+  },
+  { timestamps: true }
+);
+```
+
+#### [subscriptionEntity.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/entities/subscriptionEntity.ts)
+
+```typescript
+export interface SubscriptionEntity {
+  _id?: string;
+  subscriptionId?: string;  // mapped from _id.toString() in repository
+  name: string;
+  price: number;
+  duration: number;
+  features: string[];
+  isActive: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+```
+
+#### [subscriptionRepository.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/repository/admin/subscriptionRepository.ts) — ID Mapping
+
+```typescript
+protected mapToEntity(doc: ISubscriptionModel): SubscriptionEntity {
+  return {
+    ...doc.toObject(),
+    subscriptionId: doc._id.toString(),  // _id → subscriptionId
+  };
+}
+```
+
+---
+
+## Frontend Code
+
+### Service
+
+#### [creatorSubscriptionService.ts](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/services/creator/creatorSubscriptionService.ts)
+
+```typescript
+import api from "@/axios/axiosConfig";
+
+export const CreatorSubscriptionService = {
+  async getSubscriptions() {
+    const res = await api.get("/creator/subscription");
+    return res.data;
+  },
+  async buySubscription(subscriptionId: string) {
+    const successUrl = `${window.location.origin}/creator/subscription-success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${window.location.origin}/creator/subscription-cancel`;
+    const res = await api.post("/creator/subscription/buy", {
+      subscriptionId,
+      successUrl,
+      cancelUrl,
+    });
+    return res.data;
+  },
+};
+```
+
+---
+
+### Pages
+
+#### [creatorSubscription.tsx](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/pages/creator/subscription/creatorSubscription.tsx)
+
+Displays plans, checks active subscription, handles purchase with toast notifications.
+
+```tsx
+import { useEffect, useState } from "react";
+import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import { Check, Crown } from "lucide-react";
+import { CreatorSubscriptionService } from "@/services/creator/creatorSubscriptionService";
+import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
+import { toast } from "react-toastify";
+
+export default function CreatorSubscription() {
+  const [plans, setPlans] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activePlanId, setActivePlanId] = useState<string | null>(null);
+  const [buyingId, setBuyingId] = useState<string | null>(null);
+
+  useEffect(() => { fetchData(); }, []);
+
+  const fetchData = async () => {
+    try {
+      const [plansRes, profileRes] = await Promise.all([
+        CreatorSubscriptionService.getSubscriptions(),
+        CreatorProfileServices.getProfile(),
+      ]);
+      setPlans(plansRes.data);
+      const sub = profileRes.creator?.subscription;
+      if (sub?.status === "active" && new Date(sub.endDate) > new Date()) {
+        setActivePlanId(sub.planId);
+      }
+    } catch {
+      toast.error("Failed to load subscription plans");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBuy = async (id: string) => {
+    if (buyingId) return;
+    setBuyingId(id);
+    try {
+      const res = await CreatorSubscriptionService.buySubscription(id);
+      if (res.url) window.location.href = res.url;
+    } catch {
+      toast.error("Purchase failed. Please try again.");
+    } finally {
+      setBuyingId(null);
+    }
+  };
+
+  // ... renders plan cards with active status badge and conditional buttons
+}
+```
+
+#### [subscriptionSuccess.tsx](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/pages/creator/subscription/subscriptionSuccess.tsx)
+
+Verifies session by checking creator profile, with retry logic for webhook timing.
+
+```tsx
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
+import { CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
+
+export default function SubscriptionSuccess() {
+  const [searchParams] = useSearchParams();
+  const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
+
+  useEffect(() => { verifySubscription(); }, []);
+
+  const verifySubscription = async () => {
+    const sessionId = searchParams.get("session_id");
+    if (!sessionId) { setStatus("error"); return; }
+
+    try {
+      const res = await CreatorProfileServices.getProfile();
+      const sub = res.creator?.subscription;
+
+      if (sub?.status === "active" && sub?.stripeSessionId === sessionId) {
+        setStatus("success");
+      } else {
+        // Webhook may not have fired yet — wait 3s and retry
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        const retryRes = await CreatorProfileServices.getProfile();
+        setStatus("success"); // Show success regardless (webhook will activate)
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  // ... renders verifying spinner → success → error states
+}
+```
+
+#### [subscriptionCancel.tsx](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/pages/creator/subscription/subscriptionCancel.tsx)
+
+```tsx
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
+import { XCircle } from "lucide-react";
+
+export default function SubscriptionCancel() {
+  const navigate = useNavigate();
+  return (
+    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4 text-center">
+      <div className="max-w-md">
+        <XCircle size={80} className="mx-auto text-red-500 mb-8" />
+        <h1 className="text-4xl font-black mb-4">Payment Cancelled</h1>
+        <p className="text-gray-400 mb-8 text-lg">
+          Your payment was not completed. If this was a mistake, you can try again.
+        </p>
+        <button onClick={() => navigate(ROUTES.CREATOR.SUBSCRIPTIONS)}
+          className="w-full py-4 bg-white text-black font-bold rounded-2xl">
+          Try Again
+        </button>
+        <button onClick={() => navigate(ROUTES.CREATOR.DASHBOARD)}
+          className="w-full py-4 text-gray-400 font-medium">
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+---
+
+## Creator Profile — Subscription Interface
+
+#### [creatorProfileInterface.ts](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/interface/creator/creatorProfileInterface.ts)
+
+```typescript
+export interface CreatorProfileResponse {
+  // ...other fields
+  isSubscribed: boolean;
+  subscription?: {
+    planId: string;
+    planName: string;
+    status: "active" | "expired" | "cancelled";
+    startDate: string;
+    endDate: string;
+    stripeSessionId: string;
+  };
+}
+```
+
+---
+
+## File Index
+
+| # | File | Layer |
+|---|---|---|
+| 1 | [createCheckoutSessionDto.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/dto/payment/createCheckoutSessionDto.ts) | DTO |
+| 2 | [checkoutSessionResponseDto.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/dto/payment/checkoutSessionResponseDto.ts) | DTO |
+| 3 | [IStripeService.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/service/IStripeService.ts) | Interface |
+| 4 | [IBuySubscriptionUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/creator/payment/IBuySubscriptionUseCase.ts) | Interface |
+| 5 | [ICreatorSubscriptionWebhookUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase.ts) | Interface |
+| 6 | [IBookingWebhookUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/interface/user/booking/IBookingWebhookUseCase%20.ts) | Interface |
+| 7 | [stripeService.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/services/stripeService.ts) | Service |
+| 8 | [buySubscriptionUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/application/useCases/payment/buySubscriptionUseCase.ts) | Use Case |
+| 9 | [creatorSubscriptionWebhookUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/application/useCases/payment/creatorSubscriptionWebhookUseCase.ts) | Use Case |
+| 10 | [bookingWebhookUseCase.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/application/useCases/user/booking/bookingWebhookUseCase.ts) | Use Case |
+| 11 | [creatorSubscriptionController.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/controllers/subscription/creatorSubscriptionController.ts) | Controller |
+| 12 | [bookingController.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/controllers/booking/bookingController.ts) | Controller |
+| 13 | [subscriptionRepository.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/repository/admin/subscriptionRepository.ts) | Repository |
+| 14 | [subscriptionSchema.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/framework/database/schema/subscriptionSchema.ts) | Schema |
+| 15 | [subscriptionEntity.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/domain/entities/subscriptionEntity.ts) | Entity |
+| 16 | [creatorRoutes.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/adapters/routes/creator/creatorRoutes.ts) | Routes |
+| 17 | [backendRoutes.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/constants/backendRoutes.ts) | Constants |
+| 18 | [app.ts](file:///c:/Users/amalf/Desktop/PHLO/Backend/src/app.ts) | App Setup |
+| 19 | [creatorSubscriptionService.ts](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/services/creator/creatorSubscriptionService.ts) | Frontend Service |
+| 20 | [creatorSubscription.tsx](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/pages/creator/subscription/creatorSubscription.tsx) | Frontend Page |
+| 21 | [subscriptionSuccess.tsx](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/pages/creator/subscription/subscriptionSuccess.tsx) | Frontend Page |
+| 22 | [subscriptionCancel.tsx](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/pages/creator/subscription/subscriptionCancel.tsx) | Frontend Page |
+| 23 | [creatorProfileInterface.ts](file:///c:/Users/amalf/Desktop/PHLO/Frontend/src/interface/creator/creatorProfileInterface.ts) | Frontend Interface |

@@ -47,7 +47,13 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
   }
 
   async updateProfile(creatorId: string, data: Partial<CreatorEntity>): Promise<CreatorEntity | null> {
+    console.log("Update data", data);
     const creator = await this.model.findByIdAndUpdate(creatorId, { $set: data }, { new: true });
+    return creator ? this.mapToEntity(creator) : null;
+  }
+
+  async findBySubscriptionId(subscriptionId: string): Promise<CreatorEntity | null> {
+    const creator = await this.model.findOne({ "subscription.stripeSubscriptionId": subscriptionId });
     return creator ? this.mapToEntity(creator) : null;
   }
 }

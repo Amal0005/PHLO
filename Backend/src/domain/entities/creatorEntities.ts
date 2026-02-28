@@ -5,6 +5,7 @@ export interface SubscriptionDetails {
   startDate: Date;
   endDate: Date;
   stripeSessionId: string;
+  stripeSubscriptionId?: string;
 }
 
 export interface CreatorEntity {

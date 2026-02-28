@@ -23,10 +23,11 @@ export class CreatorMapper {
       subscription: doc.subscription ? {
         planId: doc.subscription.planId.toString(),
         planName: doc.subscription.planName,
-        status: doc.subscription.status,
+        status: doc.subscription.status as any,
         startDate: doc.subscription.startDate,
         endDate: doc.subscription.endDate,
         stripeSessionId: doc.subscription.stripeSessionId,
+        stripeSubscriptionId: (doc.subscription as any).stripeSubscriptionId,
       } : undefined,
     };
   }
