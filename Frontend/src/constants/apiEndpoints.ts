@@ -22,6 +22,10 @@ export const API_ENDPOINTS = {
         WISHLIST: "/wishlist",
         WISHLIST_TOGGLE: "/wishlist/toggle",
         WISHLIST_IDS: "/wishlist/ids",
+        CHECK_AVAILABILITY: "/bookings/check-availability",
+        GET_BOOKINGS: "/bookings",
+        GET_BOOKING_STATUS: (sessionId: string) => `/bookings/status/${sessionId}`,
+        CANCEL_BOOKING: (sessionId: string) => `/bookings/cancel/${sessionId}`,
     },
     ADMIN: {
         LOGIN: "/admin/login",

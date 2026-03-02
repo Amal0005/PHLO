@@ -23,7 +23,7 @@ import path from "path";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 import { errorHandler } from "./adapters/middlewares/errorHandler";
 import { logger } from "./utils/logger";
-import { bookingController } from "./framework/depInjection/user/userInjections";
+import { bookingController, paymentController } from "./framework/depInjection/user/userInjections";
 
 
 export class App {
@@ -64,7 +64,7 @@ export class App {
     );
     // Webhook route - registered here so it uses raw body, not parsed JSON
     this.app.post("/webhook", (req, res) =>
-      bookingController.handleWebhook(req as any, res)
+      paymentController.handleWebhook(req as any, res)
     );
     this.app.use(express.json());
     this.app.use(

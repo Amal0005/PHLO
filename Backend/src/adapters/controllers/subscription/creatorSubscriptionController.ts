@@ -14,9 +14,10 @@ export class CreatorSubscriptionController {
         try {
             const result = await this._getSubscriptionUseCase.getSubscription(1, 10, true);
             return res.status(StatusCode.OK).json(result);
-        } catch (error: any) {
-            console.error("Error in getSubscriptions:", error);
-            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message: error.message || "Internal Server Error" });
+        } catch (error: unknown) {
+            const err = error instanceof Error ? error.message : "Internal Server Error";
+            console.error("Error in getSubscriptions:", err);
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message: err });
         }
     }
 
@@ -26,9 +27,10 @@ export class CreatorSubscriptionController {
             console.log("Bodyyyyyyyyy", subscriptionId)
             const result = await this._buySubscriptionUseCase.buySubscription(req.user!.userId, subscriptionId, successUrl, cancelUrl);
             return res.status(StatusCode.OK).json(result);
-        } catch (error: any) {
-            console.error("Error in buySubscription:", error);
-            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message: error.message || "Internal Server Error" });
+        } catch (error: unknown) {
+            const err = error instanceof Error ? error.message : "Internal Server Error";
+            console.error("Error in buySubscription:", err);
+            return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message: err });
         }
     }
 }

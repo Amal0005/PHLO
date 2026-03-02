@@ -31,6 +31,11 @@ export const bookingSchema = new Schema(
       type: String,
       index: true,
     },
+    bookingDate: {
+  type: Date,
+  required: true,
+},
   },
   { timestamps: true }
 );
+bookingSchema.index({ packageId: 1, bookingDate: 1 });

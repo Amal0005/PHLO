@@ -198,6 +198,10 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         bookingController.CreateBooking(req, res),
     );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.CHECK_AVAILABILITY,
+      (req: AuthRequest, res: Response) => bookingController.checkAvailability(req, res)
+    );
 
     this.userRouter.get(
       "/bookings",
@@ -210,6 +214,30 @@ export class UserRoutes {
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
         bookingController.ListBookings(req, res),
+    );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.BOOKING_STATUS,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        bookingController.GetBookingStatus(req, res),
+    );
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.CANCEL_BOOKING,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        bookingController.CancelBooking(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.WALLPAPERS,

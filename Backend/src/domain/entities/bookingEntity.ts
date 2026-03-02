@@ -7,6 +7,7 @@ export interface BookingEntity {
   packageId: string | PackageEntity;
   amount: number;
   currency: "inr";
+  bookingDate:Date
   status: BookingStatus;
   stripeSessionId?: string;
   createdAt?: Date;

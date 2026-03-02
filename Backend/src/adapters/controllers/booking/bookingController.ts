@@ -1,10 +1,11 @@
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { AppError } from "@/domain/errors/appError";
-import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
-import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
 import { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBookingUseCase";
 import { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
+import { ICheckAvailabilityUseCase } from "@/domain/interface/user/booking/ICheckAvailabilityUseCase";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
+import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
+import { BookingStatus } from "@/utils/bookingStatus";
 import { StatusCode } from "@/utils/statusCodes";
 import { Response } from "express";
 import { logger } from "@/utils/logger";
@@ -12,11 +13,11 @@ import { logger } from "@/utils/logger";
 export class BookingController {
   constructor(
     private _createBookingUseCase: ICreateBookingUseCase,
-    private _webhookUseCase: IBookingWebhookUseCase,
     private _listBookingsUseCase: IListBookingsUseCase,
-    private _creatorSubscriptionWebhookUseCase: ICreatorSubscriptionWebhookUseCase,
+    private _checkAvailabilityUseCase: ICheckAvailabilityUseCase,
     private _stripeService: IStripeService,
-  ) {}
+    private _bookingRepo: IBookingRepository,
+  ) { }
   async CreateBooking(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.userId;
@@ -39,6 +40,25 @@ export class BookingController {
       }
     }
   }
+
+  async checkAvailability(req: AuthRequest, res: Response) {
+    try {
+      const { packageId, date } = req.query;
+      if (!packageId || !date) {
+        res.status(StatusCode.BAD_REQUEST).json({ message: "Package ID and date are required" });
+        return;
+      }
+      const isAvailable = await this._checkAvailabilityUseCase.checkAvailability(
+        packageId as string,
+        new Date(date as string),
+      );
+      res.status(StatusCode.OK).json({ success: true, isAvailable });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
+    }
+  }
+
   async ListBookings(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.userId;
@@ -53,36 +73,39 @@ export class BookingController {
       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
     }
   }
-  async handleWebhook(req: AuthRequest, res: Response): Promise<void> {
-    const sig = req.headers["stripe-signature"] as string;
-    if (!sig) {
-      res.status(400).send("Missing stripe-signature header");
-      return;
-    }
+
+  async GetBookingStatus(req: AuthRequest, res: Response) {
     try {
-      const payload = (req as any).rawBody || req.body;
-
-      // Construct event ONCE and pass the parsed event to handlers
-      const event = this._stripeService.constructEvent(payload, sig);
-
-      logger.info("Webhook received", { type: event.type, id: event.id });
-
-      if (event.type === "checkout.session.completed") {
-        const session = event.data.object as any;
-        const metadataType = session.metadata?.type;
-
-        if (metadataType === "subscription") {
-          await this._creatorSubscriptionWebhookUseCase.handleEvent(event);
-        } else {
-          await this._webhookUseCase.handleEvent(event);
-        }
+      const { sessionId } = req.params;
+      const booking = await this._bookingRepo.findByStripeSessionId(sessionId);
+      if (!booking) {
+        res.status(StatusCode.NOT_FOUND).json({ message: "Booking not found" });
+        return;
       }
-
-      res.status(200).json({ received: true });
+      res.status(StatusCode.OK).json({ status: booking.status });
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      logger.error("Webhook error", { error: message });
-      res.status(400).send(`Webhook Error: ${message}`);
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
+    }
+  }
+
+  async CancelBooking(req: AuthRequest, res: Response) {
+    try {
+      const { sessionId } = req.params;
+      const booking = await this._bookingRepo.findByStripeSessionId(sessionId);
+      if (!booking) {
+        res.status(StatusCode.NOT_FOUND).json({ message: "Booking not found" });
+        return;
+      }
+      if (booking.status === BookingStatus.PENDING) {
+        await this._bookingRepo.updateStatus(booking.id!, BookingStatus.CANCELLED);
+        res.status(StatusCode.OK).json({ success: true, message: "Booking cancelled" });
+      } else {
+        res.status(StatusCode.BAD_REQUEST).json({ message: "Only pending bookings can be cancelled" });
+      }
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An unknown error occurred";
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
     }
   }
 }

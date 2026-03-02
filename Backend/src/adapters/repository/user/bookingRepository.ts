@@ -1,9 +1,6 @@
 import { BookingEntity } from "@/domain/entities/bookingEntity";
 import { BaseRepository } from "../baseRepository";
-import {
-  BookingDocument,
-  BookingModel,
-} from "@/framework/database/model/bookingModel";
+import {BookingDocument,BookingModel} from "@/framework/database/model/bookingModel";
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { BookingMapper } from "@/application/mapper/user/bookingMapper";
 import { BookingStatus } from "@/utils/bookingStatus";
@@ -41,5 +38,13 @@ export class BookingRepository
       .findByIdAndUpdate(id, { $set: { status } }, { new: true })
       .exec();
     return updated ? this.mapToEntity(updated) : null;
+  }
+  async checkAvailability(packageId: string, date: Date): Promise<boolean> {
+    const existing=await this.model.findOne({   
+    packageId,
+    bookingDate: date,
+    status: { $ne: BookingStatus.CANCELLED }
+  });
+  return !existing;
   }
 }

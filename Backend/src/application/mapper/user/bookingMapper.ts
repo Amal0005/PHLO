@@ -38,6 +38,7 @@ export class BookingMapper {
       stripeSessionId: doc.stripeSessionId,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
+      bookingDate:doc.bookingDate
     };
   }
 }
