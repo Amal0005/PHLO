@@ -10,7 +10,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         private _creatorRepo: ICreatorRepository,
         private _subscriptionRepo: ISubscriptionRepository,
         private _stripeService: IStripeService
-    ) { }
+    ) {}
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);
@@ -24,7 +24,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                 const { creatorId, subscriptionId } = session.metadata;
 
                 if (!creatorId || !subscriptionId) {
-                    logger.warn("Webhook missing creatorId or subscriptionId in metadata");
+                    logger.warn("Webhook missing creatorId or subscriptionId");
                     return;
                 }
 
@@ -34,7 +34,6 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                     return;
                 }
 
-                // Idempotency: check if already activated with this session
                 const creator = await this._creatorRepo.findById(creatorId);
                 if (creator?.subscription?.stripeSessionId === session.id) {
                     logger.info("Subscription already activated for this session", { sessionId: session.id });

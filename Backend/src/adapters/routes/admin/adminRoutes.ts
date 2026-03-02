@@ -4,10 +4,7 @@ import {
   adminUserController,
   adminCreatorController,
   categoryController,
-  deleteSubscriptionController,
-  editSubscriptionController,
-  getSubscriptionController,
-  addSubscriptionController,
+  subscriptionController,
   adminWallpaperController,
 } from "../../../framework/depInjection/admin/adminInjections";
 import { jwtAuthMiddleware } from "../../middlewares/jwtAuthMiddleware";
@@ -88,25 +85,25 @@ export class AdminRoutes {
       categoryController.editCategory(req, res);
     });
     this.adminRouter.post(BACKEND_ROUTES.ADMIN.SUBSCRIPTION, (req: Request, res: Response) => {
-      addSubscriptionController.addSubscription(req, res)
+      subscriptionController.addSubscription(req, res)
     })
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.SUBSCRIPTION, (req: Request, res: Response) => {
-      getSubscriptionController.getSubscriptions(req, res)
+      subscriptionController.getSubscriptions(req, res)
     })
     this.adminRouter.patch(BACKEND_ROUTES.ADMIN.SUBSCRIPTION_DETAIL, (req: Request, res: Response) => {
-      editSubscriptionController.editSubscription(req, res)
+      subscriptionController.editSubscription(req, res)
     })
     this.adminRouter.delete(BACKEND_ROUTES.ADMIN.SUBSCRIPTION_DETAIL, (req: Request, res: Response) => {
-      deleteSubscriptionController.deleteSubscription(req, res)
+      subscriptionController.deleteSubscription(req, res)
     })
-    this.adminRouter.get(BACKEND_ROUTES.ADMIN.WALLPAPERS,(req:Request,res:Response)=>{
-      adminWallpaperController.getWallpaper(req,res)
+    this.adminRouter.get(BACKEND_ROUTES.ADMIN.WALLPAPERS, (req: Request, res: Response) => {
+      adminWallpaperController.getWallpaper(req, res)
     })
-    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.APPROVE_WALLPAPER,(req:Request,res:Response)=>{
-      adminWallpaperController.approveWallpaper(req,res)
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.APPROVE_WALLPAPER, (req: Request, res: Response) => {
+      adminWallpaperController.approveWallpaper(req, res)
     })
-    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.REJECT_WALLPAPER,(req:Request,res:Response)=>{
-      adminWallpaperController.rejectWallpaper(req,res)
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.REJECT_WALLPAPER, (req: Request, res: Response) => {
+      adminWallpaperController.rejectWallpaper(req, res)
     })
   }
 }

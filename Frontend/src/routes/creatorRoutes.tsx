@@ -11,6 +11,7 @@ import CreatorSubscription from "@/pages/creator/subscription/creatorSubscriptio
 import SubscriptionSuccess from "@/pages/creator/subscription/subscriptionSuccess";
 import SubscriptionCancel from "@/pages/creator/subscription/subscriptionCancel";
 import ViewWallpapersPage from "@/pages/creator/wallpaper/viewWallpapers";
+import BookingsCalendar from "@/pages/creator/bookings/BookingsCalendar";
 
 export function CreatorRoutes() {
   return (
@@ -33,6 +34,7 @@ export function CreatorRoutes() {
         <Route path={ROUTES.CREATOR.SUBSCRIPTION_SUCCESS} element={<SubscriptionSuccess />} />
         <Route path={ROUTES.CREATOR.SUBSCRIPTION_CANCEL} element={<SubscriptionCancel />} />
         <Route path={ROUTES.CREATOR.WALLPAPERS} element={<ViewWallpapersPage />} />
+        <Route path={ROUTES.CREATOR.BOOKINGS} element={<BookingsCalendar />} />
 
       </Route>
     </Routes>

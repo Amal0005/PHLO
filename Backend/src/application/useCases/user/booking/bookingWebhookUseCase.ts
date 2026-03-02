@@ -9,7 +9,7 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
   constructor(
     private _bookingRepo: IBookingRepository,
     private _stripeService: IStripeService
-  ) { }
+  ) {}
 
   async handleWebhook(payload: string | Buffer, signature: string): Promise<void> {
     const event = this._stripeService.constructEvent(payload, signature);
@@ -21,7 +21,6 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
       const session = event.data.object as Stripe.Checkout.Session;
       const bookingId = session.metadata?.bookingId;
       if (bookingId) {
-        // Idempotency: check current status before updating
         const booking = await this._bookingRepo.findById(bookingId);
         if (booking && booking.status === BookingStatus.COMPLETED) {
           logger.info("Booking already completed", { bookingId });

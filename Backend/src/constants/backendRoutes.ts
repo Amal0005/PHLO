@@ -22,7 +22,10 @@ export const BACKEND_ROUTES = {
     WALLPAPER_DOWNLOAD: "/wallpapers/:id/download",
     WISHLIST: "/wishlist",
     WISHLIST_TOGGLE: "/wishlist/toggle",
-    WISHLIST_IDS: "/wishlist/ids"
+    WISHLIST_IDS: "/wishlist/ids",
+    CHECK_AVAILABILITY: "/bookings/check-availability",
+    BOOKING_STATUS: "/bookings/status/:sessionId",
+    CANCEL_BOOKING: "/bookings/cancel/:sessionId"
   },
   CREATOR: {
     BASE: "/creator",
@@ -42,7 +45,9 @@ export const BACKEND_ROUTES = {
     CATEGORY: "/category",
     SUBSCRIPTION: "/subscription",
     SUBSCRIPTION_BUY: "/subscription/buy",
-
+    BOOKINGS: "/bookings",
+    APPROVE_BOOKING: "/bookings/:id/approve",
+    REJECT_BOOKING: "/bookings/:id/reject",
     WALLPAPER: "/wallpaper",
     WALLPAPER_DETAIL: "/wallpaper/:wallpaperId",
   },
