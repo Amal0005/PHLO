@@ -11,6 +11,7 @@ import { S3Media } from "@/compoents/reusable/s3Media";
 import UserNavbar from "@/compoents/reusable/userNavbar";
 import { BookingService } from "@/services/user/bookingService";
 import { toast } from "react-toastify";
+import LocationSearchBar from "@/pages/creator/package/components/locationSearchBar";
 
 const PackageDetailPage: React.FC = () => {
   const { packageId } = useParams<{ packageId: string }>();
@@ -23,6 +24,7 @@ const PackageDetailPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [isDateAvailable, setIsDateAvailable] = useState<boolean | null>(null);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
 
   useEffect(() => {
     const fetchPackageDetail = async () => {
@@ -45,6 +47,11 @@ const PackageDetailPage: React.FC = () => {
       return;
     }
 
+    if (!selectedLocation.trim()) {
+      toast.warning("Please enter a location");
+      return;
+    }
+
     if (isDateAvailable === false) {
       toast.error("This date is already booked. Please choose another date.");
       return;
@@ -52,7 +59,7 @@ const PackageDetailPage: React.FC = () => {
 
     try {
       const baseUrl = window.location.origin;
-      const response = await BookingService.createBooking(packageId!, baseUrl, selectedDate);
+      const response = await BookingService.createBooking(packageId!, baseUrl, selectedDate, selectedLocation);
       if (response.url) window.location.href = response.url;
     } catch (error: unknown) {
       const err = error instanceof Error ? error.message : "Failed to initiate booking. Please try again.";
@@ -190,17 +197,6 @@ const PackageDetailPage: React.FC = () => {
                   >
                     {packageData.title}
                   </h1>
-                  <button
-                    onClick={() => setWishlisted((w) => !w)}
-                    className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all mt-0.5"
-                    style={{
-                      background: wishlisted ? "rgba(168,85,247,0.18)" : "rgba(255,255,255,0.05)",
-                      border: wishlisted ? "1px solid rgba(255, 0, 0, 0.45)" : "1px solid rgba(255,255,255,0.09)",
-                    }}
-                  >
-                    <Heart className="w-3.5 h-3.5 transition-all"
-                      style={{ color: wishlisted ? "#ff0000ff" : "rgba(255,255,255,0.35)", fill: wishlisted ? "#a855f7" : "none" }} />
-                  </button>
                 </div>
 
                 {typeof packageData.creatorId === "object" && (
@@ -263,7 +259,8 @@ const PackageDetailPage: React.FC = () => {
 
                 {/* Date Picker + Booking Action */}
                 <div className="pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                  <div className="flex flex-col gap-5">
+                  {/* Date & Location Capture */}
+                  <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                       <label className="text-[9px] font-bold tracking-[0.3em] uppercase ml-1" style={{ color: "rgba(255,255,255,0.3)" }}>
                         Select Booking Date
@@ -301,31 +298,41 @@ const PackageDetailPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.28)" }}>
-                          Starting from
-                        </p>
-                        <div className="flex items-baseline gap-0.5">
-                          <span className="text-[11px] font-semibold mr-0.5" style={{ color: "rgba(255,255,255,0.38)" }}>₹</span>
-                          <span className="font-black text-white" style={{ fontSize: "clamp(1.6rem, 2.4vw, 2.1rem)", letterSpacing: "-0.04em" }}>
-                            {packageData.price.toLocaleString()}
-                          </span>
-                        </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[9px] font-bold tracking-[0.3em] uppercase ml-1" style={{ color: "rgba(255,255,255,0.15)" }}>
+                        Location
+                      </label>
+                      <div className="relative group/loc">
+                        <LocationSearchBar
+                          onChange={(location) => setSelectedLocation(location.placeName || "")}
+                        />
                       </div>
-                      <button
-                        onClick={handleBooking}
-                        disabled={checkingAvailability || isDateAvailable === false}
-                        className={`px-8 py-3.5 font-bold text-[11px] tracking-[0.15em] uppercase rounded-2xl transition-all active:scale-95 whitespace-nowrap ${isDateAvailable === false ? 'opacity-50 cursor-not-allowed grayscale' : 'bg-white text-black hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)]'
-                          }`}
-                        style={{ boxShadow: "0 8px 32px rgba(255,255,255,0.12)" }}
-                      >
-                        {isDateAvailable === false ? 'Already Booked' : 'Confirm & Pay'}
-                      </button>
                     </div>
                   </div>
-                </div>
 
+                  <div className="flex items-center justify-between gap-4 mt-8">
+                    <div>
+                      <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.28)" }}>
+                        Starting from
+                      </p>
+                      <div className="flex items-baseline gap-0.5">
+                        <span className="text-[11px] font-semibold mr-0.5" style={{ color: "rgba(255,255,255,0.38)" }}>₹</span>
+                        <span className="font-black text-white" style={{ fontSize: "clamp(1.6rem, 2.4vw, 2.1rem)", letterSpacing: "-0.04em" }}>
+                          {packageData.price.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleBooking}
+                      disabled={checkingAvailability || isDateAvailable === false}
+                      className={`px-8 py-3.5 font-bold text-[11px] tracking-[0.15em] uppercase rounded-2xl transition-all active:scale-95 whitespace-nowrap ${isDateAvailable === false ? 'opacity-50 cursor-not-allowed grayscale' : 'bg-white text-black hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)]'
+                        }`}
+                      style={{ boxShadow: "0 8px 32px rgba(255,255,255,0.12)" }}
+                    >
+                      {isDateAvailable === false ? 'Already Booked' : 'Confirm & Pay'}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 

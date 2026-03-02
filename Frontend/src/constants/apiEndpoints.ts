@@ -24,7 +24,7 @@ export const API_ENDPOINTS = {
         WISHLIST_IDS: "/wishlist/ids",
         CHECK_AVAILABILITY: "/bookings/check-availability",
         GET_BOOKINGS: "/bookings",
-        GET_BOOKING_STATUS: (sessionId: string) => `/bookings/status/${sessionId}`,
+        GET_BOOKING_DETAIL: (sessionId: string) => `/bookings/status/${sessionId}`,
         CANCEL_BOOKING: (sessionId: string) => `/bookings/cancel/${sessionId}`,
     },
     ADMIN: {
@@ -53,6 +53,7 @@ export const API_ENDPOINTS = {
         PACKAGE: "/creator/package",
         CATEGORY: "/creator/category",
         WALLPAPER: "/creator/wallpaper",
+        GET_BOOKINGS: "/creator/bookings",
     },
     UPLOAD: {
         VIEW_URL: "/upload/view-url",

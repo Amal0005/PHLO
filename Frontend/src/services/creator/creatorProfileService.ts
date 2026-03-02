@@ -12,6 +12,11 @@ export const CreatorProfileServices = {
         const res = await api.patch(API_ENDPOINTS.CREATOR.PROFILE, payload)
         return res.data
     },
+    getCreatorBookings:async():Promise<{success:boolean,data:any[]}>=>{
+        const res=await api.get(API_ENDPOINTS.CREATOR.GET_BOOKINGS)
+        return res.data
+    }
+,
     getUploadUrl: S3Service.getPresignedUrl,
     uploadToS3: S3Service.uploadFile,
     getViewUrl: S3Service.getViewUrl,

@@ -1,14 +1,17 @@
 import { BookingEntity } from "@/domain/entities/bookingEntity";
 import { BaseRepository } from "../baseRepository";
-import {BookingDocument,BookingModel} from "@/framework/database/model/bookingModel";
+import {
+  BookingDocument,
+  BookingModel,
+} from "@/framework/database/model/bookingModel";
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { BookingMapper } from "@/application/mapper/user/bookingMapper";
 import { BookingStatus } from "@/utils/bookingStatus";
+import { PackageModel } from "@/framework/database/model/packageModel";
 
 export class BookingRepository
   extends BaseRepository<BookingEntity, BookingDocument>
-  implements IBookingRepository
-{
+  implements IBookingRepository {
   constructor() {
     super(BookingModel);
   }
@@ -40,11 +43,23 @@ export class BookingRepository
     return updated ? this.mapToEntity(updated) : null;
   }
   async checkAvailability(packageId: string, date: Date): Promise<boolean> {
-    const existing=await this.model.findOne({   
-    packageId,
-    bookingDate: date,
-    status: { $ne: BookingStatus.CANCELLED }
-  });
-  return !existing;
+    const existing = await this.model.findOne({
+      packageId,
+      bookingDate: date,
+      status: { $ne: BookingStatus.CANCELLED },
+    });
+    return !existing;
   }
+  async findByCreatorId(creatorId: string): Promise<BookingEntity[]> {
+    const packages = await PackageModel.find({ creatorId }).select("_id");
+    const packageIds = packages.map(p => p._id.toString());
+    const docs = await this.model
+      .find({ packageId: { $in: packageIds } } as any)
+      .populate("packageId")
+      .populate("userId")
+      .sort({ bookingDate: 1 })
+      .exec();
+    return docs.map((item) => this.mapToEntity(item));
+  }
+
 }

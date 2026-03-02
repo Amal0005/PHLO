@@ -1,31 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package, Calendar, Clock, ChevronRight, AlertCircle } from "lucide-react";
+import { Package, Calendar, Clock, ChevronRight, AlertCircle, ArrowUpRight } from "lucide-react";
 import { BookingService } from "@/services/user/bookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import UserNavbar from "@/compoents/reusable/userNavbar";
+import { ROUTES } from "@/constants/routes";
 
 const BookingsPage: React.FC = () => {
     const [bookings, setBookings] = useState<UserBooking[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchBookings = async () => {
-            try {
-                setLoading(true);
-                const response = await BookingService.getUserBookings();
-                if (response.success) {
-                    setBookings(response.data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch bookings:", error);
-            } finally {
-                setLoading(false);
+    const fetchBookings = async () => {
+        try {
+            setLoading(true);
+            const response = await BookingService.getUserBookings();
+            if (response.success) {
+                setBookings(response.data);
             }
-        };
+        } catch (error) {
+            console.error("Failed to fetch bookings:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchBookings();
     }, []);
 
@@ -74,7 +75,7 @@ const BookingsPage: React.FC = () => {
                             Your collection of professional photography bookings will appear here. Start your creative journey today.
                         </p>
                         <button
-                            onClick={() => navigate("/packages")}
+                            onClick={() => navigate(ROUTES.USER.PACKAGES)}
                             className="bg-white text-black px-10 py-4 rounded-2xl font-bold text-sm tracking-tight hover:bg-zinc-200 transition-all hover:scale-[1.02]"
                         >
                             Browse Packages
@@ -85,7 +86,8 @@ const BookingsPage: React.FC = () => {
                         {bookings.map((booking) => (
                             <div
                                 key={booking.id}
-                                className="group relative bg-zinc-900/40 hover:bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 rounded-[2.5rem] p-6 transition-all duration-500 ease-out flex items-center gap-8 overflow-hidden backdrop-blur-xl"
+                                onClick={() => navigate(ROUTES.USER.BOOKING_DETAIL.replace(':sessionId', booking.sessionId))}
+                                className="group relative bg-zinc-900/40 hover:bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 rounded-[2.5rem] p-6 transition-all duration-500 ease-out flex items-center gap-8 overflow-hidden backdrop-blur-xl cursor-pointer"
                             >
                                 {/* Background Glow Effect */}
                                 <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/5 blur-[100px] rounded-full group-hover:bg-white/10 transition-colors" />
@@ -108,11 +110,11 @@ const BookingsPage: React.FC = () => {
                                 <div className="flex-grow min-w-0 pr-4">
                                     <div className="flex flex-wrap items-center gap-3 mb-3">
                                         <span className={`px-4 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border ${getStatusStyles(booking.status)}`}>
-                                            {booking.status}
+                                            {booking.status === 'completed' ? 'Confirmed' : booking.status}
                                         </span>
                                         <div className="flex items-center gap-2 text-zinc-500 text-[11px] font-medium tracking-wide">
                                             <Calendar className="w-3 h-3" />
-                                            {new Date(booking.createdAt).toLocaleDateString('en-US', {
+                                            {new Date(booking.bookingDate).toLocaleDateString('en-US', {
                                                 month: 'short',
                                                 day: 'numeric',
                                                 year: 'numeric'
@@ -130,26 +132,26 @@ const BookingsPage: React.FC = () => {
                                         </div>
                                         <div className="hidden md:flex items-center gap-2 text-zinc-500 text-xs">
                                             <Clock className="w-3.5 h-3.5" />
-                                            <span>Full Package Access</span>
+                                            <span>Full Session Access</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Action */}
-                                <div className="flex-shrink-0">
-                                    <button
-                                        onClick={() => navigate(`/packages/${booking.packageId}`)}
-                                        className="w-12 h-12 rounded-full border border-zinc-800 flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition-all duration-300"
-                                    >
+                                <div className="flex-shrink-0 flex items-center gap-4 relative z-10">
+                                    <div className="hidden md:flex flex-col items-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 duration-500">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">View Detail</span>
+                                        <ArrowUpRight className="w-4 h-4 text-zinc-600" />
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full border border-zinc-800 flex items-center justify-center group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-300">
                                         <ChevronRight className="w-5 h-5" />
-                                    </button>
+                                    </div>
                                 </div>
 
                                 {/* Status specific hint for pending */}
                                 {booking.status === 'pending' && (
                                     <div className="absolute top-4 right-20 flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 text-[10px] font-bold rounded-lg border border-amber-500/20">
                                         <AlertCircle className="w-3 h-3" />
-                                        PAYMENT PENDING
+                                        ACTION REQUIRED
                                     </div>
                                 )}
                             </div>

@@ -21,16 +21,11 @@ import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminC
 import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
 import { AddSubscriptionUseCase } from "@/application/useCases/admin/addSubscriptionUseCase";
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
-import { AddSubscriptionController } from "@/adapters/controllers/admin/subscription/addSubscriptionController";
 import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscriptionUseCase";
-import { GetSubscriptionController } from "@/adapters/controllers/admin/subscription/getSubscriptionController";
 import { EditSubscriptionUseCase } from "@/application/useCases/admin/editSubscriptionUseCase";
-import { EditSubscriptionController } from "@/adapters/controllers/admin/subscription/editSubscriptionController";
 import { DeleteSubscriptionUseCase } from "@/domain/interface/admin/deleteSubscriptionUseCase";
-import { DeleteSubscriptionController } from "@/adapters/controllers/admin/subscription/deleteSubscriptionController";
+import { SubscriptionController } from "@/adapters/controllers/admin/subscription/subscriptionController";
 import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
-import { GetApprovedWallpaperUseCase } from "@/application/useCases/user/wallpaper/getApprovedWallpaperUseCase";
-import { UserWallpaperController } from "@/adapters/controllers/user/userWallpaperController";
 import { ApproveWallpaperUseCase } from "@/application/useCases/admin/wallpaper/approveWallpaperUseCase";
 import { RejectWallpaperUseCase } from "@/application/useCases/admin/wallpaper/rejectWallpaperUseCase";
 import { GetAllWallpapersUseCase } from "@/application/useCases/admin/wallpaper/getAllWallpapersUseCase";
@@ -70,8 +65,5 @@ export const adminLoginController = new AdminLoginController(adminLoginUseCase);
 export const adminUserController = new AdminUserController(adminUserlistingUseCase, toggleUserStatusUseCase);
 export const adminCreatorController = new AdminCreatorController(approveCreatorUseCase, rejectCreatorUseCase, adminCreatorListingUseCase, toggleCreatorStatusUseCase);
 export const categoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
-export const addSubscriptionController = new AddSubscriptionController(addSubscriptionUseCase)
-export const getSubscriptionController = new GetSubscriptionController(getSubscriptionUseCase)
-export const editSubscriptionController = new EditSubscriptionController(editSubscriptionUseCase)
-export const deleteSubscriptionController = new DeleteSubscriptionController(deleteSubscriptionUseCase)
+export const subscriptionController = new SubscriptionController(addSubscriptionUseCase, editSubscriptionUseCase, deleteSubscriptionUseCase, getSubscriptionUseCase);
 export const adminWallpaperController = new AdminWallpaperController(approveWallpaperUseCase, rejectWallpaperUseCase, getAllWallpapersUseCase);

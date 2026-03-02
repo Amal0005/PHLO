@@ -1,15 +1,16 @@
 import api from "@/axios/axiosConfig";
 import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 import { CreateBookingResponse } from "@/interface/user/CreateBookingResponse";
-import { BookingListResponse } from "@/interface/user/userBookingInterface";
+import { BookingListResponse, UserBooking } from "@/interface/user/userBookingInterface";
 
 export const BookingService = {
 
-  createBooking: async (packageId: string, baseUrl: string, bookingDate: string): Promise<CreateBookingResponse> => {
+  createBooking: async (packageId: string, baseUrl: string, bookingDate: string, location?: string): Promise<CreateBookingResponse> => {
     const res = await api.post(API_ENDPOINTS.USER.CREATE_BOOKING, {
       packageId,
       baseUrl,
       bookingDate,
+      location,
     });
     return res.data;
   },
@@ -21,8 +22,8 @@ export const BookingService = {
     const res = await api.get(`${API_ENDPOINTS.USER.CHECK_AVAILABILITY}?packageId=${packageId}&date=${date}`);
     return res.data;
   },
-  getBookingStatus: async (sessionId: string): Promise<{ status: string }> => {
-    const res = await api.get(API_ENDPOINTS.USER.GET_BOOKING_STATUS(sessionId));
+  getBookingDetail: async (sessionId: string): Promise<{ success: boolean; data: UserBooking }> => {
+    const res = await api.get(API_ENDPOINTS.USER.GET_BOOKING_DETAIL(sessionId));
     return res.data;
   },
   cancelBooking: async (sessionId: string): Promise<{ success: boolean; message: string }> => {

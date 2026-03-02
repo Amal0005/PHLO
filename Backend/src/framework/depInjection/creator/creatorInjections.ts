@@ -32,6 +32,9 @@ import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUs
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
 import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
 import { BuySubscriptionUseCase } from "@/application/useCases/creator/subscription/buySubscriptionUseCase";
+import { ListCreatorBookingsUseCase } from "@/application/useCases/creator/bookings/listCreatorBookingsUseCase";
+import { CreatorBookingController } from "@/adapters/controllers/creator/creatorBookingController";
+import { BookingRepository } from "@/adapters/repository/user/bookingRepository";
 
 import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/creator/subscription/creatorSubscriptionWebhookUseCase";
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
@@ -51,6 +54,7 @@ const packageRepository = new PackageRepository();
 const categoryRepo = new CategoryRepository();
 const subscriptionRepo = new SubscriptionRepository()
 const wallpaperRepo = new WallpaperRepository()
+const bookingRepo = new BookingRepository()
 
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
@@ -79,6 +83,7 @@ const addCategoryUseCase = new AddCategoryUseCase(categoryRepo);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepo);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService)
+const listCreatorBookingsUseCase = new ListCreatorBookingsUseCase(bookingRepo);
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
 
@@ -93,6 +98,7 @@ export const creatorProfileController = new CreatorProfileController(getCreatorP
 export const packageController = new PackageController(addPackageUseCase, deletePackageUseCase, editPackageUseCase, getPackageUseCase);
 export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
 export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase)
+export const creatorBookingController = new CreatorBookingController(listCreatorBookingsUseCase)
 export const wallpaperController = new WallpaperController(addWallpaperUseCase, deleteWallpaperUseCase, getCreatorWallpapaperUseCase,)
 
 

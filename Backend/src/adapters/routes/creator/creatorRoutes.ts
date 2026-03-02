@@ -8,6 +8,7 @@ import {
   getCategoryController,
   creatorSubscriptionController,
   wallpaperController,
+  creatorBookingController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
@@ -140,6 +141,12 @@ export class CreatorRoutes {
       BACKEND_ROUTES.CREATOR.PACKAGE_DETAIL,
       (req: Request, res: Response) => {
         packageController.deletePackage(req, res);
+      },
+    );
+    this.creatorRouter.get(
+      BACKEND_ROUTES.CREATOR.BOOKINGS,
+      (req: Request, res: Response) => {
+        creatorBookingController.ListCreatorBookings(req, res);
       },
     );
     this.creatorRouter.get(

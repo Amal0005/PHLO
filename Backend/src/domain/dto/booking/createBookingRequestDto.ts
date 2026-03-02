@@ -1,5 +1,6 @@
 export interface CreateBookingRequestDTO {
   packageId: string;
   baseUrl: string;
-  bookingDate:Date
+  bookingDate: Date;
+  location?: string;
 }

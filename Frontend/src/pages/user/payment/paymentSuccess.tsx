@@ -3,14 +3,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { CheckCircle, Loader2, XCircle, AlertTriangle } from "lucide-react";
 import { ROUTES } from "@/constants/routes";
 import { BookingService } from "@/services/user/bookingService";
-import { toast } from "react-toastify";
 
 const PaymentSuccess: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [status, setStatus] = useState<"verifying" | "completed" | "cancelled" | "failed">("verifying");
-  const [timeLeft, setTimeLeft] = useState(20);
   const timerRef = useRef<any>(null);
   const pollRef = useRef<any>(null);
 
@@ -22,8 +20,8 @@ const PaymentSuccess: React.FC = () => {
 
     const checkStatus = async () => {
       try {
-        const response = await BookingService.getBookingStatus(sessionId);
-        if (response.status === "completed") {
+        const response = await BookingService.getBookingDetail(sessionId);
+        if (response.success && response.data.status === "completed") {
           setStatus("completed");
           if (pollRef.current) clearInterval(pollRef.current);
           if (timerRef.current) clearInterval(timerRef.current);
@@ -33,21 +31,11 @@ const PaymentSuccess: React.FC = () => {
       }
     };
 
+    // Check status immediately
     checkStatus();
 
-    // Start polling every 2 seconds
+    // Start polling every 2 seconds to see if webhook finished
     pollRef.current = setInterval(checkStatus, 2000);
-
-    // Start 20s countdown for cancellation
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          handleCancel();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
 
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
@@ -55,21 +43,6 @@ const PaymentSuccess: React.FC = () => {
     };
   }, [sessionId]);
 
-  const handleCancel = async () => {
-    if (pollRef.current) clearInterval(pollRef.current);
-    if (timerRef.current) clearInterval(timerRef.current);
-
-    if (status === "verifying" && sessionId) {
-      try {
-        await BookingService.cancelBooking(sessionId);
-        setStatus("cancelled");
-        toast.error("Payment verification timed out. Booking cancelled.");
-      } catch (error) {
-        console.error("Failed to cancel booking:", error);
-        setStatus("failed");
-      }
-    }
-  };
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-8">
@@ -102,7 +75,7 @@ const PaymentSuccess: React.FC = () => {
             <>
               <h1 className="text-3xl font-bold text-white mb-3">Verifying Payment...</h1>
               <p className="text-gray-400">Please wait while we confirm your payment with Stripe.</p>
-              <p className="text-zinc-600 text-sm mt-4">Auto-cancelling in {timeLeft}s...</p>
+              <p className="text-zinc-600 text-sm mt-4 italic">This usually takes just a few seconds.</p>
             </>
           )}
           {status === "completed" && (
@@ -129,7 +102,7 @@ const PaymentSuccess: React.FC = () => {
           onClick={() => navigate(ROUTES.USER.HOME)}
           className="w-full bg-white text-black py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors"
         >
-          {status === "verifying" ? "Cancel & Return Home" : "Return Home"}
+          {status === "verifying" ? "Return to Home" : "Return Home"}
         </button>
       </div>
     </div>

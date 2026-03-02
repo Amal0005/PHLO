@@ -13,6 +13,8 @@ export const ROUTES = {
     PAYMENT_CANCEL: "/payment-cancel",
     WALLPAPERS: "/wallpapers",
     WISHLIST: "/wishlist",
+    BOOKINGS: "/bookings",
+    BOOKING_DETAIL: "/bookings/:sessionId",
 
     NOT_FOUND: "*",
   },
@@ -30,8 +32,8 @@ export const ROUTES = {
     SUBSCRIPTIONS: "/creator/subscriptions",
     SUBSCRIPTION_SUCCESS: "/creator/subscription-success",
     SUBSCRIPTION_CANCEL: "/creator/subscription-cancel",
-    WALLPAPERS: "/creator/wallpapers"
-
+    WALLPAPERS: "/creator/wallpapers",
+    BOOKINGS: "/creator/bookings"
   },
 
   ADMIN: {

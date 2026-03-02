@@ -32,9 +32,12 @@ export const bookingSchema = new Schema(
       index: true,
     },
     bookingDate: {
-  type: Date,
-  required: true,
-},
+      type: Date,
+      required: true,
+    },
+    location: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

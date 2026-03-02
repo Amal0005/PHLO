@@ -15,7 +15,7 @@ import {
   getPackageDetailController,
   getCategoryController,
   userProfileController,
-  bookingController,
+  userBookingController,
   userWallpaperController,
   wishlistController,
 } from "../../../framework/depInjection/user/userInjections";
@@ -196,11 +196,11 @@ export class UserRoutes {
       ),
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        bookingController.CreateBooking(req, res),
+        userBookingController.CreateBooking(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.CHECK_AVAILABILITY,
-      (req: AuthRequest, res: Response) => bookingController.checkAvailability(req, res)
+      (req: AuthRequest, res: Response) => userBookingController.checkAvailability(req, res)
     );
 
     this.userRouter.get(
@@ -213,7 +213,7 @@ export class UserRoutes {
       ),
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        bookingController.ListBookings(req, res),
+        userBookingController.ListBookings(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.BOOKING_STATUS,
@@ -225,7 +225,7 @@ export class UserRoutes {
       ),
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        bookingController.GetBookingStatus(req, res),
+        userBookingController.GetBookingDetail(req, res),
     );
     this.userRouter.post(
       BACKEND_ROUTES.USER.CANCEL_BOOKING,
@@ -237,7 +237,7 @@ export class UserRoutes {
       ),
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        bookingController.CancelBooking(req, res),
+        userBookingController.CancelBooking(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.WALLPAPERS,

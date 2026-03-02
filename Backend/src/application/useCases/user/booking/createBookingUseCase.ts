@@ -9,50 +9,51 @@ import { BookingStatus } from "@/utils/bookingStatus";
 import { StatusCode } from "@/utils/statusCodes";
 
 export class CreateBookingUseCase implements ICreateBookingUseCase {
-    constructor(
-        private _bookingRepo: IBookingRepository,
-        private _packageRepo: IPackageRepository,
-        private _stripeService: IStripeService
-    ) {}
-    async createBooking(
-  userId: string,
-  data: CreateBookingRequestDTO
-): Promise<CheckoutSessionResponseDTO> {
+  constructor(
+    private _bookingRepo: IBookingRepository,
+    private _packageRepo: IPackageRepository,
+    private _stripeService: IStripeService
+  ) { }
+  async createBooking(
+    userId: string,
+    data: CreateBookingRequestDTO
+  ): Promise<CheckoutSessionResponseDTO> {
 
 
-  const pkg = await this._packageRepo.findById(data.packageId);
-  if (!pkg) throw new Error("Package not found");
+    const pkg = await this._packageRepo.findById(data.packageId);
+    if (!pkg) throw new Error("Package not found");
 
-  const isAvailable= await this._bookingRepo.checkAvailability(data.packageId,new Date(data.bookingDate))
-  if (!isAvailable) throw new AppError("Date already booked", StatusCode.CONFLICT)
+    const isAvailable = await this._bookingRepo.checkAvailability(data.packageId, new Date(data.bookingDate))
+    if (!isAvailable) throw new AppError("Date already booked", StatusCode.CONFLICT)
 
-  const booking = await this._bookingRepo.create({
-    userId,
-    packageId: data.packageId,
-    amount: pkg.price,
-    status: BookingStatus.PENDING,
-    bookingDate: new Date(data.bookingDate)
-  });
+    const booking = await this._bookingRepo.create({
+      userId,
+      packageId: data.packageId,
+      amount: pkg.price,
+      status: BookingStatus.PENDING,
+      bookingDate: new Date(data.bookingDate),
+      location: data.location,
+    });
 
-  const creatorId =
-    typeof pkg.creatorId === "string"
-      ? pkg.creatorId
-      : String((pkg.creatorId as any)?._id || (pkg.creatorId as any)?.id);
+    const creatorId =
+      typeof pkg.creatorId === "string"
+        ? pkg.creatorId
+        : String((pkg.creatorId as any)?._id || (pkg.creatorId as any)?.id);
 
-  const session = await this._stripeService.createCheckoutSession({
-    bookingId: booking.id!,
-    creatorId: creatorId,
-    packageName: pkg.title,
-    amount: pkg.price,
-    successUrl: `${data.baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-    cancelUrl: `${data.baseUrl}/payment-cancel?booking_id=${booking.id}`,
-    type: "booking",
-  });
+    const session = await this._stripeService.createCheckoutSession({
+      bookingId: booking.id!,
+      creatorId: creatorId,
+      packageName: pkg.title,
+      amount: pkg.price,
+      successUrl: `${data.baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${data.baseUrl}/payment-cancel?booking_id=${booking.id}`,
+      type: "booking",
+    });
 
-  await this._bookingRepo.update(booking.id!, {
-    stripeSessionId: session.id,
-  });
+    await this._bookingRepo.update(booking.id!, {
+      stripeSessionId: session.id,
+    });
 
-  return session;
-}
+    return session;
+  }
 }

@@ -23,7 +23,7 @@ import path from "path";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 import { errorHandler } from "./adapters/middlewares/errorHandler";
 import { logger } from "./utils/logger";
-import { bookingController, paymentController } from "./framework/depInjection/user/userInjections";
+import {paymentController } from "./framework/depInjection/user/userInjections";
 
 
 export class App {
@@ -57,12 +57,10 @@ export class App {
   }
   private setMiddlewares(): void {
     this.app.use(loggerMiddleware)
-    // Stripe webhook needs raw body for signature verification - must be before express.json()
     this.app.use(
       "/webhook",
       express.raw({ type: "application/json" })
     );
-    // Webhook route - registered here so it uses raw body, not parsed JSON
     this.app.post("/webhook", (req, res) =>
       paymentController.handleWebhook(req as any, res)
     );
