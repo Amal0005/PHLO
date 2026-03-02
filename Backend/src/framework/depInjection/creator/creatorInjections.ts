@@ -31,9 +31,9 @@ import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseC
 import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
 import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
-import { BuySubscriptionUseCase } from "@/application/useCases/payment/buySubscriptionUseCase";
+import { BuySubscriptionUseCase } from "@/application/useCases/creator/subscription/buySubscriptionUseCase";
 
-import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/payment/creatorSubscriptionWebhookUseCase";
+import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/creator/subscription/creatorSubscriptionWebhookUseCase";
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { StripeService } from "@/domain/services/stripeService";
 import { CreatorSubscriptionController } from "@/adapters/controllers/subscription/creatorSubscriptionController";

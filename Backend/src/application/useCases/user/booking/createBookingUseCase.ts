@@ -39,10 +39,6 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
       ? pkg.creatorId
       : String((pkg.creatorId as any)?._id || (pkg.creatorId as any)?.id);
 
-  if (!creatorId) {
-    throw new Error("CreatorId not found in package");
-  }
-
   const session = await this._stripeService.createCheckoutSession({
     bookingId: booking.id!,
     creatorId: creatorId,

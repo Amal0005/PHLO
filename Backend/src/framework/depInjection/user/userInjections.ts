@@ -47,7 +47,7 @@ import { CreateBookingUseCase } from "@/application/useCases/user/booking/create
 import { BookingController } from "@/adapters/controllers/booking/bookingController";
 import { PaymentController } from "@/adapters/controllers/payment/paymentController";
 import { BookingWebhookUseCase } from "@/application/useCases/user/booking/bookingWebhookUseCase";
-import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/payment/creatorSubscriptionWebhookUseCase";
+import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/creator/subscription/creatorSubscriptionWebhookUseCase";
 import { ListBookingUseCase } from "../../../application/useCases/user/booking/listbookingUseCase";
 import { CheckAvailabilityUseCase } from "@/application/useCases/user/booking/checkAvailabilityUseCase";
 import { GetApprovedWallpaperUseCase } from "@/application/useCases/user/wallpaper/getApprovedWallpaperUseCase";

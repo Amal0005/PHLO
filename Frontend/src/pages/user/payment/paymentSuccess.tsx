@@ -10,7 +10,7 @@ const PaymentSuccess: React.FC = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [status, setStatus] = useState<"verifying" | "completed" | "cancelled" | "failed">("verifying");
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(20);
   const timerRef = useRef<any>(null);
   const pollRef = useRef<any>(null);
 
