@@ -8,11 +8,11 @@ export interface PackageEntity {
   price: number;
   category: string;
   images: string[];
-  location: {
+  locations: {
     type: "Point";
-    coordinates: [number, number]; 
-  };
-  placeName?: string;
+    coordinates: [number, number];
+    placeName: string;
+  }[];
   createdAt?: Date;
   updatedAt?: Date;
 }

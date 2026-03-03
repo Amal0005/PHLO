@@ -30,4 +30,16 @@ export const BookingService = {
     const res = await api.post(API_ENDPOINTS.USER.CANCEL_BOOKING(sessionId));
     return res.data;
   },
+  downloadInvoice: async (sessionId: string): Promise<void> => {
+    const { data } = await api.get(API_ENDPOINTS.USER.DOWNLOAD_INVOICE(sessionId), {
+      responseType: 'blob'
+    });
+
+    const url = window.URL.createObjectURL(new Blob([data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `invoice-${sessionId.slice(0, 8)}.pdf`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  },
 }

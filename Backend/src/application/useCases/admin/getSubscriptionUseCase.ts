@@ -6,10 +6,10 @@ import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetSubscriptionUseCase implements IGetSubscriptionUseCase {
   constructor(private _subscriptionRepo: ISubscriptionRepository) { }
-  async getSubscription(page: number = 1, limit: number = 10, isActive?: boolean): Promise<PaginatedResult<SubscriptionDTO>> {
-    const res = await this._subscriptionRepo.findSubscriptions(page, limit, isActive);
+  async getSubscription(page: number = 1, limit: number = 10, isActive?: boolean, search?: string): Promise<PaginatedResult<SubscriptionDTO>> {
+    const res = await this._subscriptionRepo.findSubscriptions(page, limit, isActive, search);
 
-    if (!res.data || res.data.length === 0) throw new Error("No subscriptions found");
+    if (!res.data) return { ...res, data: [] };
 
     return {
       ...res,

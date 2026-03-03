@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
         GET_BOOKINGS: "/bookings",
         GET_BOOKING_DETAIL: (sessionId: string) => `/bookings/status/${sessionId}`,
         CANCEL_BOOKING: (sessionId: string) => `/bookings/cancel/${sessionId}`,
+        DOWNLOAD_INVOICE: (sessionId: string) => `/bookings/${sessionId}/invoice`,
     },
     ADMIN: {
         LOGIN: "/admin/login",

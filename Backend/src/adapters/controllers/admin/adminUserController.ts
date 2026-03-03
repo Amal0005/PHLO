@@ -8,20 +8,22 @@ export class AdminUserController {
   constructor(
     private _adminUserListingUseCase: IAdminUserListingUseCase,
     private _toggleUserStatusUseCase: IToggleUserStatusUseCase
-  ) {}
+  ) { }
   async getUsers(req: Request, res: Response) {
     try {
       const page = Math.max(1, Number(req.query.page) || 1);
       const limit = Math.min(50, Number(req.query.limit) || 10);
+      const search = req.query.search as string;
+      const status = req.query.status as string;
 
       const data =
-        await this._adminUserListingUseCase.getAllUsers(page, limit);
+        await this._adminUserListingUseCase.getAllUsers(page, limit, search, status);
 
       return res.status(StatusCode.OK).json({
         success: true,
         ...data,
       });
-    } catch (error:unknown) {
+    } catch (error: unknown) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
         message:
@@ -37,7 +39,7 @@ export class AdminUserController {
       const { status } = req.body;
       await this._toggleUserStatusUseCase.toggleStatus(userId, status);
       return res.status(StatusCode.OK).json({ success: true, message: `User ${status} successfully` });
-    } catch (error:unknown) {
+    } catch (error: unknown) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error });
     }
   }

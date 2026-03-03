@@ -13,8 +13,7 @@ export class PackageMapper {
       description: obj.description,
       price: obj.price,
       images: obj.images,
-      location: obj.location,
-      placeName: obj.placeName,
+      locations: obj.locations,
       createdAt: obj.createdAt,
       updatedAt: obj.updatedAt,
     };

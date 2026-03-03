@@ -13,17 +13,20 @@ export const registerUserSchema = z
       .trim()
       .email("Please enter a valid email address"),
 
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters long")
-      .max(32, "Password must not exceed 32 characters")
-      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .regex(/[0-9]/, "Password must contain at least one number")
-      .regex(
-        /[^A-Za-z0-9]/,
-        "Password must contain at least one special character"
-      ),
+ password: z
+  .string()
+  .min(8)
+  .max(32)
+  .refine((val) =>
+    /[a-z]/.test(val) &&
+    /[A-Z]/.test(val) &&
+    /[0-9]/.test(val) &&
+    /[^A-Za-z0-9]/.test(val),
+    {
+      message:
+        "Password must be 8–32 characters long and include uppercase, lowercase, number, and special character.",
+    }
+  ),
 
     confirmPassword: z
       .string()

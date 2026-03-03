@@ -6,11 +6,13 @@ export const packageSchema = z.object({
   price: z.number().positive("Price must be a positive number"),
   category: z.string().min(1, "Please select a category"),
   images: z.array(z.string()).optional(),
-  location: z.object({
-    type: z.literal("Point"),
-    coordinates: z.tuple([z.number(), z.number()]), // [longitude, latitude]
-  }),
-  placeName: z.string().min(1, "Location name is required"),
+  locations: z.array(
+    z.object({
+      type: z.literal("Point"),
+      coordinates: z.tuple([z.number(), z.number()]), // [longitude, latitude]
+      placeName: z.string().min(1, "Location name is required"),
+    })
+  ).min(1, "At least one location is required"),
 });
 
 export const editPackageSchema = z.object({
@@ -19,11 +21,13 @@ export const editPackageSchema = z.object({
   price: z.number().positive("Price must be a positive number").optional(),
   category: z.string().min(1, "Please select a category").optional(),
   images: z.array(z.string()).optional(),
-  location: z.object({
-    type: z.literal("Point"),
-    coordinates: z.tuple([z.number(), z.number()]),
-  }).optional(),
-  placeName: z.string().optional(),
+  locations: z.array(
+    z.object({
+      type: z.literal("Point"),
+      coordinates: z.tuple([z.number(), z.number()]),
+      placeName: z.string().min(1, "Location name is required"),
+    })
+  ).optional(),
 }).refine(
   (data) => Object.keys(data).some(key => data[key as keyof typeof data] !== undefined),
   { message: "At least one field must be provided for update" }

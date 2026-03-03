@@ -216,12 +216,16 @@ const PackageDetailPage: React.FC = () => {
                       <div className="text-[13px] font-semibold leading-tight" style={{ color: "rgba(255,255,255,0.88)" }}>
                         {packageData.creatorId.fullName}
                       </div>
-                      {packageData.placeName && (
-                        <div className="flex items-center gap-1.5 mt-1">
-                          <MapPin className="w-2.5 h-2.5" style={{ color: "rgba(255,255,255,0.28)" }} />
-                          <span className="text-[9px] uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>
-                            {packageData.placeName}
-                          </span>
+                      {packageData.locations && packageData.locations.length > 0 && (
+                        <div className="flex flex-col gap-2 mt-1">
+                          {packageData.locations.map((loc, idx) => (
+                            <div key={idx} className="flex items-center gap-1.5">
+                              <MapPin className="w-2.5 h-2.5" style={{ color: "rgba(255,255,255,0.28)" }} />
+                              <span className="text-[10px] uppercase tracking-widest leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
+                                {loc.placeName}
+                              </span>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>

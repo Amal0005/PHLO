@@ -15,7 +15,7 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
     return UserMapper.toDomain(doc);
   }
 
-  
+
 
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.model.findOne({ email });
@@ -31,8 +31,18 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
     await this.model.updateOne({ email }, { $set: { password: hashedPassword } });
   }
 
-  async findAllUsers(page: number, limit: number): Promise<PaginatedResult<User>> {
-    const result = await paginateMongo(this.model, { role: "user" }, page, limit, { select: "-password", sort: { createdAt: -1 } });
+  async findAllUsers(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<User>> {
+    const query: any = { role: "user" };
+    if (status && status !== "all") {
+      query.status = status;
+    }
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } }
+      ];
+    }
+    const result = await paginateMongo(this.model, query, page, limit, { select: "-password", sort: { createdAt: -1 } });
     return { ...result, data: result.data.map((user: IUserModel) => this.mapToEntity(user)) };
   }
 
@@ -40,7 +50,8 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
     await this.model.updateOne({ _id: userId }, { $set: { status: status } });
   }
 
-  async findByPhone(phone: string): Promise<User | null> {
+  async findByPhone(phone: string | undefined): Promise<User | null> {
+    if (!phone) return null;
     const user = await this.model.findOne({ phone });
     return user ? this.mapToEntity(user) : null;
   }

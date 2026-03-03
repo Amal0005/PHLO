@@ -21,14 +21,16 @@ export class AdminCreatorController {
     private _rejectCreatorUseCase: IRejectCreatorUseCase,
     private _adminCreatorListingUseCase: IAdminCreatorListingUseCase,
     private _toggleCreatorStatusUseCase: IToggleCreatorStatusUseCase,
-  ) {}
+  ) { }
 
   async getCreators(req: Request, res: Response): Promise<Response> {
     try {
       const page = Number(req.query.page) || 1
       const limit = Number(req.query.limit) || 10
+      const search = req.query.search as string;
+      const status = req.query.status as string;
 
-      const data = await this._adminCreatorListingUseCase.getAllCreators(page, limit);
+      const data = await this._adminCreatorListingUseCase.getAllCreators(page, limit, search, status);
       return res.status(StatusCode.OK).json({
         success: true,
         ...data,

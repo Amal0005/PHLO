@@ -1,5 +1,6 @@
 import { BookingEntity } from "@/domain/entities/bookingEntity";
 import { BaseRepository } from "../baseRepository";
+import { QueryFilter } from "mongoose";
 import {
   BookingDocument,
   BookingModel,
@@ -21,7 +22,11 @@ export class BookingRepository
   async findByStripeSessionId(
     sessionId: string,
   ): Promise<BookingEntity | null> {
-    const doc = await this.model.findOne({ stripeSessionId: sessionId }).exec();
+    const doc = await this.model
+      .findOne({ stripeSessionId: sessionId })
+      .populate("packageId")
+      .populate("userId")
+      .exec();
     return doc ? this.mapToEntity(doc) : null;
   }
   async findByUser(userId: string): Promise<BookingEntity[]> {
@@ -54,7 +59,7 @@ export class BookingRepository
     const packages = await PackageModel.find({ creatorId }).select("_id");
     const packageIds = packages.map(p => p._id.toString());
     const docs = await this.model
-      .find({ packageId: { $in: packageIds } } as any)
+      .find({ packageId: { $in: packageIds } } as QueryFilter<BookingDocument>)
       .populate("packageId")
       .populate("userId")
       .sort({ bookingDate: 1 })

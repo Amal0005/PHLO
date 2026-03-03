@@ -4,9 +4,9 @@ export interface PackageData {
   price: number;
   category: string;
   images?: string[];
-  location: {
+  locations: {
     type: "Point";
     coordinates: [number, number]; // [longitude, latitude]
-  };
-  placeName?: string;
+    placeName: string;
+  }[];
 }

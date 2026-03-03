@@ -5,7 +5,7 @@ import { EditPackageFormData, editPackageSchema } from "@/validation/packageVali
 import { PaginatedResponse } from "@/interface/admin/pagination";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { S3Service } from "@/services/s3Service";
 import { S3Media } from "@/compoents/reusable/s3Media";
@@ -27,11 +27,11 @@ interface EditPackageModalProps {
       description?: string;
     };
     images?: string[];
-    location?: {
+    locations?: {
       type: "Point";
       coordinates: [number, number];
-    };
-    placeName?: string;
+      placeName: string;
+    }[];
   } | null;
 }
 
@@ -52,11 +52,18 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
     setValue,
+    getValues,
   } = useForm<EditPackageFormData>({
     resolver: zodResolver(editPackageSchema),
+  });
+
+  const { fields, append, remove, replace } = useFieldArray({
+    control,
+    name: "locations",
   });
 
   // Load categories
@@ -81,14 +88,12 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
         : packageData.category;
       setValue("category", categoryId);
       setExistingImages(packageData.images || []);
-      if (packageData.location) {
-        setValue("location", packageData.location);
-      }
-      if (packageData.placeName) {
-        setValue("placeName", packageData.placeName);
+
+      if (packageData.locations) {
+        replace(packageData.locations);
       }
     }
-  }, [packageData, isOpen, setValue]);
+  }, [packageData, isOpen, setValue, replace]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -134,19 +139,22 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
       if (data.title && data.title !== packageData.title) updateData.title = data.title;
       if (data.description && data.description !== packageData.description)
         updateData.description = data.description;
-      if (data.price && data.price !== packageData.price) updateData.price = data.price;
+      if (data.price !== undefined && data.price !== packageData.price) updateData.price = data.price;
+
       const currentCategoryId = typeof packageData.category === 'object'
         ? packageData.category._id
         : packageData.category;
       if (data.category && data.category !== currentCategoryId)
         updateData.category = data.category;
+
       if (allImages.length !== packageData.images?.length ||
         !allImages.every((img, i) => img === packageData.images?.[i])) {
         updateData.images = allImages;
       }
 
-      if (data.location) updateData.location = data.location;
-      if (data.placeName) updateData.placeName = data.placeName;
+      if (data.locations) {
+        updateData.locations = data.locations;
+      }
 
       await CreatorPackageService.editPackage(packageData._id, updateData);
 
@@ -243,26 +251,52 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
               </div>
 
               {/* LOCATION SEARCH */}
-              <div>
+              <div className="md:col-span-2">
                 <label className="text-xs text-gray-500 font-bold mb-2 block uppercase tracking-widest">
-                  Search Location {packageData.placeName && `(Current: ${packageData.placeName})`}
+                  Locations
                 </label>
 
-                <LocationSearchBar
-                  onChange={(location) => {
-                    const geoJSON = {
-                      type: "Point" as const,
-                      coordinates: [location.longitude, location.latitude] as [number, number]
-                    };
+                <div className="space-y-3 mb-4">
+                  {fields.map((field: any, index: number) => (
+                    <div key={field.id} className="flex items-center gap-3 bg-black/30 p-3 rounded-xl border border-white/5">
+                      <div className="flex-1 text-sm text-gray-300 truncate">
+                        {field.placeName}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="text-red-500 hover:text-red-400 transition-colors p-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
 
-                    setValue("location", geoJSON, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
-                    setValue("placeName", location.placeName || "", { shouldValidate: true });
-                  }}
-                />
+                <div className="relative">
+                  <LocationSearchBar
+                    onChange={(location) => {
+                      const newLocation = {
+                        type: "Point" as const,
+                        coordinates: [location.longitude, location.latitude] as [number, number],
+                        placeName: location.placeName || ""
+                      };
 
-                {errors.location && (
+                      const currentLocations = getValues("locations") || [];
+                      const exists = currentLocations.some(loc => loc.placeName === newLocation.placeName);
+
+                      if (!exists) {
+                        append(newLocation);
+                      } else {
+                        toast.info("Location already added");
+                      }
+                    }}
+                  />
+                </div>
+
+                {errors.locations && (
                   <p className="text-red-500 text-xs mt-1">
-                    Please select a location
+                    {errors.locations.message || "Please add at least one location"}
                   </p>
                 )}
               </div>

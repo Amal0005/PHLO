@@ -25,7 +25,8 @@ export const BACKEND_ROUTES = {
     WISHLIST_IDS: "/wishlist/ids",
     CHECK_AVAILABILITY: "/bookings/check-availability",
     BOOKING_STATUS: "/bookings/status/:sessionId",
-    CANCEL_BOOKING: "/bookings/cancel/:sessionId"
+    CANCEL_BOOKING: "/bookings/cancel/:sessionId",
+    DOWNLOAD_INVOICE: "/bookings/:sessionId/invoice"
   },
   CREATOR: {
     BASE: "/creator",

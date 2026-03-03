@@ -23,7 +23,8 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
     return creator ? this.mapToEntity(creator) : null;
   }
 
-  async findByPhone(phone: string): Promise<CreatorEntity | null> {
+  async findByPhone(phone: string | undefined): Promise<CreatorEntity | null> {
+    if (!phone) return null;
     const creator = await this.model.findOne({ phone });
     return creator ? this.mapToEntity(creator) : null;
   }
@@ -41,8 +42,18 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
     await this.model.updateOne({ email }, { $set: { password: hashedPassword } });
   }
 
-  async findAllCreators(page: number, limit: number): Promise<PaginatedResult<CreatorEntity>> {
-    const result = await paginateMongo(this.model, {}, page, limit, { select: "-password", sort: { createdAt: -1 } });
+  async findAllCreators(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<CreatorEntity>> {
+    const query: any = {};
+    if (status && status !== "all") {
+      query.status = status;
+    }
+    if (search) {
+      query.$or = [
+        { fullName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } }
+      ];
+    }
+    const result = await paginateMongo(this.model, query, page, limit, { select: "-password", sort: { createdAt: -1 } });
     return { ...result, data: result.data.map((c: ICreatorModel) => this.mapToEntity(c)) };
   }
 

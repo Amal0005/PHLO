@@ -338,19 +338,15 @@ const WishlistPage: React.FC = () => {
                     <p className="text-gray-500 text-sm line-clamp-2 mb-4">
                       {pkg.description}
                     </p>
-                    {(pkg.placeName ||
-                      (typeof pkg.creatorId === "object" &&
-                        pkg.creatorId.city)) && (
-                        <div className="flex items-center gap-2 text-gray-400 text-sm mb-4">
-                          <MapPin size={16} className="flex-shrink-0" />
-                          <span className="line-clamp-1">
-                            {pkg.placeName ||
-                              (typeof pkg.creatorId === "object"
-                                ? pkg.creatorId.city
-                                : "")}
-                          </span>
-                        </div>
-                      )}
+                    {(pkg.locations && pkg.locations.length > 0) && (
+                      <div className="flex items-center gap-2 text-gray-400 text-sm mb-4">
+                        <MapPin size={16} className="flex-shrink-0" />
+                        <span className="line-clamp-1">
+                          {pkg.locations[0].placeName}
+                          {pkg.locations.length > 1 && ` (+${pkg.locations.length - 1} more)`}
+                        </span>
+                      </div>
+                    )}
                     <div className="text-2xl font-black">
                       ₹ {pkg.price.toLocaleString()}
                     </div>

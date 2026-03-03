@@ -28,9 +28,9 @@ import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
 
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 
 export class UserRoutes {
   public userRouter: Router;
@@ -238,6 +238,18 @@ export class UserRoutes {
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
         userBookingController.CancelBooking(req, res),
+    );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.DOWNLOAD_INVOICE,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        userBookingController.DownloadInvoice(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.WALLPAPERS,

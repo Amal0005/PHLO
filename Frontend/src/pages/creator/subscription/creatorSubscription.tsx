@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
-import { Check } from "lucide-react";
+import { toast } from "react-toastify";
 import { CreatorSubscriptionService } from "@/services/creator/creatorSubscriptionService";
+import { Check } from "lucide-react";
 
 export default function CreatorSubscription() {
   const [plans, setPlans] = useState<any[]>([]);
@@ -17,21 +18,21 @@ export default function CreatorSubscription() {
       setPlans(res.data);
     } catch (error) {
       console.error("Failed to fetch plans", error);
+      toast.error("Failed to load plans");
     } finally {
       setLoading(false);
     }
   };
 
   const handleBuy = async (id: string) => {
-    console.log("iddddddd",id)
     try {
-        console.log("iddddd",id)
       const res = await CreatorSubscriptionService.buySubscription(id);
       if (res.url) {
         window.location.href = res.url;
       }
-    } catch (error) {
-      console.error("Purchase failed", error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Purchase failed. Please try again.";
+      toast.error(message);
     }
   };
 

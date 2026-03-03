@@ -65,6 +65,8 @@ export class App {
       paymentController.handleWebhook(req as any, res)
     );
     this.app.use(express.json());
+    console.log(process.env.FRONTEND_URL);
+    
     this.app.use(
       cors({
         origin: process.env.FRONTEND_URL,
