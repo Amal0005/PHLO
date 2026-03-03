@@ -34,7 +34,7 @@ export class CategoryRepository extends BaseRepository<CategoryEntity, ICategory
   }
 
   async findByName(name: string): Promise<CategoryEntity | null> {
-    const category = await this.model.findOne({ name });
+    const category = await this.model.findOne({ name: { $regex: new RegExp(`^${name}$`, "i") } });
     return category ? this.mapToEntity(category) : null;
   }
 }

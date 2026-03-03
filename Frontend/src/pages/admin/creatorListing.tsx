@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Search } from "lucide-react";
 import {
   approveCreator,
   fetchAdminCreators,
@@ -26,6 +26,7 @@ export default function CreatorListingPage() {
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedCreator, setSelectedCreator] = useState<Creator | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [search, setSearch] = useState("");
   const [confirmData, setConfirmData] = useState<{ creatorId: string; newStatus: "approved" | "blocked" } | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -36,7 +37,7 @@ export default function CreatorListingPage() {
       try {
         setLoading(true);
 
-        const data = await fetchAdminCreators(page, limit);
+        const data = await fetchAdminCreators(page, limit, search, filterStatus);
 
         setCreators(data.data);
         setTotalPages(data.totalPages);
@@ -47,13 +48,17 @@ export default function CreatorListingPage() {
       }
     }
 
-    loadCreators();
-  }, [page]);
+    const timer = setTimeout(() => {
+      loadCreators();
+    }, 500);
 
-  const filteredCreators =
-    filterStatus === "all"
-      ? creators
-      : creators.filter((creator) => creator.status === filterStatus);
+    return () => clearTimeout(timer);
+  }, [page, search, filterStatus]);
+
+  const handleFilterChange = (newStatus: typeof filterStatus) => {
+    setFilterStatus(newStatus);
+    setPage(1);
+  };
 
   async function handleApprove(id: string) {
     try {
@@ -195,25 +200,37 @@ export default function CreatorListingPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold text-white">Creators</h1>
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value as "all" | "pending" | "approved" | "rejected" | "blocked")}
-          className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
-        >
-          <option value="all">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
-          <option value="blocked">Blocked</option>
-        </select>
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search creators..."
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              className="w-full bg-zinc-900 text-white border border-white/10 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-white/20 transition-all"
+            />
+          </div>
+          <select
+            value={filterStatus}
+            onChange={(e) => handleFilterChange(e.target.value as typeof filterStatus)}
+            className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
+          >
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="blocked">Blocked</option>
+          </select>
+        </div>
       </div>
 
       <div className="space-y-4">
         <DataTable
           columns={columns}
-          data={filteredCreators}
+          data={creators}
           loading={loading}
           keyExtractor={(creator) => creator._id}
           emptyMessage="No creators found."

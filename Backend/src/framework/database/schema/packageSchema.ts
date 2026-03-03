@@ -8,22 +8,24 @@ export const packageSchema = new Schema(
     price: { type: Number, required: true },
     category: { type: Types.ObjectId, ref: "Category", required: true },
     images: [{ type: String }],
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point",
-        required: true,
+    locations: [
+      {
+        type: {
+          type: String,
+          enum: ["Point"],
+          default: "Point",
+          required: true,
+        },
+        coordinates: {
+          type: [Number],
+          required: true,
+        },
+        placeName: { type: String, required: true },
       },
-      coordinates: {
-        type: [Number], 
-        required: true,
-      },
-    },
-    placeName: { type: String, required: false },
+    ],
   },
   { timestamps: true }
 );
 
 
-packageSchema.index({ location: "2dsphere" });
+packageSchema.index({ "locations.coordinates": "2dsphere" });

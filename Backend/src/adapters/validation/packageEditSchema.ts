@@ -6,11 +6,13 @@ export const editPackageSchema = z.object({
   price: z.number().positive("Price must be a positive number").optional(),
   category: z.string().min(1, "Category is required").optional(),
   images: z.array(z.string()).optional(),
-  location: z.object({
-    type: z.literal("Point"),
-    coordinates: z.tuple([z.number(), z.number()]),
-  }).optional(),
-  placeName: z.string().optional(),
+  locations: z.array(
+    z.object({
+      type: z.literal("Point"),
+      coordinates: z.tuple([z.number(), z.number()]),
+      placeName: z.string().min(1, "Location name is required"),
+    })
+  ).optional(),
 }).refine(
   (data) => Object.keys(data).length > 0,
   { message: "At least one field must be provided for update" }

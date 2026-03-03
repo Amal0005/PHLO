@@ -4,7 +4,7 @@ import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserSer
 import { User } from "@/interface/admin/userInterface";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../compoents/reusable/ConfirmModal";
-import { UserX, UserCheck } from "lucide-react";
+import { UserX, UserCheck, Search } from "lucide-react";
 import Pagination from "@/compoents/reusable/pagination";
 
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
@@ -16,6 +16,7 @@ export default function UserListingPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "blocked">("all");
+  const [search, setSearch] = useState("");
   const [confirmData, setConfirmData] = useState<{ userId: string; newStatus: "active" | "blocked" } | null>(null);
   const limit = 10;
 
@@ -24,7 +25,7 @@ export default function UserListingPage() {
       try {
         setLoading(true);
 
-        const result = await fetchAdminUsers(page, limit);
+        const result = await fetchAdminUsers(page, limit, search, filterStatus);
 
         setUsers(result.data);
         setTotalPages(result.totalPages);
@@ -36,13 +37,17 @@ export default function UserListingPage() {
       }
     }
 
-    loadUsers();
-  }, [page]);
+    const timer = setTimeout(() => {
+      loadUsers();
+    }, 500);
 
-  const filteredUsers = users.filter((user) => {
-    if (filterStatus === "all") return true;
-    return user.status === filterStatus;
-  });
+    return () => clearTimeout(timer);
+  }, [page, search, filterStatus]);
+
+  const handleFilterChange = (newStatus: "all" | "active" | "blocked") => {
+    setFilterStatus(newStatus);
+    setPage(1);
+  };
 
 
   const handleToggleStatus = async () => {
@@ -151,23 +156,35 @@ export default function UserListingPage() {
   return (
     <>
       <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h1 className="text-2xl font-bold text-white">Users</h1>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value as "all" | "active" | "blocked")}
-            className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="blocked">Blocked</option>
-          </select>
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                className="w-full bg-zinc-900 text-white border border-white/10 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-white/20 transition-all"
+              />
+            </div>
+            <select
+              value={filterStatus}
+              onChange={(e) => handleFilterChange(e.target.value as "all" | "active" | "blocked")}
+              className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="blocked">Blocked</option>
+            </select>
+          </div>
         </div>
 
         <div className="space-y-4">
           <DataTable
             columns={columns}
-            data={filteredUsers}
+            data={users}
             loading={loading}
             keyExtractor={(user) => user._id || user.email}
             emptyMessage={`No users found with status "${filterStatus}".`}

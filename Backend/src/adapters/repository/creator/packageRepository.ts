@@ -67,6 +67,7 @@ export class PackageRepository
             },
             distanceField: "distance",
             spherical: true,
+            key: "locations.coordinates",
             ...(filters.radiusInKm ? { maxDistance: filters.radiusInKm * 1000 } : {})
           }
         }
@@ -136,8 +137,7 @@ export class PackageRepository
           description: 1,
           price: 1,
           images: 1,
-          location: 1,
-          placeName: 1,
+          locations: 1,
           createdAt: 1,
           updatedAt: 1,
           distance: 1

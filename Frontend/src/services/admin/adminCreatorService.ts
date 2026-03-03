@@ -5,11 +5,13 @@ import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
 export const fetchAdminCreators = async (
   page: number,
-  limit: number
+  limit: number,
+  search?: string,
+  status?: string
 ): Promise<PaginatedResponse<Creator>> => {
 
   const res = await api.get(API_ENDPOINTS.ADMIN.CREATORS, {
-    params: { page, limit }
+    params: { page, limit, search, status }
   });
 
   return res.data;

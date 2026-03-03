@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, CreditCard } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Plus, Edit2, Trash2, CreditCard, Search } from "lucide-react";
 import { Subscription, SubscriptionForm } from "@/interface/admin/subscriptionInterface";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
@@ -16,24 +16,36 @@ export default function SubscriptionListingPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
 
-  const fetchSubscriptions = async () => {
+  const fetchSubscriptions = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await AdminSubscriptionService.getSubscriptions(page, 10);
+      const isActive = filterStatus === "active" ? true : filterStatus === "inactive" ? false : undefined;
+      const response = await AdminSubscriptionService.getSubscriptions(page, 10, search, isActive);
       setSubscriptions(response.result.data);
       setTotalPages(response.result.totalPages);
     } catch (error) {
       console.error("Failed to fetch subscriptions", error);
-      toast.error("Failed to load subscriptions");
+      // toast.error("Failed to load subscriptions");
     } finally {
       setLoading(false);
     }
+  }, [page, search, filterStatus]);
+
+  const handleFilterChange = (newStatus: typeof filterStatus) => {
+    setFilterStatus(newStatus);
+    setPage(1);
   };
 
   useEffect(() => {
-    fetchSubscriptions();
-  }, [page]);
+    const timer = setTimeout(() => {
+      fetchSubscriptions();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [fetchSubscriptions]);
 
   const handleAdd = () => {
     setSelectedSubscription(null);
@@ -69,7 +81,8 @@ export default function SubscriptionListingPage() {
       }
       fetchSubscriptions();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Failed to save subscription";
+      console.error("Failed to submit subscription", error);
+      const message = (error as any)?.response?.data?.message || (error instanceof Error ? error.message : "Failed to save subscription");
       toast.error(message);
     }
   };
@@ -111,13 +124,37 @@ export default function SubscriptionListingPage() {
           <CreditCard className="w-8 h-8" />
           Subscription Management
         </h1>
-        <button
-          onClick={handleAdd}
-          className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Add Plan</span>
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search plans..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              className="w-full bg-zinc-900 text-white border border-white/10 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-white/20 transition-all"
+            />
+          </div>
+          <select
+            value={filterStatus}
+            onChange={(e) => handleFilterChange(e.target.value as typeof filterStatus)}
+            className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <button
+            onClick={handleAdd}
+            className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors whitespace-nowrap"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Add Plan</span>
+          </button>
+        </div>
       </div>
 
       <DataTable
@@ -125,7 +162,7 @@ export default function SubscriptionListingPage() {
         data={subscriptions}
         loading={loading}
         keyExtractor={(sub) => sub.subscriptionId}
-        emptyMessage="No subscriptions found."
+        emptyMessage={`No subscriptions found with status "${filterStatus}".`}
       />
 
       <Pagination

@@ -7,14 +7,15 @@ export class AddPackageUseCase implements IAddPackageUseCase {
   constructor(
     private _packageRepo: IPackageRepository,
     private _creatorRepo: ICreatorRepository,
-  ) { }
+  ) {}
   async addPackage(data: Partial<PackageEntity>): Promise<PackageEntity> {
     if (
       !data.title ||
       !data.description ||
       !data.price ||
       !data.category ||
-      !data.location
+      !data.locations ||
+      data.locations.length === 0
     ) {
       throw new Error("Missing required fields");
     }
@@ -34,8 +35,7 @@ export class AddPackageUseCase implements IAddPackageUseCase {
       price: data.price!,
       category: data.category!,
       images: data.images || [],
-      location: data.location!,
-      placeName: data.placeName,
+      locations: data.locations!,
     };
 
     return await this._packageRepo.add(newPackage);

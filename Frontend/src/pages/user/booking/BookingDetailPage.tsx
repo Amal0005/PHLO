@@ -9,7 +9,8 @@ import {
     AlertCircle,
     CreditCard,
     CheckCircle2,
-    XCircle
+    XCircle,
+    Download
 } from "lucide-react";
 import { BookingService } from "@/services/user/bookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
@@ -64,9 +65,9 @@ const BookingDetailPage: React.FC = () => {
             } else {
                 toast.error(response.message || "Failed to cancel booking");
             }
-        } catch (error: any) {
-            console.error("Cancellation error:", error);
-            toast.error(error.response?.data?.message || "An error occurred during cancellation");
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
+            toast.error(err.response?.data?.message || "error occurred during cancellation");
         } finally {
             setProcessingCancel(false);
             setIsCancelModalOpen(false);
@@ -238,6 +239,16 @@ const BookingDetailPage: React.FC = () => {
 
                         {/* Action Buttons */}
                         <div className="space-y-4 pt-4">
+                            {booking.status === 'completed' && (
+                                <button
+                                    onClick={() => BookingService.downloadInvoice(sessionId!)}
+                                    className="w-full py-5 rounded-[1.5rem] border border-zinc-700 bg-white text-black font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 group"
+                                >
+                                    <Download className="w-4 h-4 group-hover:bounce" />
+                                    Download Invoice
+                                </button>
+                            )}
+
                             {(booking.status === 'completed' || booking.status === 'pending') && (
                                 <button
                                     onClick={() => setIsCancelModalOpen(true)}
@@ -276,9 +287,9 @@ const BookingDetailPage: React.FC = () => {
                 onClose={() => !processingCancel && setIsCancelModalOpen(false)}
                 onConfirm={handleConfirmCancel}
                 title="Confirm Cancellation"
-                message="Are you sure you want to cancel this creative session? This action cannot be undone and your slot will be immediately released."
-                confirmLabel="Yes, Cancel Booking"
-                cancelLabel="No, Keep Session"
+                message="Are you sure you want to cancel this creative session ?"
+                confirmLabel="Cancel Booking"
+                cancelLabel="Keep Session"
                 variant="danger"
                 loading={processingCancel}
             />

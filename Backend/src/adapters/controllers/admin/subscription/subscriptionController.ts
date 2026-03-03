@@ -29,10 +29,13 @@ export class SubscriptionController {
 
     async getSubscriptions(req: Request, res: Response): Promise<Response> {
         try {
-            const { page, limit } = req.query;
+            const { page, limit, search, isActive } = req.query as any;
+            const activeStatus = isActive === "true" || isActive === true ? true : isActive === "false" || isActive === false ? false : undefined;
             const result = await this._getSubscriptionUseCase.getSubscription(
                 Number(page) || 1,
-                Number(limit) || 10
+                Number(limit) || 10,
+                activeStatus,
+                search as string
             );
             return res.status(StatusCode.OK).json({ success: true, message: "Subscriptions listed", result });
         } catch (error: unknown) {

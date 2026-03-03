@@ -248,7 +248,11 @@ const ViewPackagesPage: React.FC = () => {
                     <p className="text-gray-500 text-sm line-clamp-2 mb-6">{pkg.description}</p>
                     <div className="flex items-center gap-2 text-gray-400 text-xs mb-4">
                       <MapPin size={14} className="text-white/40" />
-                      <span className="line-clamp-1">{pkg.placeName || "Location not set"}</span>
+                      <span className="line-clamp-1">
+                        {pkg.locations && pkg.locations.length > 0
+                          ? `${pkg.locations[0].placeName}${pkg.locations.length > 1 ? ` (+${pkg.locations.length - 1} more)` : ''}`
+                          : "Location not set"}
+                      </span>
                     </div>
 
                     <div className="flex items-center justify-between">

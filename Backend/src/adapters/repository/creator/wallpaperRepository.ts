@@ -6,7 +6,7 @@ import {
 import { BaseRepository } from "../baseRepository";
 import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
 import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
-import { Document } from "mongoose";
+import { Document, QueryFilter, Types, UpdateQuery } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { WallpaperStatus } from "@/utils/wallpaperStatus";
 
@@ -21,7 +21,7 @@ export class WallpaperRepository
   }
   async add(data: WallpaperEntity): Promise<WallpaperEntity> {
     const created = await this.model.create(
-      data as unknown as Omit<IWallpaperModel, keyof Document>,
+      data as unknown as Partial<IWallpaperModel>,
     );
     return this.mapToEntity(created as IWallpaperModel);
   }
@@ -32,7 +32,7 @@ export class WallpaperRepository
     search?: string,
     status?: WallpaperStatus,
   ): Promise<PaginatedResult<WallpaperEntity>> {
-    const query: Record<string, any> = { creatorId };
+    const query: QueryFilter<IWallpaperModel> = { creatorId };
     if (search?.trim()) {
       query.title = { $regex: search, $options: "i" };
     }
@@ -63,7 +63,7 @@ export class WallpaperRepository
     limit: number,
   ): Promise<PaginatedResult<WallpaperEntity>> {
     const skip = (page - 1) * limit;
-    const query = { status };
+    const query: QueryFilter<IWallpaperModel> = { status };
     const [docs, total] = await Promise.all([
       this.model
         .find(query)
@@ -97,7 +97,7 @@ export class WallpaperRepository
     status: WallpaperStatus,
     rejectionReason?: string,
   ): Promise<WallpaperEntity | null> {
-    const updateData: Record<string, unknown> = { status };
+    const updateData: UpdateQuery<IWallpaperModel> = { status };
     if (status == "rejected" && rejectionReason) {
       updateData.rejectionReason = rejectionReason;
     }
@@ -118,7 +118,7 @@ export class WallpaperRepository
     minPrice?: number,
     maxPrice?: number,
   ): Promise<PaginatedResult<WallpaperEntity>> {
-    const query: Record<string, any> = {};
+    const query: QueryFilter<IWallpaperModel> = {};
     if (status) {
       query.status = status;
     }
@@ -129,9 +129,10 @@ export class WallpaperRepository
       query.hashtags = { $regex: `^${hashtag}$`, $options: "i" };
     }
     if (minPrice !== undefined || maxPrice !== undefined) {
-      query.price = {};
-      if (minPrice !== undefined) query.price.$gte = minPrice;
-      if (maxPrice !== undefined) query.price.$lte = maxPrice;
+      query.price = {
+        ...(minPrice !== undefined && { $gte: minPrice }),
+        ...(maxPrice !== undefined && { $lte: maxPrice }),
+      };
     }
     const skip = (page - 1) * limit;
     const [docs, total] = await Promise.all([

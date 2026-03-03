@@ -3,9 +3,9 @@ import { AppError } from "@/domain/errors/appError";
 import { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBookingUseCase";
 import { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
 import { ICheckAvailabilityUseCase } from "@/domain/interface/user/booking/ICheckAvailabilityUseCase";
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBookingUseCase";
 import { IGetBookingDetailUseCase } from "@/domain/interface/user/booking/IGetBookingDetailUseCase";
+import { IDownloadInvoiceUseCase } from "@/domain/interface/user/booking/IDownloadInvoiceUseCase";
 import { StatusCode } from "@/utils/statusCodes";
 import { Response } from "express";
 
@@ -14,10 +14,10 @@ export class UserBookingController {
         private _createBookingUseCase: ICreateBookingUseCase,
         private _listBookingsUseCase: IListBookingsUseCase,
         private _checkAvailabilityUseCase: ICheckAvailabilityUseCase,
-        private _bookingRepo: IBookingRepository,
         private _cancelBookingUseCase: ICancelBookingUseCase,
-        private _getBookingDetailUseCase: IGetBookingDetailUseCase
-    ) {}
+        private _getBookingDetailUseCase: IGetBookingDetailUseCase,
+        private _downloadInvoiceUseCase: IDownloadInvoiceUseCase
+    ) { }
 
     async CreateBooking(req: AuthRequest, res: Response) {
         try {
@@ -103,6 +103,20 @@ export class UserBookingController {
                 const message = error instanceof Error ? error.message : "An unknown error occurred";
                 res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
             }
+        }
+    }
+
+    async DownloadInvoice(req: AuthRequest, res: Response) {
+        try {
+            const { sessionId } = req.params;
+            const pdfBuffer = await this._downloadInvoiceUseCase.downloadInvoice(sessionId);
+
+            res.setHeader("Content-Type", "application/pdf");
+            res.setHeader("Content-Disposition", `attachment; filename=invoice-${sessionId}.pdf`);
+            res.send(pdfBuffer);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "An unknown error occurred";
+            res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
         }
     }
 }

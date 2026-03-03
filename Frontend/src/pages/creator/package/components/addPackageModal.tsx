@@ -6,7 +6,7 @@ import { PackageFormData, packageSchema } from "@/validation/packageValidation";
 import { PaginatedResponse } from "@/interface/admin/pagination";
 import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LocationSearchBar from "./locationSearchBar";
 import { S3Service } from "@/services/s3Service";
@@ -32,7 +32,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   const {
     register,
     handleSubmit,
-    setValue,
+    control,
     watch,
     getValues,
     formState: { errors },
@@ -40,20 +40,21 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   } = useForm<PackageFormData>({
     resolver: zodResolver(packageSchema),
     defaultValues: {
-      location: {
-        type: "Point",
-        coordinates: [0, 0],
-      },
-      placeName: "",
+      locations: [],
     },
   });
 
-  // Watch location field for debugging
-  const locationValue = watch("location");
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "locations",
+  });
+
+  // Watch locations field for debugging
+  const locationsValue = watch("locations");
 
   useEffect(() => {
-    console.log('Current location in form', locationValue);
-  }, [locationValue]);
+    console.log('Current locations in form', locationsValue);
+  }, [locationsValue]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -94,9 +95,8 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
     console.log('Current form values from getValues:', currentFormValues);
 
     //Search location validation
-    if (!data.location || data.location.coordinates[0] === 0) {
-      toast.error("Please search and select a location");
-      console.error('Location validation failed:', data.location);
+    if (!data.locations || data.locations.length === 0) {
+      toast.error("Please add at least one location");
       return;
     }
 
@@ -114,10 +114,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
         images: imageUrls,
       };
 
-      console.log('Location details:', {
-        coordinates: packageData.location?.coordinates,
-        placeName: packageData.placeName
-      });
+      console.log('Location details:', packageData.locations);
 
       await CreatorPackageService.addPackage(packageData);
 
@@ -127,11 +124,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
       onClose();
 
       reset({
-        location: {
-          type: "Point",
-          coordinates: [0, 0],
-        },
-        placeName: "",
+        locations: [],
       });
 
       setSelectedImages([]);
@@ -226,26 +219,52 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
               </div>
 
               {/* LOCATION SEARCH */}
-              <div>
+              <div className="md:col-span-2">
                 <label className="text-xs text-gray-500 font-bold mb-2 block uppercase tracking-widest">
-                  Search Location
+                  Locations
                 </label>
 
-                <LocationSearchBar
-                  onChange={(location) => {
-                    const geoJSON = {
-                      type: "Point" as const,
-                      coordinates: [location.longitude, location.latitude] as [number, number]
-                    };
+                <div className="space-y-3 mb-4">
+                  {fields.map((field: any, index: number) => (
+                    <div key={field.id} className="flex items-center gap-3 bg-black/30 p-3 rounded-xl border border-white/5">
+                      <div className="flex-1 text-sm text-gray-300 truncate">
+                        {field.placeName}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="text-red-500 hover:text-red-400 transition-colors p-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
 
-                    setValue("location", geoJSON, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
-                    setValue("placeName", location.placeName || "", { shouldValidate: true });
-                  }}
-                />
+                <div className="relative">
+                  <LocationSearchBar
+                    onChange={(location) => {
+                      const newLocation = {
+                        type: "Point" as const,
+                        coordinates: [location.longitude, location.latitude] as [number, number],
+                        placeName: location.placeName || ""
+                      };
 
-                {(errors.location || errors.placeName) && (
+                      const currentLocations = getValues("locations") || [];
+                      const exists = currentLocations.some(loc => loc.placeName === newLocation.placeName);
+
+                      if (!exists) {
+                        append(newLocation);
+                      } else {
+                        toast.info("Location already added");
+                      }
+                    }}
+                  />
+                </div>
+
+                {errors.locations && (
                   <p className="text-red-500 text-xs mt-1">
-                    {errors.placeName?.message || "Please search and select a location"}
+                    {errors.locations.message || "Please add at least one location"}
                   </p>
                 )}
               </div>

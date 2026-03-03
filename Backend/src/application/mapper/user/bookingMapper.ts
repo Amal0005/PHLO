@@ -42,13 +42,13 @@ export class BookingMapper {
   }
 
   static toEntity(doc: BookingDocument): BookingEntity {
-    const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && ('title' in (doc.packageId as any));
-    const isUserPopulated = doc.userId && typeof doc.userId === 'object' && ('name' in (doc.userId as any));
+    const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && 'title' in doc.packageId;
+    const isUserPopulated = doc.userId && typeof doc.userId === 'object' && 'name' in doc.userId;
 
     return {
       id: doc._id.toString(),
-      userId: isUserPopulated ? (doc.userId as unknown as User) : doc.userId.toString(),
-      packageId: isPackagePopulated ? (doc.packageId as unknown as PackageEntity) : doc.packageId.toString(),
+      userId: isUserPopulated ? (doc.userId as User) : doc.userId.toString(),
+      packageId: isPackagePopulated ? (doc.packageId as PackageEntity) : doc.packageId.toString(),
       amount: doc.amount,
       currency: doc.currency as "inr",
       status: doc.status,

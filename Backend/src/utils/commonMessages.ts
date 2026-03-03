@@ -34,6 +34,8 @@ export const MESSAGES = {
         CATEGORY_NAME_REQUIRED: "Category name is required",
         CATEGORY_ALREADY_EXISTS: "Category already exists",
         CATEGORY_ID_REQUIRED: "Category ID is required",
+        SUBSCRIPTION_ALREADY_EXISTS: "Subscription plan already exists",
+        SUBSCRIPTION_NAME_REQUIRED: "Subscription plan name is required",
     },
     ERROR: {
         INTERNAL_SERVER_ERROR: "Internal Server Error",
@@ -47,14 +49,14 @@ export const MESSAGES = {
         LOGIN_SUCCESSFUL: "Login successful",
         OPERATION_SUCCESSFUL: "Operation successful",
     },
-    WALLPAPER:{
-        NOT_FOUND:"Wallpaper not found",
-        ID_REQUIRED:"wallpaper ID is required",
-        DELETED:"Wallpaper Deleted",
-        REJECTION_REASON_REQUIRED:"Rejection Reason Required",
-        APPROVED :"Wallpapper Approved",
-        APPROVE_ERROR:"Error When Approving",
-        REJECTED:"Wallpaper Rejected",
-        REJECT_ERROR:"Error When Rejecting"
+    WALLPAPER: {
+        NOT_FOUND: "Wallpaper not found",
+        ID_REQUIRED: "wallpaper ID is required",
+        DELETED: "Wallpaper Deleted",
+        REJECTION_REASON_REQUIRED: "Rejection Reason Required",
+        APPROVED: "Wallpapper Approved",
+        APPROVE_ERROR: "Error When Approving",
+        REJECTED: "Wallpaper Rejected",
+        REJECT_ERROR: "Error When Rejecting"
     }
 }

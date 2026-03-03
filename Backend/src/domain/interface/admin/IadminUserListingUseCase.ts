@@ -4,7 +4,9 @@ import { PaginatedResult } from "@/domain/types/paginationTypes";
 export interface IAdminUserListingUseCase {
   getAllUsers(
     page: number,
-    limit: number
+    limit: number,
+    search?: string,
+    status?: string
   ): Promise<PaginatedResult<User>>;
 }
 

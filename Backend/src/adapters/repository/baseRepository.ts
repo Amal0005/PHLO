@@ -1,5 +1,5 @@
 import { IBaseRepository } from "@/domain/interface/repositories/IBaseRepository";
-import { Model, Document, UpdateQuery } from "mongoose";
+import { Model, Document, UpdateQuery, QueryFilter } from "mongoose";
 
 export abstract class BaseRepository<T, M extends Document>
   implements IBaseRepository<T> {
@@ -23,8 +23,8 @@ export abstract class BaseRepository<T, M extends Document>
     return result ? this.mapToEntity(result) : null;
   }
 
-  async findAll(filter: Record<string, unknown> = {}): Promise<T[]> {
-    const results = await this.model.find(filter as any).exec();
+  async findAll(filter: any = {}): Promise<T[]> {
+    const results = await this.model.find(filter).exec();
     return results.map((doc) => this.mapToEntity(doc));
   }
 

@@ -3,9 +3,9 @@ import { PaginatedResponse } from "@/interface/admin/pagination";
 import { User } from "@/interface/admin/userInterface";
 import { API_ENDPOINTS } from "@/constants/apiEndpoints";
 
-export const fetchAdminUsers = async (page: number, limit: number): Promise<PaginatedResponse<User>> => {
+export const fetchAdminUsers = async (page: number, limit: number, search?: string, status?: string): Promise<PaginatedResponse<User>> => {
   const response = await api.get(API_ENDPOINTS.ADMIN.USERS, {
-    params: { page, limit }
+    params: { page, limit, search, status }
   });
 
   return response.data;

@@ -1,21 +1,29 @@
 import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
 import { IBuySubscriptionUseCase } from "@/domain/interface/creator/payment/IBuySubscriptionUseCase";
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
+import { AppError } from "@/domain/errors/appError";
+import { StatusCode } from "@/utils/statusCodes";
 
 export class BuySubscriptionUseCase implements IBuySubscriptionUseCase {
     constructor(
-        private _subscriptionRepo:ISubscriptionRepository,
-        private _stripeService:IStripeService
-    ){}
+        private _subscriptionRepo: ISubscriptionRepository,
+        private _stripeService: IStripeService,
+        private _creatorRepo: ICreatorRepository
+    ) {}
     async buySubscription(creatorId: string, subscriptionId: string, successUrl: string, cancelUrl: string): Promise<CheckoutSessionResponseDTO> {
-        console.log("subIddddddddddddddd",subscriptionId);
-        
+        const creator = await this._creatorRepo.findById(creatorId);
+        if (creator?.subscription?.status === "active") {
+            const endDate = new Date(creator.subscription.endDate);
+            if (endDate > new Date()) {
+                throw new AppError("You already have an active subscription", StatusCode.BAD_REQUEST);
+            }
+        }
+
         const plan = await this._subscriptionRepo.findById(subscriptionId)
-        console.log("plammmmm",plan)
         if (!plan) {
-            console.error("BuySubscriptionUseCase: Plan not found for ID:", subscriptionId);
-            throw new Error("Subscription plan is not found")
+            throw new AppError("Subscription plan is not found", StatusCode.NOT_FOUND)
         }
         console.log("BuySubscriptionUseCase: Found plan:", plan.name, "Price:", plan.price);
 

@@ -15,11 +15,11 @@ export interface UserPackage {
     description?: string;
   };
   images: string[];
-  location: {
+  locations: {
     type: "Point";
     coordinates: [number, number];
-  };
-  placeName?: string;
+    placeName: string;
+  }[];
   createdAt: string;
   updatedAt: string;
 }

@@ -17,14 +17,19 @@ export class SubscriptionRepository extends BaseRepository<SubscriptionEntity, I
     };
   }
 
-  async findSubscriptions(page: number = 1, limit: number = 10, isActive?: boolean): Promise<PaginatedResult<SubscriptionEntity>> {
+  async findSubscriptions(page: number = 1, limit: number = 10, isActive?: boolean, search?: string): Promise<PaginatedResult<SubscriptionEntity>> {
     const query: Filter<ISubscriptionModel> = {};
     if (isActive !== undefined) query.isActive = isActive;
+    if (search) query.name = { $regex: search, $options: "i" } as any;
     const result = await paginateMongo<ISubscriptionModel>(this.model, query, page, limit, { sort: { createdAt: -1 } });
 
     return {
       ...result,
       data: result.data.map((item) => this.mapToEntity(item))
     };
+  }
+  async findByName(name: string): Promise<SubscriptionEntity | null> {
+    const result = await this.model.findOne({ name: { $regex: new RegExp(`^${name}$`, "i") } }).exec();
+    return result ? this.mapToEntity(result) : null;
   }
 }
