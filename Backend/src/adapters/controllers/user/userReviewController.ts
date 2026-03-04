@@ -14,7 +14,7 @@ export class ReviewController {
         private _getReviewUseCase: IGetReviewUseCase,
         private _getReviewByBookingUseCase: IGetReviewByBookingUseCase
 
-    ) { }
+    ) {}
     async addReview(req: AuthRequest, res: Response): Promise<void> {
         const userId = req.user!.userId
         const data = req.body

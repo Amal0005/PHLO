@@ -1,0 +1,51 @@
+import { IBuyWallpaperUseCase } from "@/domain/interface/user/wallpaper/IBuyWallpaperUseCase";
+import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
+import { IStripeService } from "@/domain/interface/service/IStripeService";
+import { IWallpaperDownloadRepository } from "@/domain/interface/repositories/IWallpaperDownloadRepository ";
+import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
+
+export class BuyWallpaperUseCase implements IBuyWallpaperUseCase {
+    constructor(
+        private _wallpaperRepo: IWallpaperRepository,
+        private _stripeService: IStripeService,
+        private _wallpaperDownloadRepo: IWallpaperDownloadRepository
+    ) {}
+
+    async execute(
+        wallpaperId: string,
+        userId: string,
+        successUrl: string,
+        cancelUrl: string
+    ): Promise<CheckoutSessionResponseDTO> {
+        const wallpaper = await this._wallpaperRepo.findById(wallpaperId);
+        if (!wallpaper) {
+            throw new Error("Wallpaper not found");
+        }
+
+        const alreadyPurchased = await this._wallpaperDownloadRepo.hasPurchased(wallpaperId, userId);
+        if (alreadyPurchased) {
+            throw new Error("You have already purchased this wallpaper");
+        }
+
+        if (wallpaper.price === 0) {
+            throw new Error("This wallpaper is free. You can download it directly.");
+        }
+
+        // Stripe requires a minimum amount (usually around 50 cents USD)
+        // For INR, ₹50 is a safe minimum.
+        if (wallpaper.price < 50) {
+            throw new Error("Price is too low for online payment. Minimum amount required is ₹50.");
+        }
+
+        return await this._stripeService.createCheckoutSession({
+            wallpaperId: wallpaper._id,
+            userId: userId,
+            creatorId: wallpaper.creatorId.toString(),
+            packageName: `Wallpaper: ${wallpaper.title}`,
+            amount: wallpaper.price,
+            successUrl,
+            cancelUrl,
+            type: "wallpaper"
+        });
+    }
+}

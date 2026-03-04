@@ -8,7 +8,7 @@ import { StatusCode } from "@/utils/statusCodes";
 export class CancelBookingUseCase implements ICancelBookingUseCase {
   constructor(
     private _bookingRepo: IBookingRepository
-  ) { }
+  ) {}
   async cancelBooking(userId: string, sessionId: string): Promise<BookingEntity> {
     const booking = await this._bookingRepo.findByStripeSessionId(sessionId)
     if (!booking) throw new Error("Booking not found")

@@ -17,7 +17,7 @@ export class BuySubscriptionUseCase implements IBuySubscriptionUseCase {
         if (creator?.subscription?.status === "active") {
             const endDate = new Date(creator.subscription.endDate);
             if (endDate > new Date()) {
-                throw new AppError("You already have an active subscription", StatusCode.BAD_REQUEST);
+                throw new AppError(`You already have an active subscription until ${endDate.toLocaleDateString()}`, StatusCode.BAD_REQUEST);
             }
         }
 

@@ -10,7 +10,7 @@ export class WishlistController {
         private _toggleWishlistUseCase: IToggleWishlistUseCase,
         private _getWishlistUseCase: IGetWishlistUseCase,
         private _getWishlistIdsUseCase: IGetWishlistIdsUseCase
-    ) { }
+    ) {}
 
     async toggle(req: Request, res: Response) {
         try {

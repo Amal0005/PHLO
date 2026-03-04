@@ -10,7 +10,7 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
     private _wallpaperRepo: IWallpaperRepository,
     private _creatorRepo: ICreatorRepository,
     private _watermarkService: IWatermarkService,
-  ) { }
+  ) {}
   async addWallpaper(data: Partial<WallpaperEntity>): Promise<WallpaperEntity> {
     if (!data.title || !data.imageUrl || data.price === undefined || data.price === null) {
       throw new Error(MESSAGES.ERROR.ALL_FIELDS_REQUIRED);
@@ -27,7 +27,6 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
       throw new Error("subscription required to add wallpapers.");
     }
 
-    // Generate watermarked version of the image
     const watermarkedUrl = await this._watermarkService.generateWatermark(data.imageUrl);
 
     const newWallpaper: WallpaperEntity = {

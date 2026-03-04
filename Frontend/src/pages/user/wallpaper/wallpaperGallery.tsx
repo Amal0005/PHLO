@@ -98,6 +98,25 @@ const WallpaperGallery: React.FC = () => {
     }
   };
 
+  const handleBuy = async (wp: WallpaperData) => {
+    try {
+      setLoading(true);
+      const successUrl = `${window.location.origin}/wallpapers?success=true&id=${wp._id}`;
+      const cancelUrl = `${window.location.origin}/wallpapers?cancel=true`;
+
+      const res = await UserWallpaperService.buyWallpaper(wp._id, successUrl, cancelUrl);
+      if (res.success && res.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error("Failed to initiate payment");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Payment initiation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDownload = async (wp: WallpaperData) => {
     try {
       const creatorId = typeof wp.creatorId === "object" ? wp.creatorId._id : wp.creatorId;
@@ -124,8 +143,10 @@ const WallpaperGallery: React.FC = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
       toast.success(`"${wp.title}" downloaded successfully`);
-    } catch {
-      toast.error("Download failed. Please try again.");
+    } catch (error: any) {
+      const msg = error.response?.data?.message || "Download failed. Please try again.";
+      toast.error(msg);
+      // If it failed because it needs purchase, we don't need to do anything else, the toast tells them.
     }
   };
 
@@ -267,12 +288,16 @@ const WallpaperGallery: React.FC = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDownload(wp);
+                          if (wp.price > 0 && !wp.isPurchased) {
+                            handleBuy(wp);
+                          } else {
+                            handleDownload(wp);
+                          }
                         }}
                         className="absolute top-3 right-3 p-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white hover:text-black hover:scale-110 hover:shadow-lg hover:shadow-white/20 text-white transition-all duration-300 active:scale-95"
-                        title="Download"
+                        title={wp.price > 0 && !wp.isPurchased ? "Buy" : "Download"}
                       >
-                        <Download size={16} />
+                        <Download size={16} className={wp.price > 0 && !wp.isPurchased ? "text-green-400" : "text-white"} />
                       </button>
                       <button
                         onClick={(e) => handleToggleWishlist(e, wp._id)}
@@ -362,11 +387,17 @@ const WallpaperGallery: React.FC = () => {
                 </div>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => handleDownload(selectedWallpaper)}
+                    onClick={() => {
+                      if (selectedWallpaper.price > 0 && !selectedWallpaper.isPurchased) {
+                        handleBuy(selectedWallpaper);
+                      } else {
+                        handleDownload(selectedWallpaper);
+                      }
+                    }}
                     className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-white to-gray-200 text-black rounded-2xl hover:from-gray-100 hover:to-white hover:shadow-lg hover:shadow-white/10 hover:scale-105 active:scale-95 transition-all duration-300 font-semibold"
                   >
-                    <Download size={18} />
-                    <span>Download</span>
+                    <Download size={18} className={selectedWallpaper.price > 0 && !selectedWallpaper.isPurchased ? "text-green-600" : "text-black"} />
+                    <span>{selectedWallpaper.price > 0 && !selectedWallpaper.isPurchased ? "Buy Now" : "Download"}</span>
                   </button>
                   <button
                     onClick={(e) => handleToggleWishlist(e, selectedWallpaper._id)}

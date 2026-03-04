@@ -30,6 +30,7 @@ export const API_ENDPOINTS = {
         ADD_REVIEW: "/review",
         GET_REVIEWS: "/review/:id",
         DELETE_REVIEW: "/review/:id",
+        BUY_WALLPAPER: "/wallpaper/buy/:id",
     },
     ADMIN: {
         LOGIN: "/admin/login",

@@ -6,7 +6,7 @@ import { IGetReviewByBookingUseCase } from "@/domain/interface/user/review/IGetR
 export class GetReviewByBookingUseCase implements IGetReviewByBookingUseCase {
     constructor(
         private _reviewRepo: IReviewRepository
-    ) { }
+    ) {}
     async getReviewByBooking(bookingId: string): Promise<ReviewResponseDTO | null> {
         const review = await this._reviewRepo.findByBookingId(bookingId)
         return review ? ReviewMapper.toDto(review) : null

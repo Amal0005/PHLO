@@ -3,9 +3,9 @@ import { StatusCode } from "@/utils/statusCodes";
 import { MESSAGES } from "@/utils/commonMessages";
 import { IApproveCreatorUseCase } from "@/domain/interface/admin/IApproveCreatorUseCase";
 import { IRejectCreatorUseCase } from "@/domain/interface/admin/IRejectCreatorUseCase";
-import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IAdminCreatorListingUseCase";
-import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
 import { AppError } from "@/domain/errors/appError";
+import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IadminCreatorListingUseCase";
+import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/ItoggleCreatorStatusUseCase";
 
 interface RejectRequestBody {
   reason: string;
@@ -21,7 +21,7 @@ export class AdminCreatorController {
     private _rejectCreatorUseCase: IRejectCreatorUseCase,
     private _adminCreatorListingUseCase: IAdminCreatorListingUseCase,
     private _toggleCreatorStatusUseCase: IToggleCreatorStatusUseCase,
-  ) { }
+  ) {}
 
   async getCreators(req: Request, res: Response): Promise<Response> {
     try {

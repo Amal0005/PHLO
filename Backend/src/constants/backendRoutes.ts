@@ -30,7 +30,8 @@ export const BACKEND_ROUTES = {
     REVIEW: "/review",
     DELETE_REVIEW: "/review/:reviewId",
     GET_REVIEW: "/review/:packageId",
-    GET_BOOKING_REVIEW: "/review/booking/:bookingId"
+    GET_BOOKING_REVIEW: "/review/booking/:bookingId",
+    BUY_WALLPAPER: "/wallpaper/buy/:id",
   },
   CREATOR: {
     BASE: "/creator",

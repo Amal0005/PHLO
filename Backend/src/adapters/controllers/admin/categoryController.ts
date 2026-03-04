@@ -18,7 +18,7 @@ export class CategoryController {
         private _editCategoryUseCase: IEditCategoryUseCase,
         private _deleteCategoryUseCase: IDeleteCategoryUseCase,
         private _adminCategoryListingUseCase: IAdminCategoryListingUseCase
-    ) { }
+    ) {}
 
     async addCategory(req: Request, res: Response): Promise<Response> {
         try {

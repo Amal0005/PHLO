@@ -18,7 +18,7 @@ export class UserBookingController {
         private _cancelBookingUseCase: ICancelBookingUseCase,
         private _getBookingDetailUseCase: IGetBookingDetailUseCase,
         private _downloadInvoiceUseCase: IDownloadInvoiceUseCase
-    ) { }
+    ) {}
 
     async CreateBooking(req: AuthRequest, res: Response) {
         try {

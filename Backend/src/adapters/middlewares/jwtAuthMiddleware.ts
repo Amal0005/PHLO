@@ -68,3 +68,53 @@ export const jwtAuthMiddleware =
           .json({ message: MESSAGES.AUTH.INVALID_OR_EXPIRED_TOKEN });
       }
     };
+export const jwtOptionalMiddleware =
+  (
+    jwtService: IJwtServices,
+    blacklistService: ITokenBlacklistService,
+    userRepo: IUserRepository,
+    creatorRepo: ICreatorRepository,
+  ) =>
+    async (req: AuthRequest, res: Response, next: NextFunction) => {
+      try {
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+          return next();
+        }
+
+        const token = authHeader.split(" ")[1];
+        const isBlacklisted = await blacklistService.isTokenBlacklisted(token);
+        if (isBlacklisted) {
+          return next();
+        }
+
+        const decoded = jwtService.verifyToken(token);
+        if (decoded.role === "user") {
+          const user = await userRepo.findById(decoded.userId);
+          if (user && user.status === "blocked") {
+            return res
+              .status(StatusCode.FORBIDDEN)
+              .json({
+                success: false,
+                message: MESSAGES.AUTH.ACCOUNT_BLOCKED_BY_ADMIN,
+              });
+          }
+        }
+        if (decoded.role === "creator") {
+          const creator = await creatorRepo.findById(decoded.userId);
+          if (creator && creator.status === "blocked") {
+            return res
+              .status(StatusCode.FORBIDDEN)
+              .json({
+                success: false,
+                message: MESSAGES.AUTH.ACCOUNT_BLOCKED_BY_ADMIN,
+              });
+          }
+        }
+        req.user = decoded;
+        next();
+      } catch {
+        next();
+      }
+    };

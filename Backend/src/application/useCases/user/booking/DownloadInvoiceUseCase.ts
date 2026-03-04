@@ -6,7 +6,7 @@ export class DownloadInvoiceUseCase implements IDownloadInvoiceUseCase {
     constructor(
         private _bookingRepo: IBookingRepository,
         private _invoiceGenerator: IPdfInvoiceGenerator
-    ) { }
+    ) {}
 
     async downloadInvoice(sessionId: string): Promise<Buffer> {
         const booking = await this._bookingRepo.findByStripeSessionId(sessionId);

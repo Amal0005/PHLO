@@ -26,4 +26,8 @@ export class WallpaperDownloadRepository implements IWallpaperDownloadRepository
   async getDownloadCount(wallpaperId: string): Promise<number> {
     return await WallpaperDownloadModel.countDocuments({ wallpaperId });
   }
+  async hasPurchased(wallpaperId: string, userId: string): Promise<boolean> {
+    const exists = await WallpaperDownloadModel.exists({ wallpaperId, userId });
+    return !!exists;
+  }
 }

@@ -13,7 +13,7 @@ export class PackageController {
         private _deletePackageUseCase: IDeletePackageUseCase,
         private _editPackageUseCase: IEditPackageUseCase,
         private _getPackagesUseCase: IgetPackagesUseCase
-    ) { }
+    ) {}
 
     async addPackage(req: AuthRequest, res: Response) {
         try {

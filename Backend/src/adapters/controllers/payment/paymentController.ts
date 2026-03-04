@@ -4,10 +4,13 @@ import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/p
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { logger } from "@/utils/logger";
 
+import { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWallpaperWebhookUseCase";
+
 export class PaymentController {
     constructor(
         private _bookingWebhookUseCase: IBookingWebhookUseCase,
         private _creatorSubscriptionWebhookUseCase: ICreatorSubscriptionWebhookUseCase,
+        private _wallpaperWebhookUseCase: IWallpaperWebhookUseCase,
         private _stripeService: IStripeService,
     ) {}
 
@@ -31,6 +34,8 @@ export class PaymentController {
 
                 if (metadataType === "subscription") {
                     await this._creatorSubscriptionWebhookUseCase.handleEvent(event);
+                } else if (metadataType === "wallpaper") {
+                    await this._wallpaperWebhookUseCase.handleEvent(event);
                 } else {
                     await this._bookingWebhookUseCase.handleEvent(event);
                 }

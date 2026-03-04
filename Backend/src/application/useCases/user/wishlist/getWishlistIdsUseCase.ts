@@ -2,7 +2,10 @@ import { IGetWishlistIdsUseCase } from "@/domain/interface/user/wishlist/IGetWis
 import { IWishlistRepository } from "@/domain/interface/repositories/IWishlistRepository";
 
 export class GetWishlistIdsUseCase implements IGetWishlistIdsUseCase {
-    constructor(private _wishlistRepo: IWishlistRepository) { }
+    constructor(
+        private _wishlistRepo: IWishlistRepository
+
+    ) {}
 
     async getItems(userId: string, itemType: "wallpaper" | "package"): Promise<string[]> {
         if (!userId) throw new Error("User ID is required");

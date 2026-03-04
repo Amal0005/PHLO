@@ -5,7 +5,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class ChangePasswordController {
-    constructor(private _changePasswordUseCase: IChangePasswordUseCase) { }
+    constructor(private _changePasswordUseCase: IChangePasswordUseCase) {}
 
     async changePassword(req: AuthRequest, res: Response): Promise<void> {
         try {
