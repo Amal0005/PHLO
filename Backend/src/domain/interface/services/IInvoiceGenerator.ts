@@ -1,3 +1,5 @@
+import { BookingEntity } from "@/domain/entities/bookingEntity";
+
 export interface IPdfInvoiceGenerator {
-    generateInvoice(bookingData: Record<string, unknown>): Promise<Buffer>;
+    generateInvoice(bookingData: BookingEntity): Promise<Buffer>;
 }

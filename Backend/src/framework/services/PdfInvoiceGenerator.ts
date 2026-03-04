@@ -1,5 +1,6 @@
 import PDFDocument from "pdfkit";
 import { IPdfInvoiceGenerator } from "@/domain/interface/services/IInvoiceGenerator";
+import { BookingEntity } from "@/domain/entities/bookingEntity";
 
 interface InvoiceBookingData {
     id?: string;
@@ -10,7 +11,7 @@ interface InvoiceBookingData {
 }
 
 export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
-    async generateInvoice(booking: Record<string, unknown>): Promise<Buffer> {
+    async generateInvoice(booking: BookingEntity): Promise<Buffer> {
         const invoiceData = booking as unknown as InvoiceBookingData;
         return new Promise((resolve, reject) => {
             try {

@@ -35,7 +35,7 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
   async findAllUsers(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<User>> {
     const query: Filter<IUserModel> = { role: "user" };
     if (status && status !== "all") {
-      query.status = status;
+      query.status = status as "active" | "blocked";
     }
     if (search) {
       query.$or = [

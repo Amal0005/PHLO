@@ -4,8 +4,9 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { IApproveCreatorUseCase } from "@/domain/interface/admin/IApproveCreatorUseCase";
 import { IRejectCreatorUseCase } from "@/domain/interface/admin/IRejectCreatorUseCase";
 import { AppError } from "@/domain/errors/appError";
-import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IadminCreatorListingUseCase";
-import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/ItoggleCreatorStatusUseCase";
+import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IAdminCreatorListingUseCase";
+import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
+
 
 interface RejectRequestBody {
   reason: string;

@@ -9,7 +9,7 @@ export class BuyWallpaperUseCase implements IBuyWallpaperUseCase {
         private _wallpaperRepo: IWallpaperRepository,
         private _stripeService: IStripeService,
         private _wallpaperDownloadRepo: IWallpaperDownloadRepository
-    ) {}
+    ) { }
 
     async execute(
         wallpaperId: string,

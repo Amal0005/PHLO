@@ -46,7 +46,7 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
   async findAllCreators(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<CreatorEntity>> {
     const query: Filter<ICreatorModel> = {};
     if (status && status !== "all") {
-      query.status = status;
+      query.status = status as "pending" | "approved" | "rejected" | "blocked";
     }
     if (search) {
       query.$or = [
