@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Star, MessageSquare, Trash2, User as UserIcon } from "lucide-react";
 import { ReviewService } from "@/services/user/reviewService";
 import { Review } from "@/interface/user/reviewInterface";
@@ -17,7 +17,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ packageId }) => {
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchReviews = async () => {
+    const fetchReviews = useCallback(async () => {
         try {
             const response = await ReviewService.getPackageReviews(packageId);
             if (response.success) {
@@ -28,11 +28,11 @@ const ReviewList: React.FC<ReviewListProps> = ({ packageId }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [packageId]);
 
     useEffect(() => {
         fetchReviews();
-    }, [packageId]);
+    }, [fetchReviews]);
 
     const handleDeleteReview = async (reviewId: string) => {
         try {
@@ -41,7 +41,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ packageId }) => {
                 toast.success("Review deleted");
                 fetchReviews();
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to delete review");
         }
     };

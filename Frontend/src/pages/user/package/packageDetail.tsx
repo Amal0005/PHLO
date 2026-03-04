@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Package as PackageIcon, MapPin, X,
-  Heart, Image as ImageIcon,
+   Image as ImageIcon,
   Calendar, Check, AlertCircle, Loader2
 } from "lucide-react";
 import { UserPackageService } from "@/services/user/userPackageService";
@@ -21,7 +21,6 @@ const PackageDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
-  const [wishlisted, setWishlisted] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [isDateAvailable, setIsDateAvailable] = useState<boolean | null>(null);
   const [checkingAvailability, setCheckingAvailability] = useState(false);

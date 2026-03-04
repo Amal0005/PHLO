@@ -4,11 +4,11 @@ import {
   Star,
   Download,
   Award,
-  CheckCircle,
+
   Instagram,
   Twitter,
   Facebook,
-  Mail,ArrowRight,
+  Mail, ArrowRight,
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import UserNavbar from "@/compoents/reusable/userNavbar";

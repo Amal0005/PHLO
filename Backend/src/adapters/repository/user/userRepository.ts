@@ -5,6 +5,7 @@ import { paginateMongo } from "@/utils/pagination";
 import { UserMapper } from "../../../application/mapper/user/userMapper";
 import { BaseRepository } from "../baseRepository";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { Filter } from "mongodb";
 
 export class UserRepository extends BaseRepository<User, IUserModel> implements IUserRepository {
   constructor() {
@@ -32,7 +33,7 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
   }
 
   async findAllUsers(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<User>> {
-    const query: any = { role: "user" };
+    const query: Filter<IUserModel> = { role: "user" };
     if (status && status !== "all") {
       query.status = status;
     }

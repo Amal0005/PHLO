@@ -20,7 +20,7 @@ export class SubscriptionRepository extends BaseRepository<SubscriptionEntity, I
   async findSubscriptions(page: number = 1, limit: number = 10, isActive?: boolean, search?: string): Promise<PaginatedResult<SubscriptionEntity>> {
     const query: Filter<ISubscriptionModel> = {};
     if (isActive !== undefined) query.isActive = isActive;
-    if (search) query.name = { $regex: search, $options: "i" } as any;
+    if (search) query.name = { $regex: search, $options: "i" } as unknown as Filter<ISubscriptionModel>["name"];
     const result = await paginateMongo<ISubscriptionModel>(this.model, query, page, limit, { sort: { createdAt: -1 } });
 
     return {

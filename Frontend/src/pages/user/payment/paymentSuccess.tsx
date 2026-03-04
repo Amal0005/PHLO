@@ -9,8 +9,7 @@ const PaymentSuccess: React.FC = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [status, setStatus] = useState<"verifying" | "completed" | "cancelled" | "failed">("verifying");
-  const timerRef = useRef<any>(null);
-  const pollRef = useRef<any>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (!sessionId) {
@@ -23,8 +22,7 @@ const PaymentSuccess: React.FC = () => {
         const response = await BookingService.getBookingDetail(sessionId);
         if (response.success && response.data.status === "completed") {
           setStatus("completed");
-          if (pollRef.current) clearInterval(pollRef.current);
-          if (timerRef.current) clearInterval(timerRef.current);
+          if (pollRef.current) clearInterval(pollRef.current as unknown as number);
         }
       } catch (error) {
         console.error("Error checking status:", error);
@@ -37,9 +35,10 @@ const PaymentSuccess: React.FC = () => {
     // Start polling every 2 seconds to see if webhook finished
     pollRef.current = setInterval(checkStatus, 2000);
 
+    const currentPoll = pollRef.current;
+
     return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (currentPoll) clearInterval(currentPoll as unknown as number);
     };
   }, [sessionId]);
 

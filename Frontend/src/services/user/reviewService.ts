@@ -1,6 +1,6 @@
 import api from "@/axios/axiosConfig";
 import { API_ENDPOINTS } from "@/constants/apiEndpoints";
-import { AddReviewRequest, ReviewListResponse } from "@/interface/user/reviewInterface";
+import { AddReviewRequest, ReviewListResponse, Review } from "@/interface/user/reviewInterface";
 
 export const ReviewService = {
     addReview: async (data: AddReviewRequest): Promise<{ success: boolean; message: string }> => {
@@ -15,7 +15,7 @@ export const ReviewService = {
         const res = await api.delete(API_ENDPOINTS.USER.DELETE_REVIEW.replace(':id', reviewId));
         return res.data;
     },
-    getBookingReview: async (bookingId: string): Promise<{ success: boolean; data: any }> => {
+    getBookingReview: async (bookingId: string): Promise<{ success: boolean; data: Review | null }> => {
         const res = await api.get(`/review/booking/${bookingId}`); // I'll use a hardcoded path for now to be safe, or update apiEndpoints
         return res.data;
     }

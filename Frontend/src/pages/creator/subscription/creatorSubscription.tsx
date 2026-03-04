@@ -7,7 +7,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 export default function CreatorSubscription() {
-  const [plans, setPlans] = useState<any[]>([]);
+  const [plans, setPlans] = useState<{
+    _id: string;
+    subscriptionId?: string;
+    name: string;
+    price: number;
+    features: string[];
+  }[]>([]);
   const [loading, setLoading] = useState(true);
   const creator = useSelector((state: RootState) => state.creator.creator);
 
@@ -33,8 +39,9 @@ export default function CreatorSubscription() {
       if (res.url) {
         window.location.href = res.url;
       }
-    } catch (error: any) {
-      const message = error.response?.data?.message || "Purchase failed. Please try again.";
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      const message = axiosError.response?.data?.message || "Purchase failed. Please try again.";
       toast.error(message);
     }
   };
@@ -90,10 +97,10 @@ export default function CreatorSubscription() {
                   onClick={() => handleBuy(plan.subscriptionId || plan._id)}
                   disabled={hasAnyActivePlan()}
                   className={`w-full py-4 font-bold rounded-2xl transition-all ${isActivePlan(plan._id)
+                    ? "bg-zinc-800 text-gray-500 cursor-not-allowed"
+                    : hasAnyActivePlan()
                       ? "bg-zinc-800 text-gray-500 cursor-not-allowed"
-                      : hasAnyActivePlan()
-                        ? "bg-zinc-800 text-gray-500 cursor-not-allowed"
-                        : "bg-white text-black hover:bg-gray-200"
+                      : "bg-white text-black hover:bg-gray-200"
                     }`}
                 >
                   {isActivePlan(plan._id) ? "Current Plan" : hasAnyActivePlan() ? "Already Subscribed" : "Get Started"}

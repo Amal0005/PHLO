@@ -110,8 +110,9 @@ const WallpaperGallery: React.FC = () => {
       } else {
         toast.error("Failed to initiate payment");
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Payment initiation failed");
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      toast.error(axiosError.response?.data?.message || "Payment initiation failed");
     } finally {
       setLoading(false);
     }
@@ -143,8 +144,9 @@ const WallpaperGallery: React.FC = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
       toast.success(`"${wp.title}" downloaded successfully`);
-    } catch (error: any) {
-      const msg = error.response?.data?.message || "Download failed. Please try again.";
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      const msg = axiosError.response?.data?.message || "Download failed. Please try again.";
       toast.error(msg);
       // If it failed because it needs purchase, we don't need to do anything else, the toast tells them.
     }

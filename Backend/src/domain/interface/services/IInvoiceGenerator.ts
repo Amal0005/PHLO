@@ -1,3 +1,3 @@
 export interface IPdfInvoiceGenerator {
-    generateInvoice(bookingData: any): Promise<Buffer>;
+    generateInvoice(bookingData: Record<string, unknown>): Promise<Buffer>;
 }

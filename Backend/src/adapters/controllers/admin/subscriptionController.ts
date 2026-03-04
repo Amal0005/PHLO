@@ -13,7 +13,7 @@ export class SubscriptionController {
         private _editSubscriptionUseCase: IEditSubscriptionUseCase,
         private _deleteSubscriptionUseCase: IDeleteSubscriptionUseCase,
         private _getSubscriptionUseCase: IGetSubscriptionUseCase
-    ) {}
+    ) { }
 
     async addSubscription(req: Request, res: Response): Promise<Response> {
         try {
@@ -30,8 +30,8 @@ export class SubscriptionController {
 
     async getSubscriptions(req: Request, res: Response): Promise<Response> {
         try {
-            const { page, limit, search, isActive } = req.query as any;
-            const activeStatus = isActive === "true" || isActive === true ? true : isActive === "false" || isActive === false ? false : undefined;
+            const { page, limit, search, isActive } = req.query as Record<string, string | undefined>;
+            const activeStatus = isActive === "true" ? true : isActive === "false" ? false : undefined;
             const result = await this._getSubscriptionUseCase.getSubscription(
                 Number(page) || 1,
                 Number(limit) || 10,

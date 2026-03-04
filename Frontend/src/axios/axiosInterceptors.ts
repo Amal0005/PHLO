@@ -67,7 +67,7 @@ export const setUpInterceptors = () => {
         return Promise.reject(err);
       }
 
-      const role = getRoleFromUrl(url);
+      getRoleFromUrl(url);
 
       if (status === 401 && !originalRequest._retry) {
         if (isRefreshing) {

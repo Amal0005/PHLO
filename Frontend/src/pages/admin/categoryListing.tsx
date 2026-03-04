@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, Search, Filter, X } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Plus, Edit2, Trash2, Search } from "lucide-react";
 import { Category, CategoryForm } from "@/interface/admin/categoryInterface";
 import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
 import { toast } from "react-toastify";
@@ -24,7 +24,7 @@ export default function CategoryListingPage() {
 
   const limit = 10;
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       setLoading(true);
       const filters = { search, sort };
@@ -37,14 +37,14 @@ export default function CategoryListingPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search, sort]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchCategories();
     }, 400);
     return () => clearTimeout(timer);
-  }, [page, search, sort]);
+  }, [page, search, sort, fetchCategories]);
 
   const handleAdd = () => {
     setSelectedCategory(null);

@@ -90,7 +90,7 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
                 setRating(0);
                 setComment("");
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to delete review");
         } finally {
             setSubmitting(false);

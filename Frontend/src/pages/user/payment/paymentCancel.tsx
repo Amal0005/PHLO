@@ -1,11 +1,9 @@
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { XCircle } from "lucide-react";
 
 const PaymentCancel: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const bookingId = searchParams.get("booking_id");
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-8">

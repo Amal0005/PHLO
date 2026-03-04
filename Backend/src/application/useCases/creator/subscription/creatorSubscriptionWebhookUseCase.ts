@@ -10,7 +10,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         private _creatorRepo: ICreatorRepository,
         private _subscriptionRepo: ISubscriptionRepository,
         private _stripeService: IStripeService
-    ) {}
+    ) { }
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);
@@ -19,7 +19,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
 
     async handleEvent(event: Stripe.Event) {
         if (event.type === "checkout.session.completed") {
-            const session = event.data.object as any;
+            const session = event.data.object as Stripe.Checkout.Session;
             if (session.metadata?.type === "subscription") {
                 const { creatorId, subscriptionId } = session.metadata;
 

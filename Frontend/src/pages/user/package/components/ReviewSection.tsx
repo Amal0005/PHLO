@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Star, MessageSquare, Send, Trash2, User as UserIcon } from "lucide-react";
 import { Review } from "@/interface/user/reviewInterface";
 import { BookingService } from "@/services/user/bookingService";
@@ -21,12 +21,11 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ packageId }) => {
     const [submitting, setSubmitting] = useState(false);
     const [reviewableBookingId, setReviewableBookingId] = useState<string | null>(null);
 
-    // Form State
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
     const [hoverRating, setHoverRating] = useState(0);
 
-    const fetchReviews = async () => {
+    const fetchReviews = useCallback(async () => {
         try {
             const response = await ReviewService.getPackageReviews(packageId);
             if (response.success) {
@@ -37,9 +36,9 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ packageId }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [packageId]);
 
-    const checkReviewEligibility = async () => {
+    const checkReviewEligibility = useCallback(async () => {
         if (!user) return;
         try {
             const response = await BookingService.getUserBookings();
@@ -58,12 +57,12 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ packageId }) => {
         } catch (error) {
             console.error("Failed to check review eligibility", error);
         }
-    };
+    }, [user, packageId]);
 
     useEffect(() => {
         fetchReviews();
         checkReviewEligibility();
-    }, [packageId, user]);
+    }, [fetchReviews, checkReviewEligibility]);
 
     const handleSubmitReview = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -100,8 +99,9 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ packageId }) => {
                 setReviewableBookingId(null);
                 fetchReviews();
             }
-        } catch (error: any) {
-            const msg = error.response?.data?.message || "Failed to submit review";
+        } catch (error: unknown) {
+            const axiosError = error as { response?: { data?: { message?: string } } };
+            const msg = axiosError.response?.data?.message || "Failed to submit review";
             toast.error(msg);
         } finally {
             setSubmitting(false);
@@ -115,7 +115,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ packageId }) => {
                 toast.success("Review deleted");
                 fetchReviews();
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to delete review");
         }
     };
@@ -141,8 +141,8 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ packageId }) => {
                                 <Star
                                     key={s}
                                     className={`w-2 h-2 ${s <= (reviews.reduce((acc, r) => acc + r.rating, 0) / (reviews.length || 1))
-                                            ? "text-yellow-500 fill-yellow-500"
-                                            : "text-zinc-800"
+                                        ? "text-yellow-500 fill-yellow-500"
+                                        : "text-zinc-800"
                                         }`}
                                 />
                             ))}
@@ -184,8 +184,8 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ packageId }) => {
                                             >
                                                 <Star
                                                     className={`w-6 h-6 transition-all duration-300 ${s <= (hoverRating || rating)
-                                                            ? "text-yellow-500 fill-yellow-500 scale-110"
-                                                            : "text-zinc-800"
+                                                        ? "text-yellow-500 fill-yellow-500 scale-110"
+                                                        : "text-zinc-800"
                                                         }`}
                                                 />
                                             </button>

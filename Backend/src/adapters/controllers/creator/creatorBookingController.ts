@@ -7,7 +7,7 @@ import { Response } from "express";
 export class CreatorBookingController {
     constructor(
         private _listCreatorBookingsUseCase: IListCreatorBookingsUseCase
-    ) {}
+    ) { }
 
     async ListCreatorBookings(req: AuthRequest, res: Response) {
         try {
@@ -17,7 +17,7 @@ export class CreatorBookingController {
             }
             const bookings = await this._listCreatorBookingsUseCase.listBookings(creatorId);
             res.status(StatusCode.OK).json({ success: true, data: bookings });
-        } catch (error) {
+        } catch {
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message: MESSAGES.ERROR.INTERNAL_SERVER_ERROR_LOWER });
         }
     }

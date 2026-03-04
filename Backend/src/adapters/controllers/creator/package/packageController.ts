@@ -5,7 +5,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
 import { IDeletePackageUseCase } from "@/domain/interface/creator/package/IDeletePackageUseCase";
 import { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPackageUseCase";
-import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
+import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IgetPackageUseCase";
 
 export class PackageController {
     constructor(

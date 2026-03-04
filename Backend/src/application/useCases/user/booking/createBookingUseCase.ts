@@ -35,10 +35,9 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
       location: data.location,
     });
 
-    const creatorId =
-      typeof pkg.creatorId === "string"
-        ? pkg.creatorId
-        : String((pkg.creatorId as any)?._id || (pkg.creatorId as any)?.id);
+    const creatorId = typeof pkg.creatorId === "string"
+      ? pkg.creatorId
+      : String((pkg.creatorId as unknown as Record<string, unknown>)?._id || (pkg.creatorId as unknown as Record<string, unknown>)?.id);
 
     const session = await this._stripeService.createCheckoutSession({
       bookingId: booking.id!,

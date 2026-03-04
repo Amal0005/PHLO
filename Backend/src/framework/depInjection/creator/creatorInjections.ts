@@ -100,5 +100,5 @@ export const getCategoryController = new CategoryController(addCategoryUseCase, 
 export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase)
 export const creatorBookingController = new CreatorBookingController(listCreatorBookingsUseCase)
 export const wallpaperController = new WallpaperController(addWallpaperUseCase, deleteWallpaperUseCase, getCreatorWallpapaperUseCase,)
-
+export { creatorSubscriptionWebhookUseCase };
 

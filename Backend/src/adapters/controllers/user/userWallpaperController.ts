@@ -3,7 +3,7 @@ import { IGetApprovedWallpapersUseCase } from "@/domain/interface/user/wallpaper
 import { IBuyWallpaperUseCase } from "@/domain/interface/user/wallpaper/IBuyWallpaperUseCase";
 import { MESSAGES } from "@/utils/commonMessages";
 import { StatusCode } from "@/utils/statusCodes";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class UserWallpaperController {
@@ -11,7 +11,7 @@ export class UserWallpaperController {
     private _getApprovedWallpaperUseCase: IGetApprovedWallpapersUseCase,
     private _recordDownloadUseCase: IRecordDownloadUseCase,
     private _buyWallpaperUseCase: IBuyWallpaperUseCase
-  ) {}
+  ) { }
 
   async getWallpaper(req: AuthRequest, res: Response) {
     try {

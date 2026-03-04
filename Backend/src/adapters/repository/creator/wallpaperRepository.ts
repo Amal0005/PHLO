@@ -6,7 +6,7 @@ import {
 import { BaseRepository } from "../baseRepository";
 import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
 import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
-import { Document, QueryFilter, Types, UpdateQuery } from "mongoose";
+import { QueryFilter, UpdateQuery } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { WallpaperStatus } from "@/utils/wallpaperStatus";
 

@@ -1,8 +1,17 @@
 import PDFDocument from "pdfkit";
 import { IPdfInvoiceGenerator } from "@/domain/interface/services/IInvoiceGenerator";
 
+interface InvoiceBookingData {
+    id?: string;
+    _id?: string;
+    stripeSessionId?: string;
+    amount?: number;
+    packageId?: Record<string, unknown>;
+}
+
 export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
-    async generateInvoice(booking: any): Promise<Buffer> {
+    async generateInvoice(booking: Record<string, unknown>): Promise<Buffer> {
+        const invoiceData = booking as unknown as InvoiceBookingData;
         return new Promise((resolve, reject) => {
             try {
                 const doc = new PDFDocument();
@@ -20,9 +29,9 @@ export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
                 doc.moveDown();
 
                 // Booking Info
-                const bookingId = (booking.id || booking._id || 'N/A').toString().toUpperCase();
+                const bookingId = (invoiceData.id || invoiceData._id || 'N/A').toString().toUpperCase();
                 doc.fontSize(10).text(`Booking ID: ${bookingId}`);
-                doc.text(`Reference: ${booking.stripeSessionId || "N/A"}`);
+                doc.text(`Reference: ${invoiceData.stripeSessionId || "N/A"}`);
                 doc.text(`Date: ${new Date().toLocaleDateString()}`);
                 doc.moveDown();
 
@@ -36,9 +45,9 @@ export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
 
                 // Line Items
                 const itemY = doc.y + 10;
-                doc.text(booking.packageId?.title || "Photography Package", 50, itemY);
+                doc.text(invoiceData.packageId?.title as string || "Photography Package", 50, itemY);
                 doc.text("1", 300, itemY);
-                doc.text(`₹${(booking.amount || 0).toLocaleString()}`, 450, itemY);
+                doc.text(`₹${(invoiceData.amount || 0).toLocaleString()}`, 450, itemY);
 
                 doc.moveTo(50, itemY + 15).lineTo(550, itemY + 15).stroke();
                 doc.moveDown(2);
@@ -46,7 +55,7 @@ export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
                 // Totals
                 const totalY = doc.y;
                 doc.fontSize(12).font("Helvetica-Bold").text("Total Amount", 300, totalY);
-                doc.text(`₹${(booking.amount || 0).toLocaleString()}`, 450, totalY);
+                doc.text(`₹${(invoiceData.amount || 0).toLocaleString()}`, 450, totalY);
 
                 doc.moveDown(4);
                 doc.fontSize(10).font("Helvetica").fillColor("gray").text("Thank you for choosing PHLO for your creative session.", { align: "center" });

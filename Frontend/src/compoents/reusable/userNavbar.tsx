@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Menu, X, ChevronDown, User, LogOut, Heart } from "lucide-react";
@@ -23,7 +23,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
-  const location = useLocation();
+
   const [signedImageUrl, setSignedImageUrl] = useState<string | null>(null);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -91,7 +91,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
     }
     setMobileMenuOpen(false);
   };
-  const isProfilePage = location.pathname === ROUTES.USER.PROFILE;
+
 
   return (
     <nav
