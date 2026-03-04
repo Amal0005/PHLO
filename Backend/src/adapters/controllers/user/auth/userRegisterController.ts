@@ -10,7 +10,7 @@ export class userRegisterController {
     private _userRegisterUseCase: IUserRegisterUseCase,
     private _verifyOtpUseCase: IVerifyRegisterOtpUseCase,
     private _resendOtpUseCase: IResendOtpUseCase
-  ) {}
+  ) { }
 
   async register(req: Request, res: Response) {
     try {
@@ -38,7 +38,7 @@ export class userRegisterController {
       if (!email) return res.status(StatusCode.BAD_REQUEST).json({ message: MESSAGES.AUTH.EMAIL_REQUIRED })
       await this._resendOtpUseCase.resend(email)
 
-      return res.status(StatusCode.OK).json({ success: true, message: "Email Send Successfully" })
+      return res.status(StatusCode.OK).json({ success: true, message: MESSAGES.AUTH.EMAIL_SEND_SUCCESS })
 
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : MESSAGES.AUTH.SEND_OTP_FAILED;

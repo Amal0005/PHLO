@@ -19,6 +19,7 @@ import UserNavbar from "@/compoents/reusable/userNavbar";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import { ROUTES } from "@/constants/routes";
+import AddReviewForm from "./components/AddReviewForm";
 
 const BookingDetailPage: React.FC = () => {
     const { sessionId } = useParams<{ sessionId: string }>();
@@ -192,6 +193,16 @@ const BookingDetailPage: React.FC = () => {
                                 {booking.packageDetails?.description || "Get ready for a professional photography session tailored to your unique style. We'll capture every detail with artistic precision and cinematic flair."}
                             </p>
                         </div>
+
+                        {/* Review Section */}
+                        {booking.status === 'completed' && new Date(booking.bookingDate) <= new Date() && (
+                            <div className="pt-12 border-t border-zinc-900">
+                                <AddReviewForm
+                                    packageId={booking.packageId}
+                                    bookingId={booking.id}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Right Column: Summaries & Actions */}
@@ -249,7 +260,7 @@ const BookingDetailPage: React.FC = () => {
                                 </button>
                             )}
 
-                            {(booking.status === 'completed' || booking.status === 'pending') && (
+                            {((booking.status === 'completed' || booking.status === 'pending') && new Date(booking.bookingDate) > new Date()) && (
                                 <button
                                     onClick={() => setIsCancelModalOpen(true)}
                                     className="w-full py-5 rounded-[1.5rem] border border-rose-500/20 bg-rose-500/5 text-rose-500 font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-500 hover:text-white transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 group"

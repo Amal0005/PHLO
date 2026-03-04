@@ -38,7 +38,7 @@ export class AdminUserController {
       const { userId } = req.params;
       const { status } = req.body;
       await this._toggleUserStatusUseCase.toggleStatus(userId, status);
-      return res.status(StatusCode.OK).json({ success: true, message: `User ${status} successfully` });
+      return res.status(StatusCode.OK).json({ success: true, message: MESSAGES.USER.STATUS_CHANGED(status) });
     } catch (error: unknown) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: error });
     }

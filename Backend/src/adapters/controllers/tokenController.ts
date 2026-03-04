@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import { MESSAGES } from "@/utils/commonMessages";
 
 export class TokenController {
-    constructor(private _jwtService: IJwtServices) {}
+    constructor(private _jwtService: IJwtServices) { }
 
     async refreshToken(req: Request, res: Response) {
         try {
@@ -11,7 +12,7 @@ export class TokenController {
             if (!refreshToken) {
                 return res.status(StatusCode.UNAUTHORIZED).json({
                     success: false,
-                    message: "Refresh token missing"
+                    message: MESSAGES.AUTH.REFRESH_TOKEN_MISSING
                 });
             }
 
@@ -30,7 +31,7 @@ export class TokenController {
                 accessToken: newAccessToken
             });
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Invalid or expired refresh token";
+            const message = error instanceof Error ? error.message : MESSAGES.AUTH.INVALID_REFRESH_TOKEN;
             console.error("Refresh token error:", error);
             return res.status(StatusCode.UNAUTHORIZED).json({
                 success: false,

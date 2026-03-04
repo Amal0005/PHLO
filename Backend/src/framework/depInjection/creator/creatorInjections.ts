@@ -30,7 +30,7 @@ import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminC
 import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseCase";
 import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
-import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
+import { CategoryController } from "@/adapters/controllers/admin/categoryController";
 import { BuySubscriptionUseCase } from "@/application/useCases/creator/subscription/buySubscriptionUseCase";
 import { ListCreatorBookingsUseCase } from "@/application/useCases/creator/bookings/listCreatorBookingsUseCase";
 import { CreatorBookingController } from "@/adapters/controllers/creator/creatorBookingController";

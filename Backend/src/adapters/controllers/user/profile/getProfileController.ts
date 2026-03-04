@@ -6,13 +6,13 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class GetProfileController {
-    constructor(private _getUserProfileUsecase: IGetUserProfileUseCase) {}
+    constructor(private _getUserProfileUsecase: IGetUserProfileUseCase) { }
 
     async getProfile(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
             if (!userId) {
-                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: "Unauthorized" });
+                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: MESSAGES.AUTH.UNAUTHORIZED });
                 return;
             }
             const user = await this._getUserProfileUsecase.getProfile(userId);

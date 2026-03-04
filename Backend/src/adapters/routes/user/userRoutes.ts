@@ -18,6 +18,7 @@ import {
   userBookingController,
   userWallpaperController,
   wishlistController,
+  reviewController,
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import {
@@ -305,6 +306,46 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         wishlistController.getWishlistIds(req, res),
     );
-
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.REVIEW,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        reviewController.addReview(req, res),
+    )
+    this.userRouter.delete(
+      BACKEND_ROUTES.USER.DELETE_REVIEW,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        reviewController.deleteReview(req, res),
+    )
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.GET_REVIEW,
+      (req: Request, res: Response) =>
+        reviewController.getReview(req, res),
+    )
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.GET_BOOKING_REVIEW,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        reviewController.getReviewByBooking(req, res),
+    )
   }
 }

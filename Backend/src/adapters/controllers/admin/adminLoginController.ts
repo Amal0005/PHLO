@@ -12,7 +12,7 @@ interface LoginRequestBody {
 export class AdminLoginController {
   constructor(
     private _adminLoginUseCase: IAdminLoginUseCase,
-  ) {}
+  ) { }
   async login(req: Request, res: Response): Promise<Response> {
     try {
       const { email, password } = req.body as LoginRequestBody;
@@ -38,7 +38,7 @@ export class AdminLoginController {
       const statusCode = error instanceof AppError ? error.statusCode : StatusCode.UNAUTHORIZED;
       return res.status(statusCode).json({
         success: false,
-        message: error instanceof Error ? error.message : "Authentication failed",
+        message: error instanceof Error ? error.message : MESSAGES.AUTH.AUTHENTICATION_FAILED,
       });
     }
   }

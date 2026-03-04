@@ -23,7 +23,7 @@ export abstract class BaseRepository<T, M extends Document>
     return result ? this.mapToEntity(result) : null;
   }
 
-  async findAll(filter: any = {}): Promise<T[]> {
+  async findAll(filter: QueryFilter<M> = {} as QueryFilter<M>): Promise<T[]> {
     const results = await this.model.find(filter).exec();
     return results.map((doc) => this.mapToEntity(doc));
   }

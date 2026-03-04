@@ -110,7 +110,7 @@ export class AdminCreatorController {
       await this._toggleCreatorStatusUseCase.toggleStatus(creatorId, status);
       return res
         .status(StatusCode.OK)
-        .json({ success: true, message: `Creator ${status} successfully` });
+        .json({ success: true, message: MESSAGES.CREATOR.STATUS_CHANGED(status) });
     } catch (error) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,

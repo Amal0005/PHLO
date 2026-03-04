@@ -6,7 +6,7 @@ import { IGetPackageDetailUseCase } from "@/domain/interface/user/packages/IGetP
 export class GetPackageDetailController {
   constructor(
     private _getPackageDetailUseCase: IGetPackageDetailUseCase
-  ) {}
+  ) { }
 
   async getPackageDetail(req: Request, res: Response) {
     try {
@@ -15,7 +15,7 @@ export class GetPackageDetailController {
       if (!id) {
         return res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          message: "Package ID is required"
+          message: MESSAGES.PACKAGE.ID_REQUIRED
         });
       }
 
@@ -24,7 +24,7 @@ export class GetPackageDetailController {
       if (!packageData) {
         return res.status(StatusCode.NOT_FOUND).json({
           success: false,
-          message: "Package not found"
+          message: MESSAGES.PACKAGE.NOT_FOUND
         });
       }
 

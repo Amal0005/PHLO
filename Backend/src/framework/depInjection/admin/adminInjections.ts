@@ -18,13 +18,13 @@ import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseC
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
 import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
 import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminCategoryListingUseCase";
-import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
+import { CategoryController } from "@/adapters/controllers/admin/categoryController";
 import { AddSubscriptionUseCase } from "@/application/useCases/admin/addSubscriptionUseCase";
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscriptionUseCase";
 import { EditSubscriptionUseCase } from "@/application/useCases/admin/editSubscriptionUseCase";
 import { DeleteSubscriptionUseCase } from "@/domain/interface/admin/deleteSubscriptionUseCase";
-import { SubscriptionController } from "@/adapters/controllers/admin/subscription/subscriptionController";
+import { SubscriptionController } from "@/adapters/controllers/admin/subscriptionController";
 import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
 import { ApproveWallpaperUseCase } from "@/application/useCases/admin/wallpaper/approveWallpaperUseCase";
 import { RejectWallpaperUseCase } from "@/application/useCases/admin/wallpaper/rejectWallpaperUseCase";

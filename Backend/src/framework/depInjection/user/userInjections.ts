@@ -19,7 +19,7 @@ import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminC
 import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseCase";
 import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
-import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
+import { CategoryController } from "@/adapters/controllers/admin/categoryController";
 import { LogoutUseCase } from "../../../application/useCases/logoutUseCase";
 import { ForgotPasswordUseCase } from "../../../application/useCases/user/auth/forgotPasswordUseCase";
 import { GoogleLoginUseCase } from "../../../application/useCases/user/auth/googleLoginUseCase";
@@ -62,9 +62,14 @@ import { ToggleWishlistUseCase } from "@/application/useCases/user/wishlist/togg
 import { GetWishlistUseCase } from "@/application/useCases/user/wishlist/getWishlistUseCase";
 import { GetWishlistIdsUseCase } from "@/application/useCases/user/wishlist/getWishlistIdsUseCase";
 import { WishlistController } from "@/adapters/controllers/user/wishlistController";
-import { ListCreatorBookingsUseCase } from "@/application/useCases/creator/bookings/listCreatorBookingsUseCase";
 import { PdfInvoiceGenerator } from "@/framework/services/PdfInvoiceGenerator";
 import { DownloadInvoiceUseCase } from "@/application/useCases/user/booking/DownloadInvoiceUseCase";
+import { ReviewRepository } from "@/adapters/repository/user/reviewRepository";
+import { AddReviewUseCase } from "@/application/useCases/user/review/addReviewUseCase";
+import { ReviewController } from "@/adapters/controllers/user/userReviewController";
+import { DeleteReviewUseCase } from "@/application/useCases/user/review/deleteReviewUseCase";
+import { GetReviewUseCase } from "@/application/useCases/user/review/getReviewUseCase";
+import { GetReviewByBookingUseCase } from "@/application/useCases/user/review/getReviewByBookingUseCase";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -83,6 +88,7 @@ const wallpaperRepo = new WallpaperRepository()
 const stripeService = new StripeService()
 const wallpaperDownloadRepo = new WallpaperDownloadRepository()
 const wishlistRepo = new WishlistRepository()
+const reviewRepo = new ReviewRepository()
 
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
@@ -114,10 +120,12 @@ const recordDownloadUseCase = new RecordDownloadUseCase(wallpaperDownloadRepo)
 const toggleWishlistUseCase = new ToggleWishlistUseCase(wishlistRepo)
 const getWishlistUseCase = new GetWishlistUseCase(wishlistRepo)
 const getWishlistIdsUseCase = new GetWishlistIdsUseCase(wishlistRepo)
-const listCreatorBookings = new ListCreatorBookingsUseCase(bookingRepo)
 const pdfInvoiceGenerator = new PdfInvoiceGenerator();
 const downloadInvoiceUseCase = new DownloadInvoiceUseCase(bookingRepo, pdfInvoiceGenerator);
-
+const addReviewUseCase = new AddReviewUseCase(reviewRepo, bookingRepo)
+const deleteReviewUseCase = new DeleteReviewUseCase(reviewRepo)
+const getReviewUseCase = new GetReviewUseCase(reviewRepo)
+const getReviewByBookingUseCase = new GetReviewByBookingUseCase(reviewRepo)
 
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
@@ -137,3 +145,4 @@ export const userBookingController = new UserBookingController(createBookingUseC
 export const paymentController = new PaymentController(bookingWebhookUseCase, creatorSubscriptionWebhookUseCase, stripeService);
 export const userWallpaperController = new UserWallpaperController(getApprovedWallpapers, recordDownloadUseCase)
 export const wishlistController = new WishlistController(toggleWishlistUseCase, getWishlistUseCase, getWishlistIdsUseCase)
+export const reviewController = new ReviewController(addReviewUseCase, deleteReviewUseCase, getReviewUseCase, getReviewByBookingUseCase)

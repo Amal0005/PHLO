@@ -5,13 +5,13 @@ import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/utils/commonMessages";
 
 export class EditProfileController {
-    constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) {}
+    constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) { }
 
     async editProfile(req: AuthRequest, res: Response): Promise<void> {
         try {
             const userId = req.user?.userId;
             if (!userId) {
-                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: "Unauthorized" });
+                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: MESSAGES.AUTH.UNAUTHORIZED });
                 return;
             }
 

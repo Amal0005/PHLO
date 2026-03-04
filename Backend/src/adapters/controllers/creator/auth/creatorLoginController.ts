@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { AuthError } from "@/domain/errors/authError";
 import { ICreatorLoginUseCase } from "@/domain/interface/creator/auth/ICreatorLoginUseCase";
+import { MESSAGES } from "@/utils/commonMessages";
 
 export class CreatorLoginController {
   constructor(
     private _loginUseCase: ICreatorLoginUseCase
-  ) {}
+  ) { }
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body.Creator as {
@@ -27,7 +28,7 @@ export class CreatorLoginController {
 
       return res.status(StatusCode.OK).json({
         success: true,
-        message: "Login successful",
+        message: MESSAGES.SUCCESS.LOGIN_SUCCESSFUL,
         data: result,
       });
     } catch (error) {
@@ -42,7 +43,7 @@ export class CreatorLoginController {
 
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: "Internal server error",
+        message: MESSAGES.ERROR.INTERNAL_SERVER_ERROR_LOWER,
       });
     }
   }

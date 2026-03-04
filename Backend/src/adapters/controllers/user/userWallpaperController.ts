@@ -8,7 +8,7 @@ export class UserWallpaperController {
   constructor(
     private _getApprovedWallpaperUseCase: IGetApprovedWallpapersUseCase,
     private _recordDownloadUseCase: IRecordDownloadUseCase
-  ) {}
+  ) { }
   async getWallpaper(req: Request, res: Response) {
     try {
       const page = Number(req.query.page) || 1;
@@ -52,19 +52,19 @@ export class UserWallpaperController {
       if (!wallpaperId) {
         return res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          message: "Wallpaper ID is required",
+          message: MESSAGES.WALLPAPER.ID_REQUIRED,
         });
       }
       if (!userId) {
         return res.status(StatusCode.UNAUTHORIZED).json({
           success: false,
-          message: "User must be logged in",
+          message: MESSAGES.USER.MUST_BE_LOGGED_IN,
         });
       }
       if (!creatorId) {
         return res.status(StatusCode.BAD_REQUEST).json({
           success: false,
-          message: "Creator ID is required",
+          message: MESSAGES.WALLPAPER.CREATOR_ID_REQUIRED,
         });
       }
       const result = await this._recordDownloadUseCase.record(

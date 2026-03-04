@@ -26,7 +26,11 @@ export const BACKEND_ROUTES = {
     CHECK_AVAILABILITY: "/bookings/check-availability",
     BOOKING_STATUS: "/bookings/status/:sessionId",
     CANCEL_BOOKING: "/bookings/cancel/:sessionId",
-    DOWNLOAD_INVOICE: "/bookings/:sessionId/invoice"
+    DOWNLOAD_INVOICE: "/bookings/:sessionId/invoice",
+    REVIEW: "/review",
+    DELETE_REVIEW: "/review/:reviewId",
+    GET_REVIEW: "/review/:packageId",
+    GET_BOOKING_REVIEW: "/review/booking/:bookingId"
   },
   CREATOR: {
     BASE: "/creator",

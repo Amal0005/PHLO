@@ -10,7 +10,7 @@ export class WishlistController {
         private _toggleWishlistUseCase: IToggleWishlistUseCase,
         private _getWishlistUseCase: IGetWishlistUseCase,
         private _getWishlistIdsUseCase: IGetWishlistIdsUseCase
-    ) {}
+    ) { }
 
     async toggle(req: Request, res: Response) {
         try {
@@ -19,7 +19,7 @@ export class WishlistController {
             if (!userId) {
                 return res.status(StatusCode.UNAUTHORIZED).json({
                     success: false,
-                    message: "User must be logged in",
+                    message: MESSAGES.USER.MUST_BE_LOGGED_IN,
                 });
             }
             if (!itemId || !itemType) {
@@ -47,7 +47,7 @@ export class WishlistController {
             if (!userId) {
                 return res.status(StatusCode.UNAUTHORIZED).json({
                     success: false,
-                    message: "User must be logged in",
+                    message: MESSAGES.USER.MUST_BE_LOGGED_IN,
                 });
             }
 
@@ -74,7 +74,7 @@ export class WishlistController {
             if (!userId) {
                 return res.status(StatusCode.UNAUTHORIZED).json({
                     success: false,
-                    message: "User must be logged in",
+                    message: MESSAGES.USER.MUST_BE_LOGGED_IN,
                 });
             }
 

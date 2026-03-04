@@ -18,7 +18,7 @@ export class CategoryController {
         private _editCategoryUseCase: IEditCategoryUseCase,
         private _deleteCategoryUseCase: IDeleteCategoryUseCase,
         private _adminCategoryListingUseCase: IAdminCategoryListingUseCase
-    ) {}
+    ) { }
 
     async addCategory(req: Request, res: Response): Promise<Response> {
         try {
@@ -29,7 +29,7 @@ export class CategoryController {
             const statusCode = error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
             return res.status(statusCode).json({
                 success: false,
-                message: error instanceof Error ? error.message : "Failed to add category",
+                message: error instanceof Error ? error.message : MESSAGES.ADMIN.CATEGORY_ADD_FAILED,
             });
         }
     }
@@ -66,7 +66,7 @@ export class CategoryController {
             const statusCode = error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
             return res.status(statusCode).json({
                 success: false,
-                message: error instanceof Error ? error.message : "Failed to edit category",
+                message: error instanceof Error ? error.message : MESSAGES.ADMIN.CATEGORY_EDIT_FAILED,
             });
         }
     }
@@ -75,12 +75,12 @@ export class CategoryController {
         try {
             const { categoryId } = req.params;
             await this._deleteCategoryUseCase.delete(categoryId);
-            return res.status(StatusCode.OK).json({ success: true, message: "Category deleted successfully" });
+            return res.status(StatusCode.OK).json({ success: true, message: MESSAGES.ADMIN.CATEGORY_DELETED });
         } catch (error: unknown) {
             const statusCode = error instanceof AppError ? error.statusCode : StatusCode.INTERNAL_SERVER_ERROR;
             return res.status(statusCode).json({
                 success: false,
-                message: error instanceof Error ? error.message : "Failed to delete category",
+                message: error instanceof Error ? error.message : MESSAGES.ADMIN.CATEGORY_DELETE_FAILED,
             });
         }
     }

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { AppError } from "@/domain/errors/appError";
+import { MESSAGES } from "@/utils/commonMessages";
 import { IAddSubscriptionUseCase } from "@/domain/interface/admin/subscription/IAddSubscriptionUseCase";
 import { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
 import { IDeleteSubscriptionUseCase } from "@/domain/interface/admin/subscription/IDeleteSubscriptionUseCase";
@@ -22,7 +23,7 @@ export class SubscriptionController {
             const statusCode = error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
             return res.status(statusCode).json({
                 success: false,
-                message: error instanceof Error ? error.message : "Failed to add subscription",
+                message: error instanceof Error ? error.message : MESSAGES.ADMIN.SUBSCRIPTION_ADD_FAILED,
             });
         }
     }
@@ -37,12 +38,12 @@ export class SubscriptionController {
                 activeStatus,
                 search as string
             );
-            return res.status(StatusCode.OK).json({ success: true, message: "Subscriptions listed", result });
+            return res.status(StatusCode.OK).json({ success: true, message: MESSAGES.ADMIN.SUBSCRIPTION_LISTED, result });
         } catch (error: unknown) {
             console.error("GetSubscriptions Error:", error);
             return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
                 success: false,
-                message: "Failed to fetch subscriptions",
+                message: MESSAGES.ADMIN.SUBSCRIPTION_FETCH_FAILED,
             });
         }
     }
@@ -56,7 +57,7 @@ export class SubscriptionController {
             const statusCode = error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
             return res.status(statusCode).json({
                 success: false,
-                message: error instanceof Error ? error.message : "Failed to update Subscription",
+                message: error instanceof Error ? error.message : MESSAGES.ADMIN.SUBSCRIPTION_UPDATE_FAILED,
             });
         }
     }
@@ -65,12 +66,12 @@ export class SubscriptionController {
         try {
             const { subscriptionId } = req.params;
             await this._deleteSubscriptionUseCase.deleteSubscription(subscriptionId);
-            return res.status(StatusCode.OK).json({ success: true, message: "Subscription deleted Successfully" });
+            return res.status(StatusCode.OK).json({ success: true, message: MESSAGES.ADMIN.SUBSCRIPTION_DELETED });
         } catch (error: unknown) {
             const statusCode = error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
             return res.status(statusCode).json({
                 success: false,
-                message: error instanceof Error ? error.message : "Failed to delete",
+                message: error instanceof Error ? error.message : MESSAGES.ADMIN.SUBSCRIPTION_DELETE_FAILED,
             });
         }
     }
