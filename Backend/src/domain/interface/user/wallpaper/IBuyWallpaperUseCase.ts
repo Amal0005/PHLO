@@ -1,7 +1,7 @@
-import { CheckoutSessionResponseDTO } from "../../dto/payment/checkoutSessionResponseDto";
+import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
 
 export interface IBuyWallpaperUseCase {
-    execute(
+    buyWallpaper(
         wallpaperId: string,
         userId: string,
         successUrl: string,

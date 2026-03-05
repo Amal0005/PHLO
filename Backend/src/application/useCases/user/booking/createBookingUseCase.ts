@@ -13,7 +13,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private _bookingRepo: IBookingRepository,
     private _packageRepo: IPackageRepository,
     private _stripeService: IStripeService
-  ) {}
+  ) { }
   async createBooking(
     userId: string,
     data: CreateBookingRequestDTO

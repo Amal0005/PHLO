@@ -9,9 +9,9 @@ export class BuyWallpaperUseCase implements IBuyWallpaperUseCase {
         private _wallpaperRepo: IWallpaperRepository,
         private _stripeService: IStripeService,
         private _wallpaperDownloadRepo: IWallpaperDownloadRepository
-    ) { }
+    ) {}
 
-    async execute(
+    async buyWallpaper(
         wallpaperId: string,
         userId: string,
         successUrl: string,
@@ -31,11 +31,7 @@ export class BuyWallpaperUseCase implements IBuyWallpaperUseCase {
             throw new Error("This wallpaper is free. You can download it directly.");
         }
 
-        // Stripe requires a minimum amount (usually around 50 cents USD)
-        // For INR, ₹50 is a safe minimum.
-        if (wallpaper.price < 50) {
-            throw new Error("Price is too low for online payment. Minimum amount required is ₹50.");
-        }
+       
 
         return await this._stripeService.createCheckoutSession({
             wallpaperId: wallpaper._id,

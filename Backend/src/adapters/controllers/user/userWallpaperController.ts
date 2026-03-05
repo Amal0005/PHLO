@@ -59,7 +59,7 @@ export class UserWallpaperController {
         return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.USER.MUST_BE_LOGGED_IN });
       }
 
-      const session = await this._buyWallpaperUseCase.execute(id, userId, successUrl, cancelUrl);
+      const session = await this._buyWallpaperUseCase.buyWallpaper(id, userId, successUrl, cancelUrl);
       return res.status(StatusCode.OK).json({ success: true, ...session });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR;

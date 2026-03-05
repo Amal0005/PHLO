@@ -35,7 +35,7 @@ const PackageListing: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
-  const limit = 9;
+  const limit = 1;
   console.log(packages, "pack")
   useEffect(() => {
     const filtersToSave = {

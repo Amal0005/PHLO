@@ -6,7 +6,7 @@ export interface IBookingRepository extends IBaseRepository<BookingEntity> {
 
   findByStripeSessionId(sessionId: string): Promise<BookingEntity | null>;
   findByUser(userId: string): Promise<BookingEntity[]>;
-  updateStatus(id: string,status: BookingStatus): Promise<BookingEntity | null>;
+  updateStatus(id: string, status: BookingStatus): Promise<BookingEntity | null>;
   checkAvailability(packageId: string, date: Date): Promise<boolean>
   findByCreatorId(creatorId: string): Promise<BookingEntity[]>
 }
