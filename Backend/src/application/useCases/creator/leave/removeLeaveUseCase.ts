@@ -1,0 +1,12 @@
+import { ILeaveRepository } from "@/domain/interface/repositories/ILeaveRepository";
+import { IRemoveLeaveUseCase } from "@/domain/interface/creator/leave/IRemoveLeaveUseCase";
+
+export class RemoveLeaveUseCase implements IRemoveLeaveUseCase {
+  constructor(private leaveRepository: ILeaveRepository) {}
+
+  async removeLeave(creatorId: string, dateString: Date): Promise<boolean> {
+    const date = new Date(dateString);
+    date.setUTCHours(0, 0, 0, 0);
+    return await this.leaveRepository.removeLeave(creatorId, date);
+  }
+}

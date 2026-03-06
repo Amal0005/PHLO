@@ -56,6 +56,8 @@ export const BACKEND_ROUTES = {
     REJECT_BOOKING: "/bookings/:id/reject",
     WALLPAPER: "/wallpaper",
     WALLPAPER_DETAIL: "/wallpaper/:wallpaperId",
+    LEAVE: "/leave",
+    LEAVE_DETAIL: "/leave/:date",
   },
   ADMIN: {
     BASE: "/admin",

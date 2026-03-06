@@ -1,5 +1,5 @@
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
-import { IPdfInvoiceGenerator } from "@/domain/interface/services/IInvoiceGenerator";
+import { IPdfInvoiceGenerator } from "@/domain/interface/service/IInvoiceGenerator";
 import { IDownloadInvoiceUseCase } from "@/domain/interface/user/booking/IDownloadInvoiceUseCase";
 
 export class DownloadInvoiceUseCase implements IDownloadInvoiceUseCase {

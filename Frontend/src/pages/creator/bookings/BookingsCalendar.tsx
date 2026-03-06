@@ -10,30 +10,63 @@ import {
     MapPin,
     Package as PackageIcon
 } from "lucide-react";
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, parseISO } from "date-fns";
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, parseISO, startOfDay } from "date-fns";
+import { toast } from "react-toastify";
+import { creatorLeaveService } from "@/services/creator/leaveService";
+import { LeaveResponse } from "@/interface/creator/creatorLeaveInterface";
 
 const BookingsCalendar: React.FC = () => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [bookings, setBookings] = useState<UserBooking[]>([]);
+    const [leaves, setLeaves] = useState<LeaveResponse[]>([]);
     const [loading, setLoading] = useState(true);
+    const [actionLoading, setActionLoading] = useState(false);
+
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const [bookingsRes, leavesData] = await Promise.all([
+                CreatorBookingService.getCreatorBookings(),
+                creatorLeaveService.getLeaves()
+            ]);
+            if (bookingsRes.success) {
+                setBookings(bookingsRes.data);
+            }
+            if (Array.isArray(leavesData)) {
+                setLeaves(leavesData);
+            }
+        } catch (error) {
+            console.error("Failed to fetch creator bookings or leaves:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchBookings = async () => {
-            try {
-                setLoading(true);
-                const response = await CreatorBookingService.getCreatorBookings();
-                if (response.success) {
-                    setBookings(response.data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch creator bookings:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchBookings();
+        fetchData();
     }, []);
+
+    const handleToggleLeave = async () => {
+        try {
+            setActionLoading(true);
+            const isLeaveDate = leaves.some(l => l.date.split('T')[0] === format(selectedDate, "yyyy-MM-dd"));
+            if (isLeaveDate) {
+                await creatorLeaveService.removeLeave(selectedDate);
+                toast.success("Date unblocked successfully");
+            } else {
+                await creatorLeaveService.addLeave(selectedDate);
+                toast.success("Date blocked successfully");
+            }
+            fetchData();
+        } catch (error: any) {
+            console.error("Failed to toggle leave:", error);
+            const message = error.response?.data?.message || "Action failed";
+            toast.error(message);
+        } finally {
+            setActionLoading(false);
+        }
+    };
 
     const renderHeader = () => {
         return (
@@ -92,27 +125,33 @@ const BookingsCalendar: React.FC = () => {
             for (let i = 0; i < 7; i++) {
                 formattedDate = format(day, "d");
                 const cloneDay = day;
-                const dayBookings = bookings.filter(b => isSameDay(parseISO(b.bookingDate), cloneDay));
+                const dayBookings = bookings.filter(b => b.bookingDate.split('T')[0] === format(cloneDay, "yyyy-MM-dd"));
+                const isLeaveDay = leaves.some(l => l.date.split('T')[0] === format(cloneDay, "yyyy-MM-dd"));
                 const hasBookings = dayBookings.length > 0;
 
                 days.push(
                     <div
                         key={day.toString()}
                         className={`relative h-24 sm:h-32 border border-white/5 p-2 transition-all cursor-pointer ${!isSameMonth(day, monthStart) ? "opacity-20 pointer-events-none" : "hover:bg-white/[0.02]"
-                            } ${isSameDay(day, selectedDate) ? "bg-white/[0.05] border-white/20" : ""}`}
+                            } ${isSameDay(day, selectedDate) ? "bg-white/[0.05] border-white/20" : ""} ${isLeaveDay ? "bg-rose-950/20" : ""}`}
                         onClick={() => setSelectedDate(cloneDay)}
                     >
                         <span className={`text-xs font-bold ${isSameDay(day, new Date()) ? "text-white" : "text-zinc-500"}`}>
                             {formattedDate}
                         </span>
-                        {hasBookings && (
+                        {isLeaveDay && (
+                            <div className="absolute top-2 right-2 flex items-center gap-1 text-rose-500/50">
+                                <span className="text-[8px] font-bold uppercase tracking-widest hidden sm:block">Unavailable</span>
+                            </div>
+                        )}
+                        {hasBookings && !isLeaveDay && (
                             <div className="mt-2 space-y-1">
                                 {dayBookings.slice(0, 2).map((booking, idx) => (
                                     <div
                                         key={idx}
                                         className={`px-2 py-1 rounded-md text-[9px] font-black truncate uppercase tracking-tight ${booking.status === 'cancelled'
-                                                ? "bg-rose-500/20 text-rose-500 border border-rose-500/30"
-                                                : "bg-white text-black"
+                                            ? "bg-rose-500/20 text-rose-500 border border-rose-500/30"
+                                            : "bg-white text-black"
                                             }`}
                                     >
                                         {booking.packageDetails?.title || "Booking"}
@@ -143,18 +182,47 @@ const BookingsCalendar: React.FC = () => {
     };
 
     const renderDetails = () => {
-        const selectedDateBookings = bookings.filter(b => isSameDay(parseISO(b.bookingDate), selectedDate));
+        const selectedDateBookings = bookings.filter(b => b.bookingDate.split('T')[0] === format(selectedDate, "yyyy-MM-dd"));
+        const isLeaveDate = leaves.some(l => l.date.split('T')[0] === format(selectedDate, "yyyy-MM-dd"));
+
+        // can only block if it's future or today, and no bookings exist. 
+        // to simplify, let's just allow blocking if no bookings for that day.
+        const hasBookingsOnDate = selectedDateBookings.length > 0;
+        const isPastDate = startOfDay(selectedDate) < startOfDay(new Date());
 
         return (
             <div className="mt-12">
-                <div className="flex items-center gap-3 mb-6">
-                    <CalendarIcon className="w-5 h-5 text-white/40" />
-                    <h2 className="text-xl font-black text-white uppercase tracking-tight">
-                        Details for {format(selectedDate, "MMMM d, yyyy")}
-                    </h2>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div className="flex items-center gap-3">
+                        <CalendarIcon className="w-5 h-5 text-white/40" />
+                        <h2 className="text-xl font-black text-white uppercase tracking-tight">
+                            Details for {format(selectedDate, "MMMM d, yyyy")}
+                        </h2>
+                    </div>
+
+                    {!isPastDate && (
+                        <button
+                            onClick={handleToggleLeave}
+                            disabled={actionLoading || (hasBookingsOnDate && !isLeaveDate)}
+                            className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${actionLoading ? "opacity-50 cursor-not-allowed" : ""
+                                } ${isLeaveDate
+                                    ? "bg-white/10 hover:bg-white/20 text-white"
+                                    : hasBookingsOnDate
+                                        ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
+                                        : "bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20"
+                                }`}
+                        >
+                            {actionLoading ? "Processing..." : isLeaveDate ? "Unblock Date" : "Mark as Leave"}
+                        </button>
+                    )}
                 </div>
 
-                {selectedDateBookings.length === 0 ? (
+                {isLeaveDate ? (
+                    <div className="py-12 px-8 rounded-3xl bg-rose-950/20 border border-rose-500/10 border-dashed text-center">
+                        <p className="text-rose-500 font-bold tracking-widest uppercase">You are on leave this day</p>
+                        <p className="text-rose-500/60 text-xs mt-2 font-medium">No bookings can be scheduled for this date.</p>
+                    </div>
+                ) : selectedDateBookings.length === 0 ? (
                     <div className="py-12 px-8 rounded-3xl bg-zinc-900/30 border border-white/5 border-dashed text-center">
                         <p className="text-zinc-500 text-sm font-medium">No bookings scheduled for this date.</p>
                     </div>
@@ -174,10 +242,10 @@ const BookingsCalendar: React.FC = () => {
                                                     {booking.packageDetails?.title}
                                                 </h3>
                                                 <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${booking.status === 'completed'
-                                                        ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-                                                        : booking.status === 'cancelled'
-                                                            ? "bg-rose-500/10 text-rose-500 border-rose-500/20"
-                                                            : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                                                    ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                                                    : booking.status === 'cancelled'
+                                                        ? "bg-rose-500/10 text-rose-500 border-rose-500/20"
+                                                        : "bg-amber-500/10 text-amber-500 border-amber-500/20"
                                                     }`}>
                                                     {booking.status}
                                                 </span>

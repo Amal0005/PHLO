@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Package as PackageIcon, MapPin, X,
-   Image as ImageIcon,
+  Image as ImageIcon,
   Calendar, Check, AlertCircle, Loader2
 } from "lucide-react";
 import { UserPackageService } from "@/services/user/userPackageService";
@@ -284,18 +284,18 @@ const PackageDetailPage: React.FC = () => {
                         </div>
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center gap-2">
                           {checkingAvailability && (
-                            <Loader2 className="w-3.5 h-3.5 text-white/20 animate-spin" />
+                            <Loader2 className="w-3.5 h-3.5 text-white/40 animate-spin" />
                           )}
                           {!checkingAvailability && selectedDate && isDateAvailable === true && (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md">
-                              <Check className="w-3 h-3 text-emerald-500" />
-                              <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Available</span>
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 backdrop-blur-xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Date Available</span>
                             </div>
                           )}
                           {!checkingAvailability && selectedDate && isDateAvailable === false && (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 backdrop-blur-md">
-                              <AlertCircle className="w-3 h-3 text-rose-500" />
-                              <span className="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Booked</span>
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/20 border border-rose-500/30 backdrop-blur-xl shadow-[0_0_20px_rgba(244,63,94,0.1)]">
+                              <AlertCircle className="w-3 h-3 text-rose-400" />
+                              <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest">Unavailable</span>
                             </div>
                           )}
                         </div>
@@ -333,7 +333,7 @@ const PackageDetailPage: React.FC = () => {
                         }`}
                       style={{ boxShadow: "0 8px 32px rgba(255,255,255,0.12)" }}
                     >
-                      {isDateAvailable === false ? 'Already Booked' : 'Confirm & Pay'}
+                      {checkingAvailability ? 'Checking...' : isDateAvailable === false ? 'Unavailable' : 'Confirm & Pay'}
                     </button>
                   </div>
                 </div>

@@ -62,7 +62,7 @@ import { ToggleWishlistUseCase } from "@/application/useCases/user/wishlist/togg
 import { GetWishlistUseCase } from "@/application/useCases/user/wishlist/getWishlistUseCase";
 import { GetWishlistIdsUseCase } from "@/application/useCases/user/wishlist/getWishlistIdsUseCase";
 import { WishlistController } from "@/adapters/controllers/user/wishlistController";
-import { PdfInvoiceGenerator } from "@/framework/services/PdfInvoiceGenerator";
+import { PdfInvoiceGenerator } from "@/domain/services/user/PdfInvoiceGenerator";
 import { DownloadInvoiceUseCase } from "@/application/useCases/user/booking/DownloadInvoiceUseCase";
 import { ReviewRepository } from "@/adapters/repository/user/reviewRepository";
 import { AddReviewUseCase } from "@/application/useCases/user/review/addReviewUseCase";
@@ -72,6 +72,7 @@ import { GetReviewUseCase } from "@/application/useCases/user/review/getReviewUs
 import { GetReviewByBookingUseCase } from "@/application/useCases/user/review/getReviewByBookingUseCase";
 import { BuyWallpaperUseCase } from "@/application/useCases/user/wallpaper/buyWallpaperUseCase";
 import { WallpaperWebhookUseCase } from "@/application/useCases/user/wallpaper/wallpaperWebhookUseCase";
+import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -91,6 +92,7 @@ const stripeService = new StripeService()
 const wallpaperDownloadRepo = new WallpaperDownloadRepository()
 const wishlistRepo = new WishlistRepository()
 const reviewRepo = new ReviewRepository()
+const leaveRepo = new LeaveRepository()
 
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
@@ -110,11 +112,11 @@ const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepo
 const addCategoryUseCase = new AddCategoryUseCase(categoryRepository);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
-const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, stripeService)
+const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, leaveRepo, stripeService)
 const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService)
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
-const checkAvailabilityUseCase = new CheckAvailabilityUseCase(bookingRepo);
+const checkAvailabilityUseCase = new CheckAvailabilityUseCase(bookingRepo, leaveRepo, packageRepository);
 const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo);
 const getBookingDetailUseCase = new GetBookingDetailUseCase(bookingRepo, stripeService);
 const getApprovedWallpapers = new GetApprovedWallpaperUseCase(wallpaperRepo, wallpaperDownloadRepo)
