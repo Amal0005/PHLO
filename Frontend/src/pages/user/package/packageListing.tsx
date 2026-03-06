@@ -35,6 +35,7 @@ const PackageListing: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
+  const [currentLocationName, setCurrentLocationName] = useState<string>("");
   const limit = 9;
   console.log(packages, "pack")
   useEffect(() => {
@@ -109,6 +110,25 @@ const PackageListing: React.FC = () => {
       }
     };
     fetchCategories();
+
+    // Re-fetch address if location filter exists
+    if (locationFilter) {
+      const fetchAddress = async () => {
+        try {
+          const token = import.meta.env.VITE_MAPBOX_TOKEN;
+          const res = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/${locationFilter.lng},${locationFilter.lat}.json?access_token=${token}&types=place,address&limit=1`
+          );
+          const data = await res.json();
+          if (data.features?.[0]) {
+            setCurrentLocationName(data.features[0].place_name);
+          }
+        } catch (error) {
+          console.error("Reverse geocoding mount error:", error);
+        }
+      };
+      fetchAddress();
+    }
   }, []);
 
   useEffect(() => {
@@ -150,6 +170,7 @@ const PackageListing: React.FC = () => {
     setPriceRange({ min: 0, max: 100000 });
     setSortBy("newest");
     setLocationFilter(null);
+    setCurrentLocationName("");
     setPage(1);
     sessionStorage.removeItem("packageFilters");
   };
@@ -214,26 +235,51 @@ const PackageListing: React.FC = () => {
               onClick={() => {
                 if (locationFilter) {
                   setLocationFilter(null);
+                  setCurrentLocationName("");
                 } else {
                   setIsLocating(true);
                   navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                      setLocationFilter({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                    async (pos) => {
+                      const { latitude: lat, longitude: lng } = pos.coords;
+                      setLocationFilter({ lat, lng });
+
+                      try {
+                        const token = import.meta.env.VITE_MAPBOX_TOKEN;
+                        const res = await fetch(
+                          `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`
+                        );
+                        const data = await res.json();
+                        if (data.features?.[0]) {
+                          // Get a shorter version of the place name (usually the city/area)
+                          const placeName = data.features[0].text || data.features[0].place_name;
+                          setCurrentLocationName(placeName);
+                        }
+                      } catch (error) {
+                        console.error("Reverse geocoding error:", error);
+                      }
+
                       setIsLocating(false);
                       setPage(1);
                     },
                     (err) => {
                       console.error(err);
                       setIsLocating(false);
+                      toast.error("Failed to get your location. Please check permissions.");
                     }
                   );
                 }
               }}
-              className={`px-6 py-3 rounded-2xl font-bold transition-all flex items-center gap-2 ${locationFilter ? "bg-white text-black" : "bg-zinc-900 text-white border border-white/10"
+              className={`px-6 py-3 rounded-2xl font-bold transition-all flex items-center gap-2 max-w-[280px] ${locationFilter ? "bg-white text-black" : "bg-zinc-900 text-white border border-white/10"
                 }`}
             >
               <MapPin size={18} className={isLocating ? "animate-bounce" : ""} />
-              {isLocating ? "Locating..." : locationFilter ? "Near Me: ON" : "Near Me"}
+              <span className="truncate">
+                {isLocating
+                  ? "Locating..."
+                  : currentLocationName && locationFilter
+                    ? currentLocationName
+                    : "Near Me"}
+              </span>
             </button>
 
             {/* Clear Filters Button */}

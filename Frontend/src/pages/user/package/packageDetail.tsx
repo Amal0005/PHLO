@@ -3,8 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Package as PackageIcon, MapPin, X,
   Image as ImageIcon,
-  Calendar, Check, AlertCircle, Loader2
+  Check, AlertCircle, Loader2
 } from "lucide-react";
+import { format } from "date-fns";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { UserPackage } from "@/interface/user/userPackageInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
@@ -13,6 +14,7 @@ import { BookingService } from "@/services/user/bookingService";
 import { toast } from "react-toastify";
 import LocationSearchBar from "@/pages/creator/package/components/locationSearchBar";
 import ReviewList from "./components/ReviewList";
+import { CustomCalendar } from "@/compoents/reusable/CustomCalendar";
 
 const PackageDetailPage: React.FC = () => {
   const { packageId } = useParams<{ packageId: string }>();
@@ -200,9 +202,9 @@ const PackageDetailPage: React.FC = () => {
                 </div>
 
                 {typeof packageData.creatorId === "object" && (
-                  <div className="flex items-center gap-3 mb-5 pb-5"
+                  <div className="flex items-center gap-4 mb-8 pb-6"
                     style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
+                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0"
                       style={{ border: "1.5px solid rgba(255,255,255,0.13)" }}>
                       {packageData.creatorId.profilePhoto ? (
                         <S3Media s3Key={packageData.creatorId.profilePhoto} className="w-full h-full object-cover" />
@@ -212,16 +214,16 @@ const PackageDetailPage: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    <div>
-                      <div className="text-[13px] font-semibold leading-tight" style={{ color: "rgba(255,255,255,0.88)" }}>
+                    <div className="flex flex-col justify-center">
+                      <div className="text-[14px] font-bold text-white mb-1">
                         {packageData.creatorId.fullName}
                       </div>
                       {packageData.locations && packageData.locations.length > 0 && (
-                        <div className="flex flex-col gap-2 mt-1">
+                        <div className="flex flex-col gap-0.5">
                           {packageData.locations.map((loc, idx) => (
                             <div key={idx} className="flex items-center gap-1.5">
-                              <MapPin className="w-2.5 h-2.5" style={{ color: "rgba(255,255,255,0.28)" }} />
-                              <span className="text-[10px] uppercase tracking-widest leading-relaxed" style={{ color: "rgba(255,255,255,0.35)" }}>
+                              <MapPin className="w-2.5 h-2.5 opacity-30" />
+                              <span className="text-[9px] uppercase tracking-widest text-white/40 font-medium">
                                 {loc.placeName}
                               </span>
                             </div>
@@ -241,80 +243,66 @@ const PackageDetailPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 mb-7">
-                  {[
-                    {
-                      label: "Established",
-                      value: new Date(packageData.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })
-                    },
-                    { label: "Assets", value: `${totalImages} Photos` },
-                  ].map(({ label, value }) => (
-                    <div key={label} className="rounded-2xl p-4"
-                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                      <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-2" style={{ color: "rgba(255,255,255,0.28)" }}>
-                        {label}
-                      </p>
-                      <p className="text-[13px] font-bold uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.88)" }}>
-                        {value}
-                      </p>
+                <div className="grid grid-cols-2 gap-3 mb-6 items-stretch">
+                  <div className="rounded-2xl p-4 flex flex-col justify-center h-[54px]"
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.22)" }}>
+                      Established
+                    </p>
+                    <p className="text-[12px] font-bold uppercase tracking-wider text-white">
+                      {new Date(packageData.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    </p>
+                  </div>
+
+                  <div className="relative flex flex-col justify-center">
+                    <CustomCalendar
+                      selectedDate={selectedDate ? new Date(selectedDate) : undefined}
+                      onChange={(date) => {
+                        if (!date) {
+                          handleDateChange("");
+                          return;
+                        }
+                        handleDateChange(format(date, "yyyy-MM-dd"));
+                      }}
+                      minDate={new Date()}
+                      placeholder="Select Date"
+                      className="w-full"
+                    />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center gap-2 z-10">
+                      {checkingAvailability && (
+                        <Loader2 className="w-3.5 h-3.5 text-white/40 animate-spin" />
+                      )}
+                      {!checkingAvailability && selectedDate && isDateAvailable === true && (
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-xl">
+                          <Check className="w-3 h-3 text-emerald-400" />
+                        </div>
+                      )}
+                      {!checkingAvailability && selectedDate && isDateAvailable === false && (
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 backdrop-blur-xl">
+                          <AlertCircle className="w-3 h-3 text-rose-400" />
+                        </div>
+                      )}
                     </div>
-                  ))}
+                  </div>
+                </div>
+
+                <div className="mt-4 mb-2">
+                  <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-2 ml-1" style={{ color: "rgba(255,255,255,0.2)" }}>
+                    Event Location
+                  </p>
+                  <div className="relative">
+                    <LocationSearchBar
+                      onChange={(location: any) => setSelectedLocation(location.placeName || "")}
+                    />
+                  </div>
                 </div>
 
                 {/* Date Picker + Booking Action */}
-                <div className="pt-5" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                <div className="pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                   {/* Date & Location Capture */}
-                  <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[9px] font-bold tracking-[0.3em] uppercase ml-1" style={{ color: "rgba(255,255,255,0.3)" }}>
-                        Select Booking Date
-                      </label>
-                      <div className="relative group/date">
-                        <input
-                          type="date"
-                          min={new Date().toISOString().split('T')[0]}
-                          value={selectedDate}
-                          onClick={(e) => e.currentTarget.showPicker()}
-                          onChange={(e) => handleDateChange(e.target.value)}
-                          className="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-4 text-xs text-white focus:outline-none focus:ring-2 focus:ring-white/20 transition-all cursor-pointer [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-                          style={{ colorScheme: 'dark' }}
-                        />
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                          <Calendar className="w-4 h-4 text-white/40 group-hover/date:text-white/70 transition-colors" />
-                        </div>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center gap-2">
-                          {checkingAvailability && (
-                            <Loader2 className="w-3.5 h-3.5 text-white/40 animate-spin" />
-                          )}
-                          {!checkingAvailability && selectedDate && isDateAvailable === true && (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 backdrop-blur-xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                              <Check className="w-3 h-3 text-emerald-400" />
-                              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Date Available</span>
-                            </div>
-                          )}
-                          {!checkingAvailability && selectedDate && isDateAvailable === false && (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/20 border border-rose-500/30 backdrop-blur-xl shadow-[0_0_20px_rgba(244,63,94,0.1)]">
-                              <AlertCircle className="w-3 h-3 text-rose-400" />
-                              <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest">Unavailable</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
 
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[9px] font-bold tracking-[0.3em] uppercase ml-1" style={{ color: "rgba(255,255,255,0.15)" }}>
-                        Location
-                      </label>
-                      <div className="relative group/loc">
-                        <LocationSearchBar
-                          onChange={(location) => setSelectedLocation(location.placeName || "")}
-                        />
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center justify-between gap-4 mt-6">
+                  <div className="flex items-center justify-between gap-4 mt-4">
                     <div>
                       <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.28)" }}>
                         Starting from

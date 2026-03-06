@@ -285,9 +285,18 @@ const BookingsCalendar: React.FC = () => {
                                     </div>
                                     <div className="col-span-2 space-y-1">
                                         <span className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest">Location</span>
-                                        <div className="flex items-center gap-2 text-white">
-                                            <MapPin className="w-3 h-3 text-zinc-500" />
-                                            <span className="text-xs font-bold">{booking.location || "Online/TBD"}</span>
+                                        <div
+                                            className="flex items-center gap-2 text-white cursor-pointer group/loc"
+                                            onClick={() => {
+                                                if (booking.location && booking.location !== "Online/TBD") {
+                                                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.location)}`, '_blank');
+                                                }
+                                            }}
+                                        >
+                                            <MapPin className="w-3 h-3 text-zinc-500 group-hover/loc:text-white transition-colors" />
+                                            <span className="text-xs font-bold group-hover/loc:underline decoration-white/20 underline-offset-4">
+                                                {booking.location || "Online/TBD"}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

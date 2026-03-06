@@ -64,7 +64,56 @@ export default function LocationSearchBar({ onChange }: Props) {
   }, []);
 
   return (
-    <div className="location-geocoder-container">
+    <div className="location-geocoder-container relative group/loc">
+      <style>{`
+        .location-geocoder-container .mapboxgl-ctrl-geocoder {
+          width: 100% !important;
+          max-width: none !important;
+          background-color: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 1rem !important;
+          box-shadow: none !important;
+          font-family: inherit !important;
+        }
+        .location-geocoder-container .mapboxgl-ctrl-geocoder--input {
+          color: white !important;
+          height: 52px !important;
+          padding: 0 1rem 0 3rem !important;
+          font-size: 13px !important;
+        }
+        .location-geocoder-container .mapboxgl-ctrl-geocoder--icon-search {
+          fill: rgba(255, 255, 255, 0.3) !important;
+          left: 1rem !important;
+          top: 14px !important;
+          width: 20px !important;
+          height: 20px !important;
+        }
+        .location-geocoder-container .mapboxgl-ctrl-geocoder--icon-close {
+          fill: rgba(255, 255, 255, 0.3) !important;
+          margin-top: 6px !important;
+        }
+        .location-geocoder-container .mapboxgl-ctrl-geocoder--suggestions {
+          background-color: #121212 !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 1rem !important;
+          margin-top: 8px !important;
+          overflow: hidden !important;
+          backdrop-filter: blur(20px) !important;
+        }
+        .location-geocoder-container .mapboxgl-ctrl-geocoder--suggestion {
+          color: rgba(255, 255, 255, 0.6) !important;
+          padding: 10px 14px !important;
+        }
+        .location-geocoder-container .mapboxgl-ctrl-geocoder--suggestion-title {
+          color: white !important;
+        }
+        .location-geocoder-container .mapboxgl-ctrl-geocoder--suggestion:hover {
+          background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        .location-geocoder-container .mapboxgl-ctrl-geocoder--pin-right {
+          display: none !important;
+        }
+      `}</style>
       <div ref={geocoderRef} className="w-full" />
     </div>
   );

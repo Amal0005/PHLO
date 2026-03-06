@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { creatorLeaveService } from "@/services/creator/leaveService";
-import { Calendar, X, Loader2, AlertCircle } from "lucide-react";
+import { X, Loader2, AlertCircle } from "lucide-react";
 import { startOfDay } from "date-fns";
+
+import { CustomCalendar } from "@/compoents/reusable/CustomCalendar";
+import { format } from "date-fns";
 
 interface ManageLeaveModalProps {
     isOpen: boolean;
@@ -74,19 +77,18 @@ export const ManageLeaveModal: React.FC<ManageLeaveModalProps> = ({
                         <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">
                             Select Date to Block
                         </label>
-                        <div className="relative">
-                            <input
-                                type="date"
-                                min={new Date().toISOString().split('T')[0]}
-                                value={selectedDate}
-                                onChange={(e) => setSelectedDate(e.target.value)}
-                                className="w-full bg-black/50 border border-white/10 rounded-2xl px-12 py-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/10 transition-all cursor-pointer"
-                                style={{ colorScheme: 'dark' }}
-                            />
-                            <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                                <Calendar className="w-4 h-4 text-zinc-500" />
-                            </div>
-                        </div>
+                        <CustomCalendar
+                            selectedDate={selectedDate ? new Date(selectedDate) : undefined}
+                            onChange={(date) => {
+                                if (!date) {
+                                    setSelectedDate("");
+                                    return;
+                                }
+                                setSelectedDate(format(date, "yyyy-MM-dd"));
+                            }}
+                            minDate={new Date()}
+                            placeholder="Select date to block"
+                        />
                     </div>
 
                     <div className="pt-4 flex gap-3">
