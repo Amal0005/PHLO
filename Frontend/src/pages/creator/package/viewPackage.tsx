@@ -183,7 +183,7 @@ const ViewPackagesPage: React.FC = () => {
             <select
               value={sortOrder}
               onChange={(e) => {
-                setSortOrder(e.target.value as any);
+                setSortOrder(e.target.value as "newest" | "oldest");
                 setPage(1);
               }}
               className="appearance-none bg-zinc-900 border border-white/10 rounded-2xl pl-12 pr-12 py-3 text-white focus:outline-none focus:border-white/20 transition-colors cursor-pointer"

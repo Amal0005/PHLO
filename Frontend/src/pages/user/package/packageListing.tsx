@@ -199,7 +199,7 @@ const PackageListing: React.FC = () => {
             <select
               value={sortBy}
               onChange={(e) => {
-                setSortBy(e.target.value as any);
+                setSortBy(e.target.value as "price-asc" | "price-desc" | "newest" | "oldest");
                 setPage(1);
               }}
               className="bg-zinc-900 border border-white/10 rounded-2xl px-4 py-3 text-white"

@@ -10,6 +10,13 @@ export type Creator = {
   status: "pending" | "approved" | "rejected";
   role?: string;
   specialties?: string[];
+  subscription?: {
+    planId: string;
+    planName: string;
+    status: "active" | "expired" | "cancelled";
+    startDate: string;
+    endDate: string;
+  };
 };
 
 type CreatorState = {

@@ -11,7 +11,7 @@ export class ChangePasswordController {
         try {
             const userId = req.user?.userId;
             if (!userId) {
-                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: "Unauthorized" });
+                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: MESSAGES.AUTH.UNAUTHORIZED });
                 return;
             }
             const { currentPassword, newPassword } = req.body;

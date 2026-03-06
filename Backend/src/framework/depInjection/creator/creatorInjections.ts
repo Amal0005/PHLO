@@ -30,7 +30,7 @@ import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminC
 import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseCase";
 import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
 import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
-import { CategoryController } from "@/adapters/controllers/admin/category/categoryController";
+import { CategoryController } from "@/adapters/controllers/admin/categoryController";
 import { BuySubscriptionUseCase } from "@/application/useCases/creator/subscription/buySubscriptionUseCase";
 import { ListCreatorBookingsUseCase } from "@/application/useCases/creator/bookings/listCreatorBookingsUseCase";
 import { CreatorBookingController } from "@/adapters/controllers/creator/creatorBookingController";
@@ -47,6 +47,12 @@ import { WallpaperController } from "@/adapters/controllers/creator/wallpaper/wa
 import { DeleteWallpaperUseCase } from "@/application/useCases/creator/wallpaper/deleteWallpaperUseCase";
 import { GetCreatorWallpaperUseCase } from "@/application/useCases/creator/wallpaper/getCreatorWallpaperUseCase";
 import { WatermarkService } from "@/domain/services/watermarkService";
+import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
+import { CheckAvailabilityUseCase } from "@/application/useCases/user/booking/checkAvailabilityUseCase";
+import { AddLeaveUseCase } from "@/application/useCases/creator/leave/addLeaveUseCase";
+import { GetLeavesUseCase } from "@/application/useCases/creator/leave/getLeaveUseCase";
+import { RemoveLeaveUseCase } from "@/application/useCases/creator/leave/removeLeaveUseCase";
+import { CreatorLeaveController } from "@/adapters/controllers/creator/creatorLeaveController";
 
 const creatorRepository = new CreatorRepository();
 const userRepository = new UserRepository();
@@ -55,6 +61,7 @@ const categoryRepo = new CategoryRepository();
 const subscriptionRepo = new SubscriptionRepository()
 const wallpaperRepo = new WallpaperRepository()
 const bookingRepo = new BookingRepository()
+const leaveRepo = new LeaveRepository()
 
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
@@ -90,6 +97,9 @@ const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
 const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService)
 const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)
 const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRepo)
+const addLeaveUseCase = new AddLeaveUseCase(leaveRepo)
+const getLeaveUseCase = new GetLeavesUseCase(leaveRepo)
+const removeLeaveUseCase = new RemoveLeaveUseCase(leaveRepo)
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
@@ -100,5 +110,6 @@ export const getCategoryController = new CategoryController(addCategoryUseCase, 
 export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase)
 export const creatorBookingController = new CreatorBookingController(listCreatorBookingsUseCase)
 export const wallpaperController = new WallpaperController(addWallpaperUseCase, deleteWallpaperUseCase, getCreatorWallpapaperUseCase,)
-
+export const leaveController = new CreatorLeaveController(getLeaveUseCase, addLeaveUseCase, removeLeaveUseCase)
+export { creatorSubscriptionWebhookUseCase };
 

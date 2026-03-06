@@ -8,11 +8,11 @@ import { StatusCode } from "@/utils/statusCodes";
 export class CancelBookingUseCase implements ICancelBookingUseCase {
   constructor(
     private _bookingRepo: IBookingRepository
-  ) { }
+  ) {}
   async cancelBooking(userId: string, sessionId: string): Promise<BookingEntity> {
     const booking = await this._bookingRepo.findByStripeSessionId(sessionId)
     if (!booking) throw new Error("Booking not found")
-    const bookingUserId = typeof booking.userId === 'string' ? booking.userId : (booking.userId as any)._id?.toString() || (booking.userId as any).id?.toString();
+    const bookingUserId = typeof booking.userId === 'string' ? booking.userId : (booking.userId as unknown as Record<string, unknown>)._id?.toString() || (booking.userId as unknown as Record<string, unknown>).id?.toString();
     if (bookingUserId !== userId) {
       throw new AppError("Unauthorized", StatusCode.UNAUTHORIZED);
     }

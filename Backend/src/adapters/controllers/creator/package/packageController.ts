@@ -5,7 +5,7 @@ import { MESSAGES } from "@/utils/commonMessages";
 import { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
 import { IDeletePackageUseCase } from "@/domain/interface/creator/package/IDeletePackageUseCase";
 import { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPackageUseCase";
-import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
+import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IgetPackageUseCase";
 
 export class PackageController {
     constructor(
@@ -72,7 +72,7 @@ export class PackageController {
             if (!packageId) {
                 return res.status(StatusCode.BAD_REQUEST).json({
                     success: false,
-                    message: "Package ID is required"
+                    message: MESSAGES.PACKAGE.ID_REQUIRED
                 });
             }
 
@@ -85,12 +85,12 @@ export class PackageController {
             res.status(StatusCode.OK).json({
                 success: true,
                 data: updatedPackage,
-                message: "Package updated successfully"
+                message: MESSAGES.PACKAGE.UPDATED
             });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : MESSAGES.ERROR.BAD_REQUEST;
 
-            if (message === "Package not found") {
+            if (message === MESSAGES.PACKAGE.NOT_FOUND) {
                 return res.status(StatusCode.NOT_FOUND).json({
                     success: false,
                     message: message
@@ -126,7 +126,7 @@ export class PackageController {
             if (!packageId) {
                 return res.status(StatusCode.BAD_REQUEST).json({
                     success: false,
-                    message: "Package ID is required"
+                    message: MESSAGES.PACKAGE.ID_REQUIRED
                 });
             }
 
@@ -134,12 +134,12 @@ export class PackageController {
 
             res.status(StatusCode.OK).json({
                 success: true,
-                message: "Package deleted successfully"
+                message: MESSAGES.PACKAGE.DELETED
             });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : MESSAGES.ERROR.BAD_REQUEST;
 
-            if (message === "Package not found") {
+            if (message === MESSAGES.PACKAGE.NOT_FOUND) {
                 return res.status(StatusCode.NOT_FOUND).json({
                     success: false,
                     message: message

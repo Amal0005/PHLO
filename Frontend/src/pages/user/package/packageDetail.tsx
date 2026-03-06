@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Package as PackageIcon, MapPin, X,
-  Heart, Image as ImageIcon,
+  Image as ImageIcon,
   Calendar, Check, AlertCircle, Loader2
 } from "lucide-react";
 import { UserPackageService } from "@/services/user/userPackageService";
@@ -12,6 +12,7 @@ import UserNavbar from "@/compoents/reusable/userNavbar";
 import { BookingService } from "@/services/user/bookingService";
 import { toast } from "react-toastify";
 import LocationSearchBar from "@/pages/creator/package/components/locationSearchBar";
+import ReviewList from "./components/ReviewList";
 
 const PackageDetailPage: React.FC = () => {
   const { packageId } = useParams<{ packageId: string }>();
@@ -20,7 +21,6 @@ const PackageDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [showGallery, setShowGallery] = useState(false);
-  const [wishlisted, setWishlisted] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [isDateAvailable, setIsDateAvailable] = useState<boolean | null>(null);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
@@ -164,11 +164,11 @@ const PackageDetailPage: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col lg:flex-row items-center lg:items-center justify-between px-4 sm:px-10 lg:px-16 pb-8 pt-2 lg:overflow-hidden gap-4 lg:gap-0" style={{ minHeight: 0 }}>
+          <div className="flex-1 flex flex-col lg:flex-row lg:items-stretch justify-between px-4 sm:px-10 lg:px-16 pb-8 pt-2 lg:overflow-hidden gap-8" style={{ minHeight: 0 }}>
 
             {/* ── LEFT GLASS PANEL ── */}
             <div
-              className="flex flex-col w-full lg:w-[600px] flex-shrink-0 rounded-3xl overflow-hidden"
+              className="flex flex-col w-full lg:w-[540px] flex-shrink-0 lg:h-full rounded-3xl overflow-hidden"
               style={{
                 background: "rgba(20, 20, 20, 0.4)",
                 backdropFilter: "blur(32px) saturate(1.5)",
@@ -177,7 +177,7 @@ const PackageDetailPage: React.FC = () => {
                 boxShadow: "0 40px 100px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05)",
               }}
             >
-              <div className="flex flex-col flex-1 overflow-y-auto p-5 sm:p-8 lg:p-9" style={{ scrollbarWidth: "none" }}>
+              <div className="flex flex-col flex-1 overflow-y-auto p-5 sm:p-8 lg:p-9 lg:pb-16" style={{ scrollbarWidth: "none" }}>
 
                 <div className="mb-5">
                   <span className="inline-block px-3 py-1 rounded-full text-[8px] font-bold tracking-[0.35em] uppercase"
@@ -200,7 +200,7 @@ const PackageDetailPage: React.FC = () => {
                 </div>
 
                 {typeof packageData.creatorId === "object" && (
-                  <div className="flex items-center gap-3 mb-6 pb-6"
+                  <div className="flex items-center gap-3 mb-5 pb-5"
                     style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                     <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
                       style={{ border: "1.5px solid rgba(255,255,255,0.13)" }}>
@@ -236,7 +236,7 @@ const PackageDetailPage: React.FC = () => {
                   <p className="text-[8px] font-bold tracking-[0.4em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.28)" }}>
                     Overview
                   </p>
-                  <p className="text-[11px] leading-[1.9]" style={{ color: "rgba(255,255,255,0.55)" }}>
+                  <p className="text-[11px] leading-[1.7] break-words" style={{ color: "rgba(255,255,255,0.55)" }}>
                     {packageData.description}
                   </p>
                 </div>
@@ -284,18 +284,18 @@ const PackageDetailPage: React.FC = () => {
                         </div>
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none flex items-center gap-2">
                           {checkingAvailability && (
-                            <Loader2 className="w-3.5 h-3.5 text-white/20 animate-spin" />
+                            <Loader2 className="w-3.5 h-3.5 text-white/40 animate-spin" />
                           )}
                           {!checkingAvailability && selectedDate && isDateAvailable === true && (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md">
-                              <Check className="w-3 h-3 text-emerald-500" />
-                              <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">Available</span>
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 backdrop-blur-xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Date Available</span>
                             </div>
                           )}
                           {!checkingAvailability && selectedDate && isDateAvailable === false && (
-                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 backdrop-blur-md">
-                              <AlertCircle className="w-3 h-3 text-rose-500" />
-                              <span className="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Booked</span>
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/20 border border-rose-500/30 backdrop-blur-xl shadow-[0_0_20px_rgba(244,63,94,0.1)]">
+                              <AlertCircle className="w-3 h-3 text-rose-400" />
+                              <span className="text-[9px] font-black text-rose-400 uppercase tracking-widest">Unavailable</span>
                             </div>
                           )}
                         </div>
@@ -314,7 +314,7 @@ const PackageDetailPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-4 mt-8">
+                  <div className="flex items-center justify-between gap-4 mt-6">
                     <div>
                       <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.28)" }}>
                         Starting from
@@ -333,10 +333,13 @@ const PackageDetailPage: React.FC = () => {
                         }`}
                       style={{ boxShadow: "0 8px 32px rgba(255,255,255,0.12)" }}
                     >
-                      {isDateAvailable === false ? 'Already Booked' : 'Confirm & Pay'}
+                      {checkingAvailability ? 'Checking...' : isDateAvailable === false ? 'Unavailable' : 'Confirm & Pay'}
                     </button>
                   </div>
                 </div>
+
+                {/* ── REVIEWS ── */}
+                <ReviewList packageId={packageId!} />
               </div>
             </div>
 

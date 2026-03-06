@@ -6,6 +6,7 @@ import { ICheckAvailabilityUseCase } from "@/domain/interface/user/booking/IChec
 import { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBookingUseCase";
 import { IGetBookingDetailUseCase } from "@/domain/interface/user/booking/IGetBookingDetailUseCase";
 import { IDownloadInvoiceUseCase } from "@/domain/interface/user/booking/IDownloadInvoiceUseCase";
+import { MESSAGES } from "@/utils/commonMessages";
 import { StatusCode } from "@/utils/statusCodes";
 import { Response } from "express";
 
@@ -17,13 +18,13 @@ export class UserBookingController {
         private _cancelBookingUseCase: ICancelBookingUseCase,
         private _getBookingDetailUseCase: IGetBookingDetailUseCase,
         private _downloadInvoiceUseCase: IDownloadInvoiceUseCase
-    ) { }
+    ) {}
 
     async CreateBooking(req: AuthRequest, res: Response) {
         try {
             const userId = req.user?.userId;
             if (!userId) {
-                res.status(StatusCode.UNAUTHORIZED).json({ message: "Unauthorized" });
+                res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.BOOKING.UNAUTHORIZED });
                 return;
             }
             const session = await this._createBookingUseCase.createBooking(userId, req.body);
@@ -32,7 +33,7 @@ export class UserBookingController {
             if (error instanceof AppError) {
                 res.status(error.statusCode).json({ message: error.message });
             } else {
-                const message = error instanceof Error ? error.message : "An unknown error occurred";
+                const message = error instanceof Error ? error.message : MESSAGES.ERROR.UNKNOWN_ERROR;
                 res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
             }
         }
@@ -42,7 +43,7 @@ export class UserBookingController {
         try {
             const { packageId, date } = req.query;
             if (!packageId || !date) {
-                res.status(StatusCode.BAD_REQUEST).json({ message: "Package ID and date are required" });
+                res.status(StatusCode.BAD_REQUEST).json({ message: MESSAGES.BOOKING.PACKAGE_DATE_REQUIRED });
                 return;
             }
             const isAvailable = await this._checkAvailabilityUseCase.checkAvailability(
@@ -51,7 +52,7 @@ export class UserBookingController {
             );
             res.status(StatusCode.OK).json({ success: true, isAvailable });
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "An unknown error occurred";
+            const message = error instanceof Error ? error.message : MESSAGES.ERROR.UNKNOWN_ERROR;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
         }
     }
@@ -60,13 +61,13 @@ export class UserBookingController {
         try {
             const userId = req.user?.userId;
             if (!userId) {
-                res.status(StatusCode.UNAUTHORIZED).json({ message: "Unauthorized" });
+                res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.BOOKING.UNAUTHORIZED });
                 return;
             }
             const bookings = await this._listBookingsUseCase.listBookings(userId);
             res.status(StatusCode.OK).json({ success: true, data: bookings });
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "An unknown error occurred";
+            const message = error instanceof Error ? error.message : MESSAGES.ERROR.UNKNOWN_ERROR;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
         }
     }
@@ -76,12 +77,12 @@ export class UserBookingController {
             const { sessionId } = req.params;
             const booking = await this._getBookingDetailUseCase.getBookingDetail(sessionId);
             if (!booking) {
-                res.status(StatusCode.NOT_FOUND).json({ message: "Booking not found" });
+                res.status(StatusCode.NOT_FOUND).json({ message: MESSAGES.BOOKING.NOT_FOUND });
                 return;
             }
             res.status(StatusCode.OK).json({ success: true, data: booking });
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "An unknown error occurred";
+            const message = error instanceof Error ? error.message : MESSAGES.ERROR.UNKNOWN_ERROR;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
         }
     }
@@ -91,16 +92,16 @@ export class UserBookingController {
             const userId = req.user?.userId;
             const { sessionId } = req.params;
             if (!userId) {
-                res.status(StatusCode.UNAUTHORIZED).json({ message: "Unauthorized" });
+                res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.BOOKING.UNAUTHORIZED });
                 return;
             }
             await this._cancelBookingUseCase.cancelBooking(userId, sessionId);
-            res.status(StatusCode.OK).json({ success: true, message: "Booking cancelled successfully" });
+            res.status(StatusCode.OK).json({ success: true, message: MESSAGES.BOOKING.CANCELLED });
         } catch (error: unknown) {
             if (error instanceof AppError) {
                 res.status(error.statusCode).json({ message: error.message });
             } else {
-                const message = error instanceof Error ? error.message : "An unknown error occurred";
+                const message = error instanceof Error ? error.message : MESSAGES.ERROR.UNKNOWN_ERROR;
                 res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
             }
         }
@@ -115,7 +116,7 @@ export class UserBookingController {
             res.setHeader("Content-Disposition", `attachment; filename=invoice-${sessionId}.pdf`);
             res.send(pdfBuffer);
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "An unknown error occurred";
+            const message = error instanceof Error ? error.message : MESSAGES.ERROR.UNKNOWN_ERROR;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });
         }
     }

@@ -18,11 +18,13 @@ import {
   userBookingController,
   userWallpaperController,
   wishlistController,
+  reviewController,
 } from "../../../framework/depInjection/user/userInjections";
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import {
   AuthRequest,
   jwtAuthMiddleware,
+  jwtOptionalMiddleware,
 } from "../../middlewares/jwtAuthMiddleware";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { TokenBlacklistService } from "../../../domain/services/tokenBlacklistService";
@@ -253,6 +255,12 @@ export class UserRoutes {
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.WALLPAPERS,
+      jwtOptionalMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
       (req: AuthRequest, res: Response) =>
         userWallpaperController.getWallpaper(req, res),
     );
@@ -305,6 +313,58 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         wishlistController.getWishlistIds(req, res),
     );
-
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.REVIEW,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        reviewController.addReview(req, res),
+    )
+    this.userRouter.delete(
+      BACKEND_ROUTES.USER.DELETE_REVIEW,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        reviewController.deleteReview(req, res),
+    )
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.GET_REVIEW,
+      (req: Request, res: Response) =>
+        reviewController.getReview(req, res),
+    )
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.GET_BOOKING_REVIEW,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        reviewController.getReviewByBooking(req, res),
+    )
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.BUY_WALLPAPER,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        userWallpaperController.buyWallpaper(req, res),
+    )
   }
 }

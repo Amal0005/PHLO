@@ -56,13 +56,13 @@ export default function Register() {
       if (errors.email) toast.error(errors.email[0]);
       if (errors.phone) toast.error(errors.phone[0]);
       if (errors.password) toast.error(errors.password[0]);
-      if (errors.confirmPassword)toast.error(errors.confirmPassword[0]);
+      if (errors.confirmPassword) toast.error(errors.confirmPassword[0]);
       return;
     }
 
     setIsLoading(true);
 
-    const { confirmPassword, ...submitData } = form;
+    const { confirmPassword: _, ...submitData } = form;
     try {
       await UserAuthService.register(submitData)
       toast.success("OTP sent successfully!");
@@ -350,7 +350,7 @@ export default function Register() {
                   </div>
                 </div>
 
-                        <GoogleLoginButton
+                <GoogleLoginButton
                   onSuccess={async (idToken: string) => {
                     try {
                       const response = await UserAuthService.googleLogin(idToken);

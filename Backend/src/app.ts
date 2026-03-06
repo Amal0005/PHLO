@@ -23,7 +23,7 @@ import path from "path";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 import { errorHandler } from "./adapters/middlewares/errorHandler";
 import { logger } from "./utils/logger";
-import {paymentController } from "./framework/depInjection/user/userInjections";
+import { paymentController } from "./framework/depInjection/user/userInjections";
 
 
 export class App {
@@ -62,11 +62,11 @@ export class App {
       express.raw({ type: "application/json" })
     );
     this.app.post("/webhook", (req, res) =>
-      paymentController.handleWebhook(req as any, res)
+      paymentController.handleWebhook(req, res)
     );
     this.app.use(express.json());
     console.log(process.env.FRONTEND_URL);
-    
+
     this.app.use(
       cors({
         origin: process.env.FRONTEND_URL,

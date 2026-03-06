@@ -23,15 +23,15 @@ export const BookingService = {
     return res.data;
   },
   getBookingDetail: async (sessionId: string): Promise<{ success: boolean; data: UserBooking }> => {
-    const res = await api.get(API_ENDPOINTS.USER.GET_BOOKING_DETAIL(sessionId));
+    const res = await api.get(API_ENDPOINTS.USER.GET_BOOKING_DETAIL.replace(':id', sessionId));
     return res.data;
   },
   cancelBooking: async (sessionId: string): Promise<{ success: boolean; message: string }> => {
-    const res = await api.post(API_ENDPOINTS.USER.CANCEL_BOOKING(sessionId));
+    const res = await api.post(API_ENDPOINTS.USER.CANCEL_BOOKING.replace(':id', sessionId));
     return res.data;
   },
   downloadInvoice: async (sessionId: string): Promise<void> => {
-    const { data } = await api.get(API_ENDPOINTS.USER.DOWNLOAD_INVOICE(sessionId), {
+    const { data } = await api.get(API_ENDPOINTS.USER.DOWNLOAD_INVOICE.replace(':id', sessionId), {
       responseType: 'blob'
     });
 

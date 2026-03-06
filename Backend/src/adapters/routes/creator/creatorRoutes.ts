@@ -9,6 +9,7 @@ import {
   creatorSubscriptionController,
   wallpaperController,
   creatorBookingController,
+  leaveController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
@@ -176,6 +177,24 @@ export class CreatorRoutes {
       BACKEND_ROUTES.CREATOR.WALLPAPER_DETAIL,
       (req: Request, res: Response) => {
         wallpaperController.deleteWallpaper(req, res)
+      }
+    )
+    this.creatorRouter.post(
+      BACKEND_ROUTES.CREATOR.LEAVE,
+      (req: Request, res: Response) => {
+        leaveController.addLeave(req, res)
+      }
+    )
+    this.creatorRouter.get(
+      BACKEND_ROUTES.CREATOR.LEAVE,
+      (req: Request, res: Response) => {
+        leaveController.getLeaves(req, res)
+      }
+    )
+    this.creatorRouter.delete(
+      BACKEND_ROUTES.CREATOR.LEAVE_DETAIL,
+      (req: Request, res: Response) => {
+        leaveController.removeLeave(req, res)
       }
     )
   }

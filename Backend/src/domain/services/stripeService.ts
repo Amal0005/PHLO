@@ -53,10 +53,13 @@ export class StripeService implements IStripeService {
         ],
         success_url: data.successUrl,
         cancel_url: data.cancelUrl,
+        client_reference_id: data.userId,
         metadata: {
           type: data.type,
           bookingId: data.bookingId || "",
           subscriptionId: data.subscriptionId || "",
+          wallpaperId: data.wallpaperId || "",
+          userId: data.userId || "",
           creatorId: data.creatorId,
         },
       });

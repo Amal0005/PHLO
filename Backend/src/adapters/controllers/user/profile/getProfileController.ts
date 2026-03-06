@@ -12,7 +12,7 @@ export class GetProfileController {
         try {
             const userId = req.user?.userId;
             if (!userId) {
-                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: "Unauthorized" });
+                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: MESSAGES.AUTH.UNAUTHORIZED });
                 return;
             }
             const user = await this._getUserProfileUsecase.getProfile(userId);

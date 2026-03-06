@@ -7,7 +7,7 @@ import { WallpaperStatus } from "@/utils/wallpaperStatus";
 export class GetCreatorWallpaperUseCase implements IGetCreatorWallpapersUseCase {
     constructor(
         private wallpaperRepo: IWallpaperRepository
-    ) { }
+    ) {}
     async getWallpapers(creatorId: string, page: number, limit: number, search?: string, status?: WallpaperStatus): Promise<PaginatedResult<WallpaperEntity>> {
         return await this.wallpaperRepo.findByCreatorId(creatorId, page, limit, search, status);
     }

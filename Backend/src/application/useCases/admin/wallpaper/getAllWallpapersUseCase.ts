@@ -5,7 +5,9 @@ import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { WallpaperStatus } from "@/utils/wallpaperStatus";
 
 export class GetAllWallpapersUseCase implements IGetAllWallpapersUseCase {
-    constructor(private _wallpaperRepo: IWallpaperRepository) { }
+    constructor(
+        private _wallpaperRepo: IWallpaperRepository
+    ) {}
 
     async getAllWallpapers(
         page: number,

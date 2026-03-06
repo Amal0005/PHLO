@@ -5,7 +5,7 @@ export const errorHandler = (
   err: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   let message = "Internal Server Error";
   let stack: string | undefined;

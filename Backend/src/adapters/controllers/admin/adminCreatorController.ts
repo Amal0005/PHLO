@@ -3,9 +3,10 @@ import { StatusCode } from "@/utils/statusCodes";
 import { MESSAGES } from "@/utils/commonMessages";
 import { IApproveCreatorUseCase } from "@/domain/interface/admin/IApproveCreatorUseCase";
 import { IRejectCreatorUseCase } from "@/domain/interface/admin/IRejectCreatorUseCase";
+import { AppError } from "@/domain/errors/appError";
 import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IAdminCreatorListingUseCase";
 import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
-import { AppError } from "@/domain/errors/appError";
+
 
 interface RejectRequestBody {
   reason: string;
@@ -21,7 +22,7 @@ export class AdminCreatorController {
     private _rejectCreatorUseCase: IRejectCreatorUseCase,
     private _adminCreatorListingUseCase: IAdminCreatorListingUseCase,
     private _toggleCreatorStatusUseCase: IToggleCreatorStatusUseCase,
-  ) { }
+  ) {}
 
   async getCreators(req: Request, res: Response): Promise<Response> {
     try {
@@ -110,7 +111,7 @@ export class AdminCreatorController {
       await this._toggleCreatorStatusUseCase.toggleStatus(creatorId, status);
       return res
         .status(StatusCode.OK)
-        .json({ success: true, message: `Creator ${status} successfully` });
+        .json({ success: true, message: MESSAGES.CREATOR.STATUS_CHANGED(status) });
     } catch (error) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,

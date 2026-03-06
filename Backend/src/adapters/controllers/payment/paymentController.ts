@@ -3,11 +3,15 @@ import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBooking
 import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { logger } from "@/utils/logger";
+import Stripe from "stripe";
+
+import { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWallpaperWebhookUseCase";
 
 export class PaymentController {
     constructor(
         private _bookingWebhookUseCase: IBookingWebhookUseCase,
         private _creatorSubscriptionWebhookUseCase: ICreatorSubscriptionWebhookUseCase,
+        private _wallpaperWebhookUseCase: IWallpaperWebhookUseCase,
         private _stripeService: IStripeService,
     ) {}
 
@@ -19,18 +23,20 @@ export class PaymentController {
         }
 
         try {
-            const payload = (req as any).rawBody || req.body;
+            const payload = (req as Request & { rawBody?: Buffer | string }).rawBody || req.body;
 
             const event = this._stripeService.constructEvent(payload, sig);
 
             logger.info("Webhook received", { type: event.type, id: event.id });
 
             if (event.type === "checkout.session.completed") {
-                const session = event.data.object as any;
+                const session = event.data.object as Stripe.Checkout.Session;
                 const metadataType = session.metadata?.type;
 
                 if (metadataType === "subscription") {
                     await this._creatorSubscriptionWebhookUseCase.handleEvent(event);
+                } else if (metadataType === "wallpaper") {
+                    await this._wallpaperWebhookUseCase.handleEvent(event);
                 } else {
                     await this._bookingWebhookUseCase.handleEvent(event);
                 }

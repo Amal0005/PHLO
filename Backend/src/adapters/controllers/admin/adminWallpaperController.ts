@@ -12,7 +12,7 @@ export class AdminWallpaperController {
     private _approveWallpaperUseCase: IApproveWallpaperUseCase,
     private _rejectWallpaperUseCase: IRejectWallpaperUseCase,
     private _getAllWallpapersUseCase: IGetAllWallpapersUseCase,
-  ) { }
+  ) {}
   async getWallpaper(req: Request, res: Response) {
     try {
       const page = Number(req.query.page) || 1;

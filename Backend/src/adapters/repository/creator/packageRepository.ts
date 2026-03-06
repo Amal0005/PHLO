@@ -8,7 +8,7 @@ import {
   IPackageModel
 } from "@/framework/database/model/packageModel";
 import { BaseRepository } from "../baseRepository";
-import { SortOrder, Document, Types } from "mongoose";
+import { SortOrder, Document, Types, PipelineStage } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
 
@@ -58,7 +58,7 @@ export class PackageRepository
 
 
     if (filters?.lat !== undefined && filters?.lng !== undefined) {
-      const pipeline: any[] = [
+      const pipeline: PipelineStage[] = [
         {
           $geoNear: {
             near: {
@@ -74,7 +74,7 @@ export class PackageRepository
       ];
 
 
-      const matchConditions: any = {};
+      const matchConditions: Record<string, unknown> = {};
 
       if (filters?.category) matchConditions.category = new Types.ObjectId(filters.category);
       if (filters?.creatorId) matchConditions.creatorId = new Types.ObjectId(filters.creatorId);
@@ -167,7 +167,7 @@ export class PackageRepository
     }
 
 
-    const query: Record<string, any> = {};
+    const query: Record<string, unknown> = {};
 
     if (filters?.category) query.category = filters.category;
     if (filters?.creatorId) query.creatorId = filters.creatorId;

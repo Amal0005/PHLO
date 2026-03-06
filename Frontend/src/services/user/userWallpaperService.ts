@@ -12,7 +12,15 @@ export const UserWallpaperService = {
   },
 
   recordDownload: async (wallpaperId: string, creatorId: string): Promise<{ success: boolean; downloadCount: number }> => {
-    const res = await api.post(API_ENDPOINTS.USER.WALLPAPER_DOWNLOAD(wallpaperId), { creatorId });
+    const res = await api.post(API_ENDPOINTS.USER.WALLPAPER_DOWNLOAD.replace(':id', wallpaperId), { creatorId });
+    return res.data;
+  },
+
+  buyWallpaper: async (wallpaperId: string, successUrl: string, cancelUrl: string): Promise<{ success: boolean; url: string; id: string }> => {
+    const res = await api.post(API_ENDPOINTS.USER.BUY_WALLPAPER.replace(':id', wallpaperId), {
+      successUrl,
+      cancelUrl,
+    });
     return res.data;
   },
 };

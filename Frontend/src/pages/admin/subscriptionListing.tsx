@@ -63,7 +63,7 @@ export default function SubscriptionListingPage() {
       await AdminSubscriptionService.deleteSubscription(deleteId);
       fetchSubscriptions();
       toast.success("Subscription deleted successfully");
-    } catch (error: unknown) {
+    } catch {
       toast.error("Failed to delete subscription");
     } finally {
       setDeleteId(null);
@@ -82,7 +82,7 @@ export default function SubscriptionListingPage() {
       fetchSubscriptions();
     } catch (error: unknown) {
       console.error("Failed to submit subscription", error);
-      const message = (error as any)?.response?.data?.message || (error instanceof Error ? error.message : "Failed to save subscription");
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || (error instanceof Error ? error.message : "Failed to save subscription");
       toast.error(message);
     }
   };

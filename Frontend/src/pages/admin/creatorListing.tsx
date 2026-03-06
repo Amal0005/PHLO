@@ -89,7 +89,7 @@ export default function CreatorListingPage() {
       setShowRejectModal(false);
       setShowDetails(false);
       setRejectionReason("");
-    } catch (error) {
+    } catch {
       toast.error("Failed to reject creator");
     }
   };

@@ -9,6 +9,7 @@ export interface WallpaperData {
   status: "pending" | "approved" | "rejected";
   rejectionReason?: string;
   downloadCount?: number;
+  isPurchased?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

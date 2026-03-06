@@ -5,6 +5,7 @@ import { CreatorModel, ICreatorModel } from "@/framework/database/model/creatorM
 import { paginateMongo } from "@/utils/pagination";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { BaseRepository } from "../baseRepository";
+import { Filter } from "mongodb";
 
 
 export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorModel> implements ICreatorRepository {
@@ -43,9 +44,9 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
   }
 
   async findAllCreators(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<CreatorEntity>> {
-    const query: any = {};
+    const query: Filter<ICreatorModel> = {};
     if (status && status !== "all") {
-      query.status = status;
+      query.status = status as "pending" | "approved" | "rejected" | "blocked";
     }
     if (search) {
       query.$or = [

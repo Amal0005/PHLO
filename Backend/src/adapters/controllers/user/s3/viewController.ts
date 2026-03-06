@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
 import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
+import { MESSAGES } from "@/utils/commonMessages";
 
 export class ViewController {
   constructor(
@@ -12,12 +13,12 @@ export class ViewController {
   async getImage(req: Request, res: Response) {
     const email = req.query.email as string;
     if (!email) {
-      return res.status(StatusCode.BAD_REQUEST).json({ message: "Email required" });
+      return res.status(StatusCode.BAD_REQUEST).json({ message: MESSAGES.AUTH.EMAIL_REQUIRED });
     }
 
     const creator = await this._creatorRepo.findByEmail(email);
     if (!creator) {
-      return res.status(StatusCode.NOT_FOUND).json({ message: "Creator not found" });
+      return res.status(StatusCode.NOT_FOUND).json({ message: MESSAGES.CREATOR.NOT_FOUND });
     }
 
     return res.json({

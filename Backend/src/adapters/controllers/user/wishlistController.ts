@@ -3,23 +3,24 @@ import { IGetWishlistUseCase } from "@/domain/interface/user/wishlist/IGetWishli
 import { IGetWishlistIdsUseCase } from "@/domain/interface/user/wishlist/IGetWishlistIdsUseCase";
 import { MESSAGES } from "@/utils/commonMessages";
 import { StatusCode } from "@/utils/statusCodes";
-import { Request, Response } from "express";
+import { Response } from "express";
+import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class WishlistController {
     constructor(
         private _toggleWishlistUseCase: IToggleWishlistUseCase,
         private _getWishlistUseCase: IGetWishlistUseCase,
         private _getWishlistIdsUseCase: IGetWishlistIdsUseCase
-    ) {}
+    ) { }
 
-    async toggle(req: Request, res: Response) {
+    async toggle(req: AuthRequest, res: Response) {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = req.user?.userId;
             const { itemId, itemType } = req.body;
             if (!userId) {
                 return res.status(StatusCode.UNAUTHORIZED).json({
                     success: false,
-                    message: "User must be logged in",
+                    message: MESSAGES.USER.MUST_BE_LOGGED_IN,
                 });
             }
             if (!itemId || !itemType) {
@@ -41,13 +42,13 @@ export class WishlistController {
         }
     }
 
-    async getWishlist(req: Request, res: Response) {
+    async getWishlist(req: AuthRequest, res: Response) {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = req.user?.userId;
             if (!userId) {
                 return res.status(StatusCode.UNAUTHORIZED).json({
                     success: false,
-                    message: "User must be logged in",
+                    message: MESSAGES.USER.MUST_BE_LOGGED_IN,
                 });
             }
 
@@ -68,13 +69,13 @@ export class WishlistController {
         }
     }
 
-    async getWishlistIds(req: Request, res: Response) {
+    async getWishlistIds(req: AuthRequest, res: Response) {
         try {
-            const userId = (req as any).user?.userId;
+            const userId = req.user?.userId;
             if (!userId) {
                 return res.status(StatusCode.UNAUTHORIZED).json({
                     success: false,
-                    message: "User must be logged in",
+                    message: MESSAGES.USER.MUST_BE_LOGGED_IN,
                 });
             }
 

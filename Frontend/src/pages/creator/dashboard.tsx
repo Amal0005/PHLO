@@ -10,6 +10,7 @@ import { ROUTES } from "@/constants/routes";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import OptionModal from "@/compoents/reusable/OptionModal";
+import { ManageLeaveModal } from "./bookings/components/ManageLeaveModal";
 
 export default function CreatorDashboard() {
   const creator = useSelector((state: RootState) => state.creator.creator);
@@ -21,6 +22,8 @@ export default function CreatorDashboard() {
   const [isAddWallpaperModalOpen, setIsAddWallpaperModalOpen] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showSubModal, setShowSubModal] = useState(false);
+  const [isBookingOptionModalOpen, setIsBookingOptionModalOpen] = useState(false);
+  const [isManageLeaveModalOpen, setIsManageLeaveModalOpen] = useState(false);
 
   useEffect(() => {
     const checkSubscription = async () => {
@@ -114,7 +117,7 @@ export default function CreatorDashboard() {
 
           {/* Bookings Card */}
           <div
-            onClick={() => navigate(ROUTES.CREATOR.BOOKINGS)}
+            onClick={() => setIsBookingOptionModalOpen(true)}
             className="h-48 bg-white/5 border border-white/10 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-all group relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -133,6 +136,39 @@ export default function CreatorDashboard() {
             </div>
           </div>
         </div>
+
+        <OptionModal
+          isOpen={isBookingOptionModalOpen}
+          onClose={() => setIsBookingOptionModalOpen(false)}
+          title="Booking Schedule"
+          options={[
+            {
+              label: "View Calendar",
+              description: "See your upcoming and past bookings",
+              icon: <Calendar size={20} className="text-gray-400" />,
+              onClick: () => navigate(ROUTES.CREATOR.BOOKINGS)
+            },
+            {
+              label: "Mark Absence",
+              description: "Block dates to prevent new bookings",
+              icon: <Plus size={20} />,
+              isPrimary: true,
+              onClick: () => {
+                if (isSubscribed) {
+                  setIsManageLeaveModalOpen(true);
+                } else {
+                  setShowSubModal(true);
+                }
+              }
+            }
+          ]}
+        />
+
+        <ManageLeaveModal
+          isOpen={isManageLeaveModalOpen}
+          onClose={() => setIsManageLeaveModalOpen(false)}
+          onSuccess={() => {/* Toast handles it */ }}
+        />
 
         <OptionModal
           isOpen={isOptionModalOpen}

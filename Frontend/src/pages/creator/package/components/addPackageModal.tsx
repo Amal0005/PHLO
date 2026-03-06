@@ -225,7 +225,7 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
                 </label>
 
                 <div className="space-y-3 mb-4">
-                  {fields.map((field: any, index: number) => (
+                  {fields.map((field: PackageFormData["locations"][number] & { id: string }, index: number) => (
                     <div key={field.id} className="flex items-center gap-3 bg-black/30 p-3 rounded-xl border border-white/5">
                       <div className="flex-1 text-sm text-gray-300 truncate">
                         {field.placeName}

@@ -7,7 +7,7 @@ export class AdminCreatorListingUseCase implements IAdminCreatorListingUseCase {
   constructor(
     private _creatorRepo: ICreatorRepository
 
-  ) { }
+  ) {}
   async getAllCreators(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<CreatorEntity>> {
     return await this._creatorRepo.findAllCreators(page, limit, search, status);
   }

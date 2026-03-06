@@ -2,22 +2,25 @@ import { Response } from "express";
 import { StatusCode } from "@/utils/statusCodes";
 import { ILogoutUseCase } from "../../domain/interface/ILogoutUseCase";
 import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
+import { MESSAGES } from "@/utils/commonMessages";
 
 export class LogoutController {
-  constructor(private _logoutUseCase: ILogoutUseCase) {}
+  constructor(
+    private _logoutUseCase: ILogoutUseCase
+  ) {}
 
   async logout(req: AuthRequest, res: Response) {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
-        return res.status(StatusCode.UNAUTHORIZED).json({ message: "Authorization header missing" });
+        return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.AUTH.AUTHORIZATION_HEADER_MISSING });
       }
 
       const token = authHeader.split(" ")[1];
       const { exp } = req.user!;
 
       if (typeof exp !== "number") {
-        return res.status(StatusCode.BAD_REQUEST).json({ message: "Token expiry missing" });
+        return res.status(StatusCode.BAD_REQUEST).json({ message: MESSAGES.AUTH.TOKEN_EXPIRY_MISSING });
       }
 
       await this._logoutUseCase.logout(token, exp);
@@ -30,10 +33,10 @@ export class LogoutController {
 
       return res.status(StatusCode.OK).json({
         success: true,
-        message: "Logged out successfully",
+        message: MESSAGES.AUTH.LOGOUT_SUCCESS,
       });
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Logout failed";
+      const message = error instanceof Error ? error.message : MESSAGES.AUTH.LOGOUT_FAILED;
       return res.status(StatusCode.UNAUTHORIZED).json({ message });
     }
   }
