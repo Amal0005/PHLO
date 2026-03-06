@@ -1,5 +1,5 @@
 import api from "@/axios/axiosConfig";
-import { API_ENDPOINTS } from "@/constants/apiEndpoints";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 
 export const S3Service = {
     /**
@@ -10,7 +10,7 @@ export const S3Service = {
     getViewUrl: async (key: string): Promise<string> => {
         try {
             if (!key) return "";
-            const response = await api.get(API_ENDPOINTS.UPLOAD.VIEW_URL, {
+            const response = await api.get(FRONTEND_ROUTES.UPLOAD.VIEW_URL, {
                 params: { key }
             });
             return response.data.viewUrl;
@@ -29,7 +29,7 @@ export const S3Service = {
         fileType: string,
         folder: string
     ): Promise<{ uploadUrl: string; publicUrl: string }> => {
-        const res = await api.post(API_ENDPOINTS.UPLOAD.PRESIGN, { fileType, folder });
+        const res = await api.post(FRONTEND_ROUTES.UPLOAD.PRESIGN, { fileType, folder });
         return res.data;
     },
 

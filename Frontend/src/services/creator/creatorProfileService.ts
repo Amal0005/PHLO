@@ -1,19 +1,19 @@
 import api from "@/axios/axiosConfig";
 import { CreatorProfileResponse, EditCreatorProfilePayload } from "@/interface/creator/creatorProfileInterface";
 import { S3Service } from "../s3Service";
-import { API_ENDPOINTS } from "@/constants/apiEndpoints";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 
 export const CreatorProfileServices = {
     getProfile: async (): Promise<{ success: boolean, creator: CreatorProfileResponse }> => {
-        const res = await api.get(API_ENDPOINTS.CREATOR.PROFILE)
+        const res = await api.get(FRONTEND_ROUTES.CREATOR.PROFILE)
         return res.data
     },
     editProfile: async (payload: EditCreatorProfilePayload): Promise<{ success: boolean, creator: CreatorProfileResponse }> => {
-        const res = await api.patch(API_ENDPOINTS.CREATOR.PROFILE, payload)
+        const res = await api.patch(FRONTEND_ROUTES.CREATOR.PROFILE, payload)
         return res.data
     },
     getCreatorBookings: async (): Promise<{ success: boolean, data: Record<string, unknown>[] }> => {
-        const res = await api.get(API_ENDPOINTS.CREATOR.GET_BOOKINGS)
+        const res = await api.get(FRONTEND_ROUTES.CREATOR.GET_BOOKINGS)
         return res.data
     }
     ,

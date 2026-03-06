@@ -47,7 +47,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ packageId }) => {
     };
 
     return (
-        <div className="mt-8 w-full pt-8" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="w-full">
             <div className="flex items-center justify-between mb-6">
                 <div>
                     <h2 className="text-lg font-black uppercase tracking-tight text-white">Guest Reviews</h2>

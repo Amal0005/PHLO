@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package, Calendar, Clock, ChevronRight, AlertCircle, ArrowUpRight } from "lucide-react";
+import { Package, Calendar, Clock, ChevronRight, ArrowUpRight } from "lucide-react";
 import { BookingService } from "@/services/user/bookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
@@ -149,9 +149,9 @@ const BookingsPage: React.FC = () => {
 
                                 {/* Status specific hint for pending */}
                                 {booking.status === 'pending' && (
-                                    <div className="absolute top-4 right-20 flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-500 text-[10px] font-bold rounded-lg border border-amber-500/20">
-                                        <AlertCircle className="w-3 h-3" />
-                                        ACTION REQUIRED
+                                    <div className="absolute top-4 right-20 flex items-center gap-2 px-4 py-1.5 bg-white text-black text-[9px] font-black rounded-full shadow-[0_4px_20px_rgba(255,255,255,0.15)] group-hover:scale-105 transition-transform">
+                                        <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+                                        RETRY PAYMENT
                                     </div>
                                 )}
                             </div>

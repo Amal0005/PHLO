@@ -19,6 +19,7 @@ export interface UserBooking {
   bookingDate: string;
   location?: string;
   sessionId: string;
+  checkoutUrl?: string;
 }
 
 export interface BookingListResponse {

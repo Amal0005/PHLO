@@ -9,18 +9,24 @@ export class GetBookingDetailUseCase implements IGetBookingDetailUseCase {
     constructor(
         private _bookingRepo: IBookingRepository,
         private _stripeService: IStripeService
-    ) {}
+    ) { }
     async getBookingDetail(sessionId: string): Promise<BookingResponseDTO | null> {
         const booking = await this._bookingRepo.findByStripeSessionId(sessionId);
         if (!booking) return null;
 
+        const dto = BookingMapper.toDto(booking);
+
         if (booking.status === BookingStatus.PENDING) {
             const session = await this._stripeService.retrieveCheckoutSession(sessionId);
-            if (session?.payment_status === 'paid') {
-                booking.status = BookingStatus.COMPLETED;
+            if (session) {
+                console.log(`Booking ${booking.id} is pending. Stripe status: ${session.payment_status}`);
+                if (session.payment_status !== 'paid') {
+                    dto.checkoutUrl = session.url || undefined;
+                    console.log(`Providing checkout URL for booking ${booking.id}: ${dto.checkoutUrl ? 'Yes' : 'No'}`);
+                }
             }
         }
 
-        return BookingMapper.toDto(booking);
+        return dto;
     }
 }

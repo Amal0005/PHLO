@@ -253,6 +253,18 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         userBookingController.DownloadInvoice(req, res),
     );
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.RETRY_PAYMENT,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        userBookingController.RetryPayment(req, res),
+    );
     this.userRouter.get(
       BACKEND_ROUTES.USER.WALLPAPERS,
       jwtOptionalMiddleware(
@@ -353,6 +365,18 @@ export class UserRoutes {
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
         reviewController.getReviewByBooking(req, res),
+    )
+    this.userRouter.put(
+      BACKEND_ROUTES.USER.UPDATE_REVIEW,
+      jwtAuthMiddleware(
+        this._jwtService,
+        this._tokenBlacklistService,
+        this._userRepo,
+        this._creatorRepo,
+      ),
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) =>
+        reviewController.updateReview(req, res),
     )
     this.userRouter.post(
       BACKEND_ROUTES.USER.BUY_WALLPAPER,

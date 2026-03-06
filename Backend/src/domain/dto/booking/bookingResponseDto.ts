@@ -23,4 +23,5 @@ export interface BookingResponseDTO {
   location?: string;
   createdAt: Date;
   sessionId: string;
+  checkoutUrl?: string;
 }

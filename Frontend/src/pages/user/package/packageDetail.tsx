@@ -118,7 +118,7 @@ const PackageDetailPage: React.FC = () => {
   return (
     <>
       <div
-        className="min-h-screen lg:h-screen text-white flex flex-col overflow-y-auto lg:overflow-hidden relative"
+        className="min-h-screen text-white flex flex-col relative overflow-x-hidden overflow-y-auto"
         style={{ fontFamily: "'DM Sans', sans-serif" }}
       >
 
@@ -153,7 +153,7 @@ const PackageDetailPage: React.FC = () => {
         <div className="flex-shrink-0 h-16 lg:h-20" />
 
         {/* ── MAIN LAYOUT ── */}
-        <div className="relative z-10 flex-1 flex flex-col lg:overflow-hidden">
+        <div className="relative z-10 flex-1 flex flex-col">
 
           <div className="px-4 sm:px-10 lg:px-16 pt-3 lg:pt-4 pb-2 flex-shrink-0">
             <button onClick={() => navigate(-1)} className="flex items-center gap-2 group">
@@ -164,7 +164,7 @@ const PackageDetailPage: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col lg:flex-row lg:items-stretch justify-between px-4 sm:px-10 lg:px-16 pb-8 pt-2 lg:overflow-hidden gap-8" style={{ minHeight: 0 }}>
+          <div className="flex-shrink-0 flex flex-col lg:flex-row lg:items-stretch justify-between px-4 sm:px-10 lg:px-16 pb-8 pt-2 gap-8" style={{ minHeight: 0 }}>
 
             {/* ── LEFT GLASS PANEL ── */}
             <div
@@ -338,8 +338,6 @@ const PackageDetailPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* ── REVIEWS ── */}
-                <ReviewList packageId={packageId!} />
               </div>
             </div>
 
@@ -418,32 +416,48 @@ const PackageDetailPage: React.FC = () => {
               </div>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* ── GALLERY MODAL ── */}
-      {showGallery && (
-        <div className="fixed inset-0 z-50 overflow-y-auto" style={{ background: "rgba(0,0,0,0.96)", backdropFilter: "blur(24px)" }}>
-          <div className="min-h-screen p-4 sm:p-10">
-            <div className="max-w-5xl mx-auto mb-6 sm:mb-8 flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-black tracking-tight uppercase text-white">{packageData.title}</h3>
-                <p className="text-[10px] tracking-widest uppercase mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>{totalImages} photos</p>
-              </div>
-              <button onClick={() => setShowGallery(false)} className="w-10 h-10 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                <X className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
-              </button>
-            </div>
-            <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {packageData.images?.map((img, index) => (
-                <button key={index} onClick={() => { setSelectedImage(index); setShowGallery(false); }} className="group relative aspect-square rounded-2xl overflow-hidden transition-all duration-200 hover:scale-[1.02]" style={{ border: selectedImage === index ? "2px solid rgba(255,255,255,0.75)" : "2px solid rgba(255,255,255,0.05)" }}>
-                  <S3Media s3Key={img} alt={`${packageData.title} ${index + 1}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
+          {/* ── REVIEWS SECTION ── */}
+          <div className="flex flex-col px-4 sm:px-10 lg:px-16 pb-20 pt-10">
+            <div
+              className="w-full max-w-4xl mx-auto p-10 rounded-[3rem]"
+              style={{
+                background: "rgba(20, 20, 20, 0.4)",
+                backdropFilter: "blur(40px) saturate(2)",
+                WebkitBackdropFilter: "blur(40px) saturate(2)",
+                border: "1px solid rgba(255,255,255,0.07)",
+                boxShadow: "0 40px 100px rgba(0,0,0,0.5)",
+              }}
+            >
+              <ReviewList packageId={packageId!} />
             </div>
           </div>
         </div>
-      )}
+
+        {/* ── GALLERY MODAL ── */}
+        {showGallery && (
+          <div className="fixed inset-0 z-50 overflow-y-auto" style={{ background: "rgba(0,0,0,0.96)", backdropFilter: "blur(24px)" }}>
+            <div className="min-h-screen p-4 sm:p-10">
+              <div className="max-w-5xl mx-auto mb-6 sm:mb-8 flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-black tracking-tight uppercase text-white">{packageData.title}</h3>
+                  <p className="text-[10px] tracking-widest uppercase mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>{totalImages} photos</p>
+                </div>
+                <button onClick={() => setShowGallery(false)} className="w-10 h-10 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                  <X className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                </button>
+              </div>
+              <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {packageData.images?.map((img, index) => (
+                  <button key={index} onClick={() => { setSelectedImage(index); setShowGallery(false); }} className="group relative aspect-square rounded-2xl overflow-hidden transition-all duration-200 hover:scale-[1.02]" style={{ border: selectedImage === index ? "2px solid rgba(255,255,255,0.75)" : "2px solid rgba(255,255,255,0.05)" }}>
+                    <S3Media s3Key={img} alt={`${packageData.title} ${index + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 };

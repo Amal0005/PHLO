@@ -119,6 +119,7 @@ export const MESSAGES = {
     REVIEW: {
         ADDED: "Review added",
         DELETED: "Review deleted",
+        UPDATED: "Review updated",
     },
     PACKAGE: {
         ID_REQUIRED: "Package ID is required",

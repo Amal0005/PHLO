@@ -1,7 +1,7 @@
 import api from "@/axios/axiosConfig";
 import { Creator } from "@/interface/admin/creatorInterface";
 import { PaginatedResponse } from "@/interface/admin/pagination";
-import { API_ENDPOINTS } from "@/constants/apiEndpoints";
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 
 export const fetchAdminCreators = async (
   page: number,
@@ -10,7 +10,7 @@ export const fetchAdminCreators = async (
   status?: string
 ): Promise<PaginatedResponse<Creator>> => {
 
-  const res = await api.get(API_ENDPOINTS.ADMIN.CREATORS, {
+  const res = await api.get(FRONTEND_ROUTES.ADMIN.CREATORS, {
     params: { page, limit, search, status }
   });
 
@@ -18,13 +18,13 @@ export const fetchAdminCreators = async (
 };
 
 export const approveCreator = async (creatorId: string): Promise<void> => {
-  await api.patch(`${API_ENDPOINTS.ADMIN.CREATORS}/${creatorId}/approve`);
+  await api.patch(`${FRONTEND_ROUTES.ADMIN.CREATORS}/${creatorId}/approve`);
 };
 
 export const rejectCreator = async (creatorId: string, reason: string): Promise<void> => {
-  await api.patch(`${API_ENDPOINTS.ADMIN.CREATORS}/${creatorId}/reject`, { reason });
+  await api.patch(`${FRONTEND_ROUTES.ADMIN.CREATORS}/${creatorId}/reject`, { reason });
 };
 export const toggleCreatorStatus = async (creatorId: string, status: "approved" | "blocked") => {
-  const response = await api.patch(`${API_ENDPOINTS.ADMIN.CREATORS}/${creatorId}/status`, { status });
+  const response = await api.patch(`${FRONTEND_ROUTES.ADMIN.CREATORS}/${creatorId}/status`, { status });
   return response.data
 }

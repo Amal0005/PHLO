@@ -1,14 +1,14 @@
 import api from "@/axios/axiosConfig"
 import { AdminLoginPayload } from "@/interface/admin/adminLoginInterface"
-import { API_ENDPOINTS } from "@/constants/apiEndpoints"
+import { FRONTEND_ROUTES } from "@/constants/frontendRoutes"
 
 
 export const AdminAuthService = {
     login: async (payload: AdminLoginPayload) => {
-        const res = await api.post(API_ENDPOINTS.ADMIN.LOGIN, payload)
+        const res = await api.post(FRONTEND_ROUTES.ADMIN.LOGIN, payload)
         return res.data
     },
     logOut: async (): Promise<void> => {
-        await api.post(API_ENDPOINTS.ADMIN.LOGOUT)
+        await api.post(FRONTEND_ROUTES.ADMIN.LOGOUT)
     }
 }

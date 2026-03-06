@@ -19,6 +19,7 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
     const [existingReview, setExistingReview] = useState<Review | null>(null);
     const [loading, setLoading] = useState(true);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         const fetchExistingReview = async () => {
@@ -53,22 +54,30 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
 
         try {
             setSubmitting(true);
-            const response = await ReviewService.addReview({
-                packageId,
-                bookingId,
-                rating,
-                comment,
-            });
+            let response;
+            if (existingReview) {
+                response = await ReviewService.updateReview(existingReview.id, {
+                    rating,
+                    comment,
+                });
+            } else {
+                response = await ReviewService.addReview({
+                    packageId,
+                    bookingId,
+                    rating,
+                    comment,
+                });
+            }
 
             if (response.success) {
-                toast.success("Review submitted successfully!");
-                // Refresh to show the submitted review in "existing" mode
+                toast.success(existingReview ? "Review updated successfully!" : "Review submitted successfully!");
+                setIsEditing(false);
                 const fresh = await ReviewService.getBookingReview(bookingId);
                 if (fresh.success) setExistingReview(fresh.data);
                 if (onSuccess) onSuccess();
             }
         } catch (error: unknown) {
-            let msg = "Failed to submit review";
+            let msg = existingReview ? "Failed to update review" : "Failed to submit review";
             if (error && typeof error === 'object' && 'response' in error) {
                 const axiosError = error as { response: { data: { message?: string } } };
                 msg = axiosError.response?.data?.message || msg;
@@ -89,6 +98,7 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
                 setExistingReview(null);
                 setRating(0);
                 setComment("");
+                setIsEditing(false);
             }
         } catch {
             toast.error("Failed to delete review");
@@ -102,7 +112,7 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
         return <div className="p-8 text-center text-zinc-500 text-xs font-bold uppercase tracking-widest">Loading Review...</div>;
     }
 
-    if (existingReview) {
+    if (existingReview && !isEditing) {
         return (
             <>
                 <div className="p-8 rounded-[2.5rem] bg-zinc-900/30 border border-zinc-800 backdrop-blur-xl relative overflow-hidden group">
@@ -113,14 +123,23 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
                             <MessageSquare className="w-3.5 h-3.5" />
                             Your Review
                         </h3>
-                        <button
-                            onClick={() => setIsDeleteModalOpen(true)}
-                            disabled={submitting}
-                            className="p-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-2xl transition-all active:scale-90 disabled:opacity-50"
-                            title="Delete Review"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all active:scale-90"
+                                title="Edit Review"
+                            >
+                                <Send className="w-3.5 h-3.5 -rotate-45" />
+                            </button>
+                            <button
+                                onClick={() => setIsDeleteModalOpen(true)}
+                                disabled={submitting}
+                                className="p-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-2xl transition-all active:scale-90 disabled:opacity-50"
+                                title="Delete Review"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+                        </div>
                     </div>
 
                     <div className="space-y-6">
@@ -132,7 +151,7 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
                                 />
                             ))}
                         </div>
-                        <p className="text-zinc-400 text-sm leading-relaxed font-medium">
+                        <p className="text-zinc-400 text-sm leading-relaxed font-medium break-all whitespace-pre-wrap">
                             "{existingReview.comment}"
                         </p>
                         <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest pt-4 border-t border-zinc-800/50">
@@ -157,13 +176,23 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
     }
 
     return (
-        <div className="p-8 rounded-[2.5rem] bg-zinc-900/30 border border-zinc-800 backdrop-blur-xl relative overflow-hidden group">
+        <div className="p-8 rounded-[2.5rem] bg-zinc-900/30 border border-zinc-800 backdrop-blur-xl relative overflow-hidden group transition-all duration-500">
             <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/[0.02] rounded-full blur-3xl pointer-events-none" />
 
-            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-8 flex items-center gap-2">
-                <MessageSquare className="w-3.5 h-3.5" />
-                Review your experience
-            </h3>
+            <div className="flex justify-between items-center mb-8">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 flex items-center gap-2">
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    {isEditing ? "Update your review" : "Review your experience"}
+                </h3>
+                {isEditing && (
+                    <button
+                        onClick={() => setIsEditing(false)}
+                        className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 hover:text-white transition-colors"
+                    >
+                        Cancel
+                    </button>
+                )}
+            </div>
 
             <form onSubmit={handleSubmitReview} className="relative z-10 space-y-8">
                 <div>
@@ -199,13 +228,16 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
                     />
                 </div>
 
-                <button
-                    disabled={submitting}
-                    className="w-full flex items-center justify-center gap-3 bg-white text-black py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] hover:shadow-[0_10px_40px_rgba(255,255,255,0.1)] active:scale-95 transition-all disabled:opacity-50"
-                >
-                    {submitting ? "Sharing..." : "Post Review"}
-                    <Send className="w-4 h-4" />
-                </button>
+                <div className="flex gap-4">
+                    <button
+                        type="submit"
+                        disabled={submitting}
+                        className="flex-1 flex items-center justify-center gap-3 bg-white text-black py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] hover:shadow-[0_10px_40px_rgba(255,255,255,0.1)] active:scale-95 transition-all disabled:opacity-50"
+                    >
+                        {submitting ? (isEditing ? "Updating..." : "Sharing...") : (isEditing ? "Update Review" : "Post Review")}
+                        <Send className="w-4 h-4" />
+                    </button>
+                </div>
             </form>
         </div>
     );

@@ -1,4 +1,4 @@
-export const API_ENDPOINTS = {
+export const FRONTEND_ROUTES = {
     USER: {
         REGISTER: "/register",
         LOGIN: "/login",
@@ -27,9 +27,12 @@ export const API_ENDPOINTS = {
         GET_BOOKING_DETAIL: "/bookings/status/:id",
         CANCEL_BOOKING: "/bookings/cancel/:id",
         DOWNLOAD_INVOICE: "/bookings/:id/invoice",
+        RETRY_PAYMENT: "/bookings/:id/retry-payment",
         ADD_REVIEW: "/review",
         GET_REVIEWS: "/review/:id",
         DELETE_REVIEW: "/review/:id",
+        UPDATE_REVIEW: "/review/:id",
+        GET_BOOKING_REVIEW: "/review/booking/:id",
         BUY_WALLPAPER: "/wallpaper/buy/:id",
     },
     ADMIN: {

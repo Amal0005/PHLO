@@ -27,6 +27,7 @@ const BookingDetailPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [processingCancel, setProcessingCancel] = useState(false);
+    const [retryingPayment, setRetryingPayment] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -75,6 +76,24 @@ const BookingDetailPage: React.FC = () => {
         }
     };
 
+    const handleRetryPayment = async () => {
+        if (!sessionId) return;
+        try {
+            setRetryingPayment(true);
+            const response = await BookingService.retryPayment(sessionId, window.location.origin);
+            if (response.success && response.data.url) {
+                window.location.href = response.data.url;
+            } else {
+                toast.error("Failed to generate payment link");
+            }
+        } catch (error) {
+            console.error("Retry payment error:", error);
+            toast.error("An error occurred. Please try again later.");
+        } finally {
+            setRetryingPayment(false);
+        }
+    };
+
     const getStatusConfig = (status: UserBooking['status']) => {
         switch (status) {
             case 'completed':
@@ -86,7 +105,7 @@ const BookingDetailPage: React.FC = () => {
                 };
             case 'pending':
                 return {
-                    label: "Payment Pending",
+                    label: "Pending",
                     icon: <AlertCircle className="w-4 h-4" />,
                     style: "bg-amber-500/10 text-amber-500 border-amber-500/20",
                     bgGlow: "bg-amber-500/5"
@@ -149,7 +168,7 @@ const BookingDetailPage: React.FC = () => {
                                 <span className="text-[10px] font-black uppercase tracking-widest">{statusConfig.label}</span>
                             </div>
 
-                            <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-none uppercase">
+                            <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-none uppercase break-words">
                                 {booking.packageDetails?.title || "Booking Adventure"}
                             </h1>
 
@@ -186,10 +205,9 @@ const BookingDetailPage: React.FC = () => {
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
                         </div>
 
-                        {/* Description */}
                         <div className="space-y-6">
                             <h2 className="text-sm font-black uppercase tracking-[0.3em] text-zinc-600">Experience Overview</h2>
-                            <p className="text-xl text-zinc-400 leading-relaxed font-light">
+                            <p className="text-xl text-zinc-400 leading-relaxed font-light break-all whitespace-pre-wrap">
                                 {booking.packageDetails?.description || "Get ready for a professional photography session tailored to your unique style. We'll capture every detail with artistic precision and cinematic flair."}
                             </p>
                         </div>
@@ -250,6 +268,33 @@ const BookingDetailPage: React.FC = () => {
 
                         {/* Action Buttons */}
                         <div className="space-y-4 pt-4">
+                            {booking.status === 'pending' && (
+                                <div className="space-y-4">
+                                    <div className="p-6 rounded-[2rem] bg-amber-500/5 border border-amber-500/20 flex flex-col gap-3">
+                                        <div className="flex items-center gap-2 text-amber-500">
+                                            <AlertCircle className="w-4 h-4" />
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Action Required</span>
+                                        </div>
+                                        <p className="text-sm text-zinc-400 font-medium leading-relaxed">
+                                            Your payment is still pending. Complete the transaction securely on Stripe to confirm your artistic experience.
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={handleRetryPayment}
+                                        disabled={retryingPayment}
+                                        className="w-full py-5 rounded-[1.5rem] bg-white text-black font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 group shadow-[0_20px_50px_rgba(255,255,255,0.1)] relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-amber-500 via-white to-amber-500 opacity-20" />
+                                        {retryingPayment ? (
+                                            <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                        ) : (
+                                            <CreditCard className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                        )}
+                                        {retryingPayment ? "Redirecting..." : "Complete Secure Payment"}
+                                    </button>
+                                </div>
+                            )}
+
                             {booking.status === 'completed' && (
                                 <button
                                     onClick={() => BookingService.downloadInvoice(sessionId!)}

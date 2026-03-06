@@ -1,6 +1,7 @@
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { IAddReviewUseCase } from "@/domain/interface/user/review/IAddReviewUseCase";
 import { IDeleteReviewUseCase } from "@/domain/interface/user/review/IDeleteReviewUseCase";
+import { IEditReviewUseCase } from "@/domain/interface/user/review/IEditReviewUseCase";
 import { IGetReviewByBookingUseCase } from "@/domain/interface/user/review/IGetReviewByBookingUseCase";
 import { IGetReviewUseCase } from "@/domain/interface/user/review/IGetReviewUseCase";
 import { MESSAGES } from "@/utils/commonMessages";
@@ -12,8 +13,8 @@ export class ReviewController {
         private _addReviewUseCase: IAddReviewUseCase,
         private _deleteReviewUseCase: IDeleteReviewUseCase,
         private _getReviewUseCase: IGetReviewUseCase,
-        private _getReviewByBookingUseCase: IGetReviewByBookingUseCase
-
+        private _getReviewByBookingUseCase: IGetReviewByBookingUseCase,
+        private _editReviewUseCase: IEditReviewUseCase
     ) {}
     async addReview(req: AuthRequest, res: Response): Promise<void> {
         const userId = req.user!.userId
@@ -38,5 +39,13 @@ export class ReviewController {
         const packageId = req.params.packageId
         const reviews = await this._getReviewUseCase.getReview(packageId)
         res.status(StatusCode.OK).json({ success: true, data: reviews });
+    }
+
+    async updateReview(req: AuthRequest, res: Response): Promise<void> {
+        const { reviewId } = req.params;
+        const userId=req.user!.userId;
+        const { rating, comment } = req.body;
+        const result = await this._editReviewUseCase.editReview(userId,reviewId, rating, comment);
+        res.status(StatusCode.OK).json({ success: true, data: result, message: MESSAGES.REVIEW.UPDATED });
     }
 }
