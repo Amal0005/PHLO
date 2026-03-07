@@ -9,6 +9,7 @@ import { ROUTES } from "../constants/routes";
 import CategoryListing from "@/pages/admin/categoryListing";
 import SubscriptionListingPage from "@/pages/admin/subscriptionListing";
 import WallpaperListingPage from "@/pages/admin/wallpaper/wallpaperListing";
+import AdminWallet from "@/pages/admin/AdminWallet";
 
 export function AdminRoutes() {
   return (
@@ -25,14 +26,14 @@ export function AdminRoutes() {
           />
           <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboard />} />
           <Route path={ROUTES.ADMIN.USERS} element={<UserListingPage />} />
-          <Route path={ROUTES.ADMIN.CATEGORIES} element={<CategoryListing/>}/>
+          <Route path={ROUTES.ADMIN.CATEGORIES} element={<CategoryListing />} />
           <Route
             path={ROUTES.ADMIN.CREATORS}
             element={<CreatorListingPage />}
           />
-          <Route path={ROUTES.ADMIN.SUBSCRIPTIONS} element={<SubscriptionListingPage/>}/>
+          <Route path={ROUTES.ADMIN.SUBSCRIPTIONS} element={<SubscriptionListingPage />} />
           <Route path={ROUTES.ADMIN.WALLPAPERS} element={<WallpaperListingPage />} />
-
+          <Route path={ROUTES.ADMIN.WALLET} element={<AdminWallet />} />
         </Route>
       </Route>
     </Routes>

@@ -1,4 +1,4 @@
-import { Shield, Users, LayoutDashboard, Camera, FolderTree, CreditCard, Image as ImageIcon } from "lucide-react";
+import { Shield, Users, LayoutDashboard, Camera, FolderTree, CreditCard, Image as ImageIcon, Wallet } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 
@@ -38,6 +38,11 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       label: "Wallpapers",
       icon: ImageIcon,
       to: ROUTES.ADMIN.WALLPAPERS,
+    },
+    {
+      label: "Wallet",
+      icon: Wallet,
+      to: ROUTES.ADMIN.WALLET,
     },
   ];
 

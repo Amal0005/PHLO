@@ -76,6 +76,7 @@ import { WallpaperWebhookUseCase } from "@/application/useCases/user/wallpaper/w
 import { RetryPaymentUseCase } from "@/application/useCases/user/booking/retryPaymentUseCase";
 import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
 import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
+import { creditWalletUseCase } from "../admin/adminInjections";
 
 
 
@@ -118,8 +119,8 @@ const addCategoryUseCase = new AddCategoryUseCase(categoryRepository);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
 const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, leaveRepo, stripeService)
-const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService)
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService,mailService)
+const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService, packageRepository, creatorRepository, creditWalletUseCase)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
 const checkAvailabilityUseCase = new CheckAvailabilityUseCase(bookingRepo, leaveRepo, packageRepository);
 const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo);
@@ -137,7 +138,7 @@ const getReviewUseCase = new GetReviewUseCase(reviewRepo)
 const getReviewByBookingUseCase = new GetReviewByBookingUseCase(reviewRepo)
 const editReviewUseCase = new EditReviewUseCase(reviewRepo)
 const buyWallpaperUseCase = new BuyWallpaperUseCase(wallpaperRepo, stripeService, wallpaperDownloadRepo)
-const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo)
+const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase)
 const retryPaymentUseCase = new RetryPaymentUseCase(bookingRepo, packageRepository, stripeService);
 
 

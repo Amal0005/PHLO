@@ -6,7 +6,9 @@ import {
   categoryController,
   subscriptionController,
   adminWallpaperController,
+  adminWalletController,
 } from "../../../framework/depInjection/admin/adminInjections";
+
 import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
 import { authMiddleware, logoutController, tokenController } from "../../../framework/depInjection/user/userInjections";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
@@ -94,6 +96,9 @@ export class AdminRoutes {
     })
     this.adminRouter.patch(BACKEND_ROUTES.ADMIN.REJECT_WALLPAPER, (req: Request, res: Response) => {
       adminWallpaperController.rejectWallpaper(req, res)
+    })
+    this.adminRouter.get(BACKEND_ROUTES.ADMIN.WALLET, (req: Request, res: Response) => {
+      adminWalletController.getWallet(req, res)
     })
   }
 }

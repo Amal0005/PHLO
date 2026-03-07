@@ -44,6 +44,7 @@ export const ROUTES = {
     CREATORS: "/admin/creators",
     CATEGORIES: "/admin/category",
     SUBSCRIPTIONS: "/admin/subscription",
-    WALLPAPERS: "/admin/wallpapers"
+    WALLPAPERS: "/admin/wallpapers",
+    WALLET: "/admin/wallet"
   },
 };
