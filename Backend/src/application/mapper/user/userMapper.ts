@@ -1,4 +1,3 @@
-import { IUserModel } from "../../../framework/database/model/userModel";
 import { UserResponseDto } from "../../../domain/dto/user/userResponseDto";
 import { User } from "../../../domain/entities/userEntities";
 
@@ -14,22 +13,6 @@ export class UserMapper {
       image: user.image,
       googleVerified: user.googleVerified,
       createdAt: user.createdAt,
-    };
-  }
-
-  static toDomain(doc: IUserModel): User {
-    return {
-      _id: doc._id.toString(),
-      name: doc.name,
-      email: doc.email,
-      password: doc.password,
-      phone: doc.phone,
-      googleId: doc.googleId,
-      image: doc.image,
-      status: doc.status,
-      role: doc.role,
-      googleVerified: doc.googleVerified,
-      createdAt: doc.createdAt,
     };
   }
 }

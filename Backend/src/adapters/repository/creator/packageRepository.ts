@@ -10,7 +10,6 @@ import {
 import { BaseRepository } from "../baseRepository";
 import { SortOrder, Document, Types, PipelineStage } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { PackageMapper } from "@/application/mapper/user/packageMapper";
 
 export class PackageRepository
   extends BaseRepository<PackageEntity, IPackageModel>
@@ -19,8 +18,21 @@ export class PackageRepository
     super(PackageModel);
   }
 
-  protected mapToEntity(pkg: IPackageModel): PackageEntity {
-    return PackageMapper.toEntity(pkg);
+  protected mapToEntity(doc: IPackageModel): PackageEntity {
+    const obj = doc.toObject();
+
+    return {
+      _id: obj._id.toString(),
+      creatorId: obj.creatorId,
+      category: obj.category,
+      title: obj.title,
+      description: obj.description,
+      price: obj.price,
+      images: obj.images,
+      locations: obj.locations,
+      createdAt: obj.createdAt,
+      updatedAt: obj.updatedAt,
+    };
   }
 
 

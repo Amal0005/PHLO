@@ -1,21 +1,34 @@
 import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
-import { IWallpaperModel } from "@/framework/database/model/wallpapperModel";
+import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
+import { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class WallpaperMapper {
-  static toEntity(doc: IWallpaperModel): WallpaperEntity {
-    const obj = doc.toObject ? doc.toObject() : doc;
-    return {
-      _id: obj._id.toString(),
-      creatorId: obj.creatorId,
-      title: obj.title,
-      imageUrl: obj.imageUrl,
-      watermarkedUrl: obj.watermarkedUrl ?? undefined,
-      price: obj.price,
-      hashtags: obj.hashtags || [],
-      status: obj.status,
-      rejectionReason: obj.rejectionReason ?? undefined,
-      downloadCount: obj.downloadCount ?? 0,
-      createdAt: obj.createdAt,
-    };
-  }
+    static toDto(entity: WallpaperEntity & { isPurchased?: boolean }): WallpaperResponseDto {
+        let creatorId: string | { _id: string; fullName: string; profilePhoto?: string } = "";
+
+        if (typeof entity.creatorId === 'object' && entity.creatorId !== null) {
+            const creator = entity.creatorId as CreatorEntity;
+            creatorId = {
+                _id: creator._id?.toString() || "",
+                fullName: creator.fullName,
+                profilePhoto: creator.profilePhoto,
+            };
+        } else {
+            creatorId = entity.creatorId as string;
+        }
+
+        return {
+            _id: entity._id?.toString() || "",
+            creatorId,
+            title: entity.title,
+            imageUrl: entity.imageUrl,
+            watermarkedUrl: entity.watermarkedUrl,
+            price: entity.price,
+            hashtags: entity.hashtags,
+            status: entity.status,
+            downloadCount: entity.downloadCount || 0,
+            createdAt: entity.createdAt!,
+            isPurchased: entity.isPurchased,
+        };
+    }
 }

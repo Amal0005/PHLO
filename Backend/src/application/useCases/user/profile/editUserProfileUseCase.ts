@@ -1,4 +1,5 @@
-import { User } from "@/domain/entities/userEntities";
+import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import { UserMapper } from "@/application/mapper/user/userMapper";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
@@ -11,7 +12,7 @@ export class EditUserProfileUsecase implements IEditUserProfileUseCase {
   async editProfile(
     userId: string,
     data: { name?: string; phone?: string; image?: string; email: string },
-  ): Promise<User | null> {
+  ): Promise<UserResponseDto | null> {
     if (!userId) throw new Error("userID is required");
     if (!data) throw new Error("User dara is required");
     if (data.phone) {
@@ -35,7 +36,7 @@ export class EditUserProfileUsecase implements IEditUserProfileUseCase {
       data.email = trimmed;
     }
     const newUser = await this._userRepo.editProfile(userId, data);
-    return newUser;
+    return newUser ? UserMapper.toDto(newUser) : null;
   }
 }
 

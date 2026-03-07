@@ -13,26 +13,16 @@ import {
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
-import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
-import { JwtServices } from "@/domain/services/user/jwtServices";
-import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
-import { logoutController, tokenController } from "@/framework/depInjection/user/userInjections";
+import { authMiddleware, logoutController, tokenController } from "@/framework/depInjection/user/userInjections";
 import { editPackageSchema } from "@/adapters/validation/packageEditSchema";
 import { addPackageSchema } from "@/adapters/validation/packageAddSchema";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 
 export class CreatorRoutes {
   public creatorRouter: Router;
 
-  constructor(
-    private _jwtService: JwtServices,
-    private _tokenBlacklistService: TokenBlacklistService,
-    private _userRepo: IUserRepository,
-    private _creatorRepo: ICreatorRepository,
-  ) {
+  constructor() {
     this.creatorRouter = Router();
     this.setRoutes();
   }
@@ -89,12 +79,7 @@ export class CreatorRoutes {
     );
 
     this.creatorRouter.use(
-      jwtAuthMiddleware(
-        this._jwtService,
-        this._tokenBlacklistService,
-        this._userRepo,
-        this._creatorRepo,
-      ),
+      authMiddleware,
       authorizeRoles("creator"),
     );
 

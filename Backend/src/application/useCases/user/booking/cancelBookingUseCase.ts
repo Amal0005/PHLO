@@ -1,3 +1,5 @@
+import { BookingMapper } from "@/application/mapper/user/bookingMapper";
+import { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
 import { BookingEntity } from "@/domain/entities/bookingEntity";
 import { AppError } from "@/domain/errors/appError";
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
@@ -9,7 +11,7 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
   constructor(
     private _bookingRepo: IBookingRepository
   ) {}
-  async cancelBooking(userId: string, sessionId: string): Promise<BookingEntity> {
+  async cancelBooking(userId: string, sessionId: string): Promise<BookingResponseDTO> {
     const booking = await this._bookingRepo.findByStripeSessionId(sessionId)
     if (!booking) throw new Error("Booking not found")
     const bookingUserId = typeof booking.userId === 'string' ? booking.userId : (booking.userId as unknown as Record<string, unknown>)._id?.toString() || (booking.userId as unknown as Record<string, unknown>).id?.toString();
@@ -24,7 +26,7 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
     if (!updatedBooking) {
       throw new AppError("Failed to cancel booking", StatusCode.INTERNAL_SERVER_ERROR);
     }
-    return updatedBooking;
+    return BookingMapper.toDto(updatedBooking);
   }
 
 }

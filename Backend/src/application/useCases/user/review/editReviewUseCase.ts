@@ -1,4 +1,5 @@
-import { ReviewEntity } from "@/domain/entities/reviewEntity";
+import { ReviewResponseDTO } from "@/domain/dto/user/review/reviewResponseDto";
+import { ReviewMapper } from "@/application/mapper/user/reviewMapper";
 import { AppError } from "@/domain/errors/appError";
 import { IReviewRepository } from "@/domain/interface/repositories/IReviewRepository";
 import { IEditReviewUseCase } from "@/domain/interface/user/review/IEditReviewUseCase";
@@ -9,13 +10,13 @@ export class EditReviewUseCase implements IEditReviewUseCase {
         private _reviewRepo: IReviewRepository,
     ) {}
 
-    async editReview(userId: string, reviewId: string, rating: number, comment: string): Promise<ReviewEntity> {
+    async editReview(userId: string, reviewId: string, rating: number, comment: string): Promise<ReviewResponseDTO> {
         const review = await this._reviewRepo.findById(reviewId);
         if (!review) {
             throw new AppError("Review not found", StatusCode.NOT_FOUND);
         }
 
-    
+
         let revUserId = review.userId;
         if (typeof review.userId === 'object' && review.userId !== null) {
             const userObj = review.userId as { _id?: string; id?: string };
@@ -35,6 +36,6 @@ export class EditReviewUseCase implements IEditReviewUseCase {
             throw new AppError("Failed to update", StatusCode.INTERNAL_SERVER_ERROR);
         }
 
-        return updatedReview;
+        return ReviewMapper.toDto(updatedReview);
     }
 }

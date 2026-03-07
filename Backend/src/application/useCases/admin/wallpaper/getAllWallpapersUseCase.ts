@@ -1,4 +1,5 @@
-import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
+import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
+import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
 import { IGetAllWallpapersUseCase } from "@/domain/interface/admin/wallpaper/IGetAllWallpapersUseCase";
 import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
@@ -14,7 +15,11 @@ export class GetAllWallpapersUseCase implements IGetAllWallpapersUseCase {
         limit: number,
         status?: WallpaperStatus,
         search?: string,
-    ): Promise<PaginatedResult<WallpaperEntity>> {
-        return this._wallpaperRepo.findAllWallpapers(page, limit, status, search);
+    ): Promise<PaginatedResult<WallpaperResponseDto>> {
+        const result = await this._wallpaperRepo.findAllWallpapers(page, limit, status, search);
+        return {
+            ...result,
+            data: result.data.map(wp => WallpaperMapper.toDto(wp))
+        };
     }
 }

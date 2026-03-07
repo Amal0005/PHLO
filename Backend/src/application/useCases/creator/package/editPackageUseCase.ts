@@ -1,3 +1,5 @@
+import { PackageMapper } from "@/application/mapper/user/packageMapper";
+import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPackageUseCase";
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
@@ -11,7 +13,7 @@ export class EditPackageUseCase implements IEditPackageUseCase {
     packageId: string,
     creatorId: string,
     data: Partial<PackageEntity>
-  ): Promise<PackageEntity> {
+  ): Promise<PackageResponseDto> {
     const existingPackage = await this._packageRepo.findById(packageId);
 
     if (!existingPackage) {
@@ -20,7 +22,7 @@ export class EditPackageUseCase implements IEditPackageUseCase {
 
 
     const existingCreatorId = (typeof existingPackage.creatorId === 'object' && existingPackage.creatorId !== null)
-      ? existingPackage.creatorId._id?.toString()
+      ? (existingPackage.creatorId as any)._id?.toString()
       : existingPackage.creatorId.toString();
 
     if (existingCreatorId !== creatorId.toString()) {
@@ -42,6 +44,6 @@ export class EditPackageUseCase implements IEditPackageUseCase {
       throw new Error("Failed to update package");
     }
 
-    return updatedPackage;
+    return PackageMapper.toDto(updatedPackage);
   }
 }

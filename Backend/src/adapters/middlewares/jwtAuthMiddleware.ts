@@ -3,9 +3,9 @@ import { StatusCode } from "@/utils/statusCodes";
 import { AuthPayload } from "@/domain/dto/user/authPayload";
 import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
+import { MESSAGES } from "@/utils/commonMessages";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { MESSAGES } from "@/utils/commonMessages";
 
 export interface AuthRequest extends Request {
   user?: AuthPayload;

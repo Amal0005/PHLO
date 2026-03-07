@@ -1,4 +1,5 @@
-import { User } from "@/domain/entities/userEntities";
+import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IPendingUserService } from "@/domain/interface/service/IPendingUserService";
@@ -11,7 +12,7 @@ export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {
     private _otpService: IOTPService,
     private _pendingUser: IPendingUserService
   ) {}
-  async verifyUser(email: string, otp: string): Promise<User> {
+  async verifyUser(email: string, otp: string): Promise<UserResponseDto> {
     email = email.trim().toLowerCase();
     const result = await this._otpService.verifyOtp(email, otp);
     if (result == "EXPIRED") throw new Error(MESSAGES.AUTH.OTP_EXPIRED);
@@ -21,7 +22,7 @@ export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {
     const userData = JSON.parse(pending);
     const createdUser = await this._userRepo.createUser(userData);
     await this._pendingUser.deletePending(email);
-    return createdUser;
+    return UserMapper.toDto(createdUser);
   }
 }
 

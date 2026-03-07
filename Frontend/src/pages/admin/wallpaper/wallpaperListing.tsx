@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { AlertCircle, Search, X, Eye, CheckCircle, Download } from "lucide-react";
+import { AlertCircle, X, Eye, CheckCircle, Download } from "lucide-react";
 import { AdminWallpaperService } from "@/services/admin/adminWallpaperService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 import { toast } from "react-toastify";
@@ -7,6 +7,8 @@ import Pagination from "@/compoents/reusable/pagination";
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
+import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
+
 
 type StatusFilter = "all" | "pending" | "approved" | "rejected";
 
@@ -254,37 +256,26 @@ export default function WallpaperListingPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold text-white">Wallpaper Management</h1>
 
-        {/* Search */}
-        <div className="relative w-full max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-          <input
-            type="text"
-            placeholder="Search by title..."
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <FilterSearch
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-zinc-800 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-white/20 transition-colors"
+            onChange={(val) => { setSearchQuery(val); setPage(1); }}
+            placeholder="Search by title..."
+            className="sm:w-64"
+          />
+          <FilterSelect
+            value={statusFilter}
+            onChange={(val) => handleStatusFilterChange(val as any)}
+            placeholder="Filter Status"
+            className="sm:w-48"
+            options={STATUS_TABS.map(tab => ({ value: tab.value, label: tab.label }))}
           />
         </div>
       </div>
 
-      {/* Status Filter Tabs */}
-      <div className="flex gap-2">
-        {STATUS_TABS.map((tab) => (
-          <button
-            key={tab.value}
-            onClick={() => handleStatusFilterChange(tab.value)}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${statusFilter === tab.value
-              ? "bg-white text-black"
-              : "bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white"
-              }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
 
       <DataTable
         columns={columns}

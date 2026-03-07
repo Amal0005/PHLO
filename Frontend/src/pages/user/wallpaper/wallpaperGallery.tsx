@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Search, Image as ImageIcon, Download, X, Heart } from "lucide-react";
+import { Image as ImageIcon, Download, X, Heart } from "lucide-react";
+
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
 import { WishlistService } from "@/services/user/wishlistService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
@@ -7,7 +8,10 @@ import Pagination from "@/compoents/reusable/pagination";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import { S3Service } from "@/services/s3Service";
 import UserNavbar from "@/compoents/reusable/userNavbar";
+import { FilterSearch } from "@/compoents/reusable/FilterComponents";
 import { toast } from "react-toastify";
+
+
 
 const WallpaperGallery: React.FC = () => {
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
@@ -165,18 +169,15 @@ const WallpaperGallery: React.FC = () => {
         </div>
 
         {/* Search */}
-        <div className="mb-4 flex justify-center">
-          <div className="relative w-full max-w-md">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
-            <input
-              type="text"
-              placeholder="Search wallpapers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-zinc-900 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white/20 transition-colors"
-            />
-          </div>
+        <div className="mb-8 flex justify-center">
+          <FilterSearch
+            value={searchQuery}
+            onChange={(val) => setSearchQuery(val)}
+            placeholder="Search wallpapers by title, tags..."
+            className="w-full max-w-lg"
+          />
         </div>
+
 
         {/* Price Range Slider */}
         <div className="mb-4 flex justify-center">

@@ -75,6 +75,8 @@ import { BuyWallpaperUseCase } from "@/application/useCases/user/wallpaper/buyWa
 import { WallpaperWebhookUseCase } from "@/application/useCases/user/wallpaper/wallpaperWebhookUseCase";
 import { RetryPaymentUseCase } from "@/application/useCases/user/booking/retryPaymentUseCase";
 import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
+import { jwtAuthMiddleware, jwtOptionalMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
+
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -156,3 +158,17 @@ export const paymentController = new PaymentController(bookingWebhookUseCase, cr
 export const userWallpaperController = new UserWallpaperController(getApprovedWallpapers, recordDownloadUseCase, buyWallpaperUseCase)
 export const wishlistController = new WishlistController(toggleWishlistUseCase, getWishlistUseCase, getWishlistIdsUseCase)
 export const reviewController = new ReviewController(addReviewUseCase, deleteReviewUseCase, getReviewUseCase, getReviewByBookingUseCase, editReviewUseCase)
+
+export const authMiddleware = jwtAuthMiddleware(
+    jwtService,
+    tokenBlacklistService,
+    userRepo,
+    creatorRepository
+);
+
+export const optionalAuthMiddleware = jwtOptionalMiddleware(
+    jwtService,
+    tokenBlacklistService,
+    userRepo,
+    creatorRepository
+);

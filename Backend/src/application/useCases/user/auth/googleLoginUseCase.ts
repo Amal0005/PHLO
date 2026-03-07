@@ -1,5 +1,6 @@
 import { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
-import { User } from "../../../../domain/entities/userEntities";
+import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IJwtServices } from "../../../../domain/interface/service/IJwtServices";
 import { verifyGoogleIdToken } from "../../../../framework/google/verifyGoogleIdToken";
 import { MESSAGES } from "@/utils/commonMessages";
@@ -12,7 +13,7 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
     private _jwtService: IJwtServices
   ) {}
 
-  async login(idToken: string): Promise<{ user: User; accessToken: string; refreshToken: string }> {
+  async login(idToken: string): Promise<{ user: UserResponseDto; accessToken: string; refreshToken: string }> {
 
     const googleUser = await verifyGoogleIdToken(idToken);
 
@@ -28,7 +29,7 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
         status: "active",
       });
     } else if (!user.image && googleUser.picture) {
-      
+
       const updatedUser = await this._userRepo.editProfile(user._id!.toString(), { image: googleUser.picture });
       if (updatedUser) user = updatedUser;
     }
@@ -53,7 +54,7 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
     const accessToken = this._jwtService.generateAccessToken(payload);
     const refreshToken = this._jwtService.generateRefreshToken(payload);
     return {
-      user,
+      user: UserMapper.toDto(user),
       accessToken,
       refreshToken
     }

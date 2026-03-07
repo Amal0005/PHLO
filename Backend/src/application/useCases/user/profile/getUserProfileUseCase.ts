@@ -1,15 +1,14 @@
-import { User } from "@/domain/entities/userEntities";
+import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
 
-export class GetUserProfileUseCase implements IGetUserProfileUseCase{
+export class GetUserProfileUseCase implements IGetUserProfileUseCase {
     constructor(
-        private _userRepo:IUserRepository
-    ){}
-    async getProfile(userId: string): Promise<User | null> {
-        if(!userId)throw new Error("User Id is required")
-            const user=await this._userRepo.findById(userId)
-        if(!user)throw new Error("User not found")
-            return user
+        private _userRepo: IUserRepository
+    ) {}
+    async getProfile(userId: string): Promise<UserResponseDto | null> {
+        const user = await this._userRepo.findById(userId);
+        return user ? UserMapper.toDto(user) : null;
     }
 }

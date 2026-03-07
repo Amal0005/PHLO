@@ -12,11 +12,6 @@ import { CreatorRoutes } from "@/adapters/routes/creator/creatorRoutes";
 import { UploadRoutes } from "@/adapters/routes/uploadRoutes";
 import { ViewRoutes } from "@/adapters/routes/viewRoutes";
 import { AdminRoutes } from "@/adapters/routes/admin/adminRoutes";
-import { JwtServices } from "@/domain/services/user/jwtServices";
-import { RedisService } from "@/domain/services/user/redisServices";
-import { TokenBlacklistService } from "@/domain/services/tokenBlacklistService";
-import { UserRepository } from "@/adapters/repository/user/userRepository";
-import { CreatorRepository } from "./adapters/repository/creator/creatorRepository";
 import { loggerMiddleware } from "./adapters/middlewares/loggerMiddleware";
 import path from "path";
 
@@ -31,21 +26,9 @@ export class App {
   private database: connectDB;
   private server!: http.Server;
 
-  private _jwtService: JwtServices;
-  private _redisService: RedisService;
-  private _tokenBlacklistService: TokenBlacklistService;
-  private _userRepository: UserRepository;
-  private _creatorRepository: CreatorRepository
-
   constructor() {
     this.app = express();
     this.database = new connectDB();
-
-    this._jwtService = new JwtServices();
-    this._redisService = new RedisService();
-    this._tokenBlacklistService = new TokenBlacklistService(this._redisService);
-    this._userRepository = new UserRepository();
-    this._creatorRepository = new CreatorRepository()
 
     this.setMiddlewares();
     this.setUserRoutes();
@@ -84,21 +67,11 @@ export class App {
 
   }
   private setUserRoutes(): void {
-    const userRoutes = new UserRoutes(
-      this._jwtService,
-      this._tokenBlacklistService,
-      this._userRepository,
-      this._creatorRepository
-    );
+    const userRoutes = new UserRoutes();
     this.app.use(BACKEND_ROUTES.BASE, userRoutes.userRouter);
   }
   private setCreatorRoutes(): void {
-    const creatorRoutes = new CreatorRoutes(
-      this._jwtService,
-      this._tokenBlacklistService,
-      this._userRepository,
-      this._creatorRepository
-    );
+    const creatorRoutes = new CreatorRoutes();
     this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.CREATOR.BASE}`, creatorRoutes.creatorRouter);
   }
 
@@ -109,12 +82,7 @@ export class App {
     this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.UPLOAD.BASE}`, new ViewRoutes().viewRoutes);
   }
   private setAdminRouter() {
-    const adminRoutes = new AdminRoutes(
-      this._jwtService,
-      this._tokenBlacklistService,
-      this._userRepository,
-      this._creatorRepository
-    );
+    const adminRoutes = new AdminRoutes();
     this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.ADMIN.BASE}`, adminRoutes.adminRouter);
   }
 

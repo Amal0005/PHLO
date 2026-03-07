@@ -1,6 +1,6 @@
-import { User } from "../../../entities/userEntities";
+import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 
 export interface IVerifyRegisterOtpUseCase {
-  verifyUser(email: string, otp: string): Promise<User>;
+  verifyUser(email: string, otp: string): Promise<UserResponseDto>;
 }
 

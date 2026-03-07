@@ -1,4 +1,4 @@
-import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
+import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export interface IGetApprovedWallpapersUseCase {
@@ -10,5 +10,5 @@ export interface IGetApprovedWallpapersUseCase {
     minPrice?: number,
     maxPrice?: number,
     userId?: string
-  ): Promise<PaginatedResult<WallpaperEntity & { isPurchased?: boolean }>>;
+  ): Promise<PaginatedResult<WallpaperResponseDto>>;
 }

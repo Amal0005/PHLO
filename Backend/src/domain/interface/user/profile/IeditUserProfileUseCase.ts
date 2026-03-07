@@ -1,10 +1,10 @@
-import { User } from "@/domain/entities/userEntities";
+import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 
-export interface IEditUserProfileUseCase{
-    editProfile(userId:string, data: {
-      name?: string;
-      phone?: string;
-      image?: string;
-      email?:string
-    }):Promise<User|null>
+export interface IEditUserProfileUseCase {
+  editProfile(userId: string, data: {
+    name?: string;
+    phone?: string;
+    image?: string;
+    email?: string
+  }): Promise<UserResponseDto | null>
 }

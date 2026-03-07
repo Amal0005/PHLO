@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Edit2, Trash2, CreditCard, Search } from "lucide-react";
+import { Plus, Edit2, Trash2, CreditCard } from "lucide-react";
+
 import { Subscription, SubscriptionForm } from "@/interface/admin/subscriptionInterface";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
@@ -7,6 +8,8 @@ import DataTable, { Column } from "@/compoents/reusable/dataTable";
 import AddEditSubscriptionModal from "./components/addEditSubscriptionModal";
 import { AdminSubscriptionService } from "@/services/admin/adminSubscriptionService";
 import Pagination from "@/compoents/reusable/pagination";
+import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
+
 
 export default function SubscriptionListingPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -125,37 +128,32 @@ export default function SubscriptionListingPage() {
           Subscription Management
         </h1>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search plans..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="w-full bg-zinc-900 text-white border border-white/10 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-white/20 transition-all"
-            />
-          </div>
-          <select
+          <FilterSearch
+            value={search}
+            onChange={(val) => { setSearch(val); setPage(1); }}
+            placeholder="Search plans..."
+            className="sm:w-64"
+          />
+          <FilterSelect
             value={filterStatus}
-            onChange={(e) => handleFilterChange(e.target.value as typeof filterStatus)}
-            className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
-          >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-          <button
+            onChange={(val) => handleFilterChange(val as any)}
+            placeholder="Filter Status"
+            className="sm:w-48"
+            options={[
+              { value: "all", label: "All Status" },
+              { value: "active", label: "Active" },
+              { value: "inactive", label: "Inactive" },
+            ]}
+          />
+          <FilterButton
             onClick={handleAdd}
-            className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors whitespace-nowrap"
+            icon={<Plus className="w-5 h-5" />}
           >
-            <Plus className="w-5 h-5" />
-            <span>Add Plan</span>
-          </button>
+            Add Plan
+          </FilterButton>
         </div>
       </div>
+
 
       <DataTable
         columns={columns}

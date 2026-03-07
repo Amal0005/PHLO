@@ -10,7 +10,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         private _creatorRepo: ICreatorRepository,
         private _subscriptionRepo: ISubscriptionRepository,
         private _stripeService: IStripeService
-    ) { }
+    ) {}
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);

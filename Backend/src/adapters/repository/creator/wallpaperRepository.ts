@@ -5,7 +5,6 @@ import {
 } from "@/framework/database/model/wallpapperModel";
 import { BaseRepository } from "../baseRepository";
 import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
-import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
 import { QueryFilter, UpdateQuery } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { WallpaperStatus } from "@/utils/wallpaperStatus";
@@ -17,7 +16,20 @@ export class WallpaperRepository
     super(WallpaperModel);
   }
   protected mapToEntity(doc: IWallpaperModel): WallpaperEntity {
-    return WallpaperMapper.toEntity(doc);
+    const obj = doc.toObject ? doc.toObject() : doc;
+    return {
+      _id: obj._id.toString(),
+      creatorId: obj.creatorId,
+      title: obj.title,
+      imageUrl: obj.imageUrl,
+      watermarkedUrl: obj.watermarkedUrl ?? undefined,
+      price: obj.price,
+      hashtags: obj.hashtags || [],
+      status: obj.status,
+      rejectionReason: obj.rejectionReason ?? undefined,
+      downloadCount: obj.downloadCount ?? 0,
+      createdAt: obj.createdAt,
+    };
   }
   async add(data: WallpaperEntity): Promise<WallpaperEntity> {
     const created = await this.model.create(

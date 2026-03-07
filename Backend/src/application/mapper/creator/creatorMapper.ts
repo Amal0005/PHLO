@@ -1,32 +1,31 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { ICreatorModel } from "@/framework/database/model/creatorModel";
+import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
 
 export class CreatorMapper {
-  static toDomain(doc: ICreatorModel): CreatorEntity {
+  static toDto(entity: CreatorEntity): CreatorResponseDto {
     return {
-      _id: doc._id?.toString(),
-      fullName: doc.fullName,
-      email: doc.email,
-      password: doc.password ?? "",
-      phone: doc.phone,
-      profilePhoto: doc.profilePhoto,
-      city: doc.city,
-      yearsOfExperience: doc.yearsOfExperience,
-      bio: doc.bio,
-      portfolioLink: doc.portfolioLink,
-      governmentId: doc.governmentId,
-      status: doc.status,
-      rejectionReason: doc.rejectionReason,
-      specialties: doc.specialties,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-      subscription: doc.subscription ? {
-        planId: doc.subscription.planId.toString(),
-        planName: doc.subscription.planName,
-        status: doc.subscription.status,
-        startDate: doc.subscription.startDate,
-        endDate: doc.subscription.endDate,
-        stripeSessionId: doc.subscription.stripeSessionId,
+      _id: entity._id?.toString() || "",
+      fullName: entity.fullName,
+      email: entity.email,
+      phone: entity.phone,
+      profilePhoto: entity.profilePhoto,
+      city: entity.city,
+      yearsOfExperience: entity.yearsOfExperience,
+      bio: entity.bio,
+      portfolioLink: entity.portfolioLink,
+      governmentId: entity.governmentId,
+      status: entity.status,
+      rejectionReason: entity.rejectionReason,
+      specialties: entity.specialties || [],
+      createdAt: entity.createdAt!,
+      updatedAt: entity.updatedAt!,
+      subscription: entity.subscription ? {
+        planId: entity.subscription.planId.toString(),
+        planName: entity.subscription.planName,
+        status: entity.subscription.status,
+        startDate: entity.subscription.startDate,
+        endDate: entity.subscription.endDate,
+        stripeSessionId: entity.subscription.stripeSessionId,
       } : undefined,
     };
   }

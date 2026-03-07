@@ -2,7 +2,6 @@ import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { User } from "../../../domain/entities/userEntities";
 import { UserModel, IUserModel } from "../../../framework/database/model/userModel";
 import { paginateMongo } from "@/utils/pagination";
-import { UserMapper } from "../../../application/mapper/user/userMapper";
 import { BaseRepository } from "../baseRepository";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { Filter } from "mongodb";
@@ -13,7 +12,19 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
   }
 
   protected mapToEntity(doc: IUserModel): User {
-    return UserMapper.toDomain(doc);
+    return {
+      _id: doc._id.toString(),
+      name: doc.name,
+      email: doc.email,
+      password: doc.password,
+      phone: doc.phone,
+      googleId: doc.googleId,
+      image: doc.image,
+      status: doc.status,
+      role: doc.role,
+      googleVerified: doc.googleVerified,
+      createdAt: doc.createdAt,
+    };
   }
 
 

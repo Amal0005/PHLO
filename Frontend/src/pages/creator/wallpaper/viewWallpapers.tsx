@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { ArrowLeft, Image as ImageIcon, Trash2, Search, Plus, X, Download } from "lucide-react";
+import { ArrowLeft, Image as ImageIcon, Trash2, Plus, X, Download } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 import { CreatorWallpaperService } from "@/services/creator/creatorWallpaperService";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
@@ -12,6 +13,8 @@ import Pagination from "@/compoents/reusable/pagination";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import { AddWallpaperModal } from "./components/addWallpaperModal";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
+import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
+
 
 const ViewWallpapersPage: React.FC = () => {
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
@@ -112,7 +115,7 @@ const ViewWallpapersPage: React.FC = () => {
       <CreatorNavbar />
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate(ROUTES.CREATOR.DASHBOARD)}
@@ -120,76 +123,71 @@ const ViewWallpapersPage: React.FC = () => {
             >
               <ArrowLeft size={24} />
             </button>
-
             <div>
               <h1 className="text-4xl font-black mb-1">My Wallpapers</h1>
               <p className="text-gray-500 font-medium">
                 Upload and manage your wallpaper collection
               </p>
             </div>
-
-            <button
-              onClick={() => {
-                if (isSubscribed) {
-                  setAddModalOpen(true);
-                } else {
-                  setShowSubModal(true);
-                }
-              }}
-              className="px-6 py-3 bg-white text-black rounded-2xl hover:bg-zinc-200 transition-all flex items-center gap-2 font-black shadow-[0_0_20px_rgba(255,255,255,0.15)] group"
-            >
-              <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-              <span className="hidden sm:inline tracking-tighter">ADD WALLPAPER</span>
-            </button>
           </div>
 
-          <div className="hidden md:flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl">
+          <FilterButton
+            onClick={() => {
+              if (isSubscribed) {
+                setAddModalOpen(true);
+              } else {
+                setShowSubModal(true);
+              }
+            }}
+            icon={<Plus size={20} />}
+          >
+            ADD WALLPAPER
+          </FilterButton>
+        </div>
+
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+
+            <FilterSearch
+              value={searchQuery}
+              onChange={(val) => { setSearchQuery(val); setPage(1); }}
+              placeholder="Search wallpapers by title..."
+              className="sm:w-80"
+            />
+            <FilterSelect
+              value={statusFilter}
+              onChange={(val) => { setStatusFilter(val); setPage(1); }}
+              placeholder="All Status"
+              className="sm:w-48"
+              options={[
+                { value: "", label: "All Status" },
+                { value: "pending", label: "Pending" },
+                { value: "approved", label: "Approved" },
+                { value: "rejected", label: "Rejected" },
+              ]}
+            />
+            {(searchQuery || statusFilter) && (
+              <FilterButton
+                variant="danger"
+                onClick={() => {
+                  setSearchQuery("");
+                  setStatusFilter("");
+                  setPage(1);
+                }}
+              >
+                Clear
+              </FilterButton>
+            )}
+          </div>
+          <div className="flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="text-sm font-bold text-gray-400">
-              {totalRecords} Wallpaper{totalRecords !== 1 ? "s" : ""}
+              {totalRecords} Results
             </span>
           </div>
         </div>
 
-        <div className="mb-8 flex flex-wrap items-center gap-4">
-          <div className="flex-1 relative max-w-md">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
-            <input
-              type="text"
-              placeholder="Search wallpapers by title..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-zinc-900 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-white/20 transition-colors"
-            />
-          </div>
-
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setPage(1);
-            }}
-            className="bg-zinc-900 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white/20 transition-colors appearance-none cursor-pointer"
-          >
-            <option value="">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-
-          {(searchQuery || statusFilter) && (
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setStatusFilter("");
-                setPage(1);
-              }}
-              className="px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-gray-400 hover:bg-white/10 hover:text-white transition-colors text-sm font-bold"
-            >
-              Clear Filters
-            </button>
-          )}
-        </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center h-[50vh]">

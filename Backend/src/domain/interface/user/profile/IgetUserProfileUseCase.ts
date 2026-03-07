@@ -1,6 +1,6 @@
-import { User } from "@/domain/entities/userEntities";
+import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 
-export interface IGetUserProfileUseCase{
-    getProfile(userId:string):Promise<User|null>
+export interface IGetUserProfileUseCase {
+    getProfile(userId: string): Promise<UserResponseDto | null>
 }
 

@@ -1,4 +1,4 @@
-import { User } from "../../entities/userEntities";
+import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export interface IAdminUserListingUseCase {
@@ -7,6 +7,6 @@ export interface IAdminUserListingUseCase {
     limit: number,
     search?: string,
     status?: string
-  ): Promise<PaginatedResult<User>>;
+  ): Promise<PaginatedResult<UserResponseDto>>;
 }
 

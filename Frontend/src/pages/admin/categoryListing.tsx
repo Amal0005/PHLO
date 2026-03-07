@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Edit2, Trash2, Search } from "lucide-react";
+import { Plus, Edit2, Trash2 } from "lucide-react";
+
 import { Category, CategoryForm } from "@/interface/admin/categoryInterface";
 import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import AddEditCategoryModal from "./components/addEditCategoryModal";
 import Pagination from "@/compoents/reusable/pagination";
-
+import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
+
 
 export default function CategoryListingPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -131,38 +133,33 @@ export default function CategoryListingPage() {
   return (
     <div className="p-4 lg:p-8 space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-bold text-white">Category Management</h1>
-        <button
-          onClick={handleAdd}
-          className="flex items-center gap-2 bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Add Category</span>
-        </button>
-      </div>
-
-      {/* Simplified Filters Bar */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search by name..."
+        <h1 className="text-2xl font-bold text-white uppercase tracking-tight">Category Management</h1>
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <FilterSearch
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            className="w-full bg-zinc-900 text-white border border-white/10 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-white/20 transition-all"
+            onChange={(val) => { setSearch(val); setPage(1); }}
+            placeholder="Search by name..."
+            className="sm:w-64"
           />
+          <FilterSelect
+            value={sort}
+            onChange={(val) => setSort(val as any)}
+            placeholder="Sort Order"
+            className="sm:w-48"
+            options={[
+              { value: "newest", label: "Newest to Oldest" },
+              { value: "oldest", label: "Oldest to Newest" },
+            ]}
+          />
+          <FilterButton
+            onClick={handleAdd}
+            icon={<Plus className="w-5 h-5" />}
+          >
+            Add Category
+          </FilterButton>
         </div>
-
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
-          className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
-        >
-          <option value="newest">Newest to Oldest</option>
-          <option value="oldest">Oldest to Newest</option>
-        </select>
       </div>
+
 
       <div className="space-y-4">
         <DataTable

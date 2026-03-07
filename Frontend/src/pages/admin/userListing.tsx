@@ -4,10 +4,11 @@ import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserSer
 import { User } from "@/interface/admin/userInterface";
 import { toast } from "react-toastify";
 import ConfirmModal from "../../compoents/reusable/ConfirmModal";
-import { UserX, UserCheck, Search } from "lucide-react";
+import { UserX, UserCheck } from "lucide-react";
 import Pagination from "@/compoents/reusable/pagination";
-
+import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
+
 
 export default function UserListingPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -157,29 +158,28 @@ export default function UserListingPage() {
     <>
       <div className="p-6 space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-2xl font-bold text-white">Users</h1>
+          <h1 className="text-2xl font-bold text-white">Users Management</h1>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search users..."
-                value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                className="w-full bg-zinc-900 text-white border border-white/10 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-white/20 transition-all"
-              />
-            </div>
-            <select
+            <FilterSearch
+              value={search}
+              onChange={(val) => { setSearch(val); setPage(1); }}
+              placeholder="Search users by name or email..."
+              className="sm:w-64"
+            />
+            <FilterSelect
               value={filterStatus}
-              onChange={(e) => handleFilterChange(e.target.value as "all" | "active" | "blocked")}
-              className="bg-zinc-900 text-white border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-white/20 transition-all"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="blocked">Blocked</option>
-            </select>
+              onChange={(val) => handleFilterChange(val as any)}
+              placeholder="Filter Status"
+              className="sm:w-48"
+              options={[
+                { value: "all", label: "All Status" },
+                { value: "active", label: "Active" },
+                { value: "blocked", label: "Blocked" },
+              ]}
+            />
           </div>
         </div>
+
 
         <div className="space-y-4">
           <DataTable

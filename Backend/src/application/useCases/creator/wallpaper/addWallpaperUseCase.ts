@@ -1,3 +1,5 @@
+import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
+import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
 import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
 import { IAddWallpaperUseCase } from "@/domain/interface/creator/walpapper/IAddWallpaperUseCase";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
@@ -11,7 +13,7 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
     private _creatorRepo: ICreatorRepository,
     private _watermarkService: IWatermarkService,
   ) {}
-  async addWallpaper(data: Partial<WallpaperEntity>): Promise<WallpaperEntity> {
+  async addWallpaper(data: Partial<WallpaperEntity>): Promise<WallpaperResponseDto> {
     if (!data.title || !data.imageUrl || data.price === undefined || data.price === null) {
       throw new Error(MESSAGES.ERROR.ALL_FIELDS_REQUIRED);
     }
@@ -38,6 +40,7 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
       hashtags: (data.hashtags || []).map(tag => tag.trim()).filter(tag => tag.length > 0),
       status: "pending",
     };
-    return await this._wallpaperRepo.add(newWallpaper);
+    const created = await this._wallpaperRepo.add(newWallpaper);
+    return WallpaperMapper.toDto(created);
   }
 }

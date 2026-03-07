@@ -1,3 +1,5 @@
+import { PackageMapper } from "@/application/mapper/user/packageMapper";
+import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
@@ -8,7 +10,7 @@ export class AddPackageUseCase implements IAddPackageUseCase {
     private _packageRepo: IPackageRepository,
     private _creatorRepo: ICreatorRepository,
   ) {}
-  async addPackage(data: Partial<PackageEntity>): Promise<PackageEntity> {
+  async addPackage(data: Partial<PackageEntity>): Promise<PackageResponseDto> {
     if (
       !data.title ||
       !data.description ||
@@ -38,6 +40,7 @@ export class AddPackageUseCase implements IAddPackageUseCase {
       locations: data.locations!,
     };
 
-    return await this._packageRepo.add(newPackage);
+    const addedPackage = await this._packageRepo.add(newPackage);
+    return PackageMapper.toDto(addedPackage);
   }
 }

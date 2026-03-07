@@ -1,20 +1,7 @@
-import { PackageEntity } from "@/domain/entities/packageEntity";
+import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
+import { PackageFilters } from "@/domain/interface/repositories/IPackageRepository";
 
 export interface IListUserPackagesUseCase {
-  listPackages(filters?: PackageFilters): Promise<PaginatedResult<PackageEntity>>;
-}
-
-export interface PackageFilters {
-  category?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  creatorId?: string;
-  search?: string;
-  sortBy?: "price-asc" | "price-desc" | "newest";
-  lat?: number;
-  lng?: number;
-  radiusInKm?: number;
-  page?: number;
-  limit?: number;
+  listPackages(filters?: PackageFilters): Promise<PaginatedResult<PackageResponseDto>>;
 }

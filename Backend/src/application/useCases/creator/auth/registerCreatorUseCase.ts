@@ -1,3 +1,5 @@
+import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
+import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { IRegisterCreatorUseCase } from "@/domain/interface/creator/register/IRegisterCreatorUseCase";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
@@ -18,7 +20,7 @@ export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
     private _redisService: IRedisService
   ) {}
 
-  async registerCreator(data: CreatorEntity): Promise<CreatorEntity> {
+  async registerCreator(data: CreatorEntity): Promise<CreatorResponseDto> {
     const email = data.email.trim().toLowerCase();
 
     const existing = await this._creatorRepo.findByEmail(email);
@@ -41,7 +43,7 @@ export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
     if (isPreVerified) {
       const createdCreator = await this._creatorRepo.createCreator(pendingCreator);
       await this._redisService.deleteValue(`VERIFIED_CREATOR_EMAIL_${email}`);
-      return createdCreator;
+      return CreatorMapper.toDto(createdCreator);
     }
 
     await this._redisService.setValue(`PENDING_CREATOR_${email}`, JSON.stringify(pendingCreator), 300);
@@ -61,7 +63,7 @@ export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
       htmlTemplate
     );
 
-    return { ...pendingCreator, _id: "" } as CreatorEntity;
+    return CreatorMapper.toDto({ ...pendingCreator, _id: "" } as CreatorEntity);
   }
 }
 

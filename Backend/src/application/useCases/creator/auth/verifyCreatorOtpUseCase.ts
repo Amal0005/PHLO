@@ -1,7 +1,8 @@
+import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
+import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
-import { IVerifyCreatorOtpUseCase } from "@/domain/interface/creator/register/IVerifyCreatorOtpUseCase";
+import { IVerifyCreatorOtpUseCase } from "@/domain/interface/creator/auth/IVerifyCreatorOtpUseCase";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 
 export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {
@@ -11,7 +12,7 @@ export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {
         private _redisService: IRedisService
     ) {}
 
-    async verifyOtp(email: string, otp: string): Promise<CreatorEntity> {
+    async verifyOtp(email: string, otp: string): Promise<CreatorResponseDto> {
         email = email.trim().toLowerCase();
 
         const result = await this._otpService.verifyOtp(email, otp);
@@ -21,7 +22,7 @@ export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {
         const pending = await this._redisService.getValue(`PENDING_CREATOR_${email}`);
         if (!pending) {
             await this._redisService.setValue(`VERIFIED_CREATOR_EMAIL_${email}`, "true", 900);
-            return { email } as CreatorEntity;
+            return { email } as CreatorResponseDto;
         }
 
         const creatorData = JSON.parse(pending);
@@ -29,7 +30,7 @@ export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {
 
         await this._redisService.deleteValue(`PENDING_CREATOR_${email}`);
 
-        return createdCreator;
+        return CreatorMapper.toDto(createdCreator);
     }
 }
 

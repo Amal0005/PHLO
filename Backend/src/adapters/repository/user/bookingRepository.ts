@@ -6,7 +6,8 @@ import {
   BookingModel,
 } from "@/framework/database/model/bookingModel";
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
-import { BookingMapper } from "@/application/mapper/user/bookingMapper";
+import { User } from "@/domain/entities/userEntities";
+import { PackageEntity } from "@/domain/entities/packageEntity";
 import { BookingStatus } from "@/utils/bookingStatus";
 import { PackageModel } from "@/framework/database/model/packageModel";
 
@@ -17,7 +18,22 @@ export class BookingRepository
     super(BookingModel);
   }
   protected mapToEntity(doc: BookingDocument): BookingEntity {
-    return BookingMapper.toEntity(doc);
+    const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && 'title' in doc.packageId;
+    const isUserPopulated = doc.userId && typeof doc.userId === 'object' && 'name' in doc.userId;
+
+    return {
+      id: doc._id.toString(),
+      userId: isUserPopulated ? (doc.userId as User) : doc.userId.toString(),
+      packageId: isPackagePopulated ? (doc.packageId as PackageEntity) : doc.packageId.toString(),
+      amount: doc.amount,
+      currency: doc.currency as "inr",
+      status: doc.status,
+      stripeSessionId: doc.stripeSessionId,
+      bookingDate: doc.bookingDate,
+      location: doc.location,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    };
   }
   async findByStripeSessionId(
     sessionId: string,

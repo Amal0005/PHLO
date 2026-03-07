@@ -1,5 +1,5 @@
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
 
 export interface IeditCreatorProfileUseCase {
-    editProfile(creatorId:string,data:Partial<CreatorEntity>):Promise<CreatorEntity|null>
+    editProfile(creatorId: string, data: any): Promise<CreatorResponseDto | null>
 }

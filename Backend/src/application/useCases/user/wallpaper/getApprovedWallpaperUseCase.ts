@@ -1,4 +1,5 @@
-import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
+import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
+import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
 import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
 import { IGetApprovedWallpapersUseCase } from "@/domain/interface/user/wallpaper/IGetApprovedWallpaperUseCase";
 import { IWallpaperDownloadRepository } from "@/domain/interface/repositories/IWallpaperDownloadRepository ";
@@ -17,17 +18,14 @@ export class GetApprovedWallpaperUseCase implements IGetApprovedWallpapersUseCas
         minPrice?: number,
         maxPrice?: number,
         userId?: string
-    ): Promise<PaginatedResult<WallpaperEntity & { isPurchased?: boolean }>> {
+    ): Promise<PaginatedResult<WallpaperResponseDto>> {
         const result = await this._wallpaperRepo.findApproved(page, limit, search, hashtag, minPrice, maxPrice);
 
-        if (userId) {
-            const enrichedData = await Promise.all(result.data.map(async (wp) => {
-                const isPurchased = wp.price === 0 || await this._wallpaperDownloadRepo.hasPurchased(wp._id!, userId);
-                return { ...wp, isPurchased };
-            }));
-            return { ...result, data: enrichedData };
-        }
+        const enrichedData = await Promise.all(result.data.map(async (wp) => {
+            const isPurchased = userId ? (wp.price === 0 || await this._wallpaperDownloadRepo.hasPurchased(wp._id!, userId)) : false;
+            return WallpaperMapper.toDto({ ...wp, isPurchased });
+        }));
 
-        return result;
+        return { ...result, data: enrichedData };
     }
 }

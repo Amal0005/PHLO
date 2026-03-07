@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Package as PackageIcon, MapPin, X, Heart } from "lucide-react";
+import { Package as PackageIcon, MapPin, X, Heart } from "lucide-react";
+
 import { UserPackageService } from "@/services/user/userPackageService";
 import { WishlistService } from "@/services/user/wishlistService";
 import { UserPackage, PackageFilters } from "@/interface/user/userPackageInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import UserNavbar from "@/compoents/reusable/userNavbar";
 import Pagination from "@/compoents/reusable/pagination";
+import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
 import { toast } from "react-toastify";
+
+
 
 const PackageListing: React.FC = () => {
   const navigate = useNavigate();
@@ -187,51 +191,41 @@ const PackageListing: React.FC = () => {
           </p>
         </div>
 
-        <div className="mb-8 space-y-4">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={20} />
-            <input
-              type="text"
-              placeholder="Search packages..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setPage(1);
-              }}
-              className="w-full bg-zinc-900 border border-white/10 rounded-2xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-white/20"
-            />
-          </div>
+        {/* FILTER BAR */}
+        <div className="mb-10 space-y-6">
+          <FilterSearch
+            value={searchQuery}
+            onChange={(val) => { setSearchQuery(val); setPage(1); }}
+            placeholder="Search by package name, creator, or style..."
+            className="w-full"
+          />
 
-          <div className="flex flex-wrap gap-4">
-            <select
+          <div className="flex flex-wrap items-center gap-3">
+            <FilterSelect
               value={selectedCategory}
-              onChange={(e) => {
-                setSelectedCategory(e.target.value);
-                setPage(1);
-              }}
-              className="bg-zinc-900 border border-white/10 rounded-2xl px-4 py-3 text-white"
-            >
-              <option value="">All Categories</option>
-              {allCategories.map((cat) => (
-                <option key={cat._id} value={cat._id}>{cat.name}</option>
-              ))}
-            </select>
+              onChange={(val) => { setSelectedCategory(val); setPage(1); }}
+              placeholder="All Categories"
+              className="w-[200px]"
+              options={[
+                { value: "", label: "All Categories" },
+                ...allCategories.map(cat => ({ value: cat._id, label: cat.name }))
+              ]}
+            />
 
-            <select
+            <FilterSelect
               value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value as "price-asc" | "price-desc" | "newest" | "oldest");
-                setPage(1);
-              }}
-              className="bg-zinc-900 border border-white/10 rounded-2xl px-4 py-3 text-white"
-            >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-            </select>
+              onChange={(val) => { setSortBy(val as any); setPage(1); }}
+              placeholder="Sort By"
+              className="w-[200px]"
+              options={[
+                { value: "newest", label: "Newest First" },
+                { value: "oldest", label: "Oldest First" },
+                { value: "price-asc", label: "Price: Low to High" },
+                { value: "price-desc", label: "Price: High to Low" },
+              ]}
+            />
 
-            <button
+            <FilterButton
               onClick={() => {
                 if (locationFilter) {
                   setLocationFilter(null);
@@ -242,66 +236,52 @@ const PackageListing: React.FC = () => {
                     async (pos) => {
                       const { latitude: lat, longitude: lng } = pos.coords;
                       setLocationFilter({ lat, lng });
-
                       try {
                         const token = import.meta.env.VITE_MAPBOX_TOKEN;
-                        const res = await fetch(
-                          `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`
-                        );
+                        const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
                         const data = await res.json();
                         if (data.features?.[0]) {
-                          // Get a shorter version of the place name (usually the city/area)
-                          const placeName = data.features[0].text || data.features[0].place_name;
-                          setCurrentLocationName(placeName);
+                          setCurrentLocationName(data.features[0].text || data.features[0].place_name);
                         }
-                      } catch (error) {
-                        console.error("Reverse geocoding error:", error);
-                      }
-
+                      } catch (error) { console.error(error); }
                       setIsLocating(false);
                       setPage(1);
                     },
                     (err) => {
                       console.error(err);
                       setIsLocating(false);
-                      toast.error("Failed to get your location. Please check permissions.");
+                      toast.error("Failed to get location.");
                     }
                   );
                 }
               }}
-              className={`px-6 py-3 rounded-2xl font-bold transition-all flex items-center gap-2 max-w-[280px] ${locationFilter ? "bg-white text-black" : "bg-zinc-900 text-white border border-white/10"
-                }`}
+              active={!!locationFilter}
+              loading={isLocating}
+              icon={<MapPin size={16} />}
+              className="max-w-[280px]"
             >
-              <MapPin size={18} className={isLocating ? "animate-bounce" : ""} />
-              <span className="truncate">
-                {isLocating
-                  ? "Locating..."
-                  : currentLocationName && locationFilter
-                    ? currentLocationName
-                    : "Near Me"}
-              </span>
-            </button>
+              {currentLocationName && locationFilter ? currentLocationName : "Near Me"}
+            </FilterButton>
 
-            {/* Clear Filters Button */}
+            {/* Clear Filters */}
             {(searchQuery || selectedCategory || locationFilter || sortBy !== "newest") && (
-              <button
+              <FilterButton
                 onClick={clearFilters}
-                className="px-6 py-3 rounded-2xl font-bold transition-all flex items-center gap-2 bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600/30"
+                variant="danger"
+                icon={<X size={16} />}
               >
-                <X size={18} />
-                Clear Filters
-              </button>
+                Clear
+              </FilterButton>
             )}
 
             {/* Results Count */}
-            <div className="ml-auto flex items-center gap-3 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-sm font-bold text-gray-400">
-                {totalPackages} Package{totalPackages !== 1 ? "s" : ""}
-              </span>
+            <div className="ml-auto hidden sm:flex items-center gap-2.5 px-4 py-2 bg-white/[0.03] border border-white/5 rounded-2xl">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">Results</span>
+              <span className="text-xs font-black text-white">{totalPackages}</span>
             </div>
           </div>
         </div>
+
 
         {loading ? (
           <div className="flex flex-col items-center justify-center h-[50vh]">

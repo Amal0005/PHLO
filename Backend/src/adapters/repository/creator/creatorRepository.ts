@@ -1,4 +1,3 @@
-import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { CreatorModel, ICreatorModel } from "@/framework/database/model/creatorModel";
@@ -14,7 +13,32 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
   }
 
   protected mapToEntity(doc: ICreatorModel): CreatorEntity {
-    return CreatorMapper.toDomain(doc);
+    return {
+      _id: doc._id?.toString(),
+      fullName: doc.fullName,
+      email: doc.email,
+      password: doc.password ?? "",
+      phone: doc.phone,
+      profilePhoto: doc.profilePhoto,
+      city: doc.city,
+      yearsOfExperience: doc.yearsOfExperience,
+      bio: doc.bio,
+      portfolioLink: doc.portfolioLink,
+      governmentId: doc.governmentId,
+      status: doc.status,
+      rejectionReason: doc.rejectionReason,
+      specialties: doc.specialties,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+      subscription: doc.subscription ? {
+        planId: doc.subscription.planId.toString(),
+        planName: doc.subscription.planName,
+        status: doc.subscription.status,
+        startDate: doc.subscription.startDate,
+        endDate: doc.subscription.endDate,
+        stripeSessionId: doc.subscription.stripeSessionId,
+      } : undefined,
+    };
   }
 
 
