@@ -13,8 +13,13 @@ import UserNavbar from "@/compoents/reusable/userNavbar";
 import { BookingService } from "@/services/user/bookingService";
 import { toast } from "react-toastify";
 import LocationSearchBar from "@/pages/creator/package/components/locationSearchBar";
+import type { LocationSearchBarHandle } from "@/pages/creator/package/components/locationSearchBar";
 import ReviewList from "./components/ReviewList";
 import { CustomCalendar } from "@/compoents/reusable/CustomCalendar";
+import Map, { Marker } from 'react-map-gl/mapbox';
+
+
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const PackageDetailPage: React.FC = () => {
   const { packageId } = useParams<{ packageId: string }>();
@@ -27,6 +32,17 @@ const PackageDetailPage: React.FC = () => {
   const [isDateAvailable, setIsDateAvailable] = useState<boolean | null>(null);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [markerLoc, setMarkerLoc] = useState<{ lat: number, lng: number } | null>(null);
+  const locationBarRef = React.useRef<LocationSearchBarHandle>(null);
+  const [showMap, setShowMap] = useState(false);
+
+  const [viewState, setViewState] = useState({
+    latitude: 20.5937,
+    longitude: 78.9629,
+    zoom: 3.5,
+    pitch: 60,
+    bearing: 0,
+  });
 
   useEffect(() => {
     const fetchPackageDetail = async () => {
@@ -287,18 +303,56 @@ const PackageDetailPage: React.FC = () => {
                 </div>
 
                 <div className="mt-4 mb-2">
-                  <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-2 ml-1" style={{ color: "rgba(255,255,255,0.2)" }}>
-                    Event Location
-                  </p>
+                  {/* Label + Open Map Button */}
+                  <div className="flex items-center justify-between mb-2 ml-1">
+                    <p className="text-[8px] font-bold tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.2)" }}>
+                      Event Location
+                    </p>
+                    <button
+                      onClick={() => setShowMap(true)}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[8px] font-bold tracking-widest uppercase transition-all hover:opacity-80"
+                      style={{
+                        background: selectedLocation ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        color: selectedLocation ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.4)",
+                      }}
+                    >
+                      <MapPin className="w-2.5 h-2.5" />
+                      {selectedLocation ? "Change on map" : "Pick on map"}
+                    </button>
+                  </div>
+
                   <div className="relative">
                     <LocationSearchBar
-                      onChange={(location: any) => setSelectedLocation(location.placeName || "")}
+                      ref={locationBarRef}
+                      onChange={(location: any) => {
+                        setSelectedLocation(location.placeName || "");
+                        if (location.latitude && location.longitude) {
+                          setViewState(prev => ({
+                            ...prev,
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                            zoom: 13,
+                          }));
+
+                          setMarkerLoc({ lat: location.latitude, lng: location.longitude });
+                        }
+                      }}
                     />
                   </div>
+
+                  {selectedLocation && (
+                    <div className="mt-2 flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
+                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+                    >
+                      <MapPin className="w-2.5 h-2.5 flex-shrink-0" style={{ color: "rgba(255,255,255,0.3)" }} />
+                      <span className="text-[10px] text-white/60 truncate">{selectedLocation}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Date Picker + Booking Action */}
-                <div className="pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                <div className="pt-4 mt-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                   {/* Date & Location Capture */}
 
 
@@ -446,6 +500,144 @@ const PackageDetailPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* ── MAP PICKER MODAL ── */}
+      {showMap && (
+        <div className="fixed inset-0 z-[70] flex flex-col" style={{ background: "rgba(0,0,0,0.95)" }}>
+          {/* Header bar */}
+          <div className="flex items-center justify-between px-6 py-4 flex-shrink-0 relative z-10"
+            style={{ background: "rgba(5,5,5,0.9)", borderBottom: "1px solid rgba(255,255,255,0.06)", backdropFilter: "blur(30px)" }}>
+            <div className="flex items-center gap-4">
+              <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.04))", border: "1px solid rgba(255,255,255,0.12)" }}>
+                <MapPin className="w-4 h-4 text-white/80" />
+              </div>
+              <div>
+                <h3 className="text-white font-black text-[15px] tracking-tight">Pick Event Location</h3>
+                <p className="text-[9px] text-white/30 tracking-widest uppercase mt-0.5">3D Map · Click to drop a pin</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowMap(false)}
+              className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+            >
+              <X className="w-4 h-4 text-white/50" />
+            </button>
+          </div>
+
+          {/* Satellite 3D Map */}
+          <div className="flex-1 relative">
+            <Map
+              {...viewState}
+              onMove={(evt: any) => setViewState(evt.viewState)}
+              mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
+              mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+              style={{ width: "100%", height: "100%" }}
+              antialias={true}
+              onLoad={(evt: any) => {
+                const map = evt.target;
+                // Add Mapbox terrain for true 3D elevation
+                if (!map.getSource('mapbox-dem')) {
+                  map.addSource('mapbox-dem', {
+                    type: 'raster-dem',
+                    url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                    tileSize: 512,
+                    maxzoom: 14,
+                  });
+                  map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
+                }
+                // Add atmospheric sky layer
+                if (!map.getLayer('sky')) {
+                  map.addLayer({
+                    id: 'sky',
+                    type: 'sky',
+                    paint: {
+                      'sky-type': 'atmosphere',
+                      'sky-atmosphere-sun': [0.0, 90.0],
+                      'sky-atmosphere-sun-intensity': 15,
+                    },
+                  });
+                }
+              }}
+              onClick={async (e: any) => {
+                const { lat, lng } = e.lngLat;
+                setMarkerLoc({ lat, lng });
+                // Zoom into clicked spot with steep pitch for Google Earth feel
+                setViewState(prev => ({
+                  ...prev,
+                  latitude: lat,
+                  longitude: lng,
+                  zoom: 16,
+                  pitch: 60,
+                  bearing: prev.bearing,
+                }));
+                try {
+                  const token = import.meta.env.VITE_MAPBOX_TOKEN;
+                  const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
+                  const data = await res.json();
+                  if (data.features?.[0]) {
+                    const placeName = data.features[0].place_name;
+                    setSelectedLocation(placeName);
+                    locationBarRef.current?.setInput(placeName);
+                  }
+                } catch (error) {
+                  console.error("Reverse geocoding error:", error);
+                }
+              }}
+            >
+              {markerLoc && (
+                <Marker latitude={markerLoc.lat} longitude={markerLoc.lng}>
+                  <div className="flex flex-col items-center" style={{ transform: "translateY(-100%)" }}>
+                    {/* Outer pulse */}
+                    <div className="relative flex items-center justify-center">
+                      <div className="absolute w-12 h-12 rounded-full bg-red-500/20 animate-ping" />
+                      <div className="absolute w-8 h-8 rounded-full bg-red-500/30" />
+                      {/* Pin head */}
+                      <div className="w-5 h-5 rounded-full bg-white border-[3px] border-red-500 shadow-[0_0_16px_rgba(239,68,68,0.9)] relative z-10" />
+                    </div>
+                    {/* Stem */}
+                    <div className="w-0.5 h-5 bg-gradient-to-b from-red-500 via-red-400 to-transparent" />
+                    {/* Ground shadow */}
+                    <div className="w-4 h-1.5 rounded-full bg-black/50 blur-sm" />
+                  </div>
+                </Marker>
+              )}
+            </Map>
+
+            {/* Floating confirm card at bottom */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 w-full max-w-md px-6">
+              {selectedLocation && markerLoc ? (
+                <div className="w-full rounded-3xl overflow-hidden"
+                  style={{ background: "rgba(8,8,8,0.88)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(30px)", boxShadow: "0 24px 80px rgba(0,0,0,0.7)" }}>
+                  <div className="px-5 py-4 flex items-center gap-3"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                    <div className="w-7 h-7 rounded-xl flex-shrink-0 flex items-center justify-center"
+                      style={{ background: "rgba(255,255,255,0.08)" }}>
+                      <MapPin className="w-3.5 h-3.5 text-white/60" />
+                    </div>
+                    <p className="text-[11px] text-white/70 font-medium truncate flex-1">{selectedLocation}</p>
+                  </div>
+                  <div className="p-3">
+                    <button
+                      onClick={() => setShowMap(false)}
+                      className="w-full py-3.5 rounded-2xl font-black text-[11px] tracking-[0.2em] uppercase bg-white text-black hover:bg-zinc-100 transition-all active:scale-[0.98]"
+                      style={{ boxShadow: "0 8px 40px rgba(255,255,255,0.15)" }}
+                    >
+                      ✓ Confirm Location
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="px-6 py-3 rounded-full text-[9px] font-bold tracking-[0.3em] uppercase"
+                  style={{ background: "rgba(8,8,8,0.75)", border: "1px solid rgba(255,255,255,0.08)", backdropFilter: "blur(20px)", color: "rgba(255,255,255,0.35)" }}>
+                  Tap anywhere on the map to select a location
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

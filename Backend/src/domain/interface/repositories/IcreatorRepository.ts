@@ -10,4 +10,8 @@ export interface ICreatorRepository extends IBaseRepository<CreatorEntity> {
   findAllCreators(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<CreatorEntity>>;
   findByPhone(phone: string | undefined): Promise<CreatorEntity | null>
   updateProfile(creatorId: string, data: Partial<CreatorEntity>): Promise<CreatorEntity | null>
+  activateUpcomingSubscription(creatorId: string): Promise<void>
+  findCreatorsWithExpiredSubscriptions(): Promise<CreatorEntity[]>
+  expireSubscriptions(): Promise<void>
+  updateSubscriptionStatus(creatorId: string, status: "active" | "expired" | "cancelled"): Promise<void>
 }

@@ -27,6 +27,14 @@ export class CreatorMapper {
         endDate: entity.subscription.endDate,
         stripeSessionId: entity.subscription.stripeSessionId,
       } : undefined,
+      upcomingSubscription: entity.upcomingSubscription ? {
+        planId: entity.upcomingSubscription.planId.toString(),
+        planName: entity.upcomingSubscription.planName,
+        status: entity.upcomingSubscription.status,
+        startDate: entity.upcomingSubscription.startDate,
+        endDate: entity.upcomingSubscription.endDate,
+        stripeSessionId: entity.upcomingSubscription.stripeSessionId,
+      } : undefined,
     };
   }
 }

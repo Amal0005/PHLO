@@ -17,6 +17,13 @@ export type Creator = {
     startDate: string;
     endDate: string;
   };
+  upcomingSubscription?: {
+    planId: string;
+    planName: string;
+    status: "active" | "expired" | "cancelled";
+    startDate: string;
+    endDate: string;
+  };
 };
 
 type CreatorState = {

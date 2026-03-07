@@ -62,6 +62,7 @@ export const creatorSchema = new Schema(
     },
     specialties: [{ type: String }],
     subscription: subscriptionDetailsSchema,
+    upcomingSubscription: subscriptionDetailsSchema
   },
   { timestamps: true },
 

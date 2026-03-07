@@ -38,6 +38,14 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
         endDate: doc.subscription.endDate,
         stripeSessionId: doc.subscription.stripeSessionId,
       } : undefined,
+      upcomingSubscription: doc.upcomingSubscription ? {
+        planId: doc.upcomingSubscription.planId.toString(),
+        planName: doc.upcomingSubscription.planName,
+        status: doc.upcomingSubscription.status,
+        startDate: doc.upcomingSubscription.startDate,
+        endDate: doc.upcomingSubscription.endDate,
+        stripeSessionId: doc.upcomingSubscription.stripeSessionId,
+      } : undefined,
     };
   }
 
@@ -85,5 +93,43 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
   async updateProfile(creatorId: string, data: Partial<CreatorEntity>): Promise<CreatorEntity | null> {
     const creator = await this.model.findByIdAndUpdate(creatorId, { $set: data }, { new: true });
     return creator ? this.mapToEntity(creator) : null;
+  }
+
+  async activateUpcomingSubscription(creatorId: string): Promise<void> {
+    await this.model.updateOne(
+      { _id: creatorId },
+      [{ $set: { subscription: "$upcomingSubscription", upcomingSubscription: "$$REMOVE" } }]
+    );
+  }
+
+  async findCreatorsWithExpiredSubscriptions(): Promise<CreatorEntity[]> {
+    const now = new Date();
+    const docs = await this.model.find({
+      "subscription.status": "active",
+      "subscription.endDate": { $lte: now },
+      upcomingSubscription: { $exists: true, $ne: null },
+    }).select("-password");
+    return docs.map((doc) => this.mapToEntity(doc));
+  }
+
+  async expireSubscriptions(): Promise<void> {
+    const now = new Date();
+    await this.model.updateMany(
+      {
+        "subscription.status": "active",
+        "subscription.endDate": { $lte: now },
+        upcomingSubscription: { $exists: false }
+      },
+      {
+        $set: { "subscription.status": "expired" }
+      }
+    );
+  }
+
+  async updateSubscriptionStatus(creatorId: string, status: "active" | "expired" | "cancelled"): Promise<void> {
+    await this.model.updateOne(
+      { _id: creatorId },
+      { $set: { "subscription.status": status } }
+    );
   }
 }

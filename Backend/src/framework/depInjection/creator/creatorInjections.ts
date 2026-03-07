@@ -48,7 +48,6 @@ import { DeleteWallpaperUseCase } from "@/application/useCases/creator/wallpaper
 import { GetCreatorWallpaperUseCase } from "@/application/useCases/creator/wallpaper/getCreatorWallpaperUseCase";
 import { WatermarkService } from "@/domain/services/watermarkService";
 import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
-import { CheckAvailabilityUseCase } from "@/application/useCases/user/booking/checkAvailabilityUseCase";
 import { AddLeaveUseCase } from "@/application/useCases/creator/leave/addLeaveUseCase";
 import { GetLeavesUseCase } from "@/application/useCases/creator/leave/getLeaveUseCase";
 import { RemoveLeaveUseCase } from "@/application/useCases/creator/leave/removeLeaveUseCase";
@@ -91,7 +90,7 @@ const editCategoryUseCase = new EditCategoryUseCase(categoryRepo);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService, creatorRepository)
 const listCreatorBookingsUseCase = new ListCreatorBookingsUseCase(bookingRepo);
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
 
 const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService)

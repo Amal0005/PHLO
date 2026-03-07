@@ -20,8 +20,8 @@ import {
   wishlistController,
   reviewController,
   authMiddleware,
-  optionalAuthMiddleware,
 } from "../../../framework/depInjection/user/userInjections";
+
 import { loginUserSchema } from "../../validation/loginUserSchema";
 import {
   AuthRequest,
@@ -193,10 +193,10 @@ export class UserRoutes {
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.WALLPAPERS,
-      optionalAuthMiddleware,
       (req: AuthRequest, res: Response) =>
         userWallpaperController.getWallpaper(req, res),
     );
+
     this.userRouter.post(
       BACKEND_ROUTES.USER.WALLPAPER_DOWNLOAD,
       authMiddleware,

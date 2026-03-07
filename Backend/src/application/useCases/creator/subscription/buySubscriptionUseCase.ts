@@ -14,11 +14,8 @@ export class BuySubscriptionUseCase implements IBuySubscriptionUseCase {
     ) {}
     async buySubscription(creatorId: string, subscriptionId: string, successUrl: string, cancelUrl: string): Promise<CheckoutSessionResponseDTO> {
         const creator = await this._creatorRepo.findById(creatorId);
-        if (creator?.subscription?.status === "active") {
-            const endDate = new Date(creator.subscription.endDate);
-            if (endDate > new Date()) {
-                throw new AppError(`You already have an active subscription until ${endDate.toLocaleDateString()}`, StatusCode.BAD_REQUEST);
-            }
+        if (creator?.upcomingSubscription) {
+            throw new AppError("You already have an upcoming subscription queued. Please wait for it to activate.", StatusCode.BAD_REQUEST);
         }
 
         const plan = await this._subscriptionRepo.findById(subscriptionId)

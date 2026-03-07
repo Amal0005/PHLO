@@ -75,7 +75,8 @@ import { BuyWallpaperUseCase } from "@/application/useCases/user/wallpaper/buyWa
 import { WallpaperWebhookUseCase } from "@/application/useCases/user/wallpaper/wallpaperWebhookUseCase";
 import { RetryPaymentUseCase } from "@/application/useCases/user/booking/retryPaymentUseCase";
 import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
-import { jwtAuthMiddleware, jwtOptionalMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
+import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
+
 
 
 const userRepo = new UserRepository();
@@ -118,7 +119,7 @@ const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
 const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, leaveRepo, stripeService)
 const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService)
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService,mailService)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
 const checkAvailabilityUseCase = new CheckAvailabilityUseCase(bookingRepo, leaveRepo, packageRepository);
 const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo);
@@ -166,9 +167,4 @@ export const authMiddleware = jwtAuthMiddleware(
     creatorRepository
 );
 
-export const optionalAuthMiddleware = jwtOptionalMiddleware(
-    jwtService,
-    tokenBlacklistService,
-    userRepo,
-    creatorRepository
-);
+

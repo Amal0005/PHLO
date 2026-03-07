@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Subscription Activated</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#ffffff;">
+    <table width="100%" cellpadding="0" cellspacing="0" bgcolor="#ffffff">
+        <tr>
+            <td align="center" style="padding:40px 20px;">
+                <table width="600" cellpadding="0" cellspacing="0" style="
+              background:#0f0f0f;
+              border-radius:12px;
+              padding:36px;
+              font-family: Arial, Helvetica, sans-serif;
+              box-shadow:0 6px 20px rgba(0,0,0,0.6);
+            ">
+                    <!-- LOGO -->
+                    <tr>
+                        <td align="center" style="padding-bottom:24px;">
+                            <img src="cid:phlo-logo" alt="PHLO Logo" width="120" style="display:block;" />
+                        </td>
+                    </tr>
+
+                    <!-- TITLE -->
+                    <tr>
+                        <td>
+                            <h2 style="margin:0 0 18px; color:#ffffff; font-weight:600;">
+                                Hello {{name}},
+                            </h2>
+                        </td>
+                    </tr>
+
+                    <!-- CONTENT -->
+                    <tr>
+                        <td>
+                            <p style="margin:0 0 14px; color:#cccccc; line-height:1.7;">
+                                Your <strong style="color:#ffffff;">{{planName}}</strong> subscription is now
+                                <strong style="color:#ffffff;">active</strong>!
+                            </p>
+                            <p style="margin:0 0 28px; color:#cccccc; line-height:1.7;">
+                                You now have access to all the features included in your plan.
+                            </p>
+
+                            <!-- PLAN CARD -->
+                            <table width="100%" cellpadding="0" cellspacing="0"
+                                style="background:#1a1a1a; border-radius:8px; padding:20px; margin-bottom:24px;">
+                                <tr>
+                                    <td style="color:#888888; font-size:12px; padding-bottom:6px;">ACTIVE PLAN</td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#ffffff; font-size:18px; font-weight:600;">{{planName}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#aaaaaa; font-size:13px; padding-top:8px;">
+                                        Valid until: <strong style="color:#ffffff;">{{endDate}}</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="padding-top:28px; border-top:1px solid #2a2a2a;">
+                            <p style="margin:0; font-size:12px; color:#888888;">
+                                Regards,<br />
+                                <strong style="color:#aaaaaa;">PHLO Team</strong>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

@@ -1,10 +1,10 @@
 import { CategoryMapper } from "@/application/mapper/admin/categoryMapper";
 import { CategoryResponseDto } from "@/domain/dto/admin/categoryResponseDto";
-import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseCase";
 import { ICategoryRepository } from "@/domain/interface/repositories/ICategoryRepository";
 import { MESSAGES } from "@/utils/commonMessages";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/utils/statusCodes";
+import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseCase";
 
 export class EditCategoryUseCase implements IEditCategoryUseCase {
     constructor(

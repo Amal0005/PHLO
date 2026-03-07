@@ -1,6 +1,7 @@
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import mapboxgl from "mapbox-gl";
-import { useEffect, useRef } from "react";
+
+import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 
 type LocationPayload = {
   latitude: number;
@@ -12,21 +13,33 @@ type Props = {
   onChange: (location: LocationPayload) => void;
 };
 
-export default function LocationSearchBar({ onChange }: Props) {
-  const geocoderRef = useRef<HTMLDivElement | null>(null);
+export type LocationSearchBarHandle = {
+  setInput: (value: string) => void;
+};
+
+const LocationSearchBar = forwardRef<LocationSearchBarHandle, Props>(({ onChange }, ref) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const geocoderInstanceRef = useRef<MapboxGeocoder | null>(null);
   const onChangeRef = useRef(onChange);
 
-  // Keep onChange ref updated
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+  // Expose setInput to parent via ref
+
+  useImperativeHandle(ref, () => ({
+    setInput: (value: string) => {
+      if (geocoderInstanceRef.current) {
+        geocoderInstanceRef.current.setInput(value);
+      }
+    },
+  }));
 
   useEffect(() => {
-    if (!geocoderRef.current) return;
+    if (!containerRef.current) return;
 
     // Clear the container to be absolutely sure no duplicate exists
-    const container = geocoderRef.current;
+    const container = containerRef.current;
     while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
@@ -114,7 +127,9 @@ export default function LocationSearchBar({ onChange }: Props) {
           display: none !important;
         }
       `}</style>
-      <div ref={geocoderRef} className="w-full" />
+      <div ref={containerRef} className="w-full" />
     </div>
   );
-}
+});
+
+export default LocationSearchBar;

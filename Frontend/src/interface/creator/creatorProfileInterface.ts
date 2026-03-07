@@ -19,6 +19,14 @@ export interface CreatorProfileResponse {
     endDate: string;
     stripeSessionId: string;
   };
+  upcomingSubscription?: {
+    planId: string;
+    planName: string;
+    status: "active" | "expired" | "cancelled";
+    startDate: string;
+    endDate: string;
+    stripeSessionId: string;
+  };
 }
 export interface EditCreatorProfilePayload {
   fullName?: string;

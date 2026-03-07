@@ -22,4 +22,12 @@ export interface CreatorResponseDto {
         endDate: string | Date;
         stripeSessionId?: string;
     };
+    upcomingSubscription?: {
+        planId: string;
+        planName: string;
+        status: "active" | "expired" | "cancelled";
+        startDate: string | Date;
+        endDate: string | Date;
+        stripeSessionId?: string;
+    };
 }

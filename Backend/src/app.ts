@@ -19,6 +19,9 @@ import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 import { errorHandler } from "./adapters/middlewares/errorHandler";
 import { logger } from "./utils/logger";
 import { paymentController } from "./framework/depInjection/user/userInjections";
+import { SubscriptionScheduler } from "@/framework/scheduler/subscriptionScheduler";
+import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
+import { MailService } from "@/domain/services/user/mailServices";
 
 
 export class App {
@@ -90,6 +93,7 @@ export class App {
     const port = process.env.PORT || 4242;
     try {
       await this.database.connect();
+      new SubscriptionScheduler(new CreatorRepository(), new MailService()).start();
       this.app.listen(port, () =>
         logger.info("server running", process.env.PORT),
       );

@@ -25,4 +25,5 @@ export interface CreatorEntity {
   createdAt?: Date;
   updatedAt?: Date;
   subscription?: SubscriptionDetails;
+  upcomingSubscription?: SubscriptionDetails;
 }
