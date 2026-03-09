@@ -135,4 +135,11 @@ export const MESSAGES = {
     ROLE: {
         NOT_AUTHORIZED: "You are not authorized to access this resource",
     },
+    WALLET: {
+        FETCH_SUCCESS: "Wallet details fetched successfully",
+        FETCH_FAILED: "Failed to fetch wallet details",
+        CREDIT_SUCCESS: "Wallet credited successfully",
+        CREDIT_FAILED: "Failed to credit wallet",
+        INSUFFICIENT_BALANCE: "Insufficient balance",
+    }
 }

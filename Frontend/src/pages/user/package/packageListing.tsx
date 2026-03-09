@@ -10,6 +10,7 @@ import UserNavbar from "@/compoents/reusable/userNavbar";
 import Pagination from "@/compoents/reusable/pagination";
 import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
 import { toast } from "react-toastify";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 
@@ -26,6 +27,7 @@ const PackageListing: React.FC = () => {
   const [totalPackages, setTotalPackages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(saved?.search || "");
+  const debouncedSearch = useDebounce(searchQuery, 500);
   const [selectedCategory, setSelectedCategory] = useState<string>(saved?.category || "");
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({
     min: 0,
@@ -33,7 +35,6 @@ const PackageListing: React.FC = () => {
   });
   const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "newest" | "oldest">(saved?.sort || "newest");
   const [allCategories, setAllCategories] = useState<Array<{ _id: string; name: string }>>([]);
-  const [debouncedSearch, setDebouncedSearch] = useState(saved?.search || "");
   const [locationFilter, setLocationFilter] = useState<{ lat: number; lng: number } | null>(saved?.location || null);
   const [isLocating, setIsLocating] = useState(false);
   const [page, setPage] = useState(1);
@@ -41,6 +42,10 @@ const PackageListing: React.FC = () => {
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
   const [currentLocationName, setCurrentLocationName] = useState<string>("");
   const limit = 9;
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, selectedCategory, sortBy, locationFilter]);
   console.log(packages, "pack")
   useEffect(() => {
     const filtersToSave = {
@@ -51,13 +56,6 @@ const PackageListing: React.FC = () => {
     };
     sessionStorage.setItem("packageFilters", JSON.stringify(filtersToSave));
   }, [searchQuery, selectedCategory, sortBy, locationFilter]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
   const fetchPackages = useCallback(async () => {
     try {

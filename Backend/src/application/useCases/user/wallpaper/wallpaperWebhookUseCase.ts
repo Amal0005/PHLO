@@ -2,7 +2,7 @@ import { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWal
 import { IWallpaperDownloadRepository } from "@/domain/interface/repositories/IWallpaperDownloadRepository ";
 import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { ICreditWalletUseCase } from "@/domain/interface/admin/wallet/ICreditWalletUseCase";
+import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { logger } from "@/utils/logger";
 import Stripe from "stripe";
 
@@ -30,7 +30,7 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                     const wallpaper = await this._wallpaperRepo.findById(wallpaperId);
                     const creator = await this._creatorRepo.findById(creatorId);
                     if (wallpaper) {
-                        await this._creditWalletUseCase.execute("admin", "admin", wallpaper.price, {
+                        await this._creditWalletUseCase.creditWallet("admin", "admin", wallpaper.price, {
                             amount: wallpaper.price,
                             type: "credit",
                             description: `Wallpaper purchase: ${wallpaper.title} by ${creator?.fullName || 'Creator'}`,

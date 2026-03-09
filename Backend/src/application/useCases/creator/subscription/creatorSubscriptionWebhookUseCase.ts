@@ -2,7 +2,7 @@ import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/p
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
-import { ICreditWalletUseCase } from "@/domain/interface/admin/wallet/ICreditWalletUseCase";
+import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { IMailService } from "@/domain/interface/service/IMailServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 import { logger } from "@/utils/logger";
@@ -130,7 +130,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                 creatorId: creator?._id
             });
 
-            await this._creditWalletUseCase.execute("admin", "admin", plan.price, {
+            await this._creditWalletUseCase.creditWallet("admin", "admin", plan.price, {
                 amount: plan.price,
                 type: "credit",
                 description: `Subscription purchase: ${plan.name} for ${creator?.fullName || 'Creator'}`,

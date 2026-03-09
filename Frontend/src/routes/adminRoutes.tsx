@@ -9,7 +9,7 @@ import { ROUTES } from "../constants/routes";
 import CategoryListing from "@/pages/admin/categoryListing";
 import SubscriptionListingPage from "@/pages/admin/subscriptionListing";
 import WallpaperListingPage from "@/pages/admin/wallpaper/wallpaperListing";
-import AdminWallet from "@/pages/admin/AdminWallet";
+import AdminWallet from "@/pages/admin/adminWallet";
 
 export function AdminRoutes() {
   return (

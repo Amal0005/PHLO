@@ -100,5 +100,8 @@ export class AdminRoutes {
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.WALLET, (req: Request, res: Response) => {
       adminWalletController.getWallet(req, res)
     })
+    this.adminRouter.post(BACKEND_ROUTES.ADMIN.WALLET_CREDIT, (req: Request, res: Response) => {
+      adminWalletController.creditWallet(req, res)
+    })
   }
 }

@@ -76,7 +76,9 @@ import { WallpaperWebhookUseCase } from "@/application/useCases/user/wallpaper/w
 import { RetryPaymentUseCase } from "@/application/useCases/user/booking/retryPaymentUseCase";
 import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
 import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { creditWalletUseCase } from "../admin/adminInjections";
+import { CreditWalletUseCase } from "@/application/useCases/wallet/creditWalletUseCase";
+import { WalletRepository } from "@/adapters/repository/walletRepository";
+// import { creditWalletUseCase } from "../admin/adminInjections";
 
 
 
@@ -99,7 +101,10 @@ const wallpaperDownloadRepo = new WallpaperDownloadRepository()
 const wishlistRepo = new WishlistRepository()
 const reviewRepo = new ReviewRepository()
 const leaveRepo = new LeaveRepository()
+const walletRepo = new WalletRepository()
 
+
+const creditWalletUseCase = new CreditWalletUseCase(walletRepo)
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
 const verifyOtpUseCase = new verifyRegisterOtpUseCase(userRepo, otpServices, pendingService)

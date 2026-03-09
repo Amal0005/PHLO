@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import adminWalletService from "@/services/admin/adminWalletService";
+import { fetchAdminWalletTransactions } from "@/services/admin/adminWalletService";
 import { Wallet } from "../../interface/admin/walletInterface";
 import { WalletTransaction } from "../../interface/admin/walletTransactionInterface";
-import { ArrowUpRight, ArrowDownLeft, Wallet as WalletIcon, Clock, Filter, Search, Download } from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft, Wallet as WalletIcon, Clock, Filter, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Pagination from "@/compoents/reusable/pagination";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function AdminWallet() {
     const [wallet, setWallet] = useState<Wallet | null>(null);
@@ -11,18 +13,41 @@ export default function AdminWallet() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        fetchWalletData();
-    }, []);
+    const [searchTerm, setSearchTerm] = useState("");
+    const debouncedSearch = useDebounce(searchTerm, 500);
+    const [filterSource, setFilterSource] = useState("");
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-    const fetchWalletData = async () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const LIMIT = 10;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearch, filterSource]);
+
+    useEffect(() => {
+        fetchWalletData(debouncedSearch, filterSource, currentPage);
+    }, [debouncedSearch, filterSource, currentPage]);
+
+    const fetchWalletData = async (search = "", source = "", page = 1) => {
         try {
             setLoading(true);
-            const data = await adminWalletService.getWallet();
-            setWallet(data.wallet);
-            setTransactions(data.transactions);
+            const data = await fetchAdminWalletTransactions(page, LIMIT, search, source);
+
+            const responseBody = data?.data || data;
+            const resultData = responseBody?.result || responseBody;
+
+            if (resultData?.wallet) setWallet(resultData.wallet);
+            if (resultData?.transactions) setTransactions(resultData.transactions);
+            if (resultData?.totalTransactions) {
+                setTotalPages(Math.ceil(resultData.totalTransactions / LIMIT));
+            }
+
+            setError("");
         } catch (err: any) {
-            setError(err);
+            console.error("Wallet fetch error:", err);
+            setError(typeof err === "string" ? err : err.message || "Failed to load wallet data");
         } finally {
             setLoading(false);
         }
@@ -58,7 +83,7 @@ export default function AdminWallet() {
             <div className="flex flex-col items-center justify-center min-h-screen bg-black text-rose-500">
                 <p className="text-xl font-semibold mb-4">{error}</p>
                 <button
-                    onClick={fetchWalletData}
+                    onClick={() => fetchWalletData()}
                     className="px-6 py-2 bg-white text-black rounded-full font-medium transition hover:bg-zinc-200"
                 >
                     Try Again
@@ -82,12 +107,6 @@ export default function AdminWallet() {
                     </h1>
                     <p className="text-zinc-500 mt-2">Manage platform revenue and transactions</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg text-sm hover:bg-zinc-800 transition">
-                        <Download size={16} />
-                        Export Report
-                    </button>
-                </div>
             </motion.div>
 
             {/* Main Stats Card */}
@@ -104,7 +123,9 @@ export default function AdminWallet() {
                         <span className="text-xs font-medium text-zinc-500 tracking-wider uppercase">Platform Balance</span>
                     </div>
                     <div className="space-y-1">
-                        <h2 className="text-5xl font-bold tracking-tight">₹{wallet?.balance.toLocaleString('en-IN') || 0}</h2>
+                        <h2 className="text-5xl font-bold tracking-tight">
+                            ₹{(typeof wallet?.balance === 'number' ? wallet.balance : 0).toLocaleString('en-IN')}
+                        </h2>
                         <p className="text-zinc-500 text-sm flex items-center gap-2">
                             <span className="text-emerald-500 flex items-center font-medium">
                                 <ArrowUpRight size={14} /> 12%
@@ -126,7 +147,9 @@ export default function AdminWallet() {
                             <span className="text-xs text-zinc-500 uppercase">Incoming Revenue</span>
                         </div>
                         <div>
-                            <p className="text-3xl font-bold">₹{transactions.filter(t => t.type === 'credit').reduce((acc, t) => acc + t.amount, 0).toLocaleString('en-IN')}</p>
+                            <p className="text-3xl font-bold">
+                                ₹{(Array.isArray(transactions) ? transactions : []).filter(t => t.type === 'credit').reduce((acc, t) => acc + t.amount, 0).toLocaleString('en-IN')}
+                            </p>
                             <p className="text-zinc-500 text-xs mt-1">Total revenue processed</p>
                         </div>
                     </motion.div>
@@ -138,7 +161,9 @@ export default function AdminWallet() {
                             <span className="text-xs text-zinc-500 uppercase">Outgoing Payouts</span>
                         </div>
                         <div>
-                            <p className="text-3xl font-bold">₹{transactions.filter(t => t.type === 'debit').reduce((acc, t) => acc + t.amount, 0).toLocaleString('en-IN')}</p>
+                            <p className="text-3xl font-bold">
+                                ₹{(Array.isArray(transactions) ? transactions : []).filter(t => t.type === 'debit').reduce((acc, t) => acc + t.amount, 0).toLocaleString('en-IN')}
+                            </p>
                             <p className="text-zinc-500 text-xs mt-1">Total withdrawals/refunds</p>
                         </div>
                     </motion.div>
@@ -153,20 +178,55 @@ export default function AdminWallet() {
                 <div className="p-6 border-b border-zinc-800/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div className="flex items-center gap-3">
                         <h3 className="text-xl font-semibold">Transaction History</h3>
-                        <span className="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-xs rounded-md">{transactions.length} total</span>
+                        <span className="px-2 py-0.5 bg-zinc-800 text-zinc-400 text-xs rounded-md">
+                            {(Array.isArray(transactions) ? transactions.length : 0)} total
+                        </span>
                     </div>
                     <div className="flex items-center gap-4 w-full md:w-auto">
                         <div className="relative w-full md:w-64">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
                             <input
                                 type="text"
-                                placeholder="Search transactions..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                placeholder="Search by creator name..."
                                 className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-white/20 transition"
                             />
                         </div>
-                        <button className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg hover:bg-zinc-800 transition">
-                            <Filter size={18} />
-                        </button>
+                        <div className="relative">
+                            <button
+                                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                                className={`p-2 border rounded-lg transition ${filterSource ? 'bg-white text-black border-white' : 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800'}`}
+                            >
+                                <Filter size={18} />
+                            </button>
+                            {isFilterOpen && (
+                                <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl z-50 overflow-hidden">
+                                    <div className="p-2 border-b border-zinc-800 text-[10px] uppercase font-bold text-zinc-500 tracking-widest px-4">
+                                        Filter by Source
+                                    </div>
+                                    <div className="py-1">
+                                        {[
+                                            { id: "", label: "All Sources" },
+                                            { id: "booking", label: "Bookings" },
+                                            { id: "wallpaper", label: "Wallpapers" },
+                                            { id: "subscription", label: "Subscriptions" }
+                                        ].map((opt) => (
+                                            <button
+                                                key={opt.id}
+                                                onClick={() => {
+                                                    setFilterSource(opt.id);
+                                                    setIsFilterOpen(false);
+                                                }}
+                                                className={`w-full text-left px-4 py-2.5 text-sm transition hover:bg-zinc-800 ${filterSource === opt.id ? 'text-white font-medium' : 'text-zinc-400'}`}
+                                            >
+                                                {opt.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -184,7 +244,7 @@ export default function AdminWallet() {
                         </thead>
                         <tbody className="divide-y divide-zinc-800/30">
                             <AnimatePresence>
-                                {transactions.length > 0 ? (
+                                {Array.isArray(transactions) && transactions.length > 0 ? (
                                     transactions.map((transaction, index) => (
                                         <motion.tr
                                             key={transaction.id}
@@ -249,6 +309,13 @@ export default function AdminWallet() {
                             </AnimatePresence>
                         </tbody>
                     </table>
+                </div>
+                <div className="p-6 border-t border-zinc-800/50">
+                    <Pagination
+                        page={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                    />
                 </div>
             </motion.div>
         </motion.div>

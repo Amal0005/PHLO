@@ -1,4 +1,4 @@
-import { ICreditWalletUseCase } from "@/domain/interface/admin/wallet/ICreditWalletUseCase";
+import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { IWalletRepository } from "@/domain/interface/repositories/IWalletRepository";
 import { WalletOwnerType } from "@/domain/entities/walletEntity";
 import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
@@ -6,7 +6,7 @@ import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 export class CreditWalletUseCase implements ICreditWalletUseCase {
     constructor(private _walletRepo: IWalletRepository) { }
 
-    async execute(
+    async creditWallet(
         ownerId: string,
         ownerType: WalletOwnerType,
         amount: number,

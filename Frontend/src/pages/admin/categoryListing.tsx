@@ -9,6 +9,7 @@ import AddEditCategoryModal from "./components/addEditCategoryModal";
 import Pagination from "@/compoents/reusable/pagination";
 import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 export default function CategoryListingPage() {
@@ -22,6 +23,7 @@ export default function CategoryListingPage() {
 
   // Simplified Filter States
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 400);
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
 
   const limit = 10;
@@ -29,7 +31,7 @@ export default function CategoryListingPage() {
   const fetchCategories = useCallback(async () => {
     try {
       setLoading(true);
-      const filters = { search, sort };
+      const filters = { search: debouncedSearch, sort };
       const response = await AdminCategoryService.getCategories(page, limit, filters);
       setCategories(response.data);
       setTotalPages(response.totalPages);
@@ -39,14 +41,15 @@ export default function CategoryListingPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search, sort]);
+  }, [page, debouncedSearch, sort]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchCategories();
-    }, 400);
-    return () => clearTimeout(timer);
-  }, [page, search, sort, fetchCategories]);
+    setPage(1);
+  }, [debouncedSearch, sort]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleAdd = () => {
     setSelectedCategory(null);

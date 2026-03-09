@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { AlertCircle } from "lucide-react";
 
 import {
@@ -15,6 +15,7 @@ import Pagination from "@/compoents/reusable/pagination";
 import { UserX, UserCheck } from "lucide-react";
 import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 export default function CreatorListingPage() {
@@ -29,33 +30,32 @@ export default function CreatorListingPage() {
   const [selectedCreator, setSelectedCreator] = useState<Creator | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
   const [confirmData, setConfirmData] = useState<{ creatorId: string; newStatus: "approved" | "blocked" } | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
 
-  useEffect(() => {
-    async function loadCreators() {
-      try {
-        setLoading(true);
-
-        const data = await fetchAdminCreators(page, limit, search, filterStatus);
-
-        setCreators(data.data);
-        setTotalPages(data.totalPages);
-      } catch {
-        setError("Failed to fetch creators");
-      } finally {
-        setLoading(false);
-      }
+  const loadCreators = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await fetchAdminCreators(page, limit, debouncedSearch, filterStatus);
+      setCreators(data.data);
+      setTotalPages(data.totalPages);
+    } catch {
+      setError("Failed to fetch creators");
+    } finally {
+      setLoading(false);
     }
+  }, [page, debouncedSearch, filterStatus]);
 
-    const timer = setTimeout(() => {
-      loadCreators();
-    }, 500);
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, filterStatus]);
 
-    return () => clearTimeout(timer);
-  }, [page, search, filterStatus]);
+  useEffect(() => {
+    loadCreators();
+  }, [loadCreators]);
 
   const handleFilterChange = (newStatus: typeof filterStatus) => {
     setFilterStatus(newStatus);

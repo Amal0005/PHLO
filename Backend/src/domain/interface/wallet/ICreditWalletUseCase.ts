@@ -2,7 +2,7 @@ import { WalletOwnerType } from "@/domain/entities/walletEntity";
 import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 
 export interface ICreditWalletUseCase {
-    execute(
+    creditWallet(
         ownerId: string,
         ownerType: WalletOwnerType,
         amount: number,

@@ -1,7 +1,7 @@
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
-import { ICreditWalletUseCase } from "@/domain/interface/admin/wallet/ICreditWalletUseCase";
+import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { BookingStatus } from "@/utils/bookingStatus";
@@ -39,7 +39,7 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
           const pkg = await this._packageRepo.findById(booking.packageId as string);
           if (pkg) {
             const creator = await this._creatorRepo.findById(pkg.creatorId as string);
-            await this._creditWalletUseCase.execute("admin", "admin", booking.amount, {
+            await this._creditWalletUseCase.creditWallet("admin", "admin", booking.amount, {
               amount: booking.amount,
               type: "credit",
               description: `Booking payment: ${pkg.title} by ${creator?.fullName || 'Creator'}`,

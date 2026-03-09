@@ -14,6 +14,7 @@ import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import { AddWallpaperModal } from "./components/addWallpaperModal";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 const ViewWallpapersPage: React.FC = () => {
@@ -22,7 +23,7 @@ const ViewWallpapersPage: React.FC = () => {
   const [deleteTarget, setDeleteTarget] = useState<WallpaperData | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -36,12 +37,8 @@ const ViewWallpapersPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-      setPage(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+    setPage(1);
+  }, [debouncedSearch, statusFilter]);
 
   const fetchWallpapers = useCallback(async () => {
     try {

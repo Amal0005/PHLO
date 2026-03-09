@@ -46,18 +46,40 @@ export class WalletRepository implements IWalletRepository {
         }
     }
 
-    async getTransactions(walletId: string): Promise<WalletTransaction[]> {
-        const transactions = await WalletTransactionModel.find({ walletId }).sort({ timestamp: -1 });
-        return transactions.map((t) => ({
-            id: t._id.toString(),
-            walletId: t.walletId.toString(),
-            amount: t.amount,
-            type: t.type as any,
-            description: t.description,
-            source: t.source as any,
-            sourceId: t.sourceId,
-            relatedName: (t as any).relatedName,
-            timestamp: t.timestamp,
-        }));
+    async getTransactions(walletId: string, search?: string, source?: string, page: number = 1, limit: number = 10): Promise<{ transactions: WalletTransaction[]; total: number }> {
+        const query: any = { walletId: new mongoose.Types.ObjectId(walletId) };
+
+        if (search && search.trim() !== "") {
+            const searchRegex = { $regex: search.trim(), $options: "i" };
+            query.$or = [
+                { relatedName: searchRegex },
+                { description: searchRegex }
+            ];
+        }
+
+        if (source && source.trim() !== "") {
+            query.source = source.trim();
+        }
+
+        const skip = (page - 1) * limit;
+        const [transactions, total] = await Promise.all([
+            WalletTransactionModel.find(query).sort({ timestamp: -1 }).skip(skip).limit(limit),
+            WalletTransactionModel.countDocuments(query)
+        ]);
+
+        return {
+            transactions: transactions.map((t) => ({
+                id: t._id.toString(),
+                walletId: t.walletId.toString(),
+                amount: t.amount,
+                type: t.type as any,
+                description: t.description,
+                source: t.source as any,
+                sourceId: t.sourceId,
+                relatedName: (t as any).relatedName,
+                timestamp: t.timestamp,
+            })),
+            total
+        };
     }
 }
