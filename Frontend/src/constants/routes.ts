@@ -15,6 +15,7 @@ export const ROUTES = {
     WISHLIST: "/wishlist",
     BOOKINGS: "/bookings",
     BOOKING_DETAIL: "/bookings/:sessionId",
+    CHAT: "/chat",
 
     NOT_FOUND: "*",
   },
@@ -33,7 +34,8 @@ export const ROUTES = {
     SUBSCRIPTION_SUCCESS: "/creator/subscription-success",
     SUBSCRIPTION_CANCEL: "/creator/subscription-cancel",
     WALLPAPERS: "/creator/wallpapers",
-    BOOKINGS: "/creator/bookings"
+    BOOKINGS: "/creator/bookings",
+    CHAT: "/creator/chat"
   },
 
   ADMIN: {

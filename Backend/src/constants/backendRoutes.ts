@@ -88,4 +88,7 @@ export const BACKEND_ROUTES = {
     VIEW_URL: "/view-url",
     VIEW: "/view",
   },
+  CHAT: {
+    BASE: "/chat",
+  },
 };

@@ -18,23 +18,6 @@ export class PackageRepository
     super(PackageModel);
   }
 
-  protected mapToEntity(doc: IPackageModel): PackageEntity {
-    const obj = doc.toObject();
-
-    return {
-      _id: obj._id.toString(),
-      creatorId: obj.creatorId,
-      category: obj.category,
-      title: obj.title,
-      description: obj.description,
-      price: obj.price,
-      images: obj.images,
-      locations: obj.locations,
-      createdAt: obj.createdAt,
-      updatedAt: obj.updatedAt,
-    };
-  }
-
 
   async findById(packageId: string): Promise<PackageEntity | null> {
     const pkg = await this.model
@@ -232,6 +215,23 @@ export class PackageRepository
       page,
       limit,
       totalPages: Math.ceil(total / limit)
+    };
+  }
+
+  protected mapToEntity(doc: IPackageModel): PackageEntity {
+    const obj = doc.toObject();
+
+    return {
+      _id: obj._id.toString(),
+      creatorId: obj.creatorId,
+      category: obj.category,
+      title: obj.title,
+      description: obj.description,
+      price: obj.price,
+      images: obj.images,
+      locations: obj.locations,
+      createdAt: obj.createdAt,
+      updatedAt: obj.updatedAt,
     };
   }
 }

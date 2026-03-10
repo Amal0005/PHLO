@@ -6,10 +6,10 @@ export class WishlistRepository implements IWishlistRepository {
     async toggle(userId: string, itemId: string, itemType: "wallpaper" | "package"): Promise<boolean> {
         const existing = await WishlistModel.findOneAndDelete({ userId, itemId, itemType });
         if (existing) {
-            return false; // removed
+            return false;
         }
         await WishlistModel.create({ userId, itemId, itemType });
-        return true; // added
+        return true;
     }
 
     async findByUser(

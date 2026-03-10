@@ -14,24 +14,7 @@ export class WallpaperRepository
   implements IWallpaperRepository {
   constructor() {
     super(WallpaperModel);
-  }
-  protected mapToEntity(doc: IWallpaperModel): WallpaperEntity {
-    const obj = doc.toObject ? doc.toObject() : doc;
-    return {
-      _id: obj._id.toString(),
-      creatorId: obj.creatorId,
-      title: obj.title,
-      imageUrl: obj.imageUrl,
-      watermarkedUrl: obj.watermarkedUrl ?? undefined,
-      price: obj.price,
-      hashtags: obj.hashtags || [],
-      status: obj.status,
-      rejectionReason: obj.rejectionReason ?? undefined,
-      downloadCount: obj.downloadCount ?? 0,
-      createdAt: obj.createdAt,
-    };
-  }
-  async add(data: WallpaperEntity): Promise<WallpaperEntity> {
+  } async add(data: WallpaperEntity): Promise<WallpaperEntity> {
     const created = await this.model.create(
       data as unknown as Partial<IWallpaperModel>,
     );
@@ -163,6 +146,23 @@ export class WallpaperRepository
       page,
       limit,
       totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  protected mapToEntity(doc: IWallpaperModel): WallpaperEntity {
+    const obj = doc.toObject ? doc.toObject() : doc;
+    return {
+      _id: obj._id.toString(),
+      creatorId: obj.creatorId,
+      title: obj.title,
+      imageUrl: obj.imageUrl,
+      watermarkedUrl: obj.watermarkedUrl ?? undefined,
+      price: obj.price,
+      hashtags: obj.hashtags || [],
+      status: obj.status,
+      rejectionReason: obj.rejectionReason ?? undefined,
+      downloadCount: obj.downloadCount ?? 0,
+      createdAt: obj.createdAt,
     };
   }
 }

@@ -7,17 +7,6 @@ export class ReviewRepository extends BaseRepository<ReviewEntity, IReviewModel>
     constructor() {
         super(ReviewModel)
     }
-    protected mapToEntity(doc: IReviewModel): ReviewEntity {
-        return {
-            id: doc._id.toString(),
-            userId: doc.userId,
-            packageId: doc.packageId,
-            bookingId: doc.bookingId,
-            rating: doc.rating,
-            comment: doc.comment,
-            createdAt: doc.createdAt,
-        };
-    }
     async findByPackageId(packageId: string): Promise<ReviewEntity[]> {
         const docs = await this.model.find({ packageId }).populate("userId", "name image").exec()
         return docs.map((item) => this.mapToEntity(item))
@@ -29,5 +18,17 @@ export class ReviewRepository extends BaseRepository<ReviewEntity, IReviewModel>
     async isExists(bookingId: string): Promise<boolean> {
         const count = await this.model.countDocuments({ bookingId })
         return count > 0
+    }
+
+    protected mapToEntity(doc: IReviewModel): ReviewEntity {
+        return {
+            id: doc._id.toString(),
+            userId: doc.userId,
+            packageId: doc.packageId,
+            bookingId: doc.bookingId,
+            rating: doc.rating,
+            comment: doc.comment,
+            createdAt: doc.createdAt,
+        };
     }
 }

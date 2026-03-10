@@ -17,24 +17,6 @@ export class BookingRepository
   constructor() {
     super(BookingModel);
   }
-  protected mapToEntity(doc: BookingDocument): BookingEntity {
-    const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && 'title' in doc.packageId;
-    const isUserPopulated = doc.userId && typeof doc.userId === 'object' && 'name' in doc.userId;
-
-    return {
-      id: doc._id.toString(),
-      userId: isUserPopulated ? (doc.userId as User) : doc.userId.toString(),
-      packageId: isPackagePopulated ? (doc.packageId as PackageEntity) : doc.packageId.toString(),
-      amount: doc.amount,
-      currency: doc.currency as "inr",
-      status: doc.status,
-      stripeSessionId: doc.stripeSessionId,
-      bookingDate: doc.bookingDate,
-      location: doc.location,
-      createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt,
-    };
-  }
   async findByStripeSessionId(
     sessionId: string,
   ): Promise<BookingEntity | null> {
@@ -83,4 +65,22 @@ export class BookingRepository
     return docs.map((item) => this.mapToEntity(item));
   }
 
+  protected mapToEntity(doc: BookingDocument): BookingEntity {
+    const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && 'title' in doc.packageId;
+    const isUserPopulated = doc.userId && typeof doc.userId === 'object' && 'name' in doc.userId;
+
+    return {
+      id: doc._id.toString(),
+      userId: isUserPopulated ? (doc.userId as User) : doc.userId.toString(),
+      packageId: isPackagePopulated ? (doc.packageId as PackageEntity) : doc.packageId.toString(),
+      amount: doc.amount,
+      currency: doc.currency as "inr",
+      status: doc.status,
+      stripeSessionId: doc.stripeSessionId,
+      bookingDate: doc.bookingDate,
+      location: doc.location,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    };
+  }
 }

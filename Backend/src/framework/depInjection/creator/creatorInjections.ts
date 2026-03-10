@@ -66,7 +66,6 @@ const bookingRepo = new BookingRepository()
 const leaveRepo = new LeaveRepository()
 const walletRepo = new WalletRepository()
 
-
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
 const redisService = new RedisService();
@@ -95,18 +94,16 @@ const editCategoryUseCase = new EditCategoryUseCase(categoryRepo);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const creditWalletUseCase = new CreditWalletUseCase(walletRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService, creatorRepository)
-
 const listCreatorBookingsUseCase = new ListCreatorBookingsUseCase(bookingRepo);
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase)
-
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
-
 const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService)
 const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)
 const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRepo)
 const addLeaveUseCase = new AddLeaveUseCase(leaveRepo)
 const getLeaveUseCase = new GetLeavesUseCase(leaveRepo)
 const removeLeaveUseCase = new RemoveLeaveUseCase(leaveRepo)
+
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
@@ -118,5 +115,6 @@ export const creatorSubscriptionController = new CreatorSubscriptionController(b
 export const creatorBookingController = new CreatorBookingController(listCreatorBookingsUseCase)
 export const wallpaperController = new WallpaperController(addWallpaperUseCase, deleteWallpaperUseCase, getCreatorWallpapaperUseCase,)
 export const leaveController = new CreatorLeaveController(getLeaveUseCase, addLeaveUseCase, removeLeaveUseCase)
+
 export { creatorSubscriptionWebhookUseCase };
 
