@@ -23,7 +23,7 @@ const MessageInput: React.FC<Props> = ({ onSendMessage }) => {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 placeholder="Compose message..."
-                className="w-full bg-zinc-900/50 backdrop-blur-3xl text-white text-[10px] md:text-xs font-black uppercase tracking-[0.2em] py-4 pl-6 pr-16 rounded-[1.5rem] border border-white/5 focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-700"
+                className="w-full bg-zinc-900/50 backdrop-blur-3xl text-white text-[12px] md:text-sm font-medium tracking-tight py-4 pl-6 pr-16 rounded-[1.5rem] border border-white/5 focus:outline-none focus:border-white/20 transition-all placeholder:text-zinc-600"
             />
             <button
                 type="submit"
