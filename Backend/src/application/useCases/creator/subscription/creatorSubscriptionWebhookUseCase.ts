@@ -2,6 +2,7 @@ import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/p
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
+import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { IMailService } from "@/domain/interface/service/IMailServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 import { logger } from "@/utils/logger";
@@ -13,7 +14,8 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         private _creatorRepo: ICreatorRepository,
         private _subscriptionRepo: ISubscriptionRepository,
         private _stripeService: IStripeService,
-        private _mailService: IMailService
+        private _mailService: IMailService,
+        private _creditWalletUseCase: ICreditWalletUseCase
     ) { }
 
     async handle(payload: string | Buffer, signature: string) {
@@ -40,7 +42,6 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
 
                 const creator = await this._creatorRepo.findById(creatorId);
 
-                // Idempotency guard — skip if already processed
                 const alreadyProcessed =
                     creator?.subscription?.stripeSessionId === session.id ||
                     creator?.upcomingSubscription?.stripeSessionId === session.id;
@@ -86,6 +87,9 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                     });
                     await this._mailService.sendMail(creator!.email, "Your Subscription Upgrade is Queued", html, logoAttachment);
 
+                    // Credit Admin Wallet (Unified)
+                    await this._creditAdminWallet(plan, creator, session.id);
+
                 } else {
                     // No active subscription — activate immediately
                     const startDate = now;
@@ -110,8 +114,38 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                         endDate: endDate.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }),
                     });
                     await this._mailService.sendMail(creator!.email, "Your Subscription is Now Active", html, logoAttachment);
+
+                    // Credit Admin Wallet (Unified)
+                    await this._creditAdminWallet(plan, creator, session.id);
                 }
             }
+        }
+    }
+
+    private async _creditAdminWallet(plan: any, creator: any, sessionId: string) {
+        try {
+            logger.info("Attempting to credit admin wallet", {
+                price: plan.price,
+                planName: plan.name,
+                creatorId: creator?._id
+            });
+
+            await this._creditWalletUseCase.creditWallet("admin", "admin", plan.price, {
+                amount: plan.price,
+                type: "credit",
+                description: `Subscription purchase: ${plan.name} for ${creator?.fullName || 'Creator'}`,
+                source: "subscription",
+                sourceId: sessionId,
+                relatedName: creator?.fullName || 'Creator'
+            });
+            logger.info("Admin wallet credited for subscription", { sessionId, amount: plan.price });
+        } catch (error) {
+            logger.error("Failed to credit admin wallet for subscription", {
+                error: error instanceof Error ? { message: error.message, stack: error.stack } : error,
+                sessionId,
+                planPrice: plan?.price,
+                planName: plan?.name
+            });
         }
     }
 }

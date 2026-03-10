@@ -1,6 +1,10 @@
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
+import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
+import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IChatRepository } from "@/domain/interface/repositories/IChatRepository ";
 import { BookingStatus } from "@/utils/bookingStatus";
 import { logger } from "@/utils/logger";
 import Stripe from "stripe";
@@ -8,7 +12,11 @@ import Stripe from "stripe";
 export class BookingWebhookUseCase implements IBookingWebhookUseCase {
   constructor(
     private _bookingRepo: IBookingRepository,
-    private _stripeService: IStripeService
+    private _stripeService: IStripeService,
+    private _packageRepo: IPackageRepository,
+    private _creatorRepo: ICreatorRepository,
+    private _creditWalletUseCase: ICreditWalletUseCase,
+    private _chatRepo: IChatRepository
   ) {}
 
   async handleWebhook(payload: string | Buffer, signature: string): Promise<void> {
@@ -27,6 +35,38 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
           return;
         }
         await this._bookingRepo.updateStatus(bookingId, BookingStatus.COMPLETED);
+
+        // Credit Admin Wallet & Create Conversation
+        if (booking) {
+          const pkg = await this._packageRepo.findById(booking.packageId as string);
+          if (pkg) {
+            const creator = await this._creatorRepo.findById(pkg.creatorId as string);
+
+            // 1. Credit Wallet
+            await this._creditWalletUseCase.creditWallet("admin", "admin", booking.amount, {
+              amount: booking.amount,
+              type: "credit",
+              description: `Booking payment: ${pkg.title} by ${creator?.fullName || 'Creator'}`,
+              source: "booking",
+              sourceId: bookingId,
+              relatedName: creator?.fullName || 'Creator'
+            });
+            logger.info("Admin wallet credited for booking", { bookingId, amount: booking.amount });
+
+            // 2. Create Conversation for the chat
+            const existingConv = await this._chatRepo.getConversationByBooking(bookingId);
+            if (!existingConv) {
+              await this._chatRepo.createConversation({
+                bookingId: bookingId as any,
+                participants: [booking.userId as any, pkg.creatorId as any],
+                lastMessage: "Booking confirmed! You can now start chatting.",
+                lastMessageAt: new Date()
+              });
+              logger.info("Conversation created for new booking", { bookingId });
+            }
+          }
+        }
+
         logger.info("Booking completed via webhook", { bookingId });
       }
     }

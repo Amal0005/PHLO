@@ -76,8 +76,13 @@ import { WallpaperWebhookUseCase } from "@/application/useCases/user/wallpaper/w
 import { RetryPaymentUseCase } from "@/application/useCases/user/booking/retryPaymentUseCase";
 import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
 import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
+import { CreditWalletUseCase } from "@/application/useCases/wallet/creditWalletUseCase";
+import { WalletRepository } from "@/adapters/repository/walletRepository";
 
 
+
+import { ChatRepository } from "@/adapters/repository/chatRepository";
+import { chatController } from "../chatInjections";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -94,11 +99,14 @@ const bookingRepo = new BookingRepository()
 const subscriptionRepo = new SubscriptionRepository()
 const wallpaperRepo = new WallpaperRepository()
 const stripeService = new StripeService()
+const chatRepo = new ChatRepository()
 const wallpaperDownloadRepo = new WallpaperDownloadRepository()
 const wishlistRepo = new WishlistRepository()
 const reviewRepo = new ReviewRepository()
 const leaveRepo = new LeaveRepository()
+const walletRepo = new WalletRepository()
 
+const creditWalletUseCase = new CreditWalletUseCase(walletRepo)
 const registerUseCase = new userRegisterUseCase(userRepo, creatorRepository, passwordServices, otpServices, mailService, redisService);
 const loginUseCase = new userLoginUserUseCase(userRepo, passwordServices, jwtService);
 const verifyOtpUseCase = new verifyRegisterOtpUseCase(userRepo, otpServices, pendingService)
@@ -118,8 +126,8 @@ const addCategoryUseCase = new AddCategoryUseCase(categoryRepository);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
 const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, leaveRepo, stripeService)
-const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService)
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService,mailService)
+const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService, packageRepository, creatorRepository, creditWalletUseCase, chatRepo)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
 const checkAvailabilityUseCase = new CheckAvailabilityUseCase(bookingRepo, leaveRepo, packageRepository);
 const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo);
@@ -137,9 +145,8 @@ const getReviewUseCase = new GetReviewUseCase(reviewRepo)
 const getReviewByBookingUseCase = new GetReviewByBookingUseCase(reviewRepo)
 const editReviewUseCase = new EditReviewUseCase(reviewRepo)
 const buyWallpaperUseCase = new BuyWallpaperUseCase(wallpaperRepo, stripeService, wallpaperDownloadRepo)
-const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo)
+const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase)
 const retryPaymentUseCase = new RetryPaymentUseCase(bookingRepo, packageRepository, stripeService);
-
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
@@ -159,12 +166,6 @@ export const paymentController = new PaymentController(bookingWebhookUseCase, cr
 export const userWallpaperController = new UserWallpaperController(getApprovedWallpapers, recordDownloadUseCase, buyWallpaperUseCase)
 export const wishlistController = new WishlistController(toggleWishlistUseCase, getWishlistUseCase, getWishlistIdsUseCase)
 export const reviewController = new ReviewController(addReviewUseCase, deleteReviewUseCase, getReviewUseCase, getReviewByBookingUseCase, editReviewUseCase)
-
-export const authMiddleware = jwtAuthMiddleware(
-    jwtService,
-    tokenBlacklistService,
-    userRepo,
-    creatorRepository
-);
+export const authMiddleware = jwtAuthMiddleware(jwtService, tokenBlacklistService, userRepo, creatorRepository);
 
 

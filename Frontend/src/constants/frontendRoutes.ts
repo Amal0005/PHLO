@@ -44,7 +44,7 @@ export const FRONTEND_ROUTES = {
         CATEGORY: "/admin/category",
         SUBSCRIPTION: "/admin/subscription",
         WALLPAPERS: "/admin/wallpapers",
-
+        WALLET: "/admin/wallet",
     },
     CREATOR: {
         REGISTER: "/creator/register",

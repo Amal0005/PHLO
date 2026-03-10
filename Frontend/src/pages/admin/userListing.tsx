@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 // import { Edit, Trash2 } from "lucide-react";
 import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserService";
 import { User } from "@/interface/admin/userInterface";
@@ -8,6 +8,7 @@ import { UserX, UserCheck } from "lucide-react";
 import Pagination from "@/compoents/reusable/pagination";
 import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 export default function UserListingPage() {
@@ -18,32 +19,30 @@ export default function UserListingPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "blocked">("all");
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
   const [confirmData, setConfirmData] = useState<{ userId: string; newStatus: "active" | "blocked" } | null>(null);
   const limit = 10;
 
-  useEffect(() => {
-    async function loadUsers() {
-      try {
-        setLoading(true);
-
-        const result = await fetchAdminUsers(page, limit, search, filterStatus);
-
-        setUsers(result.data);
-        setTotalPages(result.totalPages);
-
-      } catch {
-        setError("Failed to fetch users");
-      } finally {
-        setLoading(false);
-      }
+  const loadUsers = useCallback(async () => {
+    try {
+      setLoading(true);
+      const result = await fetchAdminUsers(page, limit, debouncedSearch, filterStatus);
+      setUsers(result.data);
+      setTotalPages(result.totalPages);
+    } catch {
+      setError("Failed to fetch users");
+    } finally {
+      setLoading(false);
     }
+  }, [page, debouncedSearch, filterStatus]);
 
-    const timer = setTimeout(() => {
-      loadUsers();
-    }, 500);
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, filterStatus]);
 
-    return () => clearTimeout(timer);
-  }, [page, search, filterStatus]);
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   const handleFilterChange = (newStatus: "all" | "active" | "blocked") => {
     setFilterStatus(newStatus);

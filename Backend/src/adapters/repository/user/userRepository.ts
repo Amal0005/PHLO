@@ -11,21 +11,6 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
     super(UserModel);
   }
 
-  protected mapToEntity(doc: IUserModel): User {
-    return {
-      _id: doc._id.toString(),
-      name: doc.name,
-      email: doc.email,
-      password: doc.password,
-      phone: doc.phone,
-      googleId: doc.googleId,
-      image: doc.image,
-      status: doc.status,
-      role: doc.role,
-      googleVerified: doc.googleVerified,
-      createdAt: doc.createdAt,
-    };
-  }
 
 
 
@@ -71,5 +56,21 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
   async editProfile(userId: string, data: { name?: string; phone?: string; image?: string; }): Promise<User | null> {
     const user = await this.model.findByIdAndUpdate(userId, { $set: data }, { new: true }).select("-password");
     return user ? this.mapToEntity(user) : null;
+  }
+
+  protected mapToEntity(doc: IUserModel): User {
+    return {
+      _id: doc._id.toString(),
+      name: doc.name,
+      email: doc.email,
+      password: doc.password,
+      phone: doc.phone,
+      googleId: doc.googleId,
+      image: doc.image,
+      status: doc.status,
+      role: doc.role,
+      googleVerified: doc.googleVerified,
+      createdAt: doc.createdAt,
+    };
   }
 }

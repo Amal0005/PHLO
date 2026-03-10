@@ -79,11 +79,16 @@ export const BACKEND_ROUTES = {
     WALLPAPERS: "/wallpapers",
     APPROVE_WALLPAPER: "/wallpapers/:id/approve",
     REJECT_WALLPAPER: "/wallpapers/:id/reject",
+    WALLET: "/wallet",
+    WALLET_CREDIT: "/wallet/credit",
   },
   UPLOAD: {
     BASE: "/upload",
     PRESIGN: "/presign",
     VIEW_URL: "/view-url",
     VIEW: "/view",
+  },
+  CHAT: {
+    BASE: "/chat",
   },
 };

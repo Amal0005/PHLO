@@ -10,7 +10,8 @@ import {
     CreditCard,
     CheckCircle2,
     XCircle,
-    Download
+    Download,
+    MessageSquare
 } from "lucide-react";
 import { BookingService } from "@/services/user/bookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
@@ -296,13 +297,22 @@ const BookingDetailPage: React.FC = () => {
                             )}
 
                             {booking.status === 'completed' && (
-                                <button
-                                    onClick={() => BookingService.downloadInvoice(sessionId!)}
-                                    className="w-full py-5 rounded-[1.5rem] border border-zinc-700 bg-white text-black font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 group"
-                                >
-                                    <Download className="w-4 h-4 group-hover:bounce" />
-                                    Download Invoice
-                                </button>
+                                <div className="space-y-4">
+                                    <button
+                                        onClick={() => navigate(`${ROUTES.USER.CHAT}?bookingId=${booking.id}`)}
+                                        className="w-full py-5 rounded-[1.5rem] bg-zinc-800 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-700 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 group border border-zinc-700"
+                                    >
+                                        <MessageSquare className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                        Chat with Creator
+                                    </button>
+                                    <button
+                                        onClick={() => BookingService.downloadInvoice(sessionId!)}
+                                        className="w-full py-5 rounded-[1.5rem] border border-zinc-700 bg-white text-black font-black text-xs uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 group"
+                                    >
+                                        <Download className="w-4 h-4 group-hover:bounce" />
+                                        Download Invoice
+                                    </button>
+                                </div>
                             )}
 
                             {((booking.status === 'completed' || booking.status === 'pending') && new Date(booking.bookingDate) > new Date()) && (

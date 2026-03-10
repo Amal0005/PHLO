@@ -10,6 +10,7 @@ import { S3Service } from "@/services/s3Service";
 import UserNavbar from "@/compoents/reusable/userNavbar";
 import { FilterSearch } from "@/compoents/reusable/FilterComponents";
 import { toast } from "react-toastify";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 
@@ -17,10 +18,10 @@ const WallpaperGallery: React.FC = () => {
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
   const [selectedTag, setSelectedTag] = useState("");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
-  const [debouncedPrice, setDebouncedPrice] = useState<[number, number]>([0, 1000]);
+  const debouncedPrice = useDebounce(priceRange, 500);
   const MIN_PRICE = 0;
   const MAX_PRICE = 1000;
   const [page, setPage] = useState(1);
@@ -30,20 +31,8 @@ const WallpaperGallery: React.FC = () => {
   const limit = 12;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-      setPage(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedPrice(priceRange);
-      setPage(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [priceRange]);
+    setPage(1);
+  }, [debouncedSearch, debouncedPrice, selectedTag]);
 
   const fetchWallpapers = useCallback(async () => {
     try {

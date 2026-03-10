@@ -15,8 +15,7 @@ import Pagination from "@/compoents/reusable/pagination";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
-
-
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 interface PackageWithId extends Omit<PackageData, 'category'> {
@@ -33,7 +32,7 @@ const ViewPackagesPage: React.FC = () => {
   const [selectedPackage, setSelectedPackage] = useState<PackageWithId | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -44,15 +43,6 @@ const ViewPackagesPage: React.FC = () => {
 
   const limit = 9;
   const navigate = useNavigate();
-
-  // Debounce search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-      setPage(1); // Reset to first page on search
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
   const fetchPackages = useCallback(async () => {
     try {
@@ -74,6 +64,10 @@ const ViewPackagesPage: React.FC = () => {
       setLoading(false);
     }
   }, [page, debouncedSearch, sortOrder]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, sortOrder]);
 
   useEffect(() => {
     fetchPackages();

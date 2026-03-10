@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
 import { CreatorBookingService } from "@/services/creator/creatorBookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
@@ -8,14 +9,17 @@ import {
     ChevronRight,
     CreditCard,
     MapPin,
-    Package as PackageIcon
+    Package as PackageIcon,
+    MessageSquare
 } from "lucide-react";
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, parseISO, startOfDay } from "date-fns";
 import { toast } from "react-toastify";
 import { creatorLeaveService } from "@/services/creator/leaveService";
 import { LeaveResponse } from "@/interface/creator/creatorLeaveInterface";
+import { ROUTES } from "@/constants/routes";
 
 const BookingsCalendar: React.FC = () => {
+    const navigate = useNavigate();
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [bookings, setBookings] = useState<UserBooking[]>([]);
@@ -301,7 +305,7 @@ const BookingsCalendar: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="pt-6 border-t border-white/5">
+                                <div className="pt-6 border-t border-white/5 flex items-center justify-between">
                                     <div className="flex flex-col gap-0.5">
                                         <span className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest">Total Amount</span>
                                         <div className="flex items-center gap-2">
@@ -309,6 +313,15 @@ const BookingsCalendar: React.FC = () => {
                                             <span className="text-base font-black text-white">₹{booking.amount.toLocaleString()}</span>
                                         </div>
                                     </div>
+                                    {booking.status === 'completed' && (
+                                        <button
+                                            onClick={() => navigate(`${ROUTES.CREATOR.CHAT}?bookingId=${booking.id}`)}
+                                            className="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all group/msg"
+                                            title="Message Client"
+                                        >
+                                            <MessageSquare className="w-4 h-4 text-white group-hover/msg:scale-110 transition-transform" />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))}

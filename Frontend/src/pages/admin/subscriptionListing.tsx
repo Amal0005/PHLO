@@ -9,6 +9,7 @@ import AddEditSubscriptionModal from "./components/addEditSubscriptionModal";
 import { AdminSubscriptionService } from "@/services/admin/adminSubscriptionService";
 import Pagination from "@/compoents/reusable/pagination";
 import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 export default function SubscriptionListingPage() {
@@ -20,13 +21,14 @@ export default function SubscriptionListingPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
   const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
 
   const fetchSubscriptions = useCallback(async () => {
     try {
       setLoading(true);
       const isActive = filterStatus === "active" ? true : filterStatus === "inactive" ? false : undefined;
-      const response = await AdminSubscriptionService.getSubscriptions(page, 10, search, isActive);
+      const response = await AdminSubscriptionService.getSubscriptions(page, 10, debouncedSearch, isActive);
       setSubscriptions(response.result.data);
       setTotalPages(response.result.totalPages);
     } catch (error) {
@@ -35,20 +37,20 @@ export default function SubscriptionListingPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search, filterStatus]);
+  }, [page, debouncedSearch, filterStatus]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, filterStatus]);
+
+  useEffect(() => {
+    fetchSubscriptions();
+  }, [fetchSubscriptions]);
 
   const handleFilterChange = (newStatus: typeof filterStatus) => {
     setFilterStatus(newStatus);
     setPage(1);
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchSubscriptions();
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [fetchSubscriptions]);
 
   const handleAdd = () => {
     setSelectedSubscription(null);

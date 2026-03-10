@@ -23,19 +23,25 @@ import { AddSubscriptionUseCase } from "@/application/useCases/admin/addSubscrip
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscriptionUseCase";
 import { EditSubscriptionUseCase } from "@/application/useCases/admin/editSubscriptionUseCase";
-import { DeleteSubscriptionUseCase } from "@/domain/interface/admin/deleteSubscriptionUseCase";
 import { SubscriptionController } from "@/adapters/controllers/admin/subscriptionController";
 import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
 import { ApproveWallpaperUseCase } from "@/application/useCases/admin/wallpaper/approveWallpaperUseCase";
 import { RejectWallpaperUseCase } from "@/application/useCases/admin/wallpaper/rejectWallpaperUseCase";
 import { GetAllWallpapersUseCase } from "@/application/useCases/admin/wallpaper/getAllWallpapersUseCase";
 import { AdminWallpaperController } from "@/adapters/controllers/admin/adminWallpaperController";
+import { WalletRepository } from "@/adapters/repository/walletRepository";
+import { CreditWalletUseCase } from "@/application/useCases/wallet/creditWalletUseCase";
+import { GetWalletUseCase } from "@/application/useCases/wallet/getWalletUseCase";
+import { AdminWalletController } from "@/adapters/controllers/admin/adminWalletController";
+import { DeleteSubscriptionUseCase } from "@/application/useCases/admin/deleteSubscriptionUseCase";
+
 
 const userRepo = new UserRepository();
 const creatorRepo = new CreatorRepository();
 const categoryRepo = new CategoryRepository()
 const subscriptionRepo = new SubscriptionRepository()
 const wallpaperRepo = new WallpaperRepository()
+const walletRepo = new WalletRepository()
 
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
@@ -60,6 +66,8 @@ const deleteSubscriptionUseCase = new DeleteSubscriptionUseCase(subscriptionRepo
 const approveWallpaperUseCase = new ApproveWallpaperUseCase(wallpaperRepo);
 const rejectWallpaperUseCase = new RejectWallpaperUseCase(wallpaperRepo);
 const getAllWallpapersUseCase = new GetAllWallpapersUseCase(wallpaperRepo);
+const getWalletUseCase = new GetWalletUseCase(walletRepo);
+const creditWalletUseCase = new CreditWalletUseCase(walletRepo);
 
 export const adminLoginController = new AdminLoginController(adminLoginUseCase);
 export const adminUserController = new AdminUserController(adminUserlistingUseCase, toggleUserStatusUseCase);
@@ -67,3 +75,4 @@ export const adminCreatorController = new AdminCreatorController(approveCreatorU
 export const categoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
 export const subscriptionController = new SubscriptionController(addSubscriptionUseCase, editSubscriptionUseCase, deleteSubscriptionUseCase, getSubscriptionUseCase);
 export const adminWallpaperController = new AdminWallpaperController(approveWallpaperUseCase, rejectWallpaperUseCase, getAllWallpapersUseCase);
+export const adminWalletController = new AdminWalletController(getWalletUseCase, creditWalletUseCase);

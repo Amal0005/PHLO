@@ -8,6 +8,7 @@ import DataTable, { Column } from "@/compoents/reusable/dataTable";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
+import { useDebounce } from "@/hooks/useDebounce";
 
 
 type StatusFilter = "all" | "pending" | "approved" | "rejected";
@@ -27,7 +28,7 @@ export default function WallpaperListingPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
   const limit = 10;
 
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -38,12 +39,8 @@ export default function WallpaperListingPage() {
   const [approveTarget, setApproveTarget] = useState<WallpaperData | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-      setPage(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+    setPage(1);
+  }, [debouncedSearch, statusFilter]);
 
   const loadWallpapers = useCallback(async () => {
     try {

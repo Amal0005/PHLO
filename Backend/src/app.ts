@@ -12,6 +12,8 @@ import { CreatorRoutes } from "@/adapters/routes/creator/creatorRoutes";
 import { UploadRoutes } from "@/adapters/routes/uploadRoutes";
 import { ViewRoutes } from "@/adapters/routes/viewRoutes";
 import { AdminRoutes } from "@/adapters/routes/admin/adminRoutes";
+import chatRouter from "@/adapters/routes/chatRoutes";
+import { SocketIOHandler } from "@/framework/socket/socketIOHandler";
 import { loggerMiddleware } from "./adapters/middlewares/loggerMiddleware";
 import path from "path";
 
@@ -39,6 +41,7 @@ export class App {
     this.setCreatorRoutes();
     this.setViewRouter();
     this.setAdminRouter();
+    this.setChatRoutes();
     this.app.use(errorHandler);
   }
   private setMiddlewares(): void {
@@ -89,17 +92,24 @@ export class App {
     this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.ADMIN.BASE}`, adminRoutes.adminRouter);
   }
 
+  private setChatRoutes() {
+    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.CHAT.BASE}`, chatRouter);
+  }
+
   public async listen(): Promise<void> {
-    const port = process.env.PORT || 4242;
+    const port = process.env.PORT || 5000;
     try {
       await this.database.connect();
       new SubscriptionScheduler(new CreatorRepository(), new MailService()).start();
-      this.app.listen(port, () =>
-        logger.info("server running", process.env.PORT),
+
+      this.server = http.createServer(this.app);
+      new SocketIOHandler(this.server);
+
+      this.server.listen(port, () =>
+        logger.info("server running", port),
       );
     } catch (error) {
       logger.error("Server failed to start", { error });
-
     }
   }
 }

@@ -16,13 +16,12 @@ import BookingsPage from "@/pages/user/booking/bookings";
 import BookingDetailPage from "@/pages/user/booking/BookingDetailPage";
 import WallpaperGallery from "@/pages/user/wallpaper/wallpaperGallery";
 import WishlistPage from "@/pages/user/wishlist/wishlistPage";
-// import NotFound from "@/pages/user/404";
+import ChatPage from "@/pages/user/chat/ChatPage";
 
 export function UserRoutes() {
   return (
     <Routes>
       <Route path={ROUTES.USER.ROOT} element={<LandingPage />} />
-      {/* <Route path={ROUTES.USER.NOT_FOUND} element={<NotFound />} /> */}
 
       <Route element={<ProtectedRoute role="user" requireAuth={false} />}>
         <Route path={ROUTES.USER.LOGIN} element={<Login />} />
@@ -49,6 +48,7 @@ export function UserRoutes() {
         <Route path={ROUTES.USER.BOOKING_DETAIL} element={<BookingDetailPage />} />
         <Route path={ROUTES.USER.WALLPAPERS} element={<WallpaperGallery />} />
         <Route path={ROUTES.USER.WISHLIST} element={<WishlistPage />} />
+        <Route path={ROUTES.USER.CHAT} element={<ChatPage />} />
       </Route>
     </Routes>
   );
