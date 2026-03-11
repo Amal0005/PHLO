@@ -4,12 +4,17 @@ import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IVerifyCreatorOtpUseCase } from "@/domain/interface/creator/auth/IVerifyCreatorOtpUseCase";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import { NotificationType } from "@/domain/entities/notificationEntity";
 
 export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {
     constructor(
         private _creatorRepo: ICreatorRepository,
         private _otpService: IOTPService,
-        private _redisService: IRedisService
+        private _redisService: IRedisService,
+        private _userRepo: IUserRepository,
+        private _sendNotificationUseCase: ISendNotificationUseCase
     ) {}
 
     async verifyOtp(email: string, otp: string): Promise<CreatorResponseDto> {
@@ -29,6 +34,18 @@ export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {
         const createdCreator = await this._creatorRepo.createCreator(creatorData);
 
         await this._redisService.deleteValue(`PENDING_CREATOR_${email}`);
+
+        // Notify Admin
+        const adminId = await this._userRepo.findAdminId();
+        if (adminId) {
+            await this._sendNotificationUseCase.sendNotification({
+                recipientId: adminId,
+                type: NotificationType.ACCOUNT,
+                title: "New Creator Registration",
+                message: `New creator ${createdCreator.fullName} has registered and is pending approval.`,
+                isRead: false
+            });
+        }
 
         return CreatorMapper.toDto(createdCreator);
     }

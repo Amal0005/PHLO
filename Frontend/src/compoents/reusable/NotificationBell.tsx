@@ -43,9 +43,27 @@ const NotificationBell: React.FC = () => {
         }
         setIsOpen(false);
 
+        const isAdmin = window.location.pathname.startsWith('/admin');
+        const isCreator = window.location.pathname.startsWith('/creator');
+
         if (notification.type === NotificationType.CHAT) {
-            const isCreator = window.location.pathname.includes('/creator');
             navigate(isCreator ? '/creator/chat' : '/chat');
+        } else if (notification.type === NotificationType.ACCOUNT) {
+            if (isAdmin) {
+                if (notification.title.includes("Creator")) {
+                    navigate('/admin/creators');
+                } else if (notification.title.includes("Wallpaper")) {
+                    navigate('/admin/wallpapers');
+                }
+            } else {
+                navigate(isCreator ? '/creator/profile' : '/profile');
+            }
+        } else if (notification.type === NotificationType.BOOKING) {
+            navigate(isCreator ? '/creator/bookings' : '/bookings');
+        } else if (notification.type === NotificationType.WALLET) {
+            if (isAdmin) {
+                navigate('/admin/wallet');
+            }
         }
     };
 

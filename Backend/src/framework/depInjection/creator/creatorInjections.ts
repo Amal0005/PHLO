@@ -77,7 +77,7 @@ const watermarkService = new WatermarkService()
 
 const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService);
 const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository, userRepository);
-const verifyCreatorOtpUseCase = new VerifyCreatorOtpUseCase(creatorRepository, otpService, redisService);
+const verifyCreatorOtpUseCase = new VerifyCreatorOtpUseCase(creatorRepository, otpService, redisService, userRepository, sendNotificationUseCase);
 const resendCreatorOtpUseCase = new ResendCreatorOtpUseCase(otpService, mailService);
 const creatorLoginUseCase = new CreatorLoginUseCase(creatorRepository, jwtService, passwordService);
 const forgotPasswordUseCase = new ForgotPasswordUseCase(creatorRepository, otpService, mailService);
@@ -97,9 +97,9 @@ const creditWalletUseCase = new CreditWalletUseCase(walletRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService, creatorRepository)
 const listCreatorBookingsUseCase = new ListCreatorBookingsUseCase(bookingRepo);
 
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase, userRepository)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
-const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService)
+const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService, userRepository, sendNotificationUseCase)
 const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)
 const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRepo)
 const addLeaveUseCase = new AddLeaveUseCase(leaveRepo)

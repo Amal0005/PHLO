@@ -19,8 +19,9 @@ export const useNotifications = () => {
     const { notifications, unreadCount } = useSelector((state: RootState) => state.notifications);
     const user = useSelector((state: RootState) => state.user.user);
     const creator = useSelector((state: RootState) => state.creator.creator);
+    const admin = useSelector((state: RootState) => state.admin.admin);
     const navigate = useNavigate();
-    const currentUserId = user?.id || user?._id || creator?.id || creator?._id;
+    const currentUserId = user?.id || user?._id || creator?.id || creator?._id || admin?.id || admin?._id;
 
     const fetchNotifications = useCallback(async () => {
         if (!currentUserId) return;
@@ -82,11 +83,22 @@ export const useNotifications = () => {
                     className: "bg-zinc-900 text-white rounded-2xl border border-white/10 shadow-2xl",
                     progressClassName: "bg-blue-500",
                     onClick: () => {
+                        const isAdmin = window.location.pathname.startsWith('/admin');
                         const isCreator = window.location.pathname.startsWith('/creator');
+
                         if (notification.type === NotificationType.CHAT) {
                             navigate(isCreator ? '/creator/chat' : '/chat');
                         } else if (notification.type === NotificationType.BOOKING) {
                             navigate(isCreator ? '/creator/bookings' : '/bookings');
+                        } else if (notification.type === NotificationType.ACCOUNT) {
+                            if (isAdmin) {
+                                if (notification.title.includes("Creator")) navigate('/admin/creators');
+                                else if (notification.title.includes("Wallpaper")) navigate('/admin/wallpapers');
+                            } else {
+                                navigate(isCreator ? '/creator/profile' : '/profile');
+                            }
+                        } else if (notification.type === NotificationType.WALLET) {
+                            if (isAdmin) navigate('/admin/wallet');
                         }
                     }
                 });

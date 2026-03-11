@@ -1,5 +1,6 @@
 import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
@@ -19,8 +20,9 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         private _stripeService: IStripeService,
         private _mailService: IMailService,
         private _creditWalletUseCase: ICreditWalletUseCase,
-        private _sendNotificationUseCase: ISendNotificationUseCase
-    ) {}
+        private _sendNotificationUseCase: ISendNotificationUseCase,
+        private _userRepo: IUserRepository
+    ) { }
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);
@@ -94,7 +96,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                     // Credit Admin Wallet (Unified)
                     await this._creditAdminWallet(plan, creator, session.id);
 
-                    // Send Notification
+                    // Send Notification to Creator
                     await this._sendNotificationUseCase.sendNotification({
                         recipientId: creatorId,
                         type: NotificationType.ACCOUNT,
@@ -103,6 +105,17 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                         isRead: false
                     });
 
+                    // Send Notification to Admin
+                    const adminId = await this._userRepo.findAdminId();
+                    if (adminId) {
+                        await this._sendNotificationUseCase.sendNotification({
+                            recipientId: adminId,
+                            type: NotificationType.WALLET,
+                            title: "Subscription Purchase (Queued)",
+                            message: `${creator?.fullName || 'A creator'} upgrade to ${plan.name} is queued.`,
+                            isRead: false
+                        });
+                    }
                 } else {
                     // No active subscription — activate immediately
                     const startDate = now;
@@ -131,7 +144,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                     // Credit Admin Wallet (Unified)
                     await this._creditAdminWallet(plan, creator, session.id);
 
-                    // Send Notification
+                    // Send Notification to Creator
                     await this._sendNotificationUseCase.sendNotification({
                         recipientId: creatorId,
                         type: NotificationType.ACCOUNT,
@@ -139,6 +152,18 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                         message: `Your ${plan.name} subscription is now active!`,
                         isRead: false
                     });
+
+                    // Send Notification to Admin
+                    const adminId = await this._userRepo.findAdminId();
+                    if (adminId) {
+                        await this._sendNotificationUseCase.sendNotification({
+                            recipientId: adminId,
+                            type: NotificationType.WALLET,
+                            title: "Subscription Purchase",
+                            message: `${creator?.fullName || 'A creator'} has purchased ${plan.name} subscription.`,
+                            isRead: false
+                        });
+                    }
                 }
             }
         }

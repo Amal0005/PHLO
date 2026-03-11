@@ -10,4 +10,5 @@ export interface IUserRepository extends IBaseRepository<User> {
   updateUserStatus(userId: string, status: "active" | "blocked"): Promise<void>;
   findByPhone(phone: string | undefined): Promise<User | null>
   editProfile(userId: string, data: { name?: string; phone?: string; image?: string; }): Promise<User | null>;
+  findAdminId(): Promise<string | null>;
 }

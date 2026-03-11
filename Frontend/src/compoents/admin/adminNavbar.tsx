@@ -9,6 +9,8 @@ import { ROUTES } from "@/constants/routes";
 import { AdminAuthService } from "@/services/admin/adminAuthService";
 import ConfirmModal from "../reusable/ConfirmModal";
 import { removeUser } from "@/store/slices/auth/authSlice";
+import NotificationBell from "../reusable/NotificationBell";
+
 
 interface AdminNavbarProps {
   onMenuToggle: () => void;
@@ -69,6 +71,7 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
           </div>
 
           <div className="flex items-center gap-3">
+            <NotificationBell />
             {admin && (
               <div className="hidden sm:flex items-center gap-2 bg-zinc-800/50 rounded-lg px-3 py-2 border border-zinc-700">
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
