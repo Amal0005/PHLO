@@ -9,14 +9,18 @@ import { logger } from "@/utils/logger";
 import path from "node:path";
 import Stripe from "stripe";
 
+import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import { NotificationType } from "@/domain/entities/notificationEntity";
+
 export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWebhookUseCase {
     constructor(
         private _creatorRepo: ICreatorRepository,
         private _subscriptionRepo: ISubscriptionRepository,
         private _stripeService: IStripeService,
         private _mailService: IMailService,
-        private _creditWalletUseCase: ICreditWalletUseCase
-    ) { }
+        private _creditWalletUseCase: ICreditWalletUseCase,
+        private _sendNotificationUseCase: ISendNotificationUseCase
+    ) {}
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);
@@ -90,6 +94,15 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                     // Credit Admin Wallet (Unified)
                     await this._creditAdminWallet(plan, creator, session.id);
 
+                    // Send Notification
+                    await this._sendNotificationUseCase.sendNotification({
+                        recipientId: creatorId,
+                        type: NotificationType.ACCOUNT,
+                        title: "Subscription Queued",
+                        message: `Your upgrade to ${plan.name} is queued and will start on ${startDate.toLocaleDateString()}`,
+                        isRead: false
+                    });
+
                 } else {
                     // No active subscription — activate immediately
                     const startDate = now;
@@ -117,6 +130,15 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
 
                     // Credit Admin Wallet (Unified)
                     await this._creditAdminWallet(plan, creator, session.id);
+
+                    // Send Notification
+                    await this._sendNotificationUseCase.sendNotification({
+                        recipientId: creatorId,
+                        type: NotificationType.ACCOUNT,
+                        title: "Subscription Activated",
+                        message: `Your ${plan.name} subscription is now active!`,
+                        isRead: false
+                    });
                 }
             }
         }

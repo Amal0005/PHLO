@@ -67,8 +67,7 @@ export class ChatRepository implements IChatRepository {
   }
 
 
-  
-    private mapConversationEntity(doc: ConversationDocument): ConversationEntity {
+  private mapConversationEntity(doc: ConversationDocument): ConversationEntity {
     return {
       id: doc._id.toString(),
       bookingId: doc.bookingId,

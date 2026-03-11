@@ -10,6 +10,7 @@ interface SendMessageData {
 }
 
 export class SocketIOHandler {
+  private static instance: SocketIOHandler;
   private io: Server;
 
   constructor(server: http.Server) {
@@ -17,6 +18,13 @@ export class SocketIOHandler {
       cors: { origin: process.env.FRONTEND_URL, methods: ["GET", "POST"] }
     });
     this.setupListeners();
+    SocketIOHandler.instance = this;
+  }
+
+  public static emitToUser(userId: string, event: string, data: any) {
+    if (SocketIOHandler.instance) {
+      SocketIOHandler.instance.io.to(userId).emit(event, data);
+    }
   }
 
   private setupListeners() {

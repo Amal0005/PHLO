@@ -7,9 +7,15 @@ import { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBo
 import { BookingStatus } from "@/utils/bookingStatus";
 import { StatusCode } from "@/utils/statusCodes";
 
+import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import { NotificationType } from "@/domain/entities/notificationEntity";
+
 export class CancelBookingUseCase implements ICancelBookingUseCase {
   constructor(
-    private _bookingRepo: IBookingRepository
+    private _bookingRepo: IBookingRepository,
+    private _packageRepo: IPackageRepository,
+    private _sendNotificationUseCase: ISendNotificationUseCase
   ) {}
   async cancelBooking(userId: string, sessionId: string): Promise<BookingResponseDTO> {
     const booking = await this._bookingRepo.findByStripeSessionId(sessionId)
@@ -26,6 +32,31 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
     if (!updatedBooking) {
       throw new AppError("Failed to cancel booking", StatusCode.INTERNAL_SERVER_ERROR);
     }
+
+    // Trigger Notifications
+    const pkg = await this._packageRepo.findById(booking.packageId as string);
+    if (pkg) {
+      const creatorId = typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as any)._id?.toString() || (pkg.creatorId as any).id?.toString();
+
+      // To Creator
+      await this._sendNotificationUseCase.sendNotification({
+        recipientId: creatorId,
+        type: NotificationType.BOOKING,
+        title: "Booking Cancelled",
+        message: `A booking for ${pkg.title} has been cancelled by the user`,
+        isRead: false
+      });
+
+      // To User
+      await this._sendNotificationUseCase.sendNotification({
+        recipientId: userId,
+        type: NotificationType.BOOKING,
+        title: "Booking Cancelled",
+        message: `Your booking for ${pkg.title} has been successfully cancelled`,
+        isRead: false
+      });
+    }
+
     return BookingMapper.toDto(updatedBooking);
   }
 

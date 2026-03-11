@@ -6,6 +6,7 @@ import { GetConversationUseCase } from "@/application/useCases/chat/getConversat
 import { GetMessageUseCase } from "@/application/useCases/chat/getMessageUseCase";
 import { SendMessageUseCase } from "@/application/useCases/chat/sendMessageUseCase";
 import { CreateConversationUseCase } from "@/application/useCases/chat/createConversationUseCase";
+import { sendNotificationUseCase } from "./notificationInjections";
 
 const chatRepo = new ChatRepository();
 const bookingRepo = new BookingRepository();
@@ -13,7 +14,7 @@ const packageRepo = new PackageRepository();
 
 const getConversationUseCase = new GetConversationUseCase(chatRepo);
 const getMessagesUseCase = new GetMessageUseCase(chatRepo);
-const sendMessageUseCase = new SendMessageUseCase(chatRepo);
+const sendMessageUseCase = new SendMessageUseCase(chatRepo, sendNotificationUseCase);
 const getOrCreateConversationUseCase = new CreateConversationUseCase(chatRepo, bookingRepo, packageRepo);
 
 export const chatController = new ChatController(

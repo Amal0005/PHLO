@@ -25,9 +25,9 @@ export class ChatController {
         return res.status(StatusCode.OK).json({ success: true, message })
     }
     async SendMessage(req: AuthRequest, res: Response) {
-        const { conversationId, message } = req.body;
+        const { conversationId, message, receiverId } = req.body;
         const senderId = req.user?.userId as string;
-        const result = await this._sendMessageUseCase.sendMessage({ conversationId, senderId, message });
+        const result = await this._sendMessageUseCase.sendMessage({ conversationId, senderId, message, recipientId: receiverId });
         return res.status(StatusCode.OK).json({ success: true, message: result })
     }
 

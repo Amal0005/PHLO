@@ -6,12 +6,16 @@ import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUse
 import { logger } from "@/utils/logger";
 import Stripe from "stripe";
 
+import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import { NotificationType } from "@/domain/entities/notificationEntity";
+
 export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
     constructor(
         private _wallpaperDownloadRepo: IWallpaperDownloadRepository,
         private _wallpaperRepo: IWallpaperRepository,
         private _creatorRepo: ICreatorRepository,
-        private _creditWalletUseCase: ICreditWalletUseCase
+        private _creditWalletUseCase: ICreditWalletUseCase,
+        private _sendNotificationUseCase: ISendNotificationUseCase
     ) { }
 
     async handleEvent(event: Stripe.Event): Promise<void> {
@@ -37,6 +41,25 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                             source: "wallpaper",
                             sourceId: wallpaperId,
                             relatedName: creator?.fullName || 'Creator'
+                        });
+
+                        // 3. Send Notifications
+                        // To Creator
+                        await this._sendNotificationUseCase.sendNotification({
+                            recipientId: creatorId,
+                            type: NotificationType.ACCOUNT,
+                            title: "Wallpaper Sale!",
+                            message: `You sold a wallpaper: ${wallpaper.title}`,
+                            isRead: false
+                        });
+
+                        // To User
+                        await this._sendNotificationUseCase.sendNotification({
+                            recipientId: userId,
+                            type: NotificationType.WALLET,
+                            title: "Wallpaper Purchased",
+                            message: `You have successfully purchased ${wallpaper.title}`,
+                            isRead: false
                         });
                     }
 

@@ -3,6 +3,7 @@ import { CreatorRegisterController } from "@/adapters/controllers/creator/auth/c
 import { CreatorAuthController } from "@/adapters/controllers/creator/auth/authController";
 import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
 import { UserRepository } from "@/adapters/repository/user/userRepository";
+import { sendNotificationUseCase } from "@/framework/depInjection/notificationInjections";
 import { JwtServices } from "@/domain/services/user/jwtServices";
 import { PasswordService } from "@/domain/services/user/passwordService";
 import { RedisService } from "@/domain/services/user/redisServices";
@@ -95,7 +96,8 @@ const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const creditWalletUseCase = new CreditWalletUseCase(walletRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService, creatorRepository)
 const listCreatorBookingsUseCase = new ListCreatorBookingsUseCase(bookingRepo);
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase)
+
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
 const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService)
 const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)

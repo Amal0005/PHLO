@@ -91,4 +91,7 @@ export const BACKEND_ROUTES = {
   CHAT: {
     BASE: "/chat",
   },
+  NOTIFICATION: {
+    BASE: "/notifications",
+  },
 };

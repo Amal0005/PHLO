@@ -12,6 +12,7 @@ import { UserAuthService } from "@/services/user/UserAuthService";
 import { S3Service } from "@/services/s3Service";
 import ConfirmModal from "./ConfirmModal";
 import { removeUser } from "@/store/slices/auth/authSlice";
+import NotificationBell from "./NotificationBell";
 
 interface NavbarProps {
   scrollToSection?: (id: string) => void;
@@ -130,6 +131,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
             >
               <Heart size={18} />
             </button>
+            <NotificationBell />
             {user ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -198,6 +200,10 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
       {mobileMenuOpen && (
         <div className="md:hidden bg-black/95 backdrop-blur-lg border-b border-white/10">
           <div className="px-4 py-4 space-y-3">
+            <div className="flex items-center justify-between px-4 pb-2 border-b border-white/5">
+              <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Alerts</span>
+              <NotificationBell />
+            </div>
             <button
               onClick={() => {
                 navigate(ROUTES.USER.PACKAGES);

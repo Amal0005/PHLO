@@ -30,25 +30,24 @@ const ChatPage = () => {
         if (!currentUserId) return;
         socketService.connect(currentUserId);
         fetchConversations();
-
-        // Only disconnect on full unmount
-        return () => socketService.disconnect();
-    }, [currentUser]);
+    }, [currentUserId]);
 
     // 2. Register receive-message listener separately so it has latest selectedChat ref
     useEffect(() => {
         const socket = socketService.getSocket();
-        if (!socket) return;
+        if (!socket) {
+            console.log("No socket available for ChatPage listener");
+            return;
+        }
 
         const handleReceive = (newMessage: MessageEntity) => {
-            console.log("Received new message via socket:", newMessage);
+            console.log("ChatPage: Received new message via socket:", newMessage);
             // Check if the message belongs to the currently open chat
             const selectedId = (selectedChat?.id || (selectedChat as any)?._id)?.toString();
             const messageConvId = newMessage.conversationId?.toString();
 
             if (selectedId && messageConvId === selectedId) {
                 setMessages((prev: MessageEntity[]) => {
-                    // Prevent duplicate messages if socket and API both update
                     const exists = prev.some(m => (m.id || (m as any)._id)?.toString() === (newMessage.id || (newMessage as any)._id)?.toString());
                     if (exists) return prev;
                     return [...prev, newMessage];
@@ -61,7 +60,7 @@ const ChatPage = () => {
         return () => {
             socket.off("receive-message", handleReceive);
         };
-    }, [selectedChat, socketService.getSocket()]);
+    }, [selectedChat, currentUserId]);
 
     // Handle initial selection via query param
     useEffect(() => {

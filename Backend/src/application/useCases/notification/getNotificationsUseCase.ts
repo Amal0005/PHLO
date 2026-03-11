@@ -1,0 +1,12 @@
+import { NotificationEntity } from "@/domain/entities/notificationEntity";
+import { IGetNotificationsUseCase } from "@/domain/interface/notification/IGetNotificationsUseCase";
+import { INotificationRepository } from "@/domain/interface/repositories/INotificationRepository";
+
+export class GetNotificationsUseCase implements IGetNotificationsUseCase{
+    constructor(
+        private _notificationRepo:INotificationRepository
+    ){}
+    async getNotification(recipientId: string): Promise<NotificationEntity[]> {
+        return await this._notificationRepo.findByRecipient(recipientId)
+    }
+}

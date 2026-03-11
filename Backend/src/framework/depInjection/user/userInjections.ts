@@ -82,7 +82,7 @@ import { WalletRepository } from "@/adapters/repository/walletRepository";
 
 
 import { ChatRepository } from "@/adapters/repository/chatRepository";
-import { chatController } from "../chatInjections";
+import { sendNotificationUseCase } from "@/framework/depInjection/notificationInjections";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -126,11 +126,11 @@ const addCategoryUseCase = new AddCategoryUseCase(categoryRepository);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
 const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, leaveRepo, stripeService)
-const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService, packageRepository, creatorRepository, creditWalletUseCase, chatRepo)
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase)
+const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService, packageRepository, creatorRepository, creditWalletUseCase, chatRepo, sendNotificationUseCase)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
 const checkAvailabilityUseCase = new CheckAvailabilityUseCase(bookingRepo, leaveRepo, packageRepository);
-const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo);
+const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo, packageRepository, sendNotificationUseCase);
 const getBookingDetailUseCase = new GetBookingDetailUseCase(bookingRepo, stripeService);
 const getApprovedWallpapers = new GetApprovedWallpaperUseCase(wallpaperRepo, wallpaperDownloadRepo)
 const recordDownloadUseCase = new RecordDownloadUseCase(wallpaperDownloadRepo, wallpaperRepo)
@@ -145,7 +145,7 @@ const getReviewUseCase = new GetReviewUseCase(reviewRepo)
 const getReviewByBookingUseCase = new GetReviewByBookingUseCase(reviewRepo)
 const editReviewUseCase = new EditReviewUseCase(reviewRepo)
 const buyWallpaperUseCase = new BuyWallpaperUseCase(wallpaperRepo, stripeService, wallpaperDownloadRepo)
-const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase)
+const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase, sendNotificationUseCase)
 const retryPaymentUseCase = new RetryPaymentUseCase(bookingRepo, packageRepository, stripeService);
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
