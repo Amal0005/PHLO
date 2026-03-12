@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import { ISubscriptionScheduler } from "@/domain/interface/service/ISubscriptionScheduler";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 import { IMailService } from "@/domain/interface/service/IMailServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 import { logger } from "@/utils/logger";

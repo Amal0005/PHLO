@@ -2,7 +2,7 @@ import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { CreatorModel, ICreatorModel } from "@/framework/database/model/creatorModel";
 import { paginateMongo } from "@/utils/pagination";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 import { BaseRepository } from "../baseRepository";
 import { Filter } from "mongodb";
 

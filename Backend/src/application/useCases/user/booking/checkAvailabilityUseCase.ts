@@ -1,6 +1,6 @@
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
-import { ILeaveRepository } from "@/domain/interface/repositories/ILeaveRepository";
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
+import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { ICheckAvailabilityUseCase } from "@/domain/interface/user/booking/ICheckAvailabilityUseCase";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 

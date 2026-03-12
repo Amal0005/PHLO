@@ -1,6 +1,6 @@
 import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
-import { IPackageRepository, PackageFilters } from "@/domain/interface/repositories/IPackageRepository";
+import { IPackageRepository, PackageFilters } from "@/domain/interface/repository/IPackageRepository";
 import { IListUserPackagesUseCase } from "@/domain/interface/user/packages/IListUserPackagesUseCase";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 

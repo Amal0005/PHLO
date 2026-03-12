@@ -3,7 +3,7 @@ import { UserResponseDto } from "../../../domain/dto/user/userResponseDto";
 import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
 import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 
 export class AdminLoginUseCase implements IAdminLoginUseCase {
   constructor(

@@ -4,7 +4,7 @@ import mongoose, { SortOrder } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 import { paginateMongo } from "@/utils/pagination";
 import { BaseRepository } from "../baseRepository";
-import { CategoryFilterOptions, ICategoryRepository } from "@/domain/interface/repositories/ICategoryRepository";
+import { CategoryFilterOptions, ICategoryRepository } from "@/domain/interface/repository/ICategoryRepository";
 
 export class CategoryRepository extends BaseRepository<CategoryEntity, ICategoryModel> implements ICategoryRepository {
   constructor() {

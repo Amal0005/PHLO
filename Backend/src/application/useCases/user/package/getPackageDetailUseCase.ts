@@ -1,6 +1,6 @@
 import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { IGetPackageDetailUseCase } from "@/domain/interface/user/packages/IGetPackageDetailUseCase ";
 
 export class GetPackageDetailUseCase implements IGetPackageDetailUseCase {

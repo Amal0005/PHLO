@@ -4,7 +4,7 @@ import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IJwtServices } from "../../../../domain/interface/service/IJwtServices";
 import { verifyGoogleIdToken } from "../../../../framework/google/verifyGoogleIdToken";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 
 
 export class GoogleLoginUseCase implements IGoogleLoginUseCase {

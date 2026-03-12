@@ -6,7 +6,7 @@ import { AuthError } from "@/domain/errors/authError";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
 import { ICreatorLoginUseCase } from "@/domain/interface/creator/auth/ICreatorLoginUseCase";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 
 export class CreatorLoginUseCase implements ICreatorLoginUseCase {

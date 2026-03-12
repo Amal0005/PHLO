@@ -12,6 +12,7 @@ import {
 import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
 import { authMiddleware, logoutController, tokenController } from "../../../framework/depInjection/user/userInjections";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
+import { complaintController } from "@/framework/depInjection/complaintInjection";
 
 export class AdminRoutes {
   public adminRouter: Router;
@@ -103,5 +104,7 @@ export class AdminRoutes {
     this.adminRouter.post(BACKEND_ROUTES.ADMIN.WALLET_CREDIT, (req: Request, res: Response) => {
       adminWalletController.creditWallet(req, res)
     })
+    this.adminRouter.get(BACKEND_ROUTES.ADMIN.COMPLAINTS, (req: Request, res: Response) => complaintController.getAll(req, res));
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.RESOLVE_COMPLAINT, (req: Request, res: Response) => complaintController.resolve(req, res));
   }
 }

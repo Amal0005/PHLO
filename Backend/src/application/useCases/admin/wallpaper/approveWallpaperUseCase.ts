@@ -1,5 +1,5 @@
 import { IApproveWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IApproveWallpaperUseCase";
-import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
+import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class ApproveWallpaperUseCase implements IApproveWallpaperUseCase {

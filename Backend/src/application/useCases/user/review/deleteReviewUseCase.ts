@@ -1,5 +1,5 @@
 import { AppError } from "@/domain/errors/appError";
-import { IReviewRepository } from "@/domain/interface/repositories/IReviewRepository";
+import { IReviewRepository } from "@/domain/interface/repository/IReviewRepository";
 import { IDeleteReviewUseCase } from "@/domain/interface/user/review/IDeleteReviewUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 

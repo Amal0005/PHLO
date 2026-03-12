@@ -1,7 +1,7 @@
 import { ReviewEntity } from "@/domain/entities/reviewEntity";
 import { BaseRepository } from "../baseRepository";
 import { IReviewModel, ReviewModel } from "@/framework/database/model/reviewModel";
-import { IReviewRepository } from "@/domain/interface/repositories/IReviewRepository";
+import { IReviewRepository } from "@/domain/interface/repository/IReviewRepository";
 
 export class ReviewRepository extends BaseRepository<ReviewEntity, IReviewModel> implements IReviewRepository {
     constructor() {

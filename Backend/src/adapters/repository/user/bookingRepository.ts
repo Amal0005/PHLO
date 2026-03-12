@@ -5,7 +5,7 @@ import {
   BookingDocument,
   BookingModel,
 } from "@/framework/database/model/bookingModel";
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { User } from "@/domain/entities/userEntities";
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { BookingStatus } from "@/constants/bookingStatus";

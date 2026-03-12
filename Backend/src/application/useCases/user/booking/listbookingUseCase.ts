@@ -1,6 +1,6 @@
 import { BookingMapper } from "@/application/mapper/user/bookingMapper";
 import { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
 
 export class ListBookingUseCase implements IListBookingsUseCase{

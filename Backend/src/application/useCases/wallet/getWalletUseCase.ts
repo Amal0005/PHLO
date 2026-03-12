@@ -1,5 +1,5 @@
 import { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
-import { IWalletRepository } from "@/domain/interface/repositories/IWalletRepository";
+import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
 import { Wallet, WalletOwnerType } from "@/domain/entities/walletEntity";
 import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 

@@ -1,7 +1,7 @@
 import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
 import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
 import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 export class EditCreatorProfileUseCase implements IeditCreatorProfileUseCase {
     constructor(

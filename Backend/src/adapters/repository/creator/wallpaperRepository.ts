@@ -1,4 +1,4 @@
-import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
+import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import {
   IWallpaperModel,
   WallpaperModel,

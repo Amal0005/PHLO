@@ -7,8 +7,8 @@ import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUser
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
 import { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 export class UserProfileController {
     constructor(

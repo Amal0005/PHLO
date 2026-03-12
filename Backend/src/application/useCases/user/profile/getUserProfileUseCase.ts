@@ -1,6 +1,6 @@
 import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
 
 export class GetUserProfileUseCase implements IGetUserProfileUseCase {

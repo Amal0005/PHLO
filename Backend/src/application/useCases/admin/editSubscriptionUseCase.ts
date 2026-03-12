@@ -2,7 +2,7 @@ import { SubscriptionDtoMapper } from "@/application/mapper/admin/subscriptionMa
 import { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
 import { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
 import { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
-import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
+import { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
 
 export class EditSubscriptionUseCase implements IEditSubscriptionUseCase {
     constructor(

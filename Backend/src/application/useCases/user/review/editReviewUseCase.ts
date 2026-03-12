@@ -1,7 +1,7 @@
 import { ReviewResponseDTO } from "@/domain/dto/user/review/reviewResponseDto";
 import { ReviewMapper } from "@/application/mapper/user/reviewMapper";
 import { AppError } from "@/domain/errors/appError";
-import { IReviewRepository } from "@/domain/interface/repositories/IReviewRepository";
+import { IReviewRepository } from "@/domain/interface/repository/IReviewRepository";
 import { IEditReviewUseCase } from "@/domain/interface/user/review/IEditReviewUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 

@@ -1,4 +1,4 @@
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { IPdfInvoiceGenerator } from "@/domain/interface/service/IInvoiceGenerator";
 import { IDownloadInvoiceUseCase } from "@/domain/interface/user/booking/IDownloadInvoiceUseCase";
 

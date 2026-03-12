@@ -1,4 +1,4 @@
-import { ISubscriptionRepository } from "../../../domain/interface/repositories/ISubscriptionRepositories";
+import { ISubscriptionRepository } from "../../../domain/interface/repository/ISubscriptionRepositories";
 import { IDeleteSubscriptionUseCase } from "../../../domain/interface/admin/subscription/IDeleteSubscriptionUseCase";
 
 export class DeleteSubscriptionUseCase implements IDeleteSubscriptionUseCase {

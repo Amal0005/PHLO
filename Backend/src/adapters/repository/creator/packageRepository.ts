@@ -2,7 +2,7 @@ import { PackageEntity } from "@/domain/entities/packageEntity";
 import {
   IPackageRepository,
   PackageFilters
-} from "@/domain/interface/repositories/IPackageRepository";
+} from "@/domain/interface/repository/IPackageRepository";
 import {
   PackageModel,
   IPackageModel

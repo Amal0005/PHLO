@@ -2,12 +2,12 @@ import { BookingMapper } from "@/application/mapper/user/bookingMapper";
 import { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
 import { BookingEntity } from "@/domain/entities/bookingEntity";
 import { AppError } from "@/domain/errors/appError";
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBookingUseCase";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { StatusCode } from "@/constants/statusCodes";
 
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 

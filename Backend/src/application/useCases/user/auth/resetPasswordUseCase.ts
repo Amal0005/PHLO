@@ -1,4 +1,4 @@
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { IResetPasswordUseCase } from "@/domain/interface/user/auth/IResetPasswordUseCase";

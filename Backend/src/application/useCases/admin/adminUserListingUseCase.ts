@@ -1,6 +1,6 @@
 import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IadminUserListingUseCase";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 

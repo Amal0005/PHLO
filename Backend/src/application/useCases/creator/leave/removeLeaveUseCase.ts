@@ -1,4 +1,4 @@
-import { ILeaveRepository } from "@/domain/interface/repositories/ILeaveRepository";
+import { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
 import { IRemoveLeaveUseCase } from "@/domain/interface/creator/leave/IRemoveLeaveUseCase";
 
 export class RemoveLeaveUseCase implements IRemoveLeaveUseCase {

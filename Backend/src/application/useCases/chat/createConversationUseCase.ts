@@ -1,7 +1,7 @@
 import { ConversationEntity } from "@/domain/entities/conversationEntity";
-import { IChatRepository } from "@/domain/interface/repositories/IChatRepository ";
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { IChatRepository } from "@/domain/interface/repository/IChatRepository ";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/constants/statusCodes";
 
