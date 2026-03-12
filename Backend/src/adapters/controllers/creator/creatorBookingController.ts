@@ -1,13 +1,13 @@
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { IListCreatorBookingsUseCase } from "@/domain/interface/creator/bookings/IListCreatorBookingsUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
-import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
 import { Response } from "express";
 
 export class CreatorBookingController {
     constructor(
         private _listCreatorBookingsUseCase: IListCreatorBookingsUseCase
-    ) {}
+    ) { }
 
     async ListCreatorBookings(req: AuthRequest, res: Response) {
         try {

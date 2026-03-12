@@ -3,7 +3,7 @@ import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IJwtServices } from "../../../../domain/interface/service/IJwtServices";
 import { verifyGoogleIdToken } from "../../../../framework/google/verifyGoogleIdToken";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 
 
@@ -11,7 +11,7 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _jwtService: IJwtServices
-  ) {}
+  ) { }
 
   async login(idToken: string): Promise<{ user: UserResponseDto; accessToken: string; refreshToken: string }> {
 

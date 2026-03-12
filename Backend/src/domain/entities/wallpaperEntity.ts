@@ -1,4 +1,4 @@
-import { WallpaperStatus } from "@/utils/wallpaperStatus";
+import { WallpaperStatus } from "@/constants/wallpaperStatus";
 import { CreatorEntity } from "./creatorEntities";
 
 export interface WallpaperEntity {

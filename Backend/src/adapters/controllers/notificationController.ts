@@ -4,8 +4,9 @@ import { IGetNotificationsUseCase } from "@/domain/interface/notification/IGetNo
 import { IMarkNotificationReadUseCase } from "@/domain/interface/notification/IMarkNotificationReadUseCase";
 import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
 import { Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { IMarkAllNotificationReadUseCase } from "@/domain/interface/notification/IMarkAllNotificationReadUseCase";
+import { IMarkChatNotificationReadUseCase } from "@/domain/interface/notification/IMarkChatNotificationReadUseCase";
 
 export class NotificationController {
     constructor(
@@ -13,8 +14,9 @@ export class NotificationController {
         private _getNotificationDetailUSeCase: IGetNotificationDetailsUseCase,
         private _countUnreadUseCase: ICountUnreadUseCase,
         private _markNotificationReadUseCase: IMarkNotificationReadUseCase,
-        private _markAllReadUseCase: IMarkAllNotificationReadUseCase
-    ) {}
+        private _markAllReadUseCase: IMarkAllNotificationReadUseCase,
+        private _markChatReadUseCase: IMarkChatNotificationReadUseCase
+    ) { }
     async getNotification(req: AuthRequest, res: Response) {
         const userId = req.user?.userId as string
         const notifications = await this._getNotificationUseCase.getNotification(userId)
@@ -33,6 +35,12 @@ export class NotificationController {
     async markAllAsRead(req: AuthRequest, res: Response) {
         const userId = req.user?.userId as string
         await this._markAllReadUseCase.markAllRead(userId)
+        return res.status(StatusCode.OK).json({ success: true });
+    }
+    async markChatAsRead(req: AuthRequest, res: Response) {
+        const userId = req.user?.userId as string
+        const { conversationId } = req.params
+        await this._markChatReadUseCase.markChatRead(userId, conversationId)
         return res.status(StatusCode.OK).json({ success: true });
     }
     async countUnreadDocument(req: AuthRequest, res: Response) {

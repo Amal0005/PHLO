@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IApproveCreatorUseCase } from "@/domain/interface/admin/IApproveCreatorUseCase";
 import { IRejectCreatorUseCase } from "@/domain/interface/admin/IRejectCreatorUseCase";
 import { AppError } from "@/domain/errors/appError";
@@ -22,7 +22,7 @@ export class AdminCreatorController {
     private _rejectCreatorUseCase: IRejectCreatorUseCase,
     private _adminCreatorListingUseCase: IAdminCreatorListingUseCase,
     private _toggleCreatorStatusUseCase: IToggleCreatorStatusUseCase,
-  ) {}
+  ) { }
 
   async getCreators(req: Request, res: Response): Promise<Response> {
     try {

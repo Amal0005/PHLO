@@ -3,8 +3,8 @@ import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { AuthPayload } from "@/domain/dto/user/authPayload";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { AuthError } from "@/domain/errors/authError";
-import { MESSAGES } from "@/utils/commonMessages";
-import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
 import { ICreatorLoginUseCase } from "@/domain/interface/creator/auth/ICreatorLoginUseCase";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 
@@ -14,7 +14,7 @@ export class CreatorLoginUseCase implements ICreatorLoginUseCase {
     private _creatorRepo: ICreatorRepository,
     private IjwtService: IJwtServices,
     private _passwordService: IPasswordService,
-  ) {}
+  ) { }
   async login(
     email: string,
     password: string,

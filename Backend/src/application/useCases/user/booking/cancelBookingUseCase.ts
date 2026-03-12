@@ -4,8 +4,8 @@ import { BookingEntity } from "@/domain/entities/bookingEntity";
 import { AppError } from "@/domain/errors/appError";
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBookingUseCase";
-import { BookingStatus } from "@/utils/bookingStatus";
-import { StatusCode } from "@/utils/statusCodes";
+import { BookingStatus } from "@/constants/bookingStatus";
+import { StatusCode } from "@/constants/statusCodes";
 
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
@@ -16,7 +16,7 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
     private _bookingRepo: IBookingRepository,
     private _packageRepo: IPackageRepository,
     private _sendNotificationUseCase: ISendNotificationUseCase
-  ) {}
+  ) { }
   async cancelBooking(userId: string, sessionId: string): Promise<BookingResponseDTO> {
     const booking = await this._bookingRepo.findByStripeSessionId(sessionId)
     if (!booking) throw new Error("Booking not found")

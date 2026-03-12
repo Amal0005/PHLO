@@ -41,6 +41,14 @@ const notificationSlice = createSlice({
             });
             state.unreadCount = 0;
         },
+        markChatRead: (state, action: PayloadAction<string>) => {
+            state.notifications.forEach(n => {
+                if (n.type === "CHAT" && n.metadata?.conversationId === action.payload && !n.isRead) {
+                    n.isRead = true;
+                    state.unreadCount = Math.max(0, state.unreadCount - 1);
+                }
+            });
+        },
         clearNotifications: (state) => {
             state.notifications = [];
             state.unreadCount = 0;
@@ -54,6 +62,7 @@ export const {
     setUnreadCount,
     markRead,
     markAllAsRead,
+    markChatRead,
     clearNotifications,
 } = notificationSlice.actions;
 

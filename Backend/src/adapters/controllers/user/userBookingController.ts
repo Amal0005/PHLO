@@ -7,8 +7,8 @@ import { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBo
 import { IGetBookingDetailUseCase } from "@/domain/interface/user/booking/IGetBookingDetailUseCase";
 import { IRetryPaymentUseCase } from "@/domain/interface/user/booking/IRetryPaymentUseCase";
 import { IDownloadInvoiceUseCase } from "@/domain/interface/user/booking/IDownloadInvoiceUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
-import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
 import { Response } from "express";
 
 export class UserBookingController {
@@ -20,7 +20,7 @@ export class UserBookingController {
         private _getBookingDetailUseCase: IGetBookingDetailUseCase,
         private _downloadInvoiceUseCase: IDownloadInvoiceUseCase,
         private _retryPaymentUseCase: IRetryPaymentUseCase
-    ) {}
+    ) { }
 
     async CreateBooking(req: AuthRequest, res: Response) {
         try {

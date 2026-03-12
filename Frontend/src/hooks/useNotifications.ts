@@ -6,7 +6,8 @@ import {
     setNotifications,
     setUnreadCount,
     markRead,
-    markAllAsRead
+    markAllAsRead,
+    markChatRead
 } from "../store/slices/notification/notificationSlice";
 import api from "../axios/axiosConfig";
 import { socketService } from "../services/socketService";
@@ -21,7 +22,7 @@ export const useNotifications = () => {
     const creator = useSelector((state: RootState) => state.creator.creator);
     const admin = useSelector((state: RootState) => state.admin.admin);
     const navigate = useNavigate();
-    const currentUserId = user?.id || user?._id || creator?.id || creator?._id || admin?.id || admin?._id;
+    const currentUserId = user?.id || (user as any)?._id || creator?.id || (creator as any)?._id || admin?.id || (admin as any)?._id;
 
     const fetchNotifications = useCallback(async () => {
         if (!currentUserId) return;
@@ -64,18 +65,40 @@ export const useNotifications = () => {
         }
     };
 
+    const markChatAsRead = async (conversationId: string) => {
+        try {
+            const res = await api.patch(`/notifications/mark-chat-read/${conversationId}`);
+            if (res.data.success) {
+                dispatch(markChatRead(conversationId));
+            }
+        } catch (error) {
+            console.error("Error marking chat notifications as read:", error);
+        }
+    };
+
     useEffect(() => {
         if (!currentUserId) return;
 
         fetchNotifications();
 
-        // Connect/Re-connect to ensure socket is ready for this specific user room
         socketService.connect(currentUserId);
         const socket = socketService.getSocket();
 
         if (socket) {
+            // Prevent multiple listeners if hook is used multiple times
+            if (socketService.hasListeners("notification")) {
+                return;
+            }
+
             const handleNotification = (notification: NotificationEntity) => {
                 dispatch(addNotification(notification));
+
+                // Suppress toast if in chat page and is chat notification
+                const isChatPage = window.location.pathname.includes('/chat');
+                if (isChatPage && notification.type === NotificationType.CHAT) {
+                    return;
+                }
+
                 // Show toast
                 toast.info(`${notification.title}: ${notification.message}`, {
                     position: "bottom-right",
@@ -108,7 +131,6 @@ export const useNotifications = () => {
 
             return () => {
                 socket.off("notification", handleNotification);
-                // We keep the socket alive generally, but remove the specific listener
             };
         }
     }, [currentUserId, fetchNotifications, dispatch, navigate]);
@@ -118,6 +140,7 @@ export const useNotifications = () => {
         unreadCount,
         markAsRead,
         markAllAsRead: markAllNotificationsAsRead,
+        markChatAsRead,
         refresh: fetchNotifications
     };
 };

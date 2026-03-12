@@ -59,6 +59,27 @@ const WallpaperGallery: React.FC = () => {
   }, [fetchWallpapers]);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("success") === "true") {
+      const id = params.get("id");
+      toast.success("Wallpaper purchased successfully!");
+      if (id) {
+        // Manually update the purchased status in the local state for better UX
+        setWallpapers(prev => prev.map(wp =>
+          wp._id === id ? { ...wp, isPurchased: true } : wp
+        ));
+      }
+      // Clean up URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+    } else if (params.get("cancel") === "true") {
+      toast.error("Payment cancelled.");
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [wallpapers.length]);
+
+  useEffect(() => {
     const fetchWishlistIds = async () => {
       try {
         const res = await WishlistService.getWishlistIds("wallpaper");

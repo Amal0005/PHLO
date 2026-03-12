@@ -16,7 +16,7 @@ import BookingsPage from "@/pages/user/booking/bookings";
 import BookingDetailPage from "@/pages/user/booking/BookingDetailPage";
 import WallpaperGallery from "@/pages/user/wallpaper/wallpaperGallery";
 import WishlistPage from "@/pages/user/wishlist/wishlistPage";
-import ChatPage from "@/pages/user/chat/ChatPage";
+import ChatPage from "@/pages/chat/ChatPage";
 
 export function UserRoutes() {
   return (

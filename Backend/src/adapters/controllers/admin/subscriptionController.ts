@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { AppError } from "@/domain/errors/appError";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IAddSubscriptionUseCase } from "@/domain/interface/admin/subscription/IAddSubscriptionUseCase";
 import { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
 import { IDeleteSubscriptionUseCase } from "@/domain/interface/admin/subscription/IDeleteSubscriptionUseCase";
@@ -13,7 +13,7 @@ export class SubscriptionController {
         private _editSubscriptionUseCase: IEditSubscriptionUseCase,
         private _deleteSubscriptionUseCase: IDeleteSubscriptionUseCase,
         private _getSubscriptionUseCase: IGetSubscriptionUseCase
-    ) {}
+    ) { }
 
     async addSubscription(req: Request, res: Response): Promise<Response> {
         try {

@@ -1,12 +1,12 @@
 import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
 import { Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class GetProfileController {
-    constructor(private _getUserProfileUsecase: IGetUserProfileUseCase) {}
+    constructor(private _getUserProfileUsecase: IGetUserProfileUseCase) { }
 
     async getProfile(req: AuthRequest, res: Response): Promise<void> {
         try {

@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { AuthPayload } from "@/domain/dto/user/authPayload";
 import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 

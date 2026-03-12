@@ -8,7 +8,7 @@ import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaper
 import { IWatermarkService } from "@/domain/interface/service/IWatermarkService";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class AddWallpaperUseCase implements IAddWallpaperUseCase {
   constructor(

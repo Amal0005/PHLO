@@ -1,7 +1,7 @@
 import { ZodType } from "zod";
 import { NextFunction, Request, Response } from "express"
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 export const validate =
   (schema: ZodType) =>
     (req: Request, res: Response, next: NextFunction) => {

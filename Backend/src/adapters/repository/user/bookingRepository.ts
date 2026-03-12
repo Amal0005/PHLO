@@ -8,7 +8,7 @@ import {
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { User } from "@/domain/entities/userEntities";
 import { PackageEntity } from "@/domain/entities/packageEntity";
-import { BookingStatus } from "@/utils/bookingStatus";
+import { BookingStatus } from "@/constants/bookingStatus";
 import { PackageModel } from "@/framework/database/model/packageModel";
 
 export class BookingRepository

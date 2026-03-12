@@ -7,7 +7,7 @@ import { SocketIOHandler } from "@/framework/socket/socketIOHandler";
 export class SendNotificationUseCase implements ISendNotificationUseCase {
     constructor(
         private _notificationRepo: INotificationRepository
-    ) { }
+    ){}
     async sendNotification(data: NotificationEntity): Promise<NotificationEntity> {
         const notification = await this._notificationRepo.save(data)
         // Emit via socket

@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { IGetPresignedUrlUseCase } from "@/domain/interface/creator/IGetUrl";
 import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 export class UploadController {
   constructor(
     private _getPresignedUrlUseCase: IGetPresignedUrlUseCase,
     private _getPresignedViewUrlUseCase: IGetPresignedViewUrlUseCase
-  ) {}
+  ) { }
 
   async getPresignedUrl(req: Request, res: Response) {
     const { fileType, folder } = req.body;

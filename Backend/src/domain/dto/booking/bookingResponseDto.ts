@@ -1,4 +1,4 @@
-import { BookingStatus } from "@/utils/bookingStatus";
+import { BookingStatus } from "@/constants/bookingStatus";
 
 export interface BookingResponseDTO {
   id: string;

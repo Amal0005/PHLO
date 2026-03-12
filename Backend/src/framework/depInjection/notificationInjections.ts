@@ -4,6 +4,7 @@ import { SendNotificationUseCase } from "@/application/useCases/notification/sen
 import { GetNotificationsUseCase } from "@/application/useCases/notification/getNotificationsUseCase";
 import { MarkNotificationReadUseCase } from "@/application/useCases/notification/markNotificationReadUseCase";
 import { MarkAllNotificationReadUseCase } from "@/application/useCases/notification/markAllNotificationReadUseCase";
+import { MarkChatNotificationReadUseCase } from "@/application/useCases/notification/markChatNotificationReadUseCase";
 import { CountUnreadUseCase } from "@/application/useCases/notification/countUnreadUseCase";
 import { GetNotificationByIdUseCase } from "@/application/useCases/notification/getNotificationDetailsUseCse";
 
@@ -14,6 +15,14 @@ const getByIdUseCase = new GetNotificationByIdUseCase(notificationRepo);
 const countUnreadUseCase = new CountUnreadUseCase(notificationRepo);
 const markReadUseCase = new MarkNotificationReadUseCase(notificationRepo);
 const markAllReadUseCase = new MarkAllNotificationReadUseCase(notificationRepo);
+const markChatReadUseCase = new MarkChatNotificationReadUseCase(notificationRepo);
 
 export const sendNotificationUseCase = new SendNotificationUseCase(notificationRepo);
-export const notificationController = new NotificationController(getNotificationsUseCase, getByIdUseCase, countUnreadUseCase, markReadUseCase, markAllReadUseCase);
+export const notificationController = new NotificationController(
+    getNotificationsUseCase, 
+    getByIdUseCase, 
+    countUnreadUseCase, 
+    markReadUseCase, 
+    markAllReadUseCase,
+    markChatReadUseCase
+);

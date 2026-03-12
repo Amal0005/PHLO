@@ -4,14 +4,14 @@ import { IUserRepository } from "@/domain/interface/repositories/IUserRepository
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IPendingUserService } from "@/domain/interface/service/IPendingUserService";
 import { IVerifyRegisterOtpUseCase } from "@/domain/interface/user/auth/IVerifyRegisterOtpUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _otpService: IOTPService,
     private _pendingUser: IPendingUserService
-  ) {}
+  ) { }
   async verifyUser(email: string, otp: string): Promise<UserResponseDto> {
     email = email.trim().toLowerCase();
     const result = await this._otpService.verifyOtp(email, otp);

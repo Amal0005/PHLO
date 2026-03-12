@@ -9,5 +9,6 @@ notificationRouter.get("/unread-count", authMiddleware, (req, res) => notificati
 notificationRouter.get("/:notificationId", authMiddleware, (req, res) => notificationController.getNotificationDetails(req, res));
 notificationRouter.patch("/mark-read/:notificationId", authMiddleware, (req, res) => notificationController.markAsRead(req, res));
 notificationRouter.patch("/mark-all-read", authMiddleware, (req, res) => notificationController.markAllAsRead(req, res));
+notificationRouter.patch("/mark-chat-read/:conversationId", authMiddleware, (req, res) => notificationController.markChatAsRead(req, res));
 
 export default notificationRouter;

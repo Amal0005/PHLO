@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import api from '@/axios/axiosConfig';
-import { socketService } from '../../../services/socketService';
-import ConversationList from '../../../compoents/chat/conversationList';
-import ChatWindow from '../../../compoents/chat/chatWindow';
-import MessageInput from '../../../compoents/chat/messageInput';
+import { socketService } from '../../services/socketService';
+import ConversationList from '../../compoents/chat/conversationList';
+import ChatWindow from '../../compoents/chat/chatWindow';
+import MessageInput from '../../compoents/chat/messageInput';
 import { ConversationEntity, MessageEntity } from "@/interface/chat/chatInterface";
 import Navbar from "@/compoents/reusable/userNavbar";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
 import { S3Media } from '@/compoents/reusable/s3Media';
+import { useNotifications } from '@/hooks/useNotifications';
 
 const ChatPage = () => {
+    const { markChatAsRead } = useNotifications();
     const [searchParams] = useSearchParams();
     const bookingIdParam = searchParams.get('bookingId');
     const userState = useSelector((state: any) => state.user.user);
@@ -52,6 +54,7 @@ const ChatPage = () => {
                     if (exists) return prev;
                     return [...prev, newMessage];
                 });
+                markChatAsRead(selectedId);
             }
             fetchConversations();
         };
@@ -123,6 +126,7 @@ const ChatPage = () => {
         const convId = conv.id || (conv as any)._id;
         if (convId) {
             fetchMessages(convId);
+            markChatAsRead(convId);
         }
     };
 
@@ -182,7 +186,7 @@ const ChatPage = () => {
 
     return (
         <div className="min-h-screen bg-black flex flex-col font-sans selection:bg-white selection:text-black overflow-hidden h-screen">
-            {userState ? <Navbar scrollToSection={() => { }} /> : <CreatorNavbar />}
+            {userState ? <Navbar scrollToSection={() => {}} /> : <CreatorNavbar />}
 
             <div className="flex-1 flex mt-[80px] overflow-hidden relative">
                 {/* Conversations Sidebar */}
@@ -195,12 +199,12 @@ const ChatPage = () => {
                 </div>
 
                 {/* Main Chat Area */}
-                <div className={`${!isSidebarVisible ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-black relative`}>
+                <div className={`${!isSidebarVisible ? 'flex' : 'hidden md:flex'} flex-1 flex-col bg-[#1E1E1E] relative lg:p-4`}>
                     {selectedChat ? (
-                        <>
-                            {/* Chat Header */}
-                            <div className="px-4 py-4 md:px-8 md:py-6 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-2xl flex items-center justify-between z-10">
-                                <div className="flex items-center gap-3 md:gap-4">
+                        <div className="flex-1 flex flex-col bg-[#121212]/30 lg:rounded-[2rem] border border-white/5 overflow-hidden shadow-2xl relative">
+                            {/* Chat Header Header */}
+                            <div className="px-6 py-5 bg-[#2A2A2A]/40 backdrop-blur-3xl flex items-center justify-between z-10 border-b border-white/5">
+                                <div className="flex items-center gap-4">
                                     {/* Mobile Back Button */}
                                     <button
                                         onClick={() => setIsSidebarVisible(true)}
@@ -211,55 +215,52 @@ const ChatPage = () => {
                                         </svg>
                                     </button>
 
-                                    <div className="w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 overflow-hidden flex items-center justify-center ring-2 ring-white/5 ring-offset-2 ring-offset-black">
+                                    <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 overflow-hidden flex items-center justify-center ring-2 ring-white/5">
                                         {window.location.pathname.includes('/creator') ? (
                                             selectedChat.participantDetails?.userImage ? (
                                                 <S3Media s3Key={selectedChat.participantDetails.userImage} className="w-full h-full object-cover" />
                                             ) : (
-                                                <span className="text-zinc-600 font-black uppercase text-[10px]">{selectedChat.participantDetails?.userName?.slice(0, 2) || 'US'}</span>
+                                                <div className="w-full h-full flex items-center justify-center bg-zinc-950">
+                                                    <span className="text-zinc-600 font-black uppercase text-[12px]">{selectedChat.participantDetails?.userName?.slice(0, 2) || 'US'}</span>
+                                                </div>
                                             )
                                         ) : (
                                             selectedChat.participantDetails?.creatorImage ? (
                                                 <S3Media s3Key={selectedChat.participantDetails.creatorImage} className="w-full h-full object-cover" />
                                             ) : (
-                                                <span className="text-zinc-600 font-black uppercase text-[10px]">{selectedChat.participantDetails?.creatorName?.slice(0, 2) || 'CR'}</span>
+                                                <div className="w-full h-full flex items-center justify-center bg-zinc-950">
+                                                    <span className="text-zinc-600 font-black uppercase text-[12px]">{selectedChat.participantDetails?.creatorName?.slice(0, 2) || 'CR'}</span>
+                                                </div>
                                             )
                                         )}
                                     </div>
                                     <div className="flex flex-col">
-                                        <h2 className="text-xs md:text-sm font-black text-white uppercase tracking-[0.15em] truncate max-w-[150px] md:max-w-none">
+                                        <h2 className="text-sm font-black text-white uppercase tracking-[0.2em] truncate">
                                             {window.location.pathname.includes('/creator')
                                                 ? (selectedChat.participantDetails?.userName || "Client")
                                                 : (selectedChat.participantDetails?.creatorName || "Creator")}
                                         </h2>
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" />
-                                            <span className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">Active session</span>
-                                        </div>
                                     </div>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <button className="hidden sm:flex p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 transition-all text-zinc-400 group">
-                                        <svg className="w-4 h-4 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                    </button>
                                 </div>
                             </div>
 
                             {/* Messages Window */}
                             <div className="flex-1 overflow-hidden relative">
-                                <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none opacity-50" />
-                                <ChatWindow messages={messages} currentUserId={currentUserId!} />
-                                <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none opacity-50" />
+                                <ChatWindow 
+                                    messages={messages} 
+                                    currentUserId={currentUserId!} 
+                                    recipientName={window.location.pathname.includes('/creator') ? selectedChat.participantDetails?.userName : selectedChat.participantDetails?.creatorName}
+                                    recipientImage={window.location.pathname.includes('/creator') ? selectedChat.participantDetails?.userImage : selectedChat.participantDetails?.creatorImage}
+                                />
                             </div>
 
                             {/* Message Input */}
-                            <div className="px-4 py-6 md:px-8 md:py-8 bg-zinc-950/30 backdrop-blur-md">
-                                <div className="max-w-4xl mx-auto w-full">
+                            <div className="px-6 py-6 mt-auto">
+                                <div className="max-w-5xl mx-auto w-full">
                                     <MessageInput onSendMessage={handleSendMessage} />
                                 </div>
                             </div>
-                        </>
+                        </div>
                     ) : (
                         <div className="flex-1 flex flex-col items-center justify-center p-12 text-center space-y-8 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.02)_0%,transparent_70%)]">
                             <div className="relative">

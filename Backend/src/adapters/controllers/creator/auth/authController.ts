@@ -3,15 +3,15 @@ import { IVerifyForgotOtpUseCase } from "@/domain/interface/creator/auth/IVerify
 import { IResetPasswordUseCase } from "@/domain/interface/creator/auth/IResetPasswordUseCase";
 
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class CreatorAuthController {
     constructor(
         private _forgotPasswordUseCase: IForgotPasswordUseCase,
         private _verifyForgotOtpUseCase: IVerifyForgotOtpUseCase,
         private _resetPasswordUseCase: IResetPasswordUseCase
-    ) {}
+    ) { }
 
     async forgotPassword(req: Request, res: Response) {
         try {

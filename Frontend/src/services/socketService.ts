@@ -44,6 +44,10 @@ class SocketService {
         return this.socket;
     }
 
+    hasListeners(event: string) {
+        return this.socket?.hasListeners(event) || false;
+    }
+
     disconnect() {
         if (this.socket) {
             this.socket.disconnect();

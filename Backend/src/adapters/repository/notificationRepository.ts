@@ -27,6 +27,15 @@ export class NotificationRepository implements INotificationRepository {
     await NotificationModel.updateMany({ recipientId, isRead: false }, { isRead: true });
   }
 
+  async markChatAsRead(recipientId: string, conversationId: string): Promise<void> {
+    await NotificationModel.updateMany({ 
+      recipientId, 
+      type: "CHAT", 
+      "metadata.conversationId": conversationId,
+      isRead: false 
+    }, { isRead: true });
+  }
+
   async countUnread(recipientId: string): Promise<number> {
     return await NotificationModel.countDocuments({ recipientId, isRead: false });
   }

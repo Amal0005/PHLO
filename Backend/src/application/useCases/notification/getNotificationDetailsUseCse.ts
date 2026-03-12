@@ -5,7 +5,7 @@ import { INotificationRepository } from "@/domain/interface/repositories/INotifi
 export class GetNotificationByIdUseCase implements IGetNotificationDetailsUseCase {
   constructor(
     private _notificationRepo: INotificationRepository
-  ) { }
+  ){}
   async getDetails(notificationId: string): Promise<NotificationEntity | null> {
     return await this._notificationRepo.findById(notificationId);
   }

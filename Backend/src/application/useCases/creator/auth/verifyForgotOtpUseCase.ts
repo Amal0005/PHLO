@@ -1,14 +1,14 @@
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IVerifyForgotOtpUseCase } from "@/domain/interface/creator/auth/IVerifyForgotOtpUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 
 export class VerifyForgotOtpUseCase implements IVerifyForgotOtpUseCase {
     constructor(
         private _otpService: IOTPService,
         private _redisService: IRedisService
-    ) {}
+    ) { }
 
     async verify(email: string, otp: string): Promise<void> {
         email = email.trim().toLowerCase();

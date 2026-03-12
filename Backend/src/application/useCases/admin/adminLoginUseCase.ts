@@ -2,7 +2,7 @@ import { IAdminLoginUseCase } from "@/domain/interface/admin/IAdminLoginUseCase"
 import { UserResponseDto } from "../../../domain/dto/user/userResponseDto";
 import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
 import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 
 export class AdminLoginUseCase implements IAdminLoginUseCase {
@@ -10,7 +10,7 @@ export class AdminLoginUseCase implements IAdminLoginUseCase {
     private _userRepo: IUserRepository,
     private _passwordService: IPasswordService,
     private _jwtService: IJwtServices
-  ) {}
+  ) { }
 
   async login(
     email: string,

@@ -22,7 +22,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         private _creditWalletUseCase: ICreditWalletUseCase,
         private _sendNotificationUseCase: ISendNotificationUseCase,
         private _userRepo: IUserRepository
-    ) { }
+    ) {}
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);
@@ -111,8 +111,8 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                         await this._sendNotificationUseCase.sendNotification({
                             recipientId: adminId,
                             type: NotificationType.WALLET,
-                            title: "Subscription Purchase (Queued)",
-                            message: `${creator?.fullName || 'A creator'} upgrade to ${plan.name} is queued.`,
+                            title: "Wallet Credit (Subscription Queued)",
+                            message: `Admin wallet credited for ${creator?.fullName || 'Creator'} upgrade to ${plan.name} (Queued).`,
                             isRead: false
                         });
                     }
@@ -159,8 +159,8 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                         await this._sendNotificationUseCase.sendNotification({
                             recipientId: adminId,
                             type: NotificationType.WALLET,
-                            title: "Subscription Purchase",
-                            message: `${creator?.fullName || 'A creator'} has purchased ${plan.name} subscription.`,
+                            title: "Wallet Credit (Subscription)",
+                            message: `Admin wallet credited for ${creator?.fullName || 'Creator'} purchase of ${plan.name} subscription.`,
                             isRead: false
                         });
                     }

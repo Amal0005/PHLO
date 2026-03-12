@@ -1,19 +1,19 @@
 import { Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
 import { IDeletePackageUseCase } from "@/domain/interface/creator/package/IDeletePackageUseCase";
 import { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPackageUseCase";
 import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IgetPackageUseCase";
 
-export class PackageController {
+export class CreatorPackageController {
     constructor(
         private _addPackageUseCase: IAddPackageUseCase,
         private _deletePackageUseCase: IDeletePackageUseCase,
         private _editPackageUseCase: IEditPackageUseCase,
         private _getPackagesUseCase: IgetPackagesUseCase
-    ) {}
+    ) { }
 
     async addPackage(req: AuthRequest, res: Response) {
         try {

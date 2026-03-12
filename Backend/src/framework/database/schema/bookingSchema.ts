@@ -1,4 +1,4 @@
-import { BookingStatus } from "@/utils/bookingStatus";
+import { BookingStatus } from "@/constants/bookingStatus";
 import { Schema, Types } from "mongoose";
 
 export const bookingSchema = new Schema(

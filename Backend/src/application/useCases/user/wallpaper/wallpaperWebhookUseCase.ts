@@ -2,6 +2,7 @@ import { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWal
 import { IWallpaperDownloadRepository } from "@/domain/interface/repositories/IWallpaperDownloadRepository ";
 import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { logger } from "@/utils/logger";
 import Stripe from "stripe";
@@ -15,8 +16,9 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
         private _wallpaperRepo: IWallpaperRepository,
         private _creatorRepo: ICreatorRepository,
         private _creditWalletUseCase: ICreditWalletUseCase,
-        private _sendNotificationUseCase: ISendNotificationUseCase
-    ) { }
+        private _sendNotificationUseCase: ISendNotificationUseCase,
+        private _userRepo: IUserRepository
+    ){}
 
     async handleEvent(event: Stripe.Event): Promise<void> {
         if (event.type === "checkout.session.completed") {
@@ -61,6 +63,18 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                             message: `You have successfully purchased ${wallpaper.title}`,
                             isRead: false
                         });
+
+                        // To Admin
+                        const adminId = await this._userRepo.findAdminId();
+                        if (adminId) {
+                            await this._sendNotificationUseCase.sendNotification({
+                                recipientId: adminId,
+                                type: NotificationType.WALLET,
+                                title: "Wallet Credit (Wallpaper)",
+                                message: `Admin wallet credited ₹${wallpaper.price} for wallpaper purchase by ${creator?.fullName || 'Creator'}`,
+                                isRead: false
+                            });
+                        }
                     }
 
                     logger.info("Wallpaper purchase recorded via webhook", { wallpaperId, userId });

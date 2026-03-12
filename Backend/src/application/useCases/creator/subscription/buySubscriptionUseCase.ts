@@ -4,14 +4,14 @@ import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscr
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { AppError } from "@/domain/errors/appError";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 
 export class BuySubscriptionUseCase implements IBuySubscriptionUseCase {
     constructor(
         private _subscriptionRepo: ISubscriptionRepository,
         private _stripeService: IStripeService,
         private _creatorRepo: ICreatorRepository
-    ) {}
+    ) { }
     async buySubscription(creatorId: string, subscriptionId: string, successUrl: string, cancelUrl: string): Promise<CheckoutSessionResponseDTO> {
         const creator = await this._creatorRepo.findById(creatorId);
         if (creator?.upcomingSubscription) {

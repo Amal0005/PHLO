@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { AppError } from "@/domain/errors/appError";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IAddCategoryUseCase } from "@/domain/interface/admin/IAddCategoryUseCase";
 import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseCase";
 import { IDeleteCategoryUseCase } from "@/domain/interface/admin/IDeleteCategoryUseCase";
@@ -18,7 +18,7 @@ export class CategoryController {
         private _editCategoryUseCase: IEditCategoryUseCase,
         private _deleteCategoryUseCase: IDeleteCategoryUseCase,
         private _adminCategoryListingUseCase: IAdminCategoryListingUseCase
-    ) {}
+    ) { }
 
     async addCategory(req: Request, res: Response): Promise<Response> {
         try {

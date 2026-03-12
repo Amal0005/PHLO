@@ -7,4 +7,5 @@ export interface INotificationRepository {
   markAsRead(id: string): Promise<void>;
   markAllAsRead(recipientId: string): Promise<void>;
   countUnread(recipientId: string): Promise<number>;
+  markChatAsRead(recipientId: string, conversationId: string): Promise<void>;
 }
