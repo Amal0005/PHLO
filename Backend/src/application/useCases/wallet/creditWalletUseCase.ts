@@ -4,7 +4,7 @@ import { WalletOwnerType } from "@/domain/entities/walletEntity";
 import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 
 export class CreditWalletUseCase implements ICreditWalletUseCase {
-    constructor(private _walletRepo: IWalletRepository) { }
+    constructor(private _walletRepo: IWalletRepository){}
 
     async creditWallet(
         ownerId: string,

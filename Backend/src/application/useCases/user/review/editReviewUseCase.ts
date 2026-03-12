@@ -3,12 +3,12 @@ import { ReviewMapper } from "@/application/mapper/user/reviewMapper";
 import { AppError } from "@/domain/errors/appError";
 import { IReviewRepository } from "@/domain/interface/repositories/IReviewRepository";
 import { IEditReviewUseCase } from "@/domain/interface/user/review/IEditReviewUseCase";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 
 export class EditReviewUseCase implements IEditReviewUseCase {
     constructor(
         private _reviewRepo: IReviewRepository,
-    ) {}
+    ) { }
 
     async editReview(userId: string, reviewId: string, rating: number, comment: string): Promise<ReviewResponseDTO> {
         const review = await this._reviewRepo.findById(reviewId);

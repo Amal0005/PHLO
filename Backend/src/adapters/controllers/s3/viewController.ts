@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
 import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class ViewController {
   constructor(
     private _creatorRepo: CreatorRepository,
     private _getPresignedViewUrlUseCase: IGetPresignedViewUrlUseCase
-  ) {}
+  ) { }
 
   async getImage(req: Request, res: Response) {
     const email = req.query.email as string;

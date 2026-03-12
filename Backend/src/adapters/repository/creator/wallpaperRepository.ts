@@ -7,7 +7,7 @@ import { BaseRepository } from "../baseRepository";
 import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
 import { QueryFilter, UpdateQuery } from "mongoose";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { WallpaperStatus } from "@/utils/wallpaperStatus";
+import { WallpaperStatus } from "@/constants/wallpaperStatus";
 
 export class WallpaperRepository
   extends BaseRepository<WallpaperEntity, IWallpaperModel>

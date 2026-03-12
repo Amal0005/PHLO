@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IAdminLoginUseCase } from "../../../domain/interface/admin/IAdminLoginUseCase";
 import { AppError } from "@/domain/errors/appError";
 
@@ -12,7 +12,7 @@ interface LoginRequestBody {
 export class AdminLoginController {
   constructor(
     private _adminLoginUseCase: IAdminLoginUseCase,
-  ) {}
+  ) { }
   async login(req: Request, res: Response): Promise<Response> {
     try {
       const { email, password } = req.body as LoginRequestBody;

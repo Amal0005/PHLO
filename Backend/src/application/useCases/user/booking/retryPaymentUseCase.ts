@@ -4,8 +4,8 @@ import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepo
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { IRetryPaymentUseCase } from "@/domain/interface/user/booking/IRetryPaymentUseCase";
-import { BookingStatus } from "@/utils/bookingStatus";
-import { StatusCode } from "@/utils/statusCodes";
+import { BookingStatus } from "@/constants/bookingStatus";
+import { StatusCode } from "@/constants/statusCodes";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class RetryPaymentUseCase implements IRetryPaymentUseCase {
@@ -13,7 +13,7 @@ export class RetryPaymentUseCase implements IRetryPaymentUseCase {
         private _bookingRepo: IBookingRepository,
         private _packageRepo: IPackageRepository,
         private _stripeService: IStripeService
-    ) {}
+    ) { }
 
     async retryPayment(sessionId: string, baseUrl: string): Promise<CheckoutSessionResponseDTO> {
         const booking = await this._bookingRepo.findByStripeSessionId(sessionId);

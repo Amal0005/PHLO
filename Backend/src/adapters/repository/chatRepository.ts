@@ -1,62 +1,73 @@
 import { ConversationEntity } from "@/domain/entities/conversationEntity";
-import { ConversationModel, ConversationDocument } from "../../framework/database/model/conversationModel";
-import { MessageModel, MessageDocument } from "../../framework/database/model/messageModel";
+import { ConversationModel } from "../../framework/database/model/conversationModel";
+import { MessageModel } from "../../framework/database/model/messageModel";
 import { IChatRepository } from "@/domain/interface/repositories/IChatRepository ";
 import { MessageEntity } from "@/domain/entities/messageEntity";
 import { UserModel } from "../../framework/database/model/userModel";
 import { CreatorModel } from "../../framework/database/model/creatorModel";
-import { ChatMapper } from "../mappers/chatMapper";
+import { BookingModel } from "../../framework/database/model/bookingModel";
+import { ChatMapper } from "../../application/mapper/chatMapper";
 
 export class ChatRepository implements IChatRepository {
   async createConversation(data: Partial<ConversationEntity>): Promise<ConversationEntity> {
     const doc = await ConversationModel.create(data);
-    return this.mapConversationEntity(doc);
+    return ChatMapper.toConversationEntity(doc.toObject());
   }
 
   async getConversationByBooking(bookingId: string): Promise<ConversationEntity | null> {
-    const d = await ConversationModel.findOne({ bookingId }).lean() as ConversationDocument | null;
+    const d = await ConversationModel.findOne({ bookingId }).lean();
     if (!d) return null;
 
     const uId = d.participants[0];
     const cId = d.participants[1];
 
-    const [user, creator] = await Promise.all([
-      UserModel.findById(uId).select("name image").lean(),
-      CreatorModel.findById(cId).select("fullName profilePhoto").lean()
+    const [[user, creator], booking] = await Promise.all([
+      Promise.all([
+        UserModel.findById(uId).select("name image").lean(),
+        CreatorModel.findById(cId).select("fullName profilePhoto").lean()
+      ]),
+      BookingModel.findById(d.bookingId).populate('packageId', 'title').lean() as any
     ]);
 
-    return ChatMapper.toConversationEntity(d, user, creator);
+    const packageName = booking?.packageId?.title || "Unknown Package";
+
+    return ChatMapper.toConversationEntity(d, user, creator, packageName);
   }
 
   async getConversationsByUserId(userId: string): Promise<ConversationEntity[]> {
     const docs = await ConversationModel.find({ participants: userId })
       .sort({ updatedAt: -1 })
-      .lean() as ConversationDocument[];
+      .lean();
 
     const conversations = await Promise.all(docs.map(async (d) => {
       const uId = d.participants[0];
       const cId = d.participants[1];
 
-      const [user, creator] = await Promise.all([
-        UserModel.findById(uId).select("name image").lean(),
-        CreatorModel.findById(cId).select("fullName profilePhoto").lean()
+      const [[user, creator], booking] = await Promise.all([
+        Promise.all([
+          UserModel.findById(uId).select("name image").lean(),
+          CreatorModel.findById(cId).select("fullName profilePhoto").lean()
+        ]),
+        BookingModel.findById(d.bookingId).populate('packageId', 'title').lean() as any
       ]);
 
-      return ChatMapper.toConversationEntity(d, user, creator, 'Client');
+      const packageName = booking?.packageId?.title || "Unknown Package";
+
+      return ChatMapper.toConversationEntity(d, user, creator, packageName, 'Client');
     }));
 
     return conversations;
   }
 
   async getMessagesByConversationId(conversationId: string): Promise<MessageEntity[]> {
-    const docs = await MessageModel.find({ conversationId }).sort({ createdAt: 1 }).lean() as MessageDocument[];
-    return docs.map((d) => this.mapToMessageEntity(d));
+    const docs = await MessageModel.find({ conversationId }).sort({ createdAt: 1 }).lean();
+    return docs.map((d) => ChatMapper.toMessageEntity(d));
   }
 
 
   async saveMessage(data: Partial<MessageEntity>): Promise<MessageEntity> {
     const doc = await MessageModel.create(data);
-    return this.mapToMessageEntity(doc);
+    return ChatMapper.toMessageEntity(doc.toObject());
   }
 
   async updateConversationLastMessage(conversationId: string, message: string): Promise<void> {
@@ -64,31 +75,6 @@ export class ChatRepository implements IChatRepository {
       lastMessage: message,
       lastMessageAt: new Date()
     });
-  }
-
-
-  
-    private mapConversationEntity(doc: ConversationDocument): ConversationEntity {
-    return {
-      id: doc._id.toString(),
-      bookingId: doc.bookingId,
-      participants: doc.participants,
-      lastMessage: doc.lastMessage,
-      lastMessageAt: doc.lastMessageAt,
-      createdAt: doc.createdAt,
-    };
-  }
-
-  private mapToMessageEntity(doc: MessageDocument): MessageEntity {
-    return {
-      id: doc._id.toString(),
-      conversationId: doc.conversationId,
-      senderId: doc.senderId,
-      message: doc.message,
-      type: doc.type || 'text',
-      seen: doc.seen || false,
-      createdAt: doc.createdAt,
-    };
   }
 }
 

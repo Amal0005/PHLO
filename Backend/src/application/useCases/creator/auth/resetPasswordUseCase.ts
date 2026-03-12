@@ -1,7 +1,7 @@
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { IResetPasswordUseCase } from "@/domain/interface/creator/auth/IResetPasswordUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
 
 
@@ -10,7 +10,7 @@ export class ResetPasswordUseCase implements IResetPasswordUseCase {
         private _creatorRepo: ICreatorRepository,
         private _passwordService: IPasswordService,
         private _redisService: IRedisService
-    ) {}
+    ) { }
 
     async reset(email: string, newPassword: string): Promise<void> {
         email = email.trim().toLowerCase();

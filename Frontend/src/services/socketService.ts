@@ -2,22 +2,27 @@ import { io, Socket } from "socket.io-client";
 
 class SocketService {
     private socket: Socket | null = null;
+    private userId: string | null = null;
 
     connect(userId: string) {
-        // Derive backend URL if VITE_BACKEND_URL is missing
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BASE_URL?.replace('/api', '') || "http://localhost:5000";
-
-        console.log("Connecting to socket at:", backendUrl, "for user:", userId);
-
-        // Always disconnect stale socket before reconnecting
-        if (this.socket) {
-            this.socket.disconnect();
-            this.socket = null;
+        if (this.socket?.connected && this.userId === userId) {
+            console.log("Already connected for user:", userId, ". Re-emitting join just in case.");
+            this.socket.emit("join", userId);
+            return;
         }
 
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BASE_URL?.replace('/api', '') || "http://localhost:5000";
+        console.log("Connecting/Reconnecting to socket at:", backendUrl, "for user:", userId);
+
+        // Disconnect only if it's a different user or disconnected
+        if (this.socket) {
+            this.socket.disconnect();
+        }
+
+        this.userId = userId;
         this.socket = io(backendUrl, {
             withCredentials: true,
-            transports: ['websocket', 'polling'] // Try both
+            transports: ['websocket', 'polling']
         });
 
         // Wait for connection before joining the room
@@ -37,6 +42,10 @@ class SocketService {
 
     getSocket() {
         return this.socket;
+    }
+
+    hasListeners(event: string) {
+        return this.socket?.hasListeners(event) || false;
     }
 
     disconnect() {

@@ -1,6 +1,6 @@
 import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { WallpaperStatus } from "@/utils/wallpaperStatus";
+import { WallpaperStatus } from "@/constants/wallpaperStatus";
 import { IBaseRepository } from "./IBaseRepository";
 
 export interface IWallpaperRepository extends IBaseRepository<WallpaperEntity> {

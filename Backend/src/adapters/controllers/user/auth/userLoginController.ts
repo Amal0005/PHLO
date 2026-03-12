@@ -1,11 +1,11 @@
 import { IUserLoginUseCase } from "../../../../domain/interface/user/auth/IUserLoginUseCase";
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 import { AppError } from "@/domain/errors/appError";
 
 export class userLoginController {
-  constructor(private _userLoginUseCase: IUserLoginUseCase) {}
+  constructor(private _userLoginUseCase: IUserLoginUseCase) { }
 
   async login(req: Request, res: Response): Promise<Response> {
     try {

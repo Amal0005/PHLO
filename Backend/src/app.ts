@@ -13,6 +13,7 @@ import { UploadRoutes } from "@/adapters/routes/uploadRoutes";
 import { ViewRoutes } from "@/adapters/routes/viewRoutes";
 import { AdminRoutes } from "@/adapters/routes/admin/adminRoutes";
 import chatRouter from "@/adapters/routes/chatRoutes";
+import notificationRouter from "@/adapters/routes/notificationRoutes";
 import { SocketIOHandler } from "@/framework/socket/socketIOHandler";
 import { loggerMiddleware } from "./adapters/middlewares/loggerMiddleware";
 import path from "path";
@@ -42,6 +43,7 @@ export class App {
     this.setViewRouter();
     this.setAdminRouter();
     this.setChatRoutes();
+    this.setNotificationRoutes();
     this.app.use(errorHandler);
   }
   private setMiddlewares(): void {
@@ -94,6 +96,10 @@ export class App {
 
   private setChatRoutes() {
     this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.CHAT.BASE}`, chatRouter);
+  }
+
+  private setNotificationRoutes() {
+    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.NOTIFICATION.BASE}`, notificationRouter);
   }
 
   public async listen(): Promise<void> {

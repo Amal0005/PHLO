@@ -12,7 +12,7 @@ import SubscriptionSuccess from "@/pages/creator/subscription/subscriptionSucces
 import SubscriptionCancel from "@/pages/creator/subscription/subscriptionCancel";
 import ViewWallpapersPage from "@/pages/creator/wallpaper/viewWallpapers";
 import BookingsCalendar from "@/pages/creator/bookings/BookingsCalendar";
-import ChatPage from "@/pages/user/chat/ChatPage";
+import ChatPage from "@/pages/chat/ChatPage";
 
 export function CreatorRoutes() {
   return (

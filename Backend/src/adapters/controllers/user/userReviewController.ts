@@ -4,8 +4,8 @@ import { IDeleteReviewUseCase } from "@/domain/interface/user/review/IDeleteRevi
 import { IEditReviewUseCase } from "@/domain/interface/user/review/IEditReviewUseCase";
 import { IGetReviewByBookingUseCase } from "@/domain/interface/user/review/IGetReviewByBookingUseCase";
 import { IGetReviewUseCase } from "@/domain/interface/user/review/IGetReviewUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
-import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
 import { Request, Response } from "express";
 
 export class ReviewController {
@@ -15,7 +15,7 @@ export class ReviewController {
         private _getReviewUseCase: IGetReviewUseCase,
         private _getReviewByBookingUseCase: IGetReviewByBookingUseCase,
         private _editReviewUseCase: IEditReviewUseCase
-    ) {}
+    ) { }
     async addReview(req: AuthRequest, res: Response): Promise<void> {
         const userId = req.user!.userId
         const data = req.body
@@ -43,9 +43,9 @@ export class ReviewController {
 
     async updateReview(req: AuthRequest, res: Response): Promise<void> {
         const { reviewId } = req.params;
-        const userId=req.user!.userId;
+        const userId = req.user!.userId;
         const { rating, comment } = req.body;
-        const result = await this._editReviewUseCase.editReview(userId,reviewId, rating, comment);
+        const result = await this._editReviewUseCase.editReview(userId, reviewId, rating, comment);
         res.status(StatusCode.OK).json({ success: true, data: result, message: MESSAGES.REVIEW.UPDATED });
     }
 }

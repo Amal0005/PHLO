@@ -47,7 +47,7 @@ export default function AdminLogin() {
     try {
       const data = await AdminAuthService.login(form);
 
-      dispatch(setAdmin(data.data.admin));
+      dispatch(setAdmin(data.data.user));
       dispatch(setToken(data.data.accessToken));
       dispatch(setRole("admin"));
 

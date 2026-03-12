@@ -35,16 +35,15 @@ import { EditProfileController } from "@/adapters/controllers/user/profile/editP
 import { ChangePasswordController } from "@/adapters/controllers/user/profile/changePasswordController";
 import { EditUserProfileUsecase } from "@/application/useCases/user/profile/editUserProfileUseCase";
 import { ChangePasswordUseCase } from "@/application/useCases/user/profile/changePasswordUseCase";
+import { UserPackageController } from "@/adapters/controllers/user/UserPackageController";
 import { ListUserPackagesUseCase } from "@/application/useCases/user/package/listUserPackagesUseCase";
-import { ListUserPackagesController } from "@/adapters/controllers/user/package/listUserPackagesController";
 import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
 import { GetPackageDetailUseCase } from "@/application/useCases/user/package/getPackageDetailUseCase";
-import { GetPackageDetailController } from "@/adapters/controllers/user/package/getPackageDetailController";
 import { BookingRepository } from "@/adapters/repository/user/bookingRepository";
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { StripeService } from "@/domain/services/stripeService";
 import { CreateBookingUseCase } from "@/application/useCases/user/booking/createBookingUseCase";
-import { PaymentController } from "@/adapters/controllers/payment/paymentController";
+import { PaymentController } from "@/adapters/controllers/paymentController";
 import { BookingWebhookUseCase } from "@/application/useCases/user/booking/bookingWebhookUseCase";
 import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/creator/subscription/creatorSubscriptionWebhookUseCase";
 import { ListBookingUseCase } from "../../../application/useCases/user/booking/listbookingUseCase";
@@ -82,7 +81,7 @@ import { WalletRepository } from "@/adapters/repository/walletRepository";
 
 
 import { ChatRepository } from "@/adapters/repository/chatRepository";
-import { chatController } from "../chatInjections";
+import { sendNotificationUseCase } from "@/framework/depInjection/notificationInjections";
 
 const userRepo = new UserRepository();
 const passwordServices = new PasswordService();
@@ -126,11 +125,11 @@ const addCategoryUseCase = new AddCategoryUseCase(categoryRepository);
 const editCategoryUseCase = new EditCategoryUseCase(categoryRepository);
 const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepository);
 const createBookingUseCase = new CreateBookingUseCase(bookingRepo, packageRepository, leaveRepo, stripeService)
-const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService, packageRepository, creatorRepository, creditWalletUseCase, chatRepo)
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase)
+const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeService, packageRepository, creatorRepository, creditWalletUseCase, chatRepo, sendNotificationUseCase, userRepo)
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase, userRepo)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
 const checkAvailabilityUseCase = new CheckAvailabilityUseCase(bookingRepo, leaveRepo, packageRepository);
-const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo);
+const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo, packageRepository, sendNotificationUseCase);
 const getBookingDetailUseCase = new GetBookingDetailUseCase(bookingRepo, stripeService);
 const getApprovedWallpapers = new GetApprovedWallpaperUseCase(wallpaperRepo, wallpaperDownloadRepo)
 const recordDownloadUseCase = new RecordDownloadUseCase(wallpaperDownloadRepo, wallpaperRepo)
@@ -145,7 +144,8 @@ const getReviewUseCase = new GetReviewUseCase(reviewRepo)
 const getReviewByBookingUseCase = new GetReviewByBookingUseCase(reviewRepo)
 const editReviewUseCase = new EditReviewUseCase(reviewRepo)
 const buyWallpaperUseCase = new BuyWallpaperUseCase(wallpaperRepo, stripeService, wallpaperDownloadRepo)
-const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase)
+const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase, sendNotificationUseCase, userRepo)
+
 const retryPaymentUseCase = new RetryPaymentUseCase(bookingRepo, packageRepository, stripeService);
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
@@ -157,8 +157,7 @@ export const tokenController = new TokenController(jwtService)
 export const getProfileController = new GetProfileController(getUserProfileUseCase)
 export const editProfileController = new EditProfileController(editUserProfileUseCase)
 export const changePasswordController = new ChangePasswordController(changePasswordUseCase)
-export const listUserPackagesController = new ListUserPackagesController(listUserPackagesUseCase)
-export const getPackageDetailController = new GetPackageDetailController(getPackageDetailUseCase)
+export const userPackageController = new UserPackageController(listUserPackagesUseCase, getPackageDetailUseCase)
 export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
 export const userProfileController = new UserProfileController(getUserProfileUseCase, editUserProfileUseCase, changePasswordUseCase, otpServices, userRepo, creatorRepository);
 export const userBookingController = new UserBookingController(createBookingUseCase, listBookingsUseCase, checkAvailabilityUseCase, cancelBookingUseCase, getBookingDetailUseCase, downloadInvoiceUseCase, retryPaymentUseCase);

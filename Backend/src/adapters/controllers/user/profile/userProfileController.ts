@@ -1,7 +1,7 @@
 import { Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
@@ -18,7 +18,7 @@ export class UserProfileController {
         private _otpService: IOTPService,
         private _userRepo: IUserRepository,
         private _creatorRepo: ICreatorRepository,
-    ) {}
+    ) { }
 
 
     async getProfile(req: AuthRequest, res: Response): Promise<void> {

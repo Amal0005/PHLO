@@ -1,4 +1,4 @@
-import { BookingStatus } from "@/utils/bookingStatus";
+import { BookingStatus } from "@/constants/bookingStatus";
 import { PackageEntity } from "./packageEntity";
 import { User } from "./userEntities";
 

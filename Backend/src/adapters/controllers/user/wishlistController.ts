@@ -1,8 +1,8 @@
 import { IToggleWishlistUseCase } from "@/domain/interface/user/wishlist/IToggleWishlistUseCase";
 import { IGetWishlistUseCase } from "@/domain/interface/user/wishlist/IGetWishlistUseCase";
 import { IGetWishlistIdsUseCase } from "@/domain/interface/user/wishlist/IGetWishlistIdsUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
-import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
 import { Response } from "express";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
@@ -11,7 +11,7 @@ export class WishlistController {
         private _toggleWishlistUseCase: IToggleWishlistUseCase,
         private _getWishlistUseCase: IGetWishlistUseCase,
         private _getWishlistIdsUseCase: IGetWishlistIdsUseCase
-    ) {}
+    ) { }
 
     async toggle(req: AuthRequest, res: Response) {
         try {

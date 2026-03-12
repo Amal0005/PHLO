@@ -1,7 +1,7 @@
 import { IMailService } from "@/domain/interface/service/IMailServices";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IForgotPasswordUseCase } from "@/domain/interface/creator/auth/IForgotPasswordUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 
 import { renderTemplate } from "@/utils/renderTemplates";
@@ -12,7 +12,7 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
         private _creatorRepo: ICreatorRepository,
         private _otpService: IOTPService,
         private _mailService: IMailService
-    ) {}
+    ) { }
 
     async sendOtp(email: string): Promise<void> {
         email = email.trim().toLowerCase();

@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { AuthError } from "@/domain/errors/authError";
 import { ICreatorLoginUseCase } from "@/domain/interface/creator/auth/ICreatorLoginUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class CreatorLoginController {
   constructor(
     private _loginUseCase: ICreatorLoginUseCase
-  ) {}
+  ) { }
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body.Creator as {

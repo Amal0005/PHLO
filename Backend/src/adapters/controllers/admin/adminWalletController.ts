@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 import { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { logger } from "@/utils/logger";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class AdminWalletController {
   constructor(
     private _getWalletUseCase: IGetWalletUseCase,
     private _creditWalletUseCase: ICreditWalletUseCase,
-  ) {}
+  ) { }
 
   async getWallet(req: Request, res: Response): Promise<Response> {
     try {

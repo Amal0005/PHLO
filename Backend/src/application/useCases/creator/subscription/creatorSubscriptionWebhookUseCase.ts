@@ -1,5 +1,6 @@
 import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
@@ -9,14 +10,19 @@ import { logger } from "@/utils/logger";
 import path from "node:path";
 import Stripe from "stripe";
 
+import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import { NotificationType } from "@/domain/entities/notificationEntity";
+
 export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWebhookUseCase {
     constructor(
         private _creatorRepo: ICreatorRepository,
         private _subscriptionRepo: ISubscriptionRepository,
         private _stripeService: IStripeService,
         private _mailService: IMailService,
-        private _creditWalletUseCase: ICreditWalletUseCase
-    ) { }
+        private _creditWalletUseCase: ICreditWalletUseCase,
+        private _sendNotificationUseCase: ISendNotificationUseCase,
+        private _userRepo: IUserRepository
+    ) {}
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);
@@ -90,6 +96,26 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
                     // Credit Admin Wallet (Unified)
                     await this._creditAdminWallet(plan, creator, session.id);
 
+                    // Send Notification to Creator
+                    await this._sendNotificationUseCase.sendNotification({
+                        recipientId: creatorId,
+                        type: NotificationType.ACCOUNT,
+                        title: "Subscription Queued",
+                        message: `Your upgrade to ${plan.name} is queued and will start on ${startDate.toLocaleDateString()}`,
+                        isRead: false
+                    });
+
+                    // Send Notification to Admin
+                    const adminId = await this._userRepo.findAdminId();
+                    if (adminId) {
+                        await this._sendNotificationUseCase.sendNotification({
+                            recipientId: adminId,
+                            type: NotificationType.WALLET,
+                            title: "Wallet Credit (Subscription Queued)",
+                            message: `Admin wallet credited for ${creator?.fullName || 'Creator'} upgrade to ${plan.name} (Queued).`,
+                            isRead: false
+                        });
+                    }
                 } else {
                     // No active subscription — activate immediately
                     const startDate = now;
@@ -117,6 +143,27 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
 
                     // Credit Admin Wallet (Unified)
                     await this._creditAdminWallet(plan, creator, session.id);
+
+                    // Send Notification to Creator
+                    await this._sendNotificationUseCase.sendNotification({
+                        recipientId: creatorId,
+                        type: NotificationType.ACCOUNT,
+                        title: "Subscription Activated",
+                        message: `Your ${plan.name} subscription is now active!`,
+                        isRead: false
+                    });
+
+                    // Send Notification to Admin
+                    const adminId = await this._userRepo.findAdminId();
+                    if (adminId) {
+                        await this._sendNotificationUseCase.sendNotification({
+                            recipientId: adminId,
+                            type: NotificationType.WALLET,
+                            title: "Wallet Credit (Subscription)",
+                            message: `Admin wallet credited for ${creator?.fullName || 'Creator'} purchase of ${plan.name} subscription.`,
+                            isRead: false
+                        });
+                    }
                 }
             }
         }

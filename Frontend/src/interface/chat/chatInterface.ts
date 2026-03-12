@@ -11,6 +11,7 @@ export interface ConversationEntity {
         creatorName: string;
         creatorImage?: string;
     };
+    packageName?: string;
 }
 
 export interface MessageEntity {

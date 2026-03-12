@@ -10,10 +10,9 @@ export class SubscriptionScheduler implements ISubscriptionScheduler {
     constructor(
         private readonly _creatorRepo: ICreatorRepository,
         private readonly _mailService: IMailService
-    ) { }
+    ) {}
 
     start(): void {
-        // Runs every day at midnight
 cron.schedule("*/5 * * * *", async () => {
                 await this._promoteExpiredSubscriptions();
         });

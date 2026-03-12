@@ -4,7 +4,7 @@ import { ISendMessageUseCase } from "@/domain/interface/chat/ISendMessageUseCase
 import { CreateConversationUseCase } from "@/application/useCases/chat/createConversationUseCase";
 import { Request, Response } from "express";
 import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 
 export class ChatController {
     constructor(
@@ -25,9 +25,9 @@ export class ChatController {
         return res.status(StatusCode.OK).json({ success: true, message })
     }
     async SendMessage(req: AuthRequest, res: Response) {
-        const { conversationId, message } = req.body;
+        const { conversationId, message, receiverId } = req.body;
         const senderId = req.user?.userId as string;
-        const result = await this._sendMessageUseCase.sendMessage({ conversationId, senderId, message });
+        const result = await this._sendMessageUseCase.sendMessage({ conversationId, senderId, message, recipientId: receiverId });
         return res.status(StatusCode.OK).json({ success: true, message: result })
     }
 

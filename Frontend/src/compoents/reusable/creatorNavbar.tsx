@@ -12,6 +12,7 @@ import { CreatorAuthService } from "@/services/creator/creatorAuthService";
 import { S3Media } from "./s3Media";
 import ConfirmModal from "./ConfirmModal";
 import { removeUser } from "@/store/slices/auth/authSlice";
+import NotificationBell from "./NotificationBell";
 
 export default function CreatorNavbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -98,6 +99,8 @@ export default function CreatorNavbar() {
                             </button>
                         ))}
 
+                        <NotificationBell />
+
                         {creator && (
                             <div className="relative" ref={dropdownRef}>
                                 <button
@@ -169,6 +172,10 @@ export default function CreatorNavbar() {
             {mobileMenuOpen && (
                 <div className="md:hidden bg-black/98 backdrop-blur-xl border-b border-white/10 animate-in fade-in slide-in-from-top-4 duration-300">
                     <div className="px-4 py-6 space-y-4">
+                        <div className="flex items-center justify-between px-4 pb-4 border-b border-white/5">
+                            <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">Alerts</span>
+                            <NotificationBell />
+                        </div>
                         {creator && (
                             <>
                                 <div

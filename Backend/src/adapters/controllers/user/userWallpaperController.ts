@@ -1,8 +1,8 @@
 import { IRecordDownloadUseCase } from "@/domain/interface/creator/walpapper/IRecordDownloadUseCase";
 import { IGetApprovedWallpapersUseCase } from "@/domain/interface/user/wallpaper/IGetApprovedWallpaperUseCase";
 import { IBuyWallpaperUseCase } from "@/domain/interface/user/wallpaper/IBuyWallpaperUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
-import { StatusCode } from "@/utils/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
 import { Response } from "express";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
@@ -11,7 +11,7 @@ export class UserWallpaperController {
     private _getApprovedWallpaperUseCase: IGetApprovedWallpapersUseCase,
     private _recordDownloadUseCase: IRecordDownloadUseCase,
     private _buyWallpaperUseCase: IBuyWallpaperUseCase
-  ) {}
+  ) { }
 
   async getWallpaper(req: AuthRequest, res: Response) {
     try {

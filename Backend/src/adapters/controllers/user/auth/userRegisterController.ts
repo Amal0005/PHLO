@@ -1,7 +1,7 @@
 import { IUserRegisterUseCase } from "../../../../domain/interface/user/auth/IUserRegisterUseCase";
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IVerifyRegisterOtpUseCase } from "../../../../domain/interface/user/auth/IVerifyRegisterOtpUseCase";
 import { IResendOtpUseCase } from "../../../../domain/interface/user/auth/IResendOtpUseCase";
 
@@ -10,7 +10,7 @@ export class userRegisterController {
     private _userRegisterUseCase: IUserRegisterUseCase,
     private _verifyOtpUseCase: IVerifyRegisterOtpUseCase,
     private _resendOtpUseCase: IResendOtpUseCase
-  ) {}
+  ) { }
 
   async register(req: Request, res: Response) {
     try {

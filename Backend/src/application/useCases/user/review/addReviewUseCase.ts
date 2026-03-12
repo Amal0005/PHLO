@@ -3,13 +3,13 @@ import { AppError } from "@/domain/errors/appError";
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { IReviewRepository } from "@/domain/interface/repositories/IReviewRepository";
 import { IAddReviewUseCase } from "@/domain/interface/user/review/IAddReviewUseCase";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 
 export class AddReviewUseCase implements IAddReviewUseCase {
     constructor(
         private _reviewRepo: IReviewRepository,
         private _bookingRepo: IBookingRepository
-    ) {}
+    ) { }
     async addReview(userId: string, data: reviewRequestDTO): Promise<void> {
         const booking = await this._bookingRepo.findById(data.bookingId)
         console.log("booooo", booking)

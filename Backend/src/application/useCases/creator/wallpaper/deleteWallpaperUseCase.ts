@@ -1,12 +1,12 @@
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { IDeleteWallpaperUseCase } from "@/domain/interface/creator/walpapper/IDeleteWallpaperUseCase";
 import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class DeleteWallpaperUseCase implements IDeleteWallpaperUseCase {
     constructor(
         private _wallpaperRepo: IWallpaperRepository,
-    ) {}
+    ) { }
     async deleteWallpaper(wallpaperId: string, creatorId: string): Promise<void> {
         console.log("jvhjk", wallpaperId, creatorId)
         if (!creatorId) throw new Error("Creator Id is Required")

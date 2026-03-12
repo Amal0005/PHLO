@@ -4,14 +4,14 @@ import { IUserRepository } from "@/domain/interface/repositories/IUserRepository
 import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { IUserLoginUseCase } from "@/domain/interface/user/auth/IUserLoginUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class userLoginUserUseCase implements IUserLoginUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _passwordService: IPasswordService,
     private _jwtService: IJwtServices
-  ) {}
+  ) { }
 
   async loginUser(user: loginDto) {
     const existingUser = await this._userRepo.findByEmail(user.email);

@@ -58,6 +58,11 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
     return user ? this.mapToEntity(user) : null;
   }
 
+  async findAdminId(): Promise<string | null> {
+    const admin = await this.model.findOne({ role: "admin" }).select("_id").lean();
+    return admin ? (admin as any)._id.toString() : null;
+  }
+
   protected mapToEntity(doc: IUserModel): User {
     return {
       _id: doc._id.toString(),

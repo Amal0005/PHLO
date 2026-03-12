@@ -2,9 +2,9 @@ import { AppError } from "@/domain/errors/appError";
 import { IApproveWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IApproveWallpaperUseCase";
 import { IGetAllWallpapersUseCase } from "@/domain/interface/admin/wallpaper/IGetAllWallpapersUseCase";
 import { IRejectWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IRejectWallpaperUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
-import { StatusCode } from "@/utils/statusCodes";
-import { WallpaperStatus } from "@/utils/wallpaperStatus";
+import { MESSAGES } from "@/constants/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { WallpaperStatus } from "@/constants/wallpaperStatus";
 import { Request, Response } from "express";
 
 export class AdminWallpaperController {
@@ -12,7 +12,7 @@ export class AdminWallpaperController {
     private _approveWallpaperUseCase: IApproveWallpaperUseCase,
     private _rejectWallpaperUseCase: IRejectWallpaperUseCase,
     private _getAllWallpapersUseCase: IGetAllWallpapersUseCase,
-  ) {}
+  ) { }
   async getWallpaper(req: Request, res: Response) {
     try {
       const page = Number(req.query.page) || 1;

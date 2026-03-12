@@ -34,7 +34,9 @@ const PackageDetailPage: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [markerLoc, setMarkerLoc] = useState<{ lat: number, lng: number } | null>(null);
   const locationBarRef = React.useRef<LocationSearchBarHandle>(null);
+  const galleryRef = React.useRef<HTMLDivElement>(null);
   const [showMap, setShowMap] = useState(false);
+  const [selectedImageModal, setSelectedImageModal] = useState<number | null>(null);
 
   const [viewState, setViewState] = useState({
     latitude: 20.5937,
@@ -186,16 +188,29 @@ const PackageDetailPage: React.FC = () => {
 
             {/* ── LEFT GLASS PANEL ── */}
             <div
-              className="flex flex-col w-full lg:w-[540px] flex-shrink-0 lg:h-full rounded-3xl overflow-hidden"
+              className="flex flex-col w-full lg:w-[760px] flex-shrink-0 rounded-[56px] relative"
               style={{
-                background: "rgba(20, 20, 20, 0.4)",
-                backdropFilter: "blur(32px) saturate(1.5)",
-                WebkitBackdropFilter: "blur(32px) saturate(1.5)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                boxShadow: "0 40px 100px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05)",
+                background: "rgba(10, 10, 10, 0.45)",
+                backdropFilter: "blur(50px) saturate(2)",
+                WebkitBackdropFilter: "blur(50px) saturate(2)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 80px 180px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05)",
               }}
             >
-              <div className="flex flex-col flex-1 overflow-y-auto p-5 sm:p-8 lg:p-9 lg:pb-16" style={{ scrollbarWidth: "none" }}>
+              {/* Decorative Floating Gallery Overlap */}
+              <div className="absolute -right-32 top-24 hidden lg:flex flex-col gap-12 z-30">
+                {packageData.images.slice(0, 3).map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedImage(idx)}
+                    className={`w-52 h-36 rounded-[40px] overflow-hidden border-2 transition-all duration-700 shadow-[0_40px_100px_rgba(0,0,0,1)] ${selectedImage === idx ? 'border-[#E2B354] scale-110 -translate-x-16' : 'border-white/10 opacity-70 hover:opacity-100'}`}
+                  >
+                    <S3Media s3Key={img} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex flex-col p-8 sm:p-12 lg:p-16 relative z-10">
 
                 <div className="mb-5">
                   <span className="inline-block px-3 py-1 rounded-full text-[8px] font-bold tracking-[0.35em] uppercase"
@@ -208,13 +223,20 @@ const PackageDetailPage: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-start justify-between gap-3 mb-5">
+                <div className="flex flex-col gap-4 mb-8">
                   <h1
-                    className="font-black uppercase text-white flex-1"
-                    style={{ fontSize: "clamp(1.4rem, 2vw, 1.9rem)", letterSpacing: "-0.03em", lineHeight: "1.02" }}
+                    className="font-[950] uppercase text-[#E2B354] leading-[0.9]"
+                    style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", letterSpacing: "-0.04em" }}
                   >
                     {packageData.title}
                   </h1>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-[10px] text-white/20 uppercase tracking-[0.4em] font-black italic">Starting from</span>
+                    <div className="inline-flex flex-col">
+                      <span className="text-4xl font-[950] text-white tracking-tighter">₹ {packageData.price.toLocaleString()}</span>
+                      <div className="h-0.5 w-[75%] bg-[#E2B354] mt-2 rounded-full shadow-[0_0_15px_#E2B354]" />
+                    </div>
+                  </div>
                 </div>
 
                 {typeof packageData.creatorId === "object" && (
@@ -250,26 +272,16 @@ const PackageDetailPage: React.FC = () => {
                   </div>
                 )}
 
-                <div className="mb-6">
-                  <p className="text-[8px] font-bold tracking-[0.4em] uppercase mb-3" style={{ color: "rgba(255,255,255,0.28)" }}>
+                <div className="mb-10 max-w-[480px]">
+                  <p className="text-[10px] font-black tracking-[0.4em] uppercase mb-4 text-[#E2B354]/60">
                     Overview
                   </p>
-                  <p className="text-[11px] leading-[1.7] break-words" style={{ color: "rgba(255,255,255,0.55)" }}>
+                  <p className="text-[13px] leading-[1.8] text-white/50 font-medium break-words whitespace-pre-line text-justify">
                     {packageData.description}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-6 items-stretch">
-                  <div className="rounded-2xl p-4 flex flex-col justify-center h-[54px]"
-                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                    <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.22)" }}>
-                      Established
-                    </p>
-                    <p className="text-[12px] font-bold uppercase tracking-wider text-white">
-                      {new Date(packageData.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                    </p>
-                  </div>
-
                   <div className="relative flex flex-col justify-center">
                     <CustomCalendar
                       selectedDate={selectedDate ? new Date(selectedDate) : undefined}
@@ -299,6 +311,16 @@ const PackageDetailPage: React.FC = () => {
                         </div>
                       )}
                     </div>
+                  </div>
+
+                  <div className="rounded-2xl p-4 flex flex-col justify-center h-[54px]"
+                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.22)" }}>
+                      Established
+                    </p>
+                    <p className="text-[12px] font-bold uppercase tracking-wider text-white">
+                      {new Date(packageData.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
+                    </p>
                   </div>
                 </div>
 
@@ -356,44 +378,32 @@ const PackageDetailPage: React.FC = () => {
                   {/* Date & Location Capture */}
 
 
-                  <div className="flex items-center justify-between gap-4 mt-4">
-                    <div>
-                      <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.28)" }}>
-                        Starting from
-                      </p>
-                      <div className="flex items-baseline gap-0.5">
-                        <span className="text-[11px] font-semibold mr-0.5" style={{ color: "rgba(255,255,255,0.38)" }}>₹</span>
-                        <span className="font-black text-white" style={{ fontSize: "clamp(1.6rem, 2.4vw, 2.1rem)", letterSpacing: "-0.04em" }}>
-                          {packageData.price.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={handleBooking}
-                      disabled={checkingAvailability || isDateAvailable === false}
-                      className={`px-8 py-3.5 font-bold text-[11px] tracking-[0.15em] uppercase rounded-2xl transition-all active:scale-95 whitespace-nowrap ${isDateAvailable === false ? 'opacity-50 cursor-not-allowed grayscale' : 'bg-white text-black hover:shadow-[0_8px_32px_rgba(255,255,255,0.15)]'
-                        }`}
-                      style={{ boxShadow: "0 8px 32px rgba(255,255,255,0.12)" }}
-                    >
-                      {checkingAvailability ? 'Checking...' : isDateAvailable === false ? 'Unavailable' : 'Confirm & Pay'}
-                    </button>
-                  </div>
+                {/* Booking Action */}
+                <div className="pt-10 mt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                  <button
+                    onClick={handleBooking}
+                    disabled={checkingAvailability || isDateAvailable === false}
+                    className="w-full h-20 rounded-2xl border-2 border-[#E2B354]/30 bg-transparent text-[#E2B354] font-[950] text-[13px] uppercase tracking-[0.6em] hover:bg-[#E2B354] hover:text-black transition-all active:scale-[0.99] disabled:opacity-30 flex items-center justify-center shadow-2xl shadow-[#E2B354]/10"
+                  >
+                    {checkingAvailability ? 'Checking...' : isDateAvailable === false ? 'Unavailable' : 'Confirm & Pay'}
+                  </button>
                 </div>
 
               </div>
             </div>
+          </div>
 
-            {/* ── Mobile Strip ── */}
+            {/* Mobile Strip Only */}
             {totalImages > 1 && (
-              <div className="flex lg:hidden items-center gap-2.5 w-full overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+              <div className="flex lg:hidden items-center gap-2.5 w-full overflow-x-auto pb-4 pt-10 px-4" style={{ scrollbarWidth: "none" }}>
                 {packageData.images.slice(0, 5).map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
                     className="flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300"
                     style={{
-                      width: 64, height: 48,
-                      border: selectedImage === index ? "2px solid rgba(255,255,255,0.85)" : "2px solid rgba(255,255,255,0.08)",
+                      width: 80, height: 60,
+                      border: selectedImage === index ? "2px solid #E2B354" : "1px solid rgba(255,255,255,0.1)",
                       opacity: selectedImage === index ? 1 : 0.4,
                     }}
                   >
@@ -402,61 +412,41 @@ const PackageDetailPage: React.FC = () => {
                 ))}
               </div>
             )}
+          </div>
 
-            {/* ── Desktop Strip ── */}
-            {totalImages > 0 && (
-              <div className="hidden lg:flex flex-col justify-between flex-shrink-0 py-1" style={{ minHeight: 0 }}>
-                <div className="flex flex-col gap-2.5 overflow-y-auto flex-1 py-3 mt-2" style={{ scrollbarWidth: "none" }}>
-                  {packageData.images.slice(0, 7).map((img, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
-                      className="flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300"
-                      style={{
-                        width: 62, height: 48,
-                        border: selectedImage === index ? "2px solid rgba(255,255,255,0.85)" : "2px solid rgba(255,255,255,0.08)",
-                        opacity: selectedImage === index ? 1 : 0.38,
-                        transform: selectedImage === index ? "scale(1.07)" : "scale(1)",
-                        boxShadow: selectedImage === index ? "0 6px 24px rgba(0,0,0,0.6)" : "none",
-                      }}
-                    >
-                      <S3Media s3Key={img} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setShowGallery(true)}
-                  className="flex flex-col items-center justify-center gap-1 rounded-xl transition-all hover:opacity-80 mt-2"
-                  style={{
-                    width: 62, height: 44,
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.09)",
-                    backdropFilter: "blur(10px)",
-                    color: "rgba(255,255,255,0.45)",
-                  }}
-                >
-                  <ImageIcon className="w-3 h-3" />
-                  <span style={{ fontSize: 7, letterSpacing: "0.15em", fontWeight: 700 }}>ALL</span>
-                </button>
-              </div>
-            )}
-
-            {/* ── Dots ── */}
-            {totalImages > 1 && (
-              <div className="hidden lg:block absolute bottom-10 z-20 pointer-events-none"
-                style={{ left: "calc(600px + ((100% - 600px - 62px) / 2) + 40px)", transform: "translateX(-50%)" }}>
-                <div className="flex items-center gap-1.5">
-                  {Array.from({ length: Math.min(totalImages, 8) }).map((_, i) => (
-                    <div key={i} className="rounded-full transition-all duration-300"
-                      style={{
-                        width: selectedImage === i ? 18 : 5,
-                        height: 5,
-                        background: selectedImage === i ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.22)",
-                      }} />
-                  ))}
+          {/* ── MEDIA COLLECTION / GALLERY SECTION ── */}
+          <div ref={galleryRef} className="flex flex-col px-4 sm:px-10 lg:px-16 pt-24 pb-12">
+            <div className="max-w-7xl mx-auto w-full">
+              <div className="flex flex-col mb-16 px-4">
+                <span className="text-[#E2B354] text-[10px] font-black uppercase tracking-[0.5em] mb-4">Gallery</span>
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                  <h2 className="text-4xl lg:text-7xl font-[950] uppercase tracking-tighter text-white leading-none">
+                    Media Collection
+                  </h2>
+                  <p className="text-white/30 text-xs font-medium uppercase tracking-widest lg:max-w-xs">
+                    Explore the complete visual journey of this package with {totalImages} cinematic shots.
+                  </p>
                 </div>
               </div>
-            )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {packageData.images?.map((img, index) => (
+                  <button 
+                    key={index}
+                    onClick={() => setSelectedImageModal(index)}
+                    className={`group relative aspect-[16/10] rounded-[48px] overflow-hidden border-2 transition-all duration-700 hover:scale-[1.03] shadow-2xl ${selectedImage === index ? 'border-[#E2B354] ring-8 ring-[#E2B354]/10' : 'border-white/5 opacity-80 hover:opacity-100'}`}
+                  >
+                    <S3Media s3Key={img} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[#E2B354] text-[8px] font-black uppercase tracking-[0.4em]">View Full Size</span>
+                        <span className="text-white text-xs font-bold uppercase tracking-widest">Image {index + 1}</span>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* ── REVIEWS SECTION ── */}
@@ -476,29 +466,70 @@ const PackageDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* ── GALLERY MODAL ── */}
-        {showGallery && (
-          <div className="fixed inset-0 z-50 overflow-y-auto" style={{ background: "rgba(0,0,0,0.96)", backdropFilter: "blur(24px)" }}>
-            <div className="min-h-screen p-4 sm:p-10">
-              <div className="max-w-5xl mx-auto mb-6 sm:mb-8 flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-black tracking-tight uppercase text-white">{packageData.title}</h3>
-                  <p className="text-[10px] tracking-widest uppercase mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>{totalImages} photos</p>
-                </div>
-                <button onClick={() => setShowGallery(false)} className="w-10 h-10 rounded-full flex items-center justify-center transition-colors" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                  <X className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+        {/* ── FULL SCREEN IMAGE VIEWER MODAL ── */}
+        {selectedImageModal !== null && (
+          <div className="fixed inset-0 z-[100] flex flex-col bg-black/95 backdrop-blur-2xl animate-in fade-in zoom-in duration-300">
+            {/* Modal Header/Controls */}
+            <div className="absolute top-0 inset-x-0 h-24 flex items-center justify-between px-8 lg:px-16 z-20">
+              <div className="flex flex-col">
+                <span className="text-[#E2B354] text-[8px] font-black uppercase tracking-[0.4em]">Cinematic View</span>
+                <span className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Image {selectedImageModal + 1} of {totalImages}</span>
+              </div>
+              <button 
+                onClick={() => setSelectedImageModal(null)} 
+                className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-black transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Main Image View */}
+            <div className="flex-1 flex items-center justify-center p-4 lg:p-24">
+              <div className="relative w-full h-full flex items-center justify-center group">
+                <S3Media 
+                  s3Key={packageData.images[selectedImageModal]} 
+                  className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_50px_100px_rgba(0,0,0,0.9)]"
+                />
+                
+                {/* Navigation Arrows */}
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageModal(prev => (prev! > 0 ? prev! - 1 : totalImages - 1));
+                  }}
+                  className="absolute left-4 lg:left-12 w-16 h-16 rounded-full bg-black/20 backdrop-blur-md border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:bg-[#E2B354]/20 hover:border-[#E2B354]/30 transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <ArrowLeft className="w-6 h-6" />
+                </button>
+
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageModal(prev => (prev! < totalImages - 1 ? prev! + 1 : 0));
+                  }}
+                  className="absolute right-4 lg:right-12 w-16 h-16 rounded-full bg-black/20 backdrop-blur-md border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:bg-[#E2B354]/20 hover:border-[#E2B354]/30 transition-all opacity-0 group-hover:opacity-100"
+                >
+                  <div className="rotate-180"><ArrowLeft className="w-6 h-6" /></div>
                 </button>
               </div>
-              <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                {packageData.images?.map((img, index) => (
-                  <button key={index} onClick={() => { setSelectedImage(index); setShowGallery(false); }} className="group relative aspect-square rounded-2xl overflow-hidden transition-all duration-200 hover:scale-[1.02]" style={{ border: selectedImage === index ? "2px solid rgba(255,255,255,0.75)" : "2px solid rgba(255,255,255,0.05)" }}>
-                    <S3Media s3Key={img} alt={`${packageData.title} ${index + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
+            </div>
+
+            {/* Bottom Preview Strip */}
+            <div className="h-32 bg-black/40 border-t border-white/5 flex items-center justify-center gap-3 px-8">
+              {packageData.images.map((img, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => setSelectedImageModal(idx)}
+                  className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300 ${selectedImageModal === idx ? 'border-[#E2B354] scale-110 shadow-lg shadow-[#E2B354]/20' : 'border-transparent opacity-30 hover:opacity-60'}`}
+                >
+                  <S3Media s3Key={img} className="w-full h-full object-cover" />
+                </button>
+              ))}
             </div>
           </div>
         )}
+
+        {/* INTEGRATED INTO PAGE SECTION ABOVE */}
       </div>
 
       {/* ── MAP PICKER MODAL ── */}
@@ -638,6 +669,15 @@ const PackageDetailPage: React.FC = () => {
           </div>
         </div>
       )}
+      {/* Floating Gallery Button - Bottom Right */}
+      <button 
+        onClick={() => galleryRef.current?.scrollIntoView({ behavior: 'smooth' })}
+        className="fixed bottom-10 right-10 z-[60] w-24 h-24 rounded-full bg-black/40 backdrop-blur-3xl border border-white/10 flex flex-col items-center justify-center gap-1.5 hover:bg-[#E2B354] hover:text-black transition-all shadow-[0_30px_100px_rgba(0,0,0,0.8)] group active:scale-95"
+      >
+        <div className="absolute inset-0 rounded-full bg-[#E2B354]/10 animate-ping group-hover:hidden" />
+        <ImageIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
+        <span className="text-[9px] font-black uppercase tracking-widest">Gallery</span>
+      </button>
     </>
   );
 };

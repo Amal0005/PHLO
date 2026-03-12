@@ -6,8 +6,8 @@ import { ILeaveRepository } from "@/domain/interface/repositories/ILeaveReposito
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBookingUseCase";
-import { BookingStatus } from "@/utils/bookingStatus";
-import { StatusCode } from "@/utils/statusCodes";
+import { BookingStatus } from "@/constants/bookingStatus";
+import { StatusCode } from "@/constants/statusCodes";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class CreateBookingUseCase implements ICreateBookingUseCase {
@@ -16,7 +16,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private _packageRepo: IPackageRepository,
     private _leaveRepo: ILeaveRepository,
     private _stripeService: IStripeService
-  ) {}
+  ) { }
   async createBooking(
     userId: string,
     data: CreateBookingRequestDTO

@@ -2,15 +2,15 @@ import { IForgotPasswordUseCase } from "@/domain/interface/user/auth/IForgotPass
 import { IVerifyForgotOtpUseCase } from "@/domain/interface/user/auth/IVerifyForgotOtpUseCase";
 import { IResetPasswordUseCase } from "@/domain/interface/user/auth/IResetPasswordUseCase";
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class UserAuthController {
   constructor(
     private _forgotPasswordUseCase: IForgotPasswordUseCase,
     private _verifyForgotOtpUseCase: IVerifyForgotOtpUseCase,
     private _resetPasswordUseCase: IResetPasswordUseCase
-  ) {}
+  ) { }
 
   async forgotPassword(req: Request, res: Response) {
     try {

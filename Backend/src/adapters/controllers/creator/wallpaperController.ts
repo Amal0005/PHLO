@@ -2,9 +2,9 @@ import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { IAddWallpaperUseCase } from "@/domain/interface/creator/walpapper/IAddWallpaperUseCase";
 import { IDeleteWallpaperUseCase } from "@/domain/interface/creator/walpapper/IDeleteWallpaperUseCase";
 import { IGetCreatorWallpapersUseCase } from "@/domain/interface/creator/walpapper/IGetCreatorWallpaperUseCase";
-import { MESSAGES } from "@/utils/commonMessages";
-import { StatusCode } from "@/utils/statusCodes";
-import { WallpaperStatus } from "@/utils/wallpaperStatus";
+import { MESSAGES } from "@/constants/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { WallpaperStatus } from "@/constants/wallpaperStatus";
 import { Response } from "express";
 
 export class WallpaperController {
@@ -12,7 +12,7 @@ export class WallpaperController {
     private _addWallpaperUseCase: IAddWallpaperUseCase,
     private _deleteWallpaperUseCase: IDeleteWallpaperUseCase,
     private getCreatorWallpapaperUseCase: IGetCreatorWallpapersUseCase,
-  ) {}
+  ) { }
   async addWallpaper(req: AuthRequest, res: Response) {
     try {
       const creatorId = req.user?.userId;

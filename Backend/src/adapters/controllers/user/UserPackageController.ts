@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IListUserPackagesUseCase } from "@/domain/interface/user/packages/IListUserPackagesUseCase";
+import { IGetPackageDetailUseCase } from "@/domain/interface/user/packages/IGetPackageDetailUseCase ";
 
-export class ListUserPackagesController {
+export class UserPackageController {
   constructor(
-    private _listUserPackagesUseCase: IListUserPackagesUseCase
-  ) {}
+    private _listUserPackagesUseCase: IListUserPackagesUseCase,
+    private _getPackageDetailUseCase: IGetPackageDetailUseCase
+  ) { }
 
   async listPackages(req: Request, res: Response) {
     try {
@@ -35,6 +37,39 @@ export class ListUserPackagesController {
         page: packages.page,
         limit: packages.limit,
         totalPages: packages.totalPages
+      });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR;
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message
+      });
+    }
+  }
+
+  async getPackageDetail(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(StatusCode.BAD_REQUEST).json({
+          success: false,
+          message: MESSAGES.PACKAGE.ID_REQUIRED
+        });
+      }
+
+      const packageData = await this._getPackageDetailUseCase.getPackageById(id);
+
+      if (!packageData) {
+        return res.status(StatusCode.NOT_FOUND).json({
+          success: false,
+          message: MESSAGES.PACKAGE.NOT_FOUND
+        });
+      }
+
+      res.status(StatusCode.OK).json({
+        success: true,
+        data: packageData
       });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR;

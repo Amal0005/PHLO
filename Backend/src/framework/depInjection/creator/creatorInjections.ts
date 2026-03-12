@@ -3,6 +3,7 @@ import { CreatorRegisterController } from "@/adapters/controllers/creator/auth/c
 import { CreatorAuthController } from "@/adapters/controllers/creator/auth/authController";
 import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
 import { UserRepository } from "@/adapters/repository/user/userRepository";
+import { sendNotificationUseCase } from "@/framework/depInjection/notificationInjections";
 import { JwtServices } from "@/domain/services/user/jwtServices";
 import { PasswordService } from "@/domain/services/user/passwordService";
 import { RedisService } from "@/domain/services/user/redisServices";
@@ -18,13 +19,12 @@ import { VerifyCreatorOtpUseCase } from "@/application/useCases/creator/auth/ver
 import { ResendCreatorOtpUseCase } from "@/application/useCases/creator/auth/resendCreatorOtpUseCase";
 import { EditCreatorProfileUseCase } from "@/application/useCases/creator/profile/editCreatorProfileUseCase";
 import { GetCreatorProfileUseCase } from "@/application/useCases/creator/profile/getCreatorProfileUseCase";
-import { CreatorProfileController } from "@/adapters/controllers/creator/profile/creatorProfileController";
+import { CreatorProfileController } from "@/adapters/controllers/creator/creatorProfileController";
 import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
 import { AddPackageUseCase } from "@/application/useCases/creator/package/addPackageUseCase";
 import { GetPackagesUseCase } from "@/application/useCases/creator/package/getPackageUseCase";
 import { EditPackageUseCase } from "@/application/useCases/creator/package/editPackageUseCase";
 import { DeletePackageUseCase } from "@/application/useCases/creator/package/deletePackageUseCase";
-import { PackageController } from "@/adapters/controllers/creator/package/packageController";
 import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
 import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminCategoryListingUseCase";
 import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseCase";
@@ -39,11 +39,11 @@ import { BookingRepository } from "@/adapters/repository/user/bookingRepository"
 import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/creator/subscription/creatorSubscriptionWebhookUseCase";
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { StripeService } from "@/domain/services/stripeService";
-import { CreatorSubscriptionController } from "@/adapters/controllers/subscription/creatorSubscriptionController";
+import { CreatorSubscriptionController } from "@/adapters/controllers/creatorSubscriptionController";
 import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscriptionUseCase";
 import { AddWallpaperUseCase } from "@/application/useCases/creator/wallpaper/addWallpaperUseCase";
 import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
-import { WallpaperController } from "@/adapters/controllers/creator/wallpaper/wallpaperController";
+import { WallpaperController } from "@/adapters/controllers/creator/wallpaperController";
 import { DeleteWallpaperUseCase } from "@/application/useCases/creator/wallpaper/deleteWallpaperUseCase";
 import { GetCreatorWallpaperUseCase } from "@/application/useCases/creator/wallpaper/getCreatorWallpaperUseCase";
 import { WatermarkService } from "@/domain/services/watermarkService";
@@ -54,6 +54,7 @@ import { RemoveLeaveUseCase } from "@/application/useCases/creator/leave/removeL
 import { CreatorLeaveController } from "@/adapters/controllers/creator/creatorLeaveController";
 import { WalletRepository } from "@/adapters/repository/walletRepository";
 import { CreditWalletUseCase } from "@/application/useCases/wallet/creditWalletUseCase";
+import { CreatorPackageController } from "@/adapters/controllers/creator/creatorPackageController";
 
 
 const creatorRepository = new CreatorRepository();
@@ -76,7 +77,7 @@ const watermarkService = new WatermarkService()
 
 const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService);
 const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository, userRepository);
-const verifyCreatorOtpUseCase = new VerifyCreatorOtpUseCase(creatorRepository, otpService, redisService);
+const verifyCreatorOtpUseCase = new VerifyCreatorOtpUseCase(creatorRepository, otpService, redisService, userRepository, sendNotificationUseCase);
 const resendCreatorOtpUseCase = new ResendCreatorOtpUseCase(otpService, mailService);
 const creatorLoginUseCase = new CreatorLoginUseCase(creatorRepository, jwtService, passwordService);
 const forgotPasswordUseCase = new ForgotPasswordUseCase(creatorRepository, otpService, mailService);
@@ -95,9 +96,10 @@ const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const creditWalletUseCase = new CreditWalletUseCase(walletRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService, creatorRepository)
 const listCreatorBookingsUseCase = new ListCreatorBookingsUseCase(bookingRepo);
-const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase)
+
+const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase, userRepository)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
-const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService)
+const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService, userRepository, sendNotificationUseCase)
 const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)
 const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRepo)
 const addLeaveUseCase = new AddLeaveUseCase(leaveRepo)
@@ -109,7 +111,7 @@ export const creatorRegisterController = new CreatorRegisterController(creatorRe
 export const creatorLoginController = new CreatorLoginController(creatorLoginUseCase);
 export const creatorAuthController = new CreatorAuthController(forgotPasswordUseCase, verifyForgotOtpUseCase, resetPasswordUseCase);
 export const creatorProfileController = new CreatorProfileController(getCreatorProfileUseCase, editCreatorProfileUseCase)
-export const packageController = new PackageController(addPackageUseCase, deletePackageUseCase, editPackageUseCase, getPackageUseCase);
+export const packageController = new CreatorPackageController(addPackageUseCase, deletePackageUseCase, editPackageUseCase, getPackageUseCase);
 export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
 export const creatorSubscriptionController = new CreatorSubscriptionController(buySubscriptionUseCase, getSubscriptionUseCase)
 export const creatorBookingController = new CreatorBookingController(listCreatorBookingsUseCase)

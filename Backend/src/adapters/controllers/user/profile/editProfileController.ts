@@ -1,11 +1,11 @@
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
 import { Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { MESSAGES } from "@/utils/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class EditProfileController {
-    constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) {}
+    constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) { }
 
     async editProfile(req: AuthRequest, res: Response): Promise<void> {
         try {

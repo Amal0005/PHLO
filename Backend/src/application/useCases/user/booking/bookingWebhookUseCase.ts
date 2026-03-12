@@ -4,9 +4,12 @@ import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBooking
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
 import { IChatRepository } from "@/domain/interface/repositories/IChatRepository ";
-import { BookingStatus } from "@/utils/bookingStatus";
+import { BookingStatus } from "@/constants/bookingStatus";
 import { logger } from "@/utils/logger";
+import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import { NotificationType } from "@/domain/entities/notificationEntity";
 import Stripe from "stripe";
 
 export class BookingWebhookUseCase implements IBookingWebhookUseCase {
@@ -16,8 +19,10 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
     private _packageRepo: IPackageRepository,
     private _creatorRepo: ICreatorRepository,
     private _creditWalletUseCase: ICreditWalletUseCase,
-    private _chatRepo: IChatRepository
-  ) {}
+    private _chatRepo: IChatRepository,
+    private _sendNotificationUseCase: ISendNotificationUseCase,
+    private _userRepo: IUserRepository
+  ) { }
 
   async handleWebhook(payload: string | Buffer, signature: string): Promise<void> {
     const event = this._stripeService.constructEvent(payload, signature);
@@ -63,6 +68,39 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
                 lastMessageAt: new Date()
               });
               logger.info("Conversation created for new booking", { bookingId });
+            }
+
+            // 3. Send Notifications
+            // To Creator
+            const creatorId = typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as any)._id?.toString() || (pkg.creatorId as any).id?.toString();
+            await this._sendNotificationUseCase.sendNotification({
+              recipientId: creatorId,
+              type: NotificationType.BOOKING,
+              title: "New Booking",
+              message: `You have a new booking for ${pkg.title}`,
+              isRead: false
+            });
+
+            // To User
+            const bookingUserId = typeof booking.userId === 'string' ? booking.userId : (booking.userId as any)._id?.toString() || (booking.userId as any).id?.toString();
+            await this._sendNotificationUseCase.sendNotification({
+              recipientId: bookingUserId,
+              type: NotificationType.BOOKING,
+              title: "Booking Confirmed",
+              message: `Your booking for ${pkg.title} has been confirmed`,
+              isRead: false
+            });
+
+            // To Admin
+            const adminId = await this._userRepo.findAdminId();
+            if (adminId) {
+              await this._sendNotificationUseCase.sendNotification({
+                recipientId: adminId,
+                type: NotificationType.WALLET,
+                title: "Wallet Credit (Booking)",
+                message: `Admin wallet credited ₹${booking.amount} for ${creator?.fullName || 'Creator'}'s package booking`,
+                isRead: false
+              });
             }
           }
         }

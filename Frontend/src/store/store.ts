@@ -5,6 +5,7 @@ import authReducer from "./slices/auth/authSlice";
 import userReducer from "./slices/user/userSlice";
 import creatorReducer from "./slices/creator/creatorSlice";
 import adminReducer from "./slices/admin/adminSlice";
+import notificationReducer from "./slices/notification/notificationSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   creator: creatorReducer,
 
   admin: adminReducer,
+  notifications: notificationReducer,
 });
 
 const persistConfig = {

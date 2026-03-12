@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IRegisterCreatorUseCase } from "@/domain/interface/creator/register/IRegisterCreatorUseCase";
 import { ICheckCreatorExistsUseCase } from "@/domain/interface/creator/register/ICheckCreatorExistsUseCase";
 import { IVerifyCreatorOtpUseCase } from "@/domain/interface/creator/register/IVerifyCreatorOtpUseCase";
@@ -12,7 +12,7 @@ export class CreatorRegisterController {
     private _checkCreatorExistsUseCase: ICheckCreatorExistsUseCase,
     private _verifyCreatorOtpUseCase: IVerifyCreatorOtpUseCase,
     private _resendCreatorOtpUseCase: IResendCreatorOtpUseCase
-  ) {}
+  ) { }
 
   async register(req: Request, res: Response) {
     try {

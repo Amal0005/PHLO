@@ -11,8 +11,7 @@ import {
   getProfileController,
   editProfileController,
   changePasswordController,
-  listUserPackagesController,
-  getPackageDetailController,
+  userPackageController,
   getCategoryController,
   userProfileController,
   userBookingController,
@@ -118,12 +117,12 @@ export class UserRoutes {
       authMiddleware,
       authorizeRoles("user"),
       (req: Request, res: Response) =>
-        listUserPackagesController.listPackages(req, res),
+        userPackageController.listPackages(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.PACKAGE_DETAIL,
       (req: Request, res: Response) =>
-        getPackageDetailController.getPackageDetail(req, res),
+        userPackageController.getPackageDetail(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.CATEGORY,
@@ -193,6 +192,7 @@ export class UserRoutes {
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.WALLPAPERS,
+      authMiddleware,
       (req: AuthRequest, res: Response) =>
         userWallpaperController.getWallpaper(req, res),
     );

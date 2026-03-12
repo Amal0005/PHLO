@@ -1,6 +1,6 @@
 
-import { UploadController } from "@/adapters/controllers/user/s3/uploaderController";
-import { ViewController } from "@/adapters/controllers/user/s3/viewController";
+import { UploadController } from "@/adapters/controllers/s3/uploaderController";
+import { ViewController } from "@/adapters/controllers/s3/viewController";
 import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
 import { S3StorageService } from "@/domain/services/s3Services";
 import { GetPresignedViewUrlUseCase } from "@/application/useCases/getPresignedViewUrlUseCase";

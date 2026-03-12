@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { StatusCode } from "@/utils/statusCodes";
-import { MESSAGES } from "@/utils/commonMessages";
+import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IadminUserListingUseCase";
 import { IToggleUserStatusUseCase } from "../../../domain/interface/admin/IToggleUserStatusUseCase";
 
@@ -8,7 +8,7 @@ export class AdminUserController {
   constructor(
     private _adminUserListingUseCase: IAdminUserListingUseCase,
     private _toggleUserStatusUseCase: IToggleUserStatusUseCase
-  ) {}
+  ) { }
   async getUsers(req: Request, res: Response) {
     try {
       const page = Math.max(1, Number(req.query.page) || 1);

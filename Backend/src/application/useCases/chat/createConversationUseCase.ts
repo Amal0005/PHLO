@@ -3,14 +3,14 @@ import { IChatRepository } from "@/domain/interface/repositories/IChatRepository
 import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
 import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
 import { AppError } from "@/domain/errors/appError";
-import { StatusCode } from "@/utils/statusCodes";
+import { StatusCode } from "@/constants/statusCodes";
 
 export class CreateConversationUseCase {
     constructor(
         private _chatRepo: IChatRepository,
         private _bookingRepo: IBookingRepository,
         private _packageRepo: IPackageRepository
-    ) {}
+    ) { }
 
     async execute(bookingId: string): Promise<ConversationEntity> {
         // 1. Check if conversation already exists
