@@ -10,6 +10,7 @@ import CategoryListing from "@/pages/admin/categoryListing";
 import SubscriptionListingPage from "@/pages/admin/subscriptionListing";
 import WallpaperListingPage from "@/pages/admin/wallpaper/wallpaperListing";
 import AdminWallet from "@/pages/admin/adminWallet";
+import ComplaintListingPage from "@/pages/admin/complaintListing";
 
 export function AdminRoutes() {
   return (
@@ -34,6 +35,7 @@ export function AdminRoutes() {
           <Route path={ROUTES.ADMIN.SUBSCRIPTIONS} element={<SubscriptionListingPage />} />
           <Route path={ROUTES.ADMIN.WALLPAPERS} element={<WallpaperListingPage />} />
           <Route path={ROUTES.ADMIN.WALLET} element={<AdminWallet />} />
+          <Route path={ROUTES.ADMIN.COMPLAINTS} element={<ComplaintListingPage />} />
         </Route>
       </Route>
     </Routes>

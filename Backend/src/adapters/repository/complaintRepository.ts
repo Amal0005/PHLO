@@ -27,4 +27,8 @@ export class ComplaintRepository implements IComplaintRepository {
     const updatedComplaint = await ComplaintModel.findByIdAndUpdate(_id, updateData, { new: true }).lean();
     return updatedComplaint ? ComplaintMapper.toEntity(updatedComplaint) : null;
   }
+  async findByBookingId(bookingId: string): Promise<ComplaintEntity | null> {
+    const complaint = await ComplaintModel.findOne({ bookingId }).lean();
+    return complaint ? ComplaintMapper.toEntity(complaint) : null;
+  }
 }

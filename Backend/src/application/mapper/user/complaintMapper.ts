@@ -6,16 +6,16 @@ import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDt
 export class ComplaintMapper {
   static toEntity(data: any): ComplaintEntity {
     return {
-      _id: data._id?.toString(),
-      userId: data.userId?.toString() || data.userId,
-      creatorId: data.creatorId?.toString() || data.creatorId,
-      bookingId: data.bookingId?.toString() || data.bookingId,
-      reason: data.reason,
-      description: data.description,
-      status: data.status,
-      adminComment: data.adminComment,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
+      _id: data._id ? String(data._id) : undefined,
+      userId: data.userId as string | User,
+      creatorId: data.creatorId as string | CreatorEntity,
+      bookingId: data.bookingId ? String(data.bookingId) : "",
+      reason: String(data.reason || ""),
+      description: String(data.description || ""),
+      status: data.status as "pending" | "resolved" | "dismissed",
+      adminComment: data.adminComment ? String(data.adminComment) : undefined,
+      createdAt: data.createdAt as Date,
+      updatedAt: data.updatedAt as Date,
     };
   }
 
@@ -24,16 +24,35 @@ export class ComplaintMapper {
   }
 
   static toDto(entity: ComplaintEntity): ComplaintResponseDTO {
-    const user = entity.userId as unknown as User;
-    const creator = entity.creatorId as unknown as CreatorEntity;
+    const user = entity.userId;
+    const creator = entity.creatorId;
+
+    let userId = "";
+    let userName = "Unknown";
+    let creatorId = "";
+    let creatorName = "Unknown";
+
+    if (typeof user === "object" && user !== null) {
+      userId = user._id?.toString() || "";
+      userName = user.name || "Unknown";
+    } else {
+      userId = user?.toString() || "";
+    }
+
+    if (typeof creator === "object" && creator !== null) {
+      creatorId = creator._id?.toString() || "";
+      creatorName = creator.fullName || "Unknown";
+    } else {
+      creatorId = creator?.toString() || "";
+    }
 
     return {
-      id: entity._id!.toString(),
-      userId: typeof user === "object" ? user._id!.toString() : entity.userId.toString(),
-      userName: typeof user === "object" ? user.name : "Unknown",
-      creatorId: typeof creator === "object" ? creator._id!.toString() : entity.creatorId.toString(),
-      creatorName: typeof creator === "object" ? creator.fullName : "Unknown",
-      bookingId: entity.bookingId,
+      id: entity._id?.toString() || "",
+      userId,
+      userName,
+      creatorId,
+      creatorName,
+      bookingId: entity.bookingId?.toString() || entity.bookingId,
       reason: entity.reason,
       description: entity.description,
       status: entity.status,

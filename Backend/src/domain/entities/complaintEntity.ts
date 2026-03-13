@@ -1,7 +1,10 @@
+import { User } from "./userEntities";
+import { CreatorEntity } from "./creatorEntities";
+
 export interface ComplaintEntity {
   _id?: string;
-  userId: string;
-  creatorId: string;
+  userId: string | User;
+  creatorId: string | CreatorEntity;
   bookingId: string;
   reason: string;
   description: string;

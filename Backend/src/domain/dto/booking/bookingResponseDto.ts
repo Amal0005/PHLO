@@ -9,6 +9,7 @@ export interface BookingResponseDTO {
     phone?: string;
   };
   packageId: string;
+  creatorId: string;
   packageDetails?: {
     title: string;
     description: string;

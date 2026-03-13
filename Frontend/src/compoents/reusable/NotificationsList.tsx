@@ -40,6 +40,16 @@ const NotificationsList: React.FC = () => {
             navigate(isCreator ? '/creator/chat' : '/chat');
         } else if (notification.type === NotificationType.BOOKING) {
             navigate(isCreator ? '/creator/bookings' : '/bookings');
+        } else if (notification.type === NotificationType.REPORT) {
+            const isAdmin = window.location.pathname.startsWith('/admin');
+            if (isAdmin) {
+                navigate('/admin/complaints');
+            } else {
+                const bookingId = notification.metadata?.bookingId;
+                if (bookingId) {
+                    navigate(`/bookings/${bookingId}`);
+                }
+            }
         }
     };
 

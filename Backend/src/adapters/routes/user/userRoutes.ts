@@ -273,5 +273,11 @@ export class UserRoutes {
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) => complaintController.register(req, res)
     );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.GET_COMPLAINT_BY_BOOKING,
+      authMiddleware,
+      authorizeRoles("user"),
+      (req: Request, res: Response) => complaintController.getByBooking(req, res)
+    );
   }
 }

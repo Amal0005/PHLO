@@ -4,7 +4,7 @@ import { IGetAllComplaintsUseCase } from "@/domain/interface/admin/complaint/IGe
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
 
 export class GetAllComplaintsUseCase implements IGetAllComplaintsUseCase {
-  constructor(private complaintRepository: IComplaintRepository) { }
+  constructor(private complaintRepository: IComplaintRepository) {}
 
   async getAllComplaint(): Promise<ComplaintResponseDTO[]> {
     const complaints = await this.complaintRepository.findAll();

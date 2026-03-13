@@ -11,24 +11,32 @@ import {
     CheckCircle2,
     XCircle,
     Download,
-    MessageSquare
+    MessageSquare,
+    ShieldAlert
 } from "lucide-react";
 import { BookingService } from "@/services/user/bookingService";
+import { UserComplaintService } from "@/services/user/userComplaintService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
+import { Complaint } from "@/interface/user/userComplaintInterface";
 import { S3Media } from "@/compoents/reusable/s3Media";
 import UserNavbar from "@/compoents/reusable/userNavbar";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import { ROUTES } from "@/constants/routes";
 import AddReviewForm from "./components/AddReviewForm";
+import ComplaintForm from "./components/ComplaintForm";
+import ComplaintStatusModal from "./components/ComplaintStatusModal";
 
 const BookingDetailPage: React.FC = () => {
     const { sessionId } = useParams<{ sessionId: string }>();
     const [booking, setBooking] = useState<UserBooking | null>(null);
     const [loading, setLoading] = useState(true);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
     const [processingCancel, setProcessingCancel] = useState(false);
     const [retryingPayment, setRetryingPayment] = useState(false);
+    const [complaint, setComplaint] = useState<Complaint | null>(null);
+    const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,6 +47,9 @@ const BookingDetailPage: React.FC = () => {
                 const response = await BookingService.getBookingDetail(sessionId);
                 if (response.success) {
                     setBooking(response.data);
+                    // Fetch complaint if exists
+                    const complaintData = await UserComplaintService.getComplaintByBooking(response.data.id);
+                    setComplaint(complaintData);
                 } else {
                     toast.error("Booking not found");
                     navigate(ROUTES.USER.BOOKINGS);
@@ -325,10 +336,66 @@ const BookingDetailPage: React.FC = () => {
                                 </button>
                             )}
 
+                            {booking.status === 'completed' && new Date(booking.bookingDate).toDateString() === new Date().toDateString() && !complaint && (
+                                <button
+                                    onClick={() => setIsComplaintModalOpen(true)}
+                                    className="w-full py-4 rounded-[1.2rem] border border-rose-500/20 text-rose-500 font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-rose-500 hover:text-white transition-all duration-300 opacity-60 hover:opacity-100 flex items-center justify-center gap-2"
+                                >
+                                    <AlertCircle className="w-3 h-3" />
+                                    Report Message / Issue
+                                </button>
+                            )}
+
                             <p className="text-[10px] text-center text-zinc-600 font-medium px-4 leading-relaxed">
-                                Cancellation terms apply. Confirmed bookings can be cancelled before the scheduled date. Refunds are processed according to our creative policies.
+                                Cancellation terms apply. Confirmed bookings can be cancelled before the scheduled date. Issue reporting is only available on the day of the booking.
                             </p>
                         </div>
+
+                        {/* Complaint Status Section */}
+                        {complaint && (
+                            <div 
+                                onClick={() => setIsStatusModalOpen(true)}
+                                className="bg-zinc-900/40 border border-zinc-800 rounded-[2rem] p-8 space-y-6 cursor-pointer hover:bg-zinc-900/60 transition-all hover:border-zinc-700 group/status"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-xl transition-colors ${complaint.status === 'pending' ? 'bg-amber-500/10 text-amber-500 group-hover/status:bg-amber-500/20' :
+                                                complaint.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-500 group-hover/status:bg-emerald-500/20' :
+                                                    'bg-rose-500/10 text-rose-500 group-hover/status:bg-rose-500/20'
+                                            }`}>
+                                            <ShieldAlert className="w-5 h-5" />
+                                        </div>
+                                        <div className="space-y-0.5">
+                                            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-400">Complaint Status</h4>
+                                            <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Click for full details</p>
+                                        </div>
+                                    </div>
+                                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full border transition-colors ${complaint.status === 'pending' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20 group-hover/status:border-amber-500/40' :
+                                            complaint.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 group-hover/status:border-emerald-500/40' :
+                                                'bg-rose-500/10 text-rose-500 border-rose-500/20 group-hover/status:border-rose-500/40'
+                                        }`}>
+                                        {complaint.status}
+                                    </span>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">Your Report</p>
+                                        <p className="text-sm text-zinc-400 font-medium leading-relaxed italic border-l-2 border-zinc-800 pl-4 group-hover/status:border-zinc-700 transition-colors">
+                                            "{complaint.description}"
+                                        </p>
+                                    </div>
+
+                                    {complaint.adminComment && (
+                                        <div className="space-y-2 pt-4 border-t border-zinc-800/50">
+                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500/70">Admin Determination</p>
+                                            <p className="text-sm text-white font-bold leading-relaxed">
+                                                {complaint.adminComment}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -359,6 +426,22 @@ const BookingDetailPage: React.FC = () => {
                 variant="danger"
                 loading={processingCancel}
             />
+
+            {isComplaintModalOpen && (
+                <ComplaintForm
+                    bookingId={booking.id}
+                    creatorId={booking.creatorId}
+                    onClose={() => setIsComplaintModalOpen(false)}
+                    onSuccess={() => setIsComplaintModalOpen(false)}
+                />
+            )}
+
+            {isStatusModalOpen && complaint && (
+                <ComplaintStatusModal
+                    complaint={complaint}
+                    onClose={() => setIsStatusModalOpen(false)}
+                />
+            )}
         </div>
     );
 };

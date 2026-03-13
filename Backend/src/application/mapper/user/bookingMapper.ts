@@ -16,6 +16,7 @@ export class BookingMapper {
       bookingDate: booking.bookingDate!,
       location: booking.location,
       sessionId: booking.stripeSessionId!,
+      creatorId: typeof booking.packageId === 'object' ? (booking.packageId as PackageEntity).creatorId.toString() : '',
     };
 
     if (typeof booking.userId === 'object') {
