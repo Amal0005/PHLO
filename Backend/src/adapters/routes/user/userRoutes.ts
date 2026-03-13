@@ -28,6 +28,7 @@ import {
 
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
+import { complaintController } from "@/framework/depInjection/complaintInjection";
 
 export class UserRoutes {
   public userRouter: Router;
@@ -266,5 +267,17 @@ export class UserRoutes {
       (req: AuthRequest, res: Response) =>
         userWallpaperController.buyWallpaper(req, res),
     )
+    this.userRouter.post(
+      BACKEND_ROUTES.USER.COMPLAINTS,
+      authMiddleware,
+      authorizeRoles("user"),
+      (req: AuthRequest, res: Response) => complaintController.register(req, res)
+    );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.GET_COMPLAINT_BY_BOOKING,
+      authMiddleware,
+      authorizeRoles("user"),
+      (req: Request, res: Response) => complaintController.getByBooking(req, res)
+    );
   }
 }

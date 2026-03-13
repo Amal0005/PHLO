@@ -1,7 +1,7 @@
 import { ILeaveModel } from "@/framework/database/model/leaveModel";
 import { BaseRepository } from "../baseRepository";
 import { LeaveEntity } from "@/domain/entities/leaveEntity";
-import { ILeaveRepository } from "@/domain/interface/repositories/ILeaveRepository";
+import { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
 import { LeaveModel } from "@/framework/database/model/leaveModel";
 
 export class LeaveRepository extends BaseRepository<LeaveEntity, ILeaveModel> implements ILeaveRepository {

@@ -1,5 +1,5 @@
 import { IMarkNotificationReadUseCase } from "@/domain/interface/notification/IMarkNotificationReadUseCase";
-import { INotificationRepository } from "@/domain/interface/repositories/INotificationRepository";
+import { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
 
 export class MarkNotificationReadUseCase implements IMarkNotificationReadUseCase{
     constructor(

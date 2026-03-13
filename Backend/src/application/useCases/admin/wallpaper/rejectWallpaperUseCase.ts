@@ -1,5 +1,5 @@
 import { IRejectWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IRejectWallpaperUseCase";
-import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
+import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class RejectWallpaperUseCase implements IRejectWallpaperUseCase {

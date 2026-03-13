@@ -2,7 +2,7 @@ import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { IResetPasswordUseCase } from "@/domain/interface/creator/auth/IResetPasswordUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 
 export class ResetPasswordUseCase implements IResetPasswordUseCase {

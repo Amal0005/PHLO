@@ -1,5 +1,5 @@
 import { IRejectCreatorUseCase } from "@/domain/interface/admin/IRejectCreatorUseCase";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class RejectCreatorUseCase implements IRejectCreatorUseCase {

@@ -1,4 +1,4 @@
-import { ILeaveRepository } from "@/domain/interface/repositories/ILeaveRepository";
+import { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
 import { IAddLeaveUseCase } from "@/domain/interface/creator/leave/IAddLeaveUseCase";
 import { AddLeaveRequestDto, LeaveResponseDto } from "@/domain/dto/creator/leaveDto";
 import { LeaveMapper } from "@/application/mapper/creator/creatorLeaveMapper";

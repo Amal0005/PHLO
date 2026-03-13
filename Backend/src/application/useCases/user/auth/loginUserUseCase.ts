@@ -1,6 +1,6 @@
 import { UserMapper } from "@/application/mapper/user/userMapper";
 import { loginDto } from "@/domain/dto/user/loginDto";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { IUserLoginUseCase } from "@/domain/interface/user/auth/IUserLoginUseCase";

@@ -2,7 +2,7 @@ import { PackageMapper } from "@/application/mapper/user/packageMapper";
 import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPackageUseCase";
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 
 export class EditPackageUseCase implements IEditPackageUseCase {
   constructor(

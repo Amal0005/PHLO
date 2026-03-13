@@ -1,4 +1,4 @@
-import { IBaseRepository } from "@/domain/interface/repositories/IBaseRepository";
+import { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
 import { LeaveEntity } from "../../entities/leaveEntity";
 
 export interface ILeaveRepository extends IBaseRepository<LeaveEntity> {

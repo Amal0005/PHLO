@@ -34,6 +34,8 @@ export const FRONTEND_ROUTES = {
         UPDATE_REVIEW: "/review/:id",
         GET_BOOKING_REVIEW: "/review/booking/:id",
         BUY_WALLPAPER: "/wallpaper/buy/:id",
+        COMPLAINTS: "/complaints",
+        GET_COMPLAINT_BY_BOOKING: "/complaints/booking/:id",
     },
     ADMIN: {
         LOGIN: "/admin/login",
@@ -45,6 +47,9 @@ export const FRONTEND_ROUTES = {
         SUBSCRIPTION: "/admin/subscription",
         WALLPAPERS: "/admin/wallpapers",
         WALLET: "/admin/wallet",
+        COMPLAINTS: "/admin/complaints",
+        RESOLVE_COMPLAINT: "/admin/complaints/:id/resolve",
+        REJECT_COMPLAINT: "/admin/complaints/:id/reject",
     },
     CREATOR: {
         REGISTER: "/creator/register",

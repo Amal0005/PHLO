@@ -1,10 +1,10 @@
 import { MessageEntity } from "@/domain/entities/messageEntity";
 import { ISendMessageUseCase } from "@/domain/interface/chat/ISendMessageUseCase";
-import { IChatRepository } from "@/domain/interface/repositories/IChatRepository ";
+import { IChatRepository } from "@/domain/interface/repository/IChatRepository ";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 export class SendMessageUseCase implements ISendMessageUseCase {
     constructor(
@@ -43,4 +43,4 @@ export class SendMessageUseCase implements ISendMessageUseCase {
 
         return message;
     }
-}
+}

@@ -1,7 +1,7 @@
 import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
-import { ISubscriptionRepository } from "@/domain/interface/repositories/ISubscriptionRepositories";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { IMailService } from "@/domain/interface/service/IMailServices";

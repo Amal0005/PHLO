@@ -2,8 +2,8 @@ import { PackageMapper } from "@/application/mapper/user/packageMapper";
 import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 
 export class AddPackageUseCase implements IAddPackageUseCase {
   constructor(

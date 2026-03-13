@@ -34,6 +34,8 @@ export const BACKEND_ROUTES = {
     GET_REVIEW: "/review/:packageId",
     GET_BOOKING_REVIEW: "/review/booking/:bookingId",
     BUY_WALLPAPER: "/wallpaper/buy/:id",
+    COMPLAINTS: "/complaints",
+    GET_COMPLAINT_BY_BOOKING: "/complaints/booking/:bookingId",
   },
   CREATOR: {
     BASE: "/creator",
@@ -81,6 +83,9 @@ export const BACKEND_ROUTES = {
     REJECT_WALLPAPER: "/wallpapers/:id/reject",
     WALLET: "/wallet",
     WALLET_CREDIT: "/wallet/credit",
+    COMPLAINTS: "/complaints",
+    RESOLVE_COMPLAINT: "/complaints/:id/resolve",
+    REJECT_COMPLAINT: "/complaints/:id/reject",
   },
   UPLOAD: {
     BASE: "/upload",

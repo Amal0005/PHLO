@@ -1,11 +1,11 @@
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
-import { IChatRepository } from "@/domain/interface/repositories/IChatRepository ";
+import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import { IChatRepository } from "@/domain/interface/repository/IChatRepository ";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { logger } from "@/utils/logger";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";

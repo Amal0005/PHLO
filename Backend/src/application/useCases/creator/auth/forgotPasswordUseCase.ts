@@ -5,7 +5,7 @@ import { MESSAGES } from "@/constants/commonMessages";
 
 
 import { renderTemplate } from "@/utils/renderTemplates";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     constructor(

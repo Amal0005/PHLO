@@ -1,7 +1,7 @@
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { IUserRegisterUseCase } from "@/domain/interface/user/auth/IUserRegisterUseCase";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 import { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IMailService } from "@/domain/interface/service/IMailServices";

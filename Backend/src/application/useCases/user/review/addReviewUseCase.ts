@@ -1,7 +1,7 @@
 import { reviewRequestDTO } from "@/domain/dto/user/review/reviewRequestDto";
 import { AppError } from "@/domain/errors/appError";
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
-import { IReviewRepository } from "@/domain/interface/repositories/IReviewRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import { IReviewRepository } from "@/domain/interface/repository/IReviewRepository";
 import { IAddReviewUseCase } from "@/domain/interface/user/review/IAddReviewUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 

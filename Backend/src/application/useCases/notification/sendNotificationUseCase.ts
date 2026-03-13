@@ -1,6 +1,6 @@
 import { NotificationEntity } from "@/domain/entities/notificationEntity";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
-import { INotificationRepository } from "@/domain/interface/repositories/INotificationRepository";
+import { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
 
 import { SocketIOHandler } from "@/framework/socket/socketIOHandler";
 

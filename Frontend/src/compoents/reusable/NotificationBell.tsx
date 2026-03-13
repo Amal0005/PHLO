@@ -64,6 +64,15 @@ const NotificationBell: React.FC = () => {
             if (isAdmin) {
                 navigate('/admin/wallet');
             }
+        } else if (notification.type === NotificationType.REPORT) {
+            if (isAdmin) {
+                navigate('/admin/complaints');
+            } else {
+                const bookingId = notification.metadata?.bookingId;
+                if (bookingId) {
+                    navigate(`/bookings/${bookingId}`);
+                }
+            }
         }
     };
 

@@ -1,7 +1,7 @@
 import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
 import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
 import { IGetPendingWallpapersUseCase } from "@/domain/interface/admin/wallpaper/IGetPendingWallpapersUseCase";
-import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
+import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetPendingWallpapersUseCase implements IGetPendingWallpapersUseCase {

@@ -1,8 +1,8 @@
 import { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWallpaperWebhookUseCase";
-import { IWallpaperDownloadRepository } from "@/domain/interface/repositories/IWallpaperDownloadRepository ";
-import { IWallpaperRepository } from "@/domain/interface/repositories/IWallpaperRepository";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository ";
+import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { logger } from "@/utils/logger";
 import Stripe from "stripe";

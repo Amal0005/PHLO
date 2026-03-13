@@ -1,6 +1,7 @@
 export interface UserBooking {
   id: string;
   packageId: string;
+  creatorId: string;
   userDetails?: {
     name: string;
     email: string;

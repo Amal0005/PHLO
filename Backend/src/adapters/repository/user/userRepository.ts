@@ -3,7 +3,7 @@ import { User } from "../../../domain/entities/userEntities";
 import { UserModel, IUserModel } from "../../../framework/database/model/userModel";
 import { paginateMongo } from "@/utils/pagination";
 import { BaseRepository } from "../baseRepository";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { Filter } from "mongodb";
 
 export class UserRepository extends BaseRepository<User, IUserModel> implements IUserRepository {

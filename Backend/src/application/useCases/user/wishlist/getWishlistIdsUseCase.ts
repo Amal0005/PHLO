@@ -1,5 +1,5 @@
 import { IGetWishlistIdsUseCase } from "@/domain/interface/user/wishlist/IGetWishlistIdsUseCase";
-import { IWishlistRepository } from "@/domain/interface/repositories/IWishlistRepository";
+import { IWishlistRepository } from "@/domain/interface/repository/IWishlistRepository";
 
 export class GetWishlistIdsUseCase implements IGetWishlistIdsUseCase {
     constructor(

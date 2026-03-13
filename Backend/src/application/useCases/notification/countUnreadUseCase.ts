@@ -1,5 +1,5 @@
 import { ICountUnreadUseCase } from "@/domain/interface/notification/ICountUnreadUseCase";
-import { INotificationRepository } from "@/domain/interface/repositories/INotificationRepository";
+import { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
 
 export class CountUnreadUseCase implements ICountUnreadUseCase{
     constructor(

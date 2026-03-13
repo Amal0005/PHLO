@@ -7,8 +7,8 @@ import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IMailService } from "@/domain/interface/service/IMailServices";
 import { IRedisService } from "@/domain/interface/service/IRedisServices";
 import { renderTemplate } from "@/utils/renderTemplates";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 
 export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
   constructor(

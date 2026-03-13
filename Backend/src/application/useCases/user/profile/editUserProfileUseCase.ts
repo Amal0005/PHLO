@@ -1,7 +1,7 @@
 import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
 
 export class EditUserProfileUsecase implements IEditUserProfileUseCase {

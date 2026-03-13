@@ -3,7 +3,7 @@ import { IApproveCreatorUseCase } from "../../../domain/interface/admin/IApprove
 import { MESSAGES } from "@/constants/commonMessages";
 import { renderTemplate } from "@/utils/renderTemplates";
 import path from "node:path";
-import { ICreatorRepository } from "@/domain/interface/repositories/ICreatorRepository";
+import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 export class ApproveCreatorUseCase implements IApproveCreatorUseCase {
   constructor(

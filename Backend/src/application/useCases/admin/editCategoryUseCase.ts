@@ -1,6 +1,6 @@
 import { CategoryMapper } from "@/application/mapper/admin/categoryMapper";
 import { CategoryResponseDto } from "@/domain/dto/admin/categoryResponseDto";
-import { ICategoryRepository } from "@/domain/interface/repositories/ICategoryRepository";
+import { ICategoryRepository } from "@/domain/interface/repository/ICategoryRepository";
 import { MESSAGES } from "@/constants/commonMessages";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/constants/statusCodes";

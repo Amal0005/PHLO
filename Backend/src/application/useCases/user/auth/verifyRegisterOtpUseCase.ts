@@ -1,6 +1,6 @@
 import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import { IUserRepository } from "@/domain/interface/repositories/IUserRepository";
+import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IOTPService } from "@/domain/interface/service/IOtpServices";
 import { IPendingUserService } from "@/domain/interface/service/IPendingUserService";
 import { IVerifyRegisterOtpUseCase } from "@/domain/interface/user/auth/IVerifyRegisterOtpUseCase";

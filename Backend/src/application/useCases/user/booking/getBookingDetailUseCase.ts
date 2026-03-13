@@ -1,6 +1,6 @@
 import { BookingMapper } from "@/application/mapper/user/bookingMapper";
 import { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { IGetBookingDetailUseCase } from "@/domain/interface/user/booking/IGetBookingDetailUseCase";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { BookingStatus } from "@/constants/bookingStatus";

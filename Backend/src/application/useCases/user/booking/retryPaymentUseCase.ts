@@ -1,7 +1,7 @@
 import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
 import { AppError } from "@/domain/errors/appError";
-import { IBookingRepository } from "@/domain/interface/repositories/IBookingRepository";
-import { IPackageRepository } from "@/domain/interface/repositories/IPackageRepository";
+import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { IRetryPaymentUseCase } from "@/domain/interface/user/booking/IRetryPaymentUseCase";
 import { BookingStatus } from "@/constants/bookingStatus";
