@@ -146,7 +146,7 @@ const getReviewUseCase = new GetReviewUseCase(reviewRepo)
 const getReviewByBookingUseCase = new GetReviewByBookingUseCase(reviewRepo)
 const editReviewUseCase = new EditReviewUseCase(reviewRepo)
 const buyWallpaperUseCase = new BuyWallpaperUseCase(wallpaperRepo, stripeService, wallpaperDownloadRepo)
-const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase, sendNotificationUseCase, userRepo)
+const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase, sendNotificationUseCase, userRepo, walletRepo)
 
 const retryPaymentUseCase = new RetryPaymentUseCase(bookingRepo, packageRepository, stripeService);
 const getWalletUseCase = new GetWalletUseCase(walletRepo);

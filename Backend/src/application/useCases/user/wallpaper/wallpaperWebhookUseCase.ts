@@ -10,6 +10,8 @@ import Stripe from "stripe";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 
+import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+
 export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
     constructor(
         private _wallpaperDownloadRepo: IWallpaperDownloadRepository,
@@ -17,7 +19,8 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
         private _creatorRepo: ICreatorRepository,
         private _creditWalletUseCase: ICreditWalletUseCase,
         private _sendNotificationUseCase: ISendNotificationUseCase,
-        private _userRepo: IUserRepository
+        private _userRepo: IUserRepository,
+        private _walletRepo: IWalletRepository
     ){}
 
     async handleEvent(event: Stripe.Event): Promise<void> {
@@ -32,26 +35,40 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                 if (!alreadyPurchased) {
                     await this._wallpaperDownloadRepo.recordDownload(wallpaperId, userId, creatorId);
 
-                    // Credit Admin Wallet (Unified)
                     const wallpaper = await this._wallpaperRepo.findById(wallpaperId);
                     const creator = await this._creatorRepo.findById(creatorId);
+                    
                     if (wallpaper) {
-                        await this._creditWalletUseCase.creditWallet("admin", "admin", wallpaper.price, {
-                            amount: wallpaper.price,
+                        const totalAmount = wallpaper.price;
+                        const commission = Math.round(totalAmount * 0.1);
+                        const creatorAmount = totalAmount - commission;
+
+                        // 1. Credit Admin Wallet (Commission Only - 10%)
+                        await this._creditWalletUseCase.creditWallet("admin", "admin", commission, {
+                            amount: commission,
                             type: "credit",
-                            description: `Wallpaper purchase: ${wallpaper.title} by ${creator?.fullName || 'Creator'}`,
+                            description: `Commission (10%) for wallpaper sale: ${wallpaper.title}`,
                             source: "wallpaper",
                             sourceId: wallpaperId,
                             relatedName: creator?.fullName || 'Creator'
+                        });
+
+                        // 2. Credit Creator Wallet (Creator Share - 90%)
+                        await this._walletRepo.updateBalance(creatorId, "creator", creatorAmount, {
+                            amount: creatorAmount,
+                            type: "credit",
+                            description: `Payment received for wallpaper: ${wallpaper.title} (Direct split - 90%)`,
+                            source: "wallpaper",
+                            sourceId: wallpaperId,
                         });
 
                         // 3. Send Notifications
                         // To Creator
                         await this._sendNotificationUseCase.sendNotification({
                             recipientId: creatorId,
-                            type: NotificationType.ACCOUNT,
+                            type: NotificationType.WALLET,
                             title: "Wallpaper Sale!",
-                            message: `You sold a wallpaper: ${wallpaper.title}`,
+                            message: `Wallpaper ${wallpaper.title} sold! ₹${creatorAmount} credited to your wallet (90% share).`,
                             isRead: false
                         });
 
@@ -70,8 +87,8 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                             await this._sendNotificationUseCase.sendNotification({
                                 recipientId: adminId,
                                 type: NotificationType.WALLET,
-                                title: "Wallet Credit (Wallpaper)",
-                                message: `Admin wallet credited ₹${wallpaper.price} for wallpaper purchase by ${creator?.fullName || 'Creator'}`,
+                                title: "Commission Earned (Wallpaper)",
+                                message: `Admin wallet credited ₹${commission} (10% commission) for wallpaper: ${wallpaper.title}`,
                                 isRead: false
                             });
                         }

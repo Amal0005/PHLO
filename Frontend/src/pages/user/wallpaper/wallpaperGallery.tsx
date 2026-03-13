@@ -27,6 +27,8 @@ const WallpaperGallery: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedWallpaper, setSelectedWallpaper] = useState<WallpaperData | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [purchasedId, setPurchasedId] = useState<string | null>(null);
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
   const limit = 12;
 
@@ -62,8 +64,9 @@ const WallpaperGallery: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("success") === "true") {
       const id = params.get("id");
-      toast.success("Wallpaper purchased successfully!");
       if (id) {
+        setPurchasedId(id);
+        setShowSuccessModal(true);
         // Manually update the purchased status in the local state for better UX
         setWallpapers(prev => prev.map(wp =>
           wp._id === id ? { ...wp, isPurchased: true } : wp
@@ -429,6 +432,48 @@ const WallpaperGallery: React.FC = () => {
                     <X size={20} />
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Success Modal */}
+        {showSuccessModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-6">
+            <div className="max-w-md w-full bg-zinc-900 border border-white/10 p-10 rounded-[3rem] text-center shadow-2xl shadow-green-500/10 relative overflow-hidden">
+               {/* Decorative glows */}
+               <div className="absolute -top-20 -left-20 w-40 h-40 bg-green-500/10 rounded-full blur-[60px]" />
+               <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-500/10 rounded-full blur-[60px]" />
+
+              <div className="flex justify-center mb-6">
+                <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20 relative">
+                  <div className="absolute inset-0 rounded-full border border-green-500/20 animate-ping opacity-25" />
+                  <ImageIcon className="w-10 h-10 text-green-500" />
+                </div>
+              </div>
+
+              <h2 className="text-3xl font-black text-white mb-3 tracking-tight">Purchase Successful!</h2>
+              <p className="text-zinc-400 mb-8 leading-relaxed">
+                Your new wallpaper has been added to your collection and is ready for download.
+              </p>
+
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    const wp = wallpapers.find(w => w._id === purchasedId);
+                    if (wp) handleDownload(wp);
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-white text-black py-4 rounded-2xl font-bold hover:bg-zinc-200 transition-all active:scale-[0.98]"
+                >
+                  <Download size={20} />
+                  Download Now
+                </button>
+                <button
+                  onClick={() => setShowSuccessModal(false)}
+                  className="w-full bg-zinc-800/50 text-white py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all border border-white/5 active:scale-[0.98]"
+                >
+                  Continue Browsing
+                </button>
               </div>
             </div>
           </div>
