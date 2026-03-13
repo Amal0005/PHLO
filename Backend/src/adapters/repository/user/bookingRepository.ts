@@ -65,6 +65,20 @@ export class BookingRepository
     return docs.map((item) => this.mapToEntity(item));
   }
 
+  async findBookingsForPaymentRelease(date: Date): Promise<BookingEntity[]> {
+    const docs = await this.model.find({
+      bookingDate: { $lt: date },
+      status: BookingStatus.COMPLETED,
+      paymentStatus: "held"
+    }).exec();
+    return docs.map(doc => this.mapToEntity(doc));
+  }
+
+  async updatePaymentStatus(id: string, paymentStatus: "held" | "released" | "refunded" | "partially_refunded"): Promise<BookingEntity | null> {
+    const updated = await this.model.findByIdAndUpdate(id, { $set: { paymentStatus } }, { new: true }).exec();
+    return updated ? this.mapToEntity(updated) : null;
+  }
+
   protected mapToEntity(doc: BookingDocument): BookingEntity {
     const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && 'title' in doc.packageId;
     const isUserPopulated = doc.userId && typeof doc.userId === 'object' && 'name' in doc.userId;
@@ -79,6 +93,7 @@ export class BookingRepository
       stripeSessionId: doc.stripeSessionId,
       bookingDate: doc.bookingDate,
       location: doc.location,
+      paymentStatus: (doc as any).paymentStatus,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };

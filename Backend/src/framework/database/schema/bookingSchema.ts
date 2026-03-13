@@ -38,6 +38,11 @@ export const bookingSchema = new Schema(
     location: {
       type: String,
     },
+    paymentStatus: {
+      type: String,
+      enum: ["held", "released", "refunded"],
+      default: "held",
+    },
   },
   { timestamps: true }
 );

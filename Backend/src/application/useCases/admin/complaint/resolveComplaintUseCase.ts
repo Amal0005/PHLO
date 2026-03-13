@@ -24,6 +24,18 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
 
     if (action === "resolve") {
       const userId = typeof complaint.userId === 'string' ? complaint.userId : (complaint.userId as any)._id;
+      
+      // Debit Admin Wallet (Full amount refunded to user)
+      await this.walletRepository.updateBalance("admin", "admin", -booking.amount, {
+        amount: booking.amount,
+        type: "debit",
+        description: `Refund for booking ${booking.id} - Complaint Resolved`,
+        source: "refund",
+        sourceId: complaint.bookingId,
+        relatedName: "user_refund"
+      });
+
+      // Credit User Wallet (100% of the booking amount returned to user)
       await this.walletRepository.updateBalance(userId, "user", booking.amount, {
         amount: booking.amount,
         type: "credit",
@@ -31,28 +43,48 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
         source: "refund",
         sourceId: complaint.bookingId,
       });
+
       complaint.status = "resolved";
+      await this.bookingRepository.updatePaymentStatus(complaint.bookingId, "refunded");
     } else {
       const creatorId = typeof complaint.creatorId === 'string' ? complaint.creatorId : (complaint.creatorId as any)._id;
-      await this.walletRepository.updateBalance(creatorId, "creator", booking.amount, {
-        amount: booking.amount,
+      
+      const totalAmount = booking.amount;
+      const commission = Math.round(totalAmount * 0.2);
+      const creatorAmount = totalAmount - commission;
+
+      // 1. Debit Admin Wallet (Only the creator's share, admin retains commission)
+      await this.walletRepository.updateBalance("admin", "admin", -creatorAmount, {
+        amount: creatorAmount,
+        type: "debit",
+        description: `Payment release for booking ${booking.id} - Complaint Dismissed (Total: ₹${totalAmount}, Commission: ₹${commission})`,
+        source: "booking",
+        sourceId: complaint.bookingId,
+        relatedName: "creator_payout"
+      });
+
+      // 2. Credit Creator Wallet
+      await this.walletRepository.updateBalance(creatorId, "creator", creatorAmount, {
+        amount: creatorAmount,
         type: "credit",
-        description: `Payment for booking ${booking.id} - Complaint Dismissed`,
+        description: `Payment for booking ${booking.id} - Complaint Dismissed (After 20% admin commission)`,
         source: "booking",
         sourceId: complaint.bookingId,
       });
+
       complaint.status = "dismissed";
+      await this.bookingRepository.updatePaymentStatus(complaint.bookingId, "released");
     }
 
     complaint.adminComment = adminComment;
     const updatedComplaint = await this.complaintRepository.update(complaint);
 
-    // Send notification to user
+    // Send notifications
     try {
-      const userId = typeof complaint.userId === 'string' ? complaint.userId : (complaint.userId as any)._id?.toString();
-      if (userId) {
+      const userIdStr = typeof complaint.userId === 'string' ? complaint.userId : (complaint.userId as any)._id?.toString();
+      if (userIdStr) {
         await this.sendNotificationUseCase.sendNotification({
-          recipientId: userId,
+          recipientId: userIdStr,
           type: NotificationType.REPORT,
           title: action === "resolve" ? "Complaint Resolved - Refund Issued" : "Complaint Update",
           message: action === "resolve" 
@@ -67,16 +99,15 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
         });
       }
 
-      // Also notify creator
-      const creatorId = typeof complaint.creatorId === 'string' ? complaint.creatorId : (complaint.creatorId as any)._id?.toString();
-      if (creatorId) {
+      const creatorIdStr = typeof complaint.creatorId === 'string' ? complaint.creatorId : (complaint.creatorId as any)._id?.toString();
+      if (creatorIdStr) {
         await this.sendNotificationUseCase.sendNotification({
-          recipientId: creatorId,
+          recipientId: creatorIdStr,
           type: NotificationType.REPORT,
-          title: action === "resolve" ? "Complaint Update - Payment Deduced" : "Complaint Dismissed - Payment Released",
+          title: action === "resolve" ? "Complaint Update - Refund Processed" : "Complaint Dismissed - Payment Released",
           message: action === "resolve"
-            ? `A complaint for booking ${booking.id || (booking as any)._id} was resolved in favor of the user. Payment was refunded. Admin feedback: ${adminComment}`
-            : `A complaint for booking ${booking.id || (booking as any)._id} has been dismissed. The payment has been released to your wallet. Admin feedback: ${adminComment}`,
+            ? `A complaint for booking ${booking.id || (booking as any)._id} was resolved. Payment was refunded to the user.`
+            : `A complaint for booking ${booking.id || (booking as any)._id} has been dismissed. Payment released to your wallet.`,
           isRead: false,
           metadata: { 
             complaintId: updatedComplaint?._id?.toString(), 

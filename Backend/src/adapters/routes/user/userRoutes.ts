@@ -15,10 +15,11 @@ import {
   getCategoryController,
   userProfileController,
   userBookingController,
+  userWalletController,
+  authMiddleware,
   userWallpaperController,
   wishlistController,
   reviewController,
-  authMiddleware,
 } from "../../../framework/depInjection/user/userInjections";
 
 import { loginUserSchema } from "../../validation/loginUserSchema";
@@ -278,6 +279,12 @@ export class UserRoutes {
       authMiddleware,
       authorizeRoles("user"),
       (req: Request, res: Response) => complaintController.getByBooking(req, res)
+    );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.WALLET,
+      authMiddleware,
+      authorizeRoles("user"),
+      (req: Request, res: Response) => userWalletController.getWallet(req, res)
     );
   }
 }

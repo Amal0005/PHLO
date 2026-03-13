@@ -10,6 +10,7 @@ import {
   wallpaperController,
   creatorBookingController,
   leaveController,
+  creatorWalletController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
@@ -182,5 +183,11 @@ export class CreatorRoutes {
         leaveController.removeLeave(req, res)
       }
     )
+    this.creatorRouter.get(
+      BACKEND_ROUTES.CREATOR.WALLET,
+      (req: any, res: Response) => {
+        creatorWalletController.getWallet(req, res)
+      }
+    );
   }
 }

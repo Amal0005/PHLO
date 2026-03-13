@@ -27,16 +27,34 @@ export class RejectComplaintUseCase implements IRejectComplaintUseCase {
       ? complaint.creatorId 
       : (complaint.creatorId as any)._id;
 
-    await this.walletRepository.updateBalance(creatorId, "creator", booking.amount, {
-      amount: booking.amount,
+    const totalAmount = booking.amount;
+    const commission = Math.round(totalAmount * 0.2);
+    const creatorAmount = totalAmount - commission;
+
+    // 1. Debit Admin Wallet (Only the creator's share, admin retains commission)
+    await this.walletRepository.updateBalance("admin", "admin", -creatorAmount, {
+      amount: creatorAmount,
+      type: "debit",
+      description: `Payout for booking ${booking.id || (booking as any).id} - Complaint Rejected (Total: ₹${totalAmount}, Commission: ₹${commission})`,
+      source: "booking",
+      sourceId: complaint.bookingId,
+      relatedName: "creator_payout"
+    });
+
+    // 2. Credit Creator Wallet
+    await this.walletRepository.updateBalance(creatorId, "creator", creatorAmount, {
+      amount: creatorAmount,
       type: "credit",
-      description: `Payment for booking ${booking.id || (booking as any).id} - Complaint Rejected`,
+      description: `Payment received for booking ${booking.id || (booking as any).id} - Complaint Rejected (After 20% admin commission)`,
       source: "booking",
       sourceId: complaint.bookingId,
     });
 
     complaint.status = "dismissed";
     complaint.adminComment = adminComment;
+    
+    // 3. Update Booking Payment Status
+    await this.bookingRepository.updatePaymentStatus(complaint.bookingId, "released");
     
     const updatedComplaint = await this.complaintRepository.update(complaint);
 

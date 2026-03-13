@@ -36,6 +36,7 @@ export const BACKEND_ROUTES = {
     BUY_WALLPAPER: "/wallpaper/buy/:id",
     COMPLAINTS: "/complaints",
     GET_COMPLAINT_BY_BOOKING: "/complaints/booking/:bookingId",
+    WALLET: "/wallet",
   },
   CREATOR: {
     BASE: "/creator",
@@ -62,6 +63,7 @@ export const BACKEND_ROUTES = {
     WALLPAPER_DETAIL: "/wallpaper/:wallpaperId",
     LEAVE: "/leave",
     LEAVE_DETAIL: "/leave/:date",
+    WALLET: "/wallet",
   },
   ADMIN: {
     BASE: "/admin",

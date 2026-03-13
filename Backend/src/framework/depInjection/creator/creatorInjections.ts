@@ -55,6 +55,8 @@ import { CreatorLeaveController } from "@/adapters/controllers/creator/creatorLe
 import { WalletRepository } from "@/adapters/repository/walletRepository";
 import { CreditWalletUseCase } from "@/application/useCases/wallet/creditWalletUseCase";
 import { CreatorPackageController } from "@/adapters/controllers/creator/creatorPackageController";
+import { GetWalletUseCase } from "@/application/useCases/wallet/getWalletUseCase";
+import { CreatorWalletController } from "@/adapters/controllers/creator/creatorWalletController";
 
 
 const creatorRepository = new CreatorRepository();
@@ -96,6 +98,7 @@ const deleteCategoryUseCase = new DeleteCategoryUseCase(categoryRepo);
 const creditWalletUseCase = new CreditWalletUseCase(walletRepo);
 const buySubscriptionUseCase = new BuySubscriptionUseCase(subscriptionRepo, stripeService, creatorRepository)
 const listCreatorBookingsUseCase = new ListCreatorBookingsUseCase(bookingRepo);
+const getWalletUseCase = new GetWalletUseCase(walletRepo);
 
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase, userRepository)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
@@ -117,6 +120,7 @@ export const creatorSubscriptionController = new CreatorSubscriptionController(b
 export const creatorBookingController = new CreatorBookingController(listCreatorBookingsUseCase)
 export const wallpaperController = new WallpaperController(addWallpaperUseCase, deleteWallpaperUseCase, getCreatorWallpapaperUseCase,)
 export const leaveController = new CreatorLeaveController(getLeaveUseCase, addLeaveUseCase, removeLeaveUseCase)
+export const creatorWalletController = new CreatorWalletController(getWalletUseCase);
 
 export { creatorSubscriptionWebhookUseCase };
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { Menu, X, ChevronDown, User, LogOut, Heart, MessageCircle } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Heart, MessageCircle, Wallet } from "lucide-react";
 import { useRef } from "react";
 import LogoWhite from "../../../public/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
@@ -172,6 +172,16 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
                     </button>
                     <button
                       onClick={() => {
+                        navigate(ROUTES.USER.WALLET);
+                        setShowUserDropdown(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors text-left"
+                    >
+                      <Wallet size={16} />
+                      Wallet
+                    </button>
+                    <button
+                      onClick={() => {
                         setShowLogoutModal(true);
                         setShowUserDropdown(false);
                       }}
@@ -253,6 +263,16 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
               className="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               Creators
+            </button>
+            <button
+              onClick={() => {
+                navigate(ROUTES.USER.WALLET);
+                setMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            >
+              <Wallet size={16} />
+              <span className="text-sm font-medium">Wallet</span>
             </button>
             {user ? (
               <>

@@ -44,6 +44,7 @@ import { SubscriptionRepository } from "@/adapters/repository/admin/subscription
 import { StripeService } from "@/domain/services/stripeService";
 import { CreateBookingUseCase } from "@/application/useCases/user/booking/createBookingUseCase";
 import { PaymentController } from "@/adapters/controllers/paymentController";
+import { UserWalletController } from "@/adapters/controllers/user/userWalletController";
 import { BookingWebhookUseCase } from "@/application/useCases/user/booking/bookingWebhookUseCase";
 import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/creator/subscription/creatorSubscriptionWebhookUseCase";
 import { ListBookingUseCase } from "../../../application/useCases/user/booking/listbookingUseCase";
@@ -76,6 +77,7 @@ import { RetryPaymentUseCase } from "@/application/useCases/user/booking/retryPa
 import { LeaveRepository } from "@/adapters/repository/creator/leaveRepository";
 import { jwtAuthMiddleware } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { CreditWalletUseCase } from "@/application/useCases/wallet/creditWalletUseCase";
+import { GetWalletUseCase } from "@/application/useCases/wallet/getWalletUseCase";
 import { WalletRepository } from "@/adapters/repository/walletRepository";
 
 
@@ -129,7 +131,7 @@ const bookingWebhookUseCase = new BookingWebhookUseCase(bookingRepo, stripeServi
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase, userRepo)
 const listBookingsUseCase = new ListBookingUseCase(bookingRepo);
 const checkAvailabilityUseCase = new CheckAvailabilityUseCase(bookingRepo, leaveRepo, packageRepository);
-const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo, packageRepository, sendNotificationUseCase);
+const cancelBookingUseCase = new CancelBookingUseCase(bookingRepo, packageRepository, sendNotificationUseCase, walletRepo);
 const getBookingDetailUseCase = new GetBookingDetailUseCase(bookingRepo, stripeService);
 const getApprovedWallpapers = new GetApprovedWallpaperUseCase(wallpaperRepo, wallpaperDownloadRepo)
 const recordDownloadUseCase = new RecordDownloadUseCase(wallpaperDownloadRepo, wallpaperRepo)
@@ -147,6 +149,7 @@ const buyWallpaperUseCase = new BuyWallpaperUseCase(wallpaperRepo, stripeService
 const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase, sendNotificationUseCase, userRepo)
 
 const retryPaymentUseCase = new RetryPaymentUseCase(bookingRepo, packageRepository, stripeService);
+const getWalletUseCase = new GetWalletUseCase(walletRepo);
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
@@ -165,6 +168,7 @@ export const paymentController = new PaymentController(bookingWebhookUseCase, cr
 export const userWallpaperController = new UserWallpaperController(getApprovedWallpapers, recordDownloadUseCase, buyWallpaperUseCase)
 export const wishlistController = new WishlistController(toggleWishlistUseCase, getWishlistUseCase, getWishlistIdsUseCase)
 export const reviewController = new ReviewController(addReviewUseCase, deleteReviewUseCase, getReviewUseCase, getReviewByBookingUseCase, editReviewUseCase)
+export const userWalletController = new UserWalletController(getWalletUseCase);
 export const authMiddleware = jwtAuthMiddleware(jwtService, tokenBlacklistService, userRepo, creatorRepository);
 
 

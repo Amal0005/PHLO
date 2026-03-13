@@ -40,6 +40,7 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
           return;
         }
         await this._bookingRepo.updateStatus(bookingId, BookingStatus.COMPLETED);
+        await (this._bookingRepo as any).updatePaymentStatus(bookingId, "held");
 
         // Credit Admin Wallet & Create Conversation
         if (booking) {

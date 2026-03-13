@@ -245,14 +245,18 @@ const BookingsCalendar: React.FC = () => {
                                                 <h3 className="text-lg font-bold text-white group-hover:text-zinc-200 transition-colors">
                                                     {booking.packageDetails?.title}
                                                 </h3>
-                                                <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${booking.status === 'completed'
-                                                    ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
-                                                    : booking.status === 'cancelled'
-                                                        ? "bg-rose-500/10 text-rose-500 border-rose-500/20"
-                                                        : "bg-amber-500/10 text-amber-500 border-amber-500/20"
-                                                    }`}>
-                                                    {booking.status}
-                                                </span>
+                                                    <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border ${booking.status === 'completed'
+                                                        ? (startOfDay(parseISO(booking.bookingDate)) < startOfDay(new Date()) 
+                                                            ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                                                            : "bg-blue-500/10 text-blue-500 border-blue-500/20")
+                                                        : booking.status === 'cancelled'
+                                                            ? "bg-rose-500/10 text-rose-500 border-rose-500/20"
+                                                            : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                                                        }`}>
+                                                        {booking.status === 'completed'
+                                                            ? (startOfDay(parseISO(booking.bookingDate)) < startOfDay(new Date()) ? 'Completed' : 'Confirmed')
+                                                            : booking.status}
+                                                    </span>
                                             </div>
                                             {/* <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
                                                 Package Reference: {booking.id.toUpperCase()}

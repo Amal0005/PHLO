@@ -11,7 +11,7 @@ export class UserWallpaperController {
     private _getApprovedWallpaperUseCase: IGetApprovedWallpapersUseCase,
     private _recordDownloadUseCase: IRecordDownloadUseCase,
     private _buyWallpaperUseCase: IBuyWallpaperUseCase
-  ) { }
+  ) {}
 
   async getWallpaper(req: AuthRequest, res: Response) {
     try {

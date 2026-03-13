@@ -17,6 +17,7 @@ import BookingDetailPage from "@/pages/user/booking/BookingDetailPage";
 import WallpaperGallery from "@/pages/user/wallpaper/wallpaperGallery";
 import WishlistPage from "@/pages/user/wishlist/wishlistPage";
 import ChatPage from "@/pages/chat/ChatPage";
+import UserWalletPage from "@/pages/user/wallet/UserWalletPage";
 
 export function UserRoutes() {
   return (
@@ -49,6 +50,7 @@ export function UserRoutes() {
         <Route path={ROUTES.USER.WALLPAPERS} element={<WallpaperGallery />} />
         <Route path={ROUTES.USER.WISHLIST} element={<WishlistPage />} />
         <Route path={ROUTES.USER.CHAT} element={<ChatPage />} />
+        <Route path={ROUTES.USER.WALLET} element={<UserWalletPage />} />
       </Route>
     </Routes>
   );

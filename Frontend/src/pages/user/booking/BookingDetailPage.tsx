@@ -106,14 +106,18 @@ const BookingDetailPage: React.FC = () => {
         }
     };
 
-    const getStatusConfig = (status: UserBooking['status']) => {
+    const getStatusConfig = (status: UserBooking['status'], bookingDate?: string) => {
+        const isDatePassed = bookingDate ? new Date(bookingDate) < new Date(new Date().setHours(0, 0, 0, 0)) : false;
+
         switch (status) {
             case 'completed':
                 return {
-                    label: "Confirmed",
+                    label: isDatePassed ? "Completed" : "Confirmed",
                     icon: <CheckCircle2 className="w-4 h-4" />,
-                    style: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-                    bgGlow: "bg-emerald-500/5"
+                    style: isDatePassed 
+                        ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                        : "bg-blue-500/10 text-blue-500 border-blue-500/20",
+                    bgGlow: isDatePassed ? "bg-emerald-500/5" : "bg-blue-500/5"
                 };
             case 'pending':
                 return {
@@ -152,7 +156,7 @@ const BookingDetailPage: React.FC = () => {
 
     if (!booking) return null;
 
-    const statusConfig = getStatusConfig(booking.status);
+    const statusConfig = getStatusConfig(booking.status, booking.bookingDate);
 
     return (
         <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black">

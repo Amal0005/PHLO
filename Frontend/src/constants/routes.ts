@@ -16,6 +16,7 @@ export const ROUTES = {
     BOOKINGS: "/bookings",
     BOOKING_DETAIL: "/bookings/:sessionId",
     CHAT: "/chat",
+    WALLET: "/wallet",
 
     NOT_FOUND: "*",
   },
@@ -35,7 +36,8 @@ export const ROUTES = {
     SUBSCRIPTION_CANCEL: "/creator/subscription-cancel",
     WALLPAPERS: "/creator/wallpapers",
     BOOKINGS: "/creator/bookings",
-    CHAT: "/creator/chat"
+    CHAT: "/creator/chat",
+    WALLET: "/creator/wallet"
   },
 
   ADMIN: {

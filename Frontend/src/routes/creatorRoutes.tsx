@@ -13,6 +13,7 @@ import SubscriptionCancel from "@/pages/creator/subscription/subscriptionCancel"
 import ViewWallpapersPage from "@/pages/creator/wallpaper/viewWallpapers";
 import BookingsCalendar from "@/pages/creator/bookings/BookingsCalendar";
 import ChatPage from "@/pages/chat/ChatPage";
+import CreatorWalletPage from "@/pages/creator/wallet/CreatorWalletPage";
 
 export function CreatorRoutes() {
   return (
@@ -37,6 +38,7 @@ export function CreatorRoutes() {
         <Route path={ROUTES.CREATOR.WALLPAPERS} element={<ViewWallpapersPage />} />
         <Route path={ROUTES.CREATOR.BOOKINGS} element={<BookingsCalendar />} />
         <Route path={ROUTES.CREATOR.CHAT} element={<ChatPage />} />
+        <Route path={ROUTES.CREATOR.WALLET} element={<CreatorWalletPage />} />
 
       </Route>
     </Routes>

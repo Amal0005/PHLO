@@ -30,10 +30,14 @@ const BookingsPage: React.FC = () => {
         fetchBookings();
     }, []);
 
-    const getStatusStyles = (status: UserBooking['status']) => {
+    const getStatusStyles = (status: UserBooking['status'], bookingDate?: string) => {
+        const isDatePassed = bookingDate ? new Date(bookingDate) < new Date(new Date().setHours(0, 0, 0, 0)) : false;
+
         switch (status) {
             case 'completed':
-                return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
+                return isDatePassed 
+                    ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                    : "bg-blue-500/10 text-blue-500 border-blue-500/20";
             case 'pending':
                 return "bg-amber-500/10 text-amber-500 border-amber-500/20";
             case 'cancelled':
@@ -109,8 +113,10 @@ const BookingsPage: React.FC = () => {
                                 {/* Content */}
                                 <div className="flex-grow min-w-0 pr-4">
                                     <div className="flex flex-wrap items-center gap-3 mb-3">
-                                        <span className={`px-4 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border ${getStatusStyles(booking.status)}`}>
-                                            {booking.status === 'completed' ? 'Confirmed' : booking.status}
+                                        <span className={`px-4 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border ${getStatusStyles(booking.status, booking.bookingDate)}`}>
+                                            {booking.status === 'completed'
+                                                ? (new Date(booking.bookingDate) < new Date(new Date().setHours(0, 0, 0, 0)) ? 'Completed' : 'Confirmed')
+                                                : booking.status}
                                         </span>
                                         <div className="flex items-center gap-2 text-zinc-500 text-[11px] font-medium tracking-wide">
                                             <Calendar className="w-3 h-3" />

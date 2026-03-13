@@ -22,9 +22,7 @@ import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 import { errorHandler } from "./adapters/middlewares/errorHandler";
 import { logger } from "./utils/logger";
 import { paymentController } from "./framework/depInjection/user/userInjections";
-import { SubscriptionScheduler } from "@/framework/scheduler/subscriptionScheduler";
-import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
-import { MailService } from "@/domain/services/user/mailServices";
+import { paymentReleaseScheduler, subscriptionScheduler } from "@/framework/depInjection/schedulerInjections";
 
 
 export class App {
@@ -106,7 +104,8 @@ export class App {
     const port = process.env.PORT || 5000;
     try {
       await this.database.connect();
-      new SubscriptionScheduler(new CreatorRepository(), new MailService()).start();
+      subscriptionScheduler.start();
+      paymentReleaseScheduler.start();
 
       this.server = http.createServer(this.app);
       new SocketIOHandler(this.server);
