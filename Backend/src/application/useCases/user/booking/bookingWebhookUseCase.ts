@@ -5,13 +5,12 @@ import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUse
 import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { IChatRepository } from "@/domain/interface/repository/IChatRepository ";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { logger } from "@/utils/logger";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 import Stripe from "stripe";
-import { Types } from "mongoose";
+import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
 
 export class BookingWebhookUseCase implements IBookingWebhookUseCase {
   constructor(
@@ -64,8 +63,8 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
             const existingConv = await this._chatRepo.getConversationByBooking(bookingId);
             if (!existingConv) {
               await this._chatRepo.createConversation({
-                bookingId: new Types.ObjectId(bookingId),
-                participants: [new Types.ObjectId(booking.userId as string), new Types.ObjectId(pkg.creatorId as string)],
+                bookingId: bookingId,
+                participants: [booking.userId as string, pkg.creatorId as string],
                 lastMessage: "Booking confirmed! You can now start chatting.",
                 lastMessageAt: new Date()
               });

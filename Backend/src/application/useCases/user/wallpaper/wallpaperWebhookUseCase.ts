@@ -1,5 +1,4 @@
 import { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWallpaperWebhookUseCase";
-import { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository ";
 import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
@@ -11,6 +10,7 @@ import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendN
 import { NotificationType } from "@/domain/entities/notificationEntity";
 
 import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
 
 export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
     constructor(

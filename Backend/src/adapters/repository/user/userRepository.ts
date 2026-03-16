@@ -5,14 +5,12 @@ import { paginateMongo } from "@/utils/pagination";
 import { BaseRepository } from "../baseRepository";
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { Filter } from "mongodb";
+import mongoose from "mongoose";
 
 export class UserRepository extends BaseRepository<User, IUserModel> implements IUserRepository {
   constructor() {
     super(UserModel);
   }
-
-
-
 
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.model.findOne({ email });

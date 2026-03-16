@@ -1,16 +1,16 @@
 import { ConversationEntity } from "@/domain/entities/conversationEntity";
-import { IChatRepository } from "@/domain/interface/repository/IChatRepository ";
 import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/constants/statusCodes";
+import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
 
 export class CreateConversationUseCase {
     constructor(
         private _chatRepo: IChatRepository,
         private _bookingRepo: IBookingRepository,
         private _packageRepo: IPackageRepository
-    ) { }
+    ) {}
 
     async execute(bookingId: string): Promise<ConversationEntity> {
         // 1. Check if conversation already exists
