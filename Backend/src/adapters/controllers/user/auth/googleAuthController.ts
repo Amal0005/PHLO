@@ -1,17 +1,18 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
-
+import { IGoogleLoginUseCase } from "../../../../domain/interface/user/auth/IGoogleLoginUseCase";
 export class GoogleAuthController {
-  constructor(private _googleLoginUseCase: IGoogleLoginUseCase) { }
+  constructor(private _googleLoginUseCase: IGoogleLoginUseCase) {}
 
   async googleLogin(req: Request, res: Response) {
     try {
       const { idToken } = req.body;
 
       if (!idToken) {
-        return res.status(StatusCode.BAD_REQUEST).json({ message: MESSAGES.AUTH.TOKEN_REQUIRED });
+        return res
+          .status(StatusCode.BAD_REQUEST)
+          .json({ message: MESSAGES.AUTH.TOKEN_REQUIRED });
       }
 
       const { user, accessToken, refreshToken } =
@@ -21,7 +22,8 @@ export class GoogleAuthController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: Number(process.env.REFRESH_TOKEN_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
+        maxAge:
+          Number(process.env.REFRESH_TOKEN_MAX_AGE) || 7 * 24 * 60 * 60 * 1000,
       });
 
       return res.status(StatusCode.OK).json({
@@ -29,11 +31,13 @@ export class GoogleAuthController {
         accessToken,
       });
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : MESSAGES.AUTH.GOOGLE_LOGIN_FAILED;
+      const message =
+        error instanceof Error
+          ? error.message
+          : MESSAGES.AUTH.GOOGLE_LOGIN_FAILED;
       return res.status(StatusCode.UNAUTHORIZED).json({
         message,
       });
     }
   }
 }
-

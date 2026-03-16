@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./Frontend
+      args:
+        - VITE_BASE_URL=http://localhost:5000/api
+    ports:
+      - "5173:80" # Mapping the frontend to Nginx's port 80
+    depends_on:
+      - backend
+    networks:
+      - phlo-network
+
+  backend:
+    build:
+      context: ./Backend
+    ports:
+      - "5000:5000" # Updated to match app.ts default
+    env_file:
+      - ./Backend/.env
+    environment:
+      - NODE_ENV=development
+      # Add other env vars here or point to an env_file
+      - MONGO_URI=mongodb://mongodb:27017/phlo
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD= # Pass empty password for local redis alpine container
+      - PORT=5000
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - phlo-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - phlo-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - phlo-network
+
+networks:
+  phlo-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
