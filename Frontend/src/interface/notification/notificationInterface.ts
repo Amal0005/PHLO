@@ -1,10 +1,12 @@
-export enum NotificationType {
-    CHAT = "CHAT",
-    BOOKING = "BOOKING",
-    WALLET = "WALLET",
-    ACCOUNT = "ACCOUNT",
-    REPORT = "REPORT",
-}
+export const NotificationType = {
+    CHAT: "CHAT",
+    BOOKING: "BOOKING",
+    WALLET: "WALLET",
+    ACCOUNT: "ACCOUNT",
+    REPORT: "REPORT",
+} as const;
+
+export type NotificationType = typeof NotificationType[keyof typeof NotificationType];
 
 export interface NotificationEntity {
     id: string;

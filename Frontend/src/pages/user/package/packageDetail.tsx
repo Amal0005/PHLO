@@ -27,7 +27,7 @@ const PackageDetailPage: React.FC = () => {
   const [packageData, setPackageData] = useState<UserPackage | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [showGallery, setShowGallery] = useState(false);
+  // const [showGallery, setShowGallery] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [isDateAvailable, setIsDateAvailable] = useState<boolean | null>(null);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
