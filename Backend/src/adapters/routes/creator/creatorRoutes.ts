@@ -185,7 +185,7 @@ export class CreatorRoutes {
     )
     this.creatorRouter.get(
       BACKEND_ROUTES.CREATOR.WALLET,
-      (req: any, res: Response) => {
+      (req: Request, res: Response) => {
         creatorWalletController.getWallet(req, res)
       }
     );

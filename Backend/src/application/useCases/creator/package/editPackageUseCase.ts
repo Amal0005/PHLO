@@ -7,7 +7,7 @@ import { IPackageRepository } from "@/domain/interface/repository/IPackageReposi
 export class EditPackageUseCase implements IEditPackageUseCase {
   constructor(
     private _packageRepo: IPackageRepository
-  ) {}
+  ) { }
 
   async editPackage(
     packageId: string,
@@ -22,7 +22,7 @@ export class EditPackageUseCase implements IEditPackageUseCase {
 
 
     const existingCreatorId = (typeof existingPackage.creatorId === 'object' && existingPackage.creatorId !== null)
-      ? (existingPackage.creatorId as any)._id?.toString()
+      ? (existingPackage.creatorId as unknown as { _id?: { toString(): string } })._id?.toString()
       : existingPackage.creatorId.toString();
 
     if (existingCreatorId !== creatorId.toString()) {

@@ -215,7 +215,7 @@ export const CustomCalendar: React.FC<CustomCalendarProps> = ({
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        onChange(undefined as any);
+                                        onChange(undefined as unknown as Date);
                                         setIsOpen(false);
                                     }}
                                     className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest hover:text-white transition-colors"

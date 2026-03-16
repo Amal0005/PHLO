@@ -47,7 +47,7 @@ export class WalletRepository implements IWalletRepository {
     }
 
     async getTransactions(walletId: string, search?: string, source?: string, page: number = 1, limit: number = 10): Promise<{ transactions: WalletTransaction[]; total: number }> {
-        const query: any = { walletId: new mongoose.Types.ObjectId(walletId) };
+        const query: Record<string, unknown> = { walletId: new mongoose.Types.ObjectId(walletId) };
 
         if (search && search.trim() !== "") {
             const searchRegex = { $regex: search.trim(), $options: "i" };
@@ -72,11 +72,11 @@ export class WalletRepository implements IWalletRepository {
                 id: t._id.toString(),
                 walletId: t.walletId.toString(),
                 amount: t.amount,
-                type: t.type as any,
+                type: t.type as "credit" | "debit",
                 description: t.description,
-                source: t.source as any,
+                source: t.source as "subscription" | "wallpaper" | "booking" | "withdrawal" | "refund",
                 sourceId: t.sourceId,
-                relatedName: (t as any).relatedName,
+                relatedName: (t as unknown as { relatedName?: string }).relatedName,
                 timestamp: t.timestamp,
             })),
             total

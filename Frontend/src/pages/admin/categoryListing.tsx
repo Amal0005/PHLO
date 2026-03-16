@@ -35,7 +35,7 @@ export default function CategoryListingPage() {
       const response = await AdminCategoryService.getCategories(page, limit, filters);
       setCategories(response.data);
       setTotalPages(response.totalPages);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to fetch categories", error);
       toast.error("Failed to load categories");
     } finally {
@@ -73,7 +73,7 @@ export default function CategoryListingPage() {
       }
 
       toast.success("Category deleted successfully");
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to delete category", error);
       toast.error("Failed to delete category");
     } finally {
@@ -146,7 +146,7 @@ export default function CategoryListingPage() {
           />
           <FilterSelect
             value={sort}
-            onChange={(val) => setSort(val as any)}
+            onChange={(val) => setSort(val as "newest" | "oldest")}
             placeholder="Sort Order"
             className="sm:w-48"
             options={[

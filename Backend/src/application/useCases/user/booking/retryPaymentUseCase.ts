@@ -25,7 +25,7 @@ export class RetryPaymentUseCase implements IRetryPaymentUseCase {
             throw new AppError(`Booking status is ${booking.status}. Payment is not required.`, StatusCode.BAD_REQUEST);
         }
 
-        const pkgId = typeof booking.packageId === 'string' ? booking.packageId : (booking.packageId as any)._id.toString();
+        const pkgId = typeof booking.packageId === 'string' ? booking.packageId : (booking.packageId as unknown as { _id?: { toString(): string } })._id?.toString() || "";
         const pkg = await this._packageRepo.findById(pkgId);
         if (!pkg) {
             throw new AppError("Package details not found", StatusCode.NOT_FOUND);
@@ -43,7 +43,7 @@ export class RetryPaymentUseCase implements IRetryPaymentUseCase {
             successUrl: `${baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${baseUrl}/payment-cancel?booking_id=${booking.id}`,
             type: "booking",
-            userId: typeof booking.userId === 'string' ? booking.userId : (booking.userId as any)._id.toString(),
+            userId: typeof booking.userId === 'string' ? booking.userId : (booking.userId as unknown as { _id?: { toString(): string } })._id?.toString() || "",
         });
 
         // Update booking with the NEW stripeSessionId

@@ -17,11 +17,11 @@ export class PaymentReleaseScheduler {
     ) { }
 
     start() {
-cron.schedule("*/5 * * * *", async () => {
-                logger.info("PaymentReleaseScheduler: Starting daily payment release check...");
+        cron.schedule("*/5 * * * *", async () => {
+            logger.info("PaymentReleaseScheduler: Starting daily payment release check...");
             await this.releasePayments();
         });
-        
+
         this.releasePayments();
     }
 
@@ -31,28 +31,28 @@ cron.schedule("*/5 * * * *", async () => {
             today.setUTCHours(0, 0, 0, 0);
 
             const pendingBookings = await this.bookingRepository.findBookingsForPaymentRelease(today);
-            
+
             logger.info(`PaymentReleaseScheduler: Found ${pendingBookings.length} bookings pending payment release.`);
 
             for (const booking of pendingBookings) {
                 try {
                     const bookingId = booking.id!;
-                    
+
                     const complaint = await this.complaintRepository.findByBookingId(bookingId);
-                    
+
                     if (complaint && complaint.status === "pending") {
                         logger.info(`PaymentReleaseScheduler: Skipping booking ${bookingId} due to pending complaint.`);
                         continue;
                     }
 
-                    const pkg = await this.packageRepository.findById(typeof booking.packageId === 'string' ? booking.packageId : (booking.packageId as any)._id?.toString());
+                    const pkg = await this.packageRepository.findById(typeof booking.packageId === 'string' ? booking.packageId : (booking.packageId as unknown as { _id?: { toString(): string } })._id?.toString() || "");
                     if (!pkg) {
                         logger.error(`PaymentReleaseScheduler: Package not found for booking ${bookingId}`);
                         continue;
                     }
 
-                    const creatorId = typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as any)._id?.toString();
-                    
+                    const creatorId = typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as unknown as { _id?: { toString(): string } })._id?.toString() || "";
+
                     const totalAmount = booking.amount;
                     const commission = Math.round(totalAmount * 0.2);
                     const creatorAmount = totalAmount - commission;

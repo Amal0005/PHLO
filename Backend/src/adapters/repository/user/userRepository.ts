@@ -60,7 +60,7 @@ export class UserRepository extends BaseRepository<User, IUserModel> implements 
 
   async findAdminId(): Promise<string | null> {
     const admin = await this.model.findOne({ role: "admin" }).select("_id").lean();
-    return admin ? (admin as any)._id.toString() : null;
+    return admin ? (admin as unknown as { _id: mongoose.Types.ObjectId })._id.toString() : null;
   }
 
   protected mapToEntity(doc: IUserModel): User {

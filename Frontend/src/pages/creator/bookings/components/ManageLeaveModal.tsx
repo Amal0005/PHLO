@@ -40,8 +40,8 @@ export const ManageLeaveModal: React.FC<ManageLeaveModalProps> = ({
             if (onSuccess) onSuccess();
             onClose();
             setSelectedDate("");
-        } catch (error: any) {
-            const message = error.response?.data?.message || "Failed to add leave";
+        } catch (error: unknown) {
+            const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to add leave";
             toast.error(message);
         } finally {
             setLoading(false);

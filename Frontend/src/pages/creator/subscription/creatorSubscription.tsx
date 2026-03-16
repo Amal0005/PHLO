@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
 import { toast } from "react-toastify";
 import { CreatorSubscriptionService } from "@/services/creator/creatorSubscriptionService";
@@ -6,7 +6,7 @@ import { CreatorProfileServices } from "@/services/creator/creatorProfileService
 import { Check, Crown, Loader2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { setCreator } from "@/store/slices/creator/creatorSlice";
+import { setCreator, Creator } from "@/store/slices/creator/creatorSlice";
 
 export default function CreatorSubscription() {
   const [plans, setPlans] = useState<{
@@ -22,21 +22,21 @@ export default function CreatorSubscription() {
   const creator = useSelector((state: RootState) => state.creator.creator);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    fetchPlans();
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const res = await CreatorProfileServices.getProfile();
       if (res.success) {
-        dispatch(setCreator(res.creator as any));
+        dispatch(setCreator(res.creator as unknown as Creator));
       }
     } catch (error) {
       console.error("Failed to fetch profile", error);
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchPlans();
+    fetchProfile();
+  }, [fetchProfile]);
 
   const fetchPlans = async () => {
     try {

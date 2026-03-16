@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Bell, MessageSquare, BookOpen, Wallet, Settings, ShieldAlert, Circle, Check } from "lucide-react";
 import { useNotifications } from "../../hooks/useNotifications";
-import { NotificationType } from "../../interface/notification/notificationInterface";
+import { NotificationType, NotificationEntity } from "../../interface/notification/notificationInterface";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
@@ -37,7 +37,7 @@ const NotificationBell: React.FC = () => {
         }
     };
 
-    const handleNotificationClick = (notification: any) => {
+    const handleNotificationClick = (notification: NotificationEntity) => {
         if (!notification.isRead) {
             markAsRead(notification.id);
         }

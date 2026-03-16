@@ -45,9 +45,10 @@ export default function AdminWallet() {
             }
 
             setError("");
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error("Wallet fetch error:", err);
-            setError(typeof err === "string" ? err : err.message || "Failed to load wallet data");
+            const errorMessage = (err as Error)?.message || "Failed to load wallet data";
+            setError(typeof err === "string" ? err : errorMessage);
         } finally {
             setLoading(false);
         }

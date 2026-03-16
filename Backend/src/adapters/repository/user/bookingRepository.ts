@@ -93,7 +93,7 @@ export class BookingRepository
       stripeSessionId: doc.stripeSessionId,
       bookingDate: doc.bookingDate,
       location: doc.location,
-      paymentStatus: (doc as any).paymentStatus,
+      paymentStatus: (doc as unknown as { paymentStatus?: "held" | "released" | "refunded" | "partially_refunded" }).paymentStatus,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };

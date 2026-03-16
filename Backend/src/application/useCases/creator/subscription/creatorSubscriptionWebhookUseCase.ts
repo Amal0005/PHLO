@@ -9,6 +9,8 @@ import { renderTemplate } from "@/utils/renderTemplates";
 import { logger } from "@/utils/logger";
 import path from "node:path";
 import Stripe from "stripe";
+import { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
+import { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
@@ -22,7 +24,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         private _creditWalletUseCase: ICreditWalletUseCase,
         private _sendNotificationUseCase: ISendNotificationUseCase,
         private _userRepo: IUserRepository
-    ) {}
+    ) { }
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);
@@ -169,7 +171,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         }
     }
 
-    private async _creditAdminWallet(plan: any, creator: any, sessionId: string) {
+    private async _creditAdminWallet(plan: SubscriptionEntity, creator: CreatorEntity | null, sessionId: string) {
         try {
             logger.info("Attempting to credit admin wallet", {
                 price: plan.price,

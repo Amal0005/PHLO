@@ -63,9 +63,9 @@ const BookingsCalendar: React.FC = () => {
                 toast.success("Date blocked successfully");
             }
             fetchData();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Failed to toggle leave:", error);
-            const message = error.response?.data?.message || "Action failed";
+            const message = (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to add leave";
             toast.error(message);
         } finally {
             setActionLoading(false);

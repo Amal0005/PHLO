@@ -15,7 +15,7 @@ export interface NotificationEntity {
     type: NotificationType;
     title: string;
     message: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     isRead: boolean;
     createdAt: Date;
 }

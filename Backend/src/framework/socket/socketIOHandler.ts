@@ -21,7 +21,7 @@ export class SocketIOHandler {
     SocketIOHandler.instance = this;
   }
 
-  public static emitToUser(userId: string, event: string, data: any) {
+  public static emitToUser(userId: string, event: string, data: unknown) {
     if (SocketIOHandler.instance) {
       SocketIOHandler.instance.io.to(userId).emit(event, data);
     }

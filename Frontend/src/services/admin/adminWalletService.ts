@@ -7,7 +7,7 @@ export const fetchAdminWalletTransactions = async (page: number, limit: number, 
             params: { search, source, page, limit }
         });
         return response.data;
-    } catch (error: any) {
-        throw error.response?.data?.message || "Something went wrong";
+    } catch (error: unknown) {
+        throw (error as { response?: { data?: { message?: string } } }).response?.data?.message || "Something went wrong";
     }
 };

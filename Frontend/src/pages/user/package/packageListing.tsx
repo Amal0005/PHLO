@@ -107,8 +107,8 @@ const PackageListing: React.FC = () => {
         if (response?.success) {
           setAllCategories(response.data || []);
         }
-      } catch (error) {
-        console.error("Failed to fetch categories", error);
+      } catch (error: unknown) {
+        toast.error((error as { response?: { data?: { error?: string } } }).response?.data?.error || "Failed to fetch categories");
       }
     };
     fetchCategories();
@@ -131,7 +131,7 @@ const PackageListing: React.FC = () => {
       };
       fetchAddress();
     }
-  }, []);
+  }, [locationFilter]);
 
   useEffect(() => {
     const fetchWishlistIds = async () => {
@@ -212,7 +212,7 @@ const PackageListing: React.FC = () => {
 
             <FilterSelect
               value={sortBy}
-              onChange={(val) => { setSortBy(val as any); setPage(1); }}
+              onChange={(val) => { setSortBy(val as "newest" | "oldest" | "price-asc" | "price-desc"); setPage(1); }}
               placeholder="Sort By"
               className="w-[200px]"
               options={[
@@ -245,7 +245,7 @@ const PackageListing: React.FC = () => {
                       setIsLocating(false);
                       setPage(1);
                     },
-                    (err) => {
+                    (err: GeolocationPositionError) => {
                       console.error(err);
                       setIsLocating(false);
                       toast.error("Failed to get location.");

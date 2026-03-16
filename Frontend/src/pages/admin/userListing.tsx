@@ -29,7 +29,8 @@ export default function UserListingPage() {
       const result = await fetchAdminUsers(page, limit, debouncedSearch, filterStatus);
       setUsers(result.data);
       setTotalPages(result.totalPages);
-    } catch {
+    } catch (error: unknown) {
+      console.error("Load users error:", error);
       setError("Failed to fetch users");
     } finally {
       setLoading(false);
@@ -65,7 +66,8 @@ export default function UserListingPage() {
           ? "User blocked successfully"
           : "User unblocked successfully"
       );
-    } catch {
+    } catch (error: unknown) {
+      console.error("Toggle status error:", error);
       toast.error("Failed to update user status");
     } finally {
       setConfirmData(null);
@@ -167,7 +169,7 @@ export default function UserListingPage() {
             />
             <FilterSelect
               value={filterStatus}
-              onChange={(val) => handleFilterChange(val as any)}
+              onChange={(val) => handleFilterChange(val as "all" | "active" | "blocked")}
               placeholder="Filter Status"
               className="sm:w-48"
               options={[

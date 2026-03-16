@@ -42,7 +42,8 @@ export default function CreatorListingPage() {
       const data = await fetchAdminCreators(page, limit, debouncedSearch, filterStatus);
       setCreators(data.data);
       setTotalPages(data.totalPages);
-    } catch {
+    } catch (error: unknown) {
+      console.error("Load creators error:", error);
       setError("Failed to fetch creators");
     } finally {
       setLoading(false);
@@ -70,7 +71,8 @@ export default function CreatorListingPage() {
       );
       toast.success("Creator approved successfully");
       setShowDetails(false);
-    } catch {
+    } catch (error: unknown) {
+      console.error("Approve creator error:", error);
       toast.error("Failed to approve creator");
     }
   }
@@ -91,7 +93,8 @@ export default function CreatorListingPage() {
       setShowRejectModal(false);
       setShowDetails(false);
       setRejectionReason("");
-    } catch {
+    } catch (error: unknown) {
+      console.error("Reject creator error:", error);
       toast.error("Failed to reject creator");
     }
   };
@@ -113,7 +116,8 @@ export default function CreatorListingPage() {
           ? "Creator blocked successfully"
           : "Creator unblocked successfully",
       );
-    } catch {
+    } catch (error: unknown) {
+      console.error("Toggle status error:", error);
       toast.error("Failed to update creator status");
     } finally {
       setConfirmData(null);
@@ -213,7 +217,7 @@ export default function CreatorListingPage() {
           />
           <FilterSelect
             value={filterStatus}
-            onChange={(val) => handleFilterChange(val as any)}
+            onChange={(val) => handleFilterChange(val as "all" | "pending" | "approved" | "rejected" | "blocked")}
             placeholder="Filter Status"
             className="sm:w-48"
             options={[

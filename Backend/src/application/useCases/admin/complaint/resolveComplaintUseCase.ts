@@ -23,7 +23,7 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
     if (!booking) throw new Error("Booking not found");
 
     if (action === "resolve") {
-      const userId = typeof complaint.userId === 'string' ? complaint.userId : (complaint.userId as any)._id;
+      const userId = typeof complaint.userId === 'string' ? complaint.userId : (complaint.userId as unknown as { _id: string })._id;
       
       // Debit Admin Wallet (Full amount refunded to user)
       await this.walletRepository.updateBalance("admin", "admin", -booking.amount, {
@@ -47,7 +47,7 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
       complaint.status = "resolved";
       await this.bookingRepository.updatePaymentStatus(complaint.bookingId, "refunded");
     } else {
-      const creatorId = typeof complaint.creatorId === 'string' ? complaint.creatorId : (complaint.creatorId as any)._id;
+      const creatorId = typeof complaint.creatorId === 'string' ? complaint.creatorId : (complaint.creatorId as unknown as { _id: string })._id;
       
       const totalAmount = booking.amount;
       const commission = Math.round(totalAmount * 0.2);
@@ -81,38 +81,38 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
 
     // Send notifications
     try {
-      const userIdStr = typeof complaint.userId === 'string' ? complaint.userId : (complaint.userId as any)._id?.toString();
+      const userIdStr = typeof complaint.userId === 'string' ? complaint.userId : (complaint.userId as unknown as { _id?: { toString(): string } })._id?.toString();
       if (userIdStr) {
         await this.sendNotificationUseCase.sendNotification({
           recipientId: userIdStr,
           type: NotificationType.REPORT,
           title: action === "resolve" ? "Complaint Resolved - Refund Issued" : "Complaint Update",
           message: action === "resolve" 
-            ? `Your complaint for booking ${booking.id || (booking as any)._id} has been resolved and a refund of ₹${booking.amount} has been credited to your wallet. Admin feedback: ${adminComment}`
-            : `Your complaint for booking ${booking.id || (booking as any)._id} has been reviewed. Status: Dismissed. Admin feedback: ${adminComment}`,
+            ? `Your complaint for booking ${booking.id || (booking as unknown as { _id: string })._id} has been resolved and a refund of ₹${booking.amount} has been credited to your wallet. Admin feedback: ${adminComment}`
+            : `Your complaint for booking ${booking.id || (booking as unknown as { _id: string })._id} has been reviewed. Status: Dismissed. Admin feedback: ${adminComment}`,
           isRead: false,
           metadata: { 
             complaintId: updatedComplaint?._id?.toString(), 
             status: updatedComplaint?.status, 
-            bookingId: booking.id || (booking as any)._id?.toString() || (booking as any).id 
+            bookingId: booking.id || (booking as unknown as { _id?: { toString(): string } })._id?.toString() || (booking as unknown as { id: string }).id 
           }
         });
       }
 
-      const creatorIdStr = typeof complaint.creatorId === 'string' ? complaint.creatorId : (complaint.creatorId as any)._id?.toString();
+      const creatorIdStr = typeof complaint.creatorId === 'string' ? complaint.creatorId : (complaint.creatorId as unknown as { _id?: { toString(): string } })._id?.toString();
       if (creatorIdStr) {
         await this.sendNotificationUseCase.sendNotification({
           recipientId: creatorIdStr,
           type: NotificationType.REPORT,
           title: action === "resolve" ? "Complaint Update - Refund Processed" : "Complaint Dismissed - Payment Released",
           message: action === "resolve"
-            ? `A complaint for booking ${booking.id || (booking as any)._id} was resolved. Payment was refunded to the user.`
-            : `A complaint for booking ${booking.id || (booking as any)._id} has been dismissed. Payment released to your wallet.`,
+            ? `A complaint for booking ${booking.id || (booking as unknown as { _id: string })._id} was resolved. Payment was refunded to the user.`
+            : `A complaint for booking ${booking.id || (booking as unknown as { _id: string })._id} has been dismissed. Payment released to your wallet.`,
           isRead: false,
           metadata: { 
             complaintId: updatedComplaint?._id?.toString(), 
             status: updatedComplaint?.status, 
-            bookingId: booking.id || (booking as any)._id?.toString() || (booking as any).id 
+            bookingId: booking.id || (booking as unknown as { _id?: { toString(): string } })._id?.toString() || (booking as unknown as { id: string }).id 
           }
         });
       }

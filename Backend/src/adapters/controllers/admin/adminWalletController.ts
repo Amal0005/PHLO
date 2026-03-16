@@ -3,7 +3,7 @@ import { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
 import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 import { logger } from "@/utils/logger";
-import { MESSAGES } from "@/constants/commonMessages";
+import { MESSAGES } from "@/constants/commonMessages";import { WalletOwnerType } from "@/domain/entities/walletEntity";
 
 export class AdminWalletController {
   constructor(
@@ -16,7 +16,7 @@ export class AdminWalletController {
       const { ownerId, ownerType, search, source, page, limit } = req.query;
 
       const id = (ownerId as string) || "admin";
-      const typeParam = (ownerType as any) || "admin";
+      const typeParam = ((ownerType as string) as WalletOwnerType) || "admin";
 
       const result = await this._getWalletUseCase.getWallet(
         id,

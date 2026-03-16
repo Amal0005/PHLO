@@ -22,7 +22,7 @@ export const useNotifications = () => {
     const creator = useSelector((state: RootState) => state.creator.creator);
     const admin = useSelector((state: RootState) => state.admin.admin);
     const navigate = useNavigate();
-    const currentUserId = user?.id || (user as any)?._id || creator?.id || (creator as any)?._id || admin?.id || (admin as any)?._id;
+    const currentUserId = user?.id || (user as unknown as { _id: string })?._id || creator?.id || (creator as unknown as { _id: string })?._id || admin?.id || (admin as unknown as { _id: string })?._id;
 
     const fetchNotifications = useCallback(async () => {
         if (!currentUserId) return;

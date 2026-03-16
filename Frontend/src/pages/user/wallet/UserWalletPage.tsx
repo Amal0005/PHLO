@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Wallet, ArrowUpRight, ArrowDownLeft, Search, Filter, Clock, Receipt, CreditCard } from "lucide-react";
 import { WalletService, WalletData, WalletTransaction } from "@/services/walletService";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ const UserWalletPage: React.FC = () => {
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
 
-    const fetchWallet = async () => {
+    const fetchWallet = useCallback(async () => {
         try {
             setLoading(true);
             const result = await WalletService.getWallet("user", { page, search });
@@ -21,11 +21,11 @@ const UserWalletPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, search]);
 
     useEffect(() => {
         fetchWallet();
-    }, [page, search]);
+    }, [fetchWallet]);
 
     return (
         <div className="min-h-screen bg-black text-white p-8 lg:p-12 space-y-12 animate-in fade-in duration-700">

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import { RootState } from '../../store/store';
 import api from '@/axios/axiosConfig';
 import { socketService } from '../../services/socketService';
 import ConversationList from '../../compoents/chat/conversationList';
@@ -16,8 +17,8 @@ const ChatPage = () => {
     const { markChatAsRead } = useNotifications();
     const [searchParams] = useSearchParams();
     const bookingIdParam = searchParams.get('bookingId');
-    const userState = useSelector((state: any) => state.user.user);
-    const creatorState = useSelector((state: any) => state.creator.creator);
+    const userState = useSelector((state: RootState) => state.user.user);
+    const creatorState = useSelector((state: RootState) => state.creator.creator);
     const currentUser = userState || creatorState;
 
     const [conversations, setConversations] = useState<ConversationEntity[]>([]);
@@ -25,120 +26,45 @@ const ChatPage = () => {
     const [messages, setMessages] = useState<MessageEntity[]>([]);
     const [isSidebarVisible, setIsSidebarVisible] = useState(true); // For mobile responsiveness
 
-    const currentUserId = currentUser?.id || currentUser?._id;
+    const currentUserId = currentUser?.id || (currentUser as unknown as { _id?: string })?._id;
 
-    // 1. Connect socket and fetch conversations once on mount / user change
-    useEffect(() => {
-        if (!currentUserId) return;
-        socketService.connect(currentUserId);
-        fetchConversations();
-    }, [currentUserId]);
-
-    // 2. Register receive-message listener separately so it has latest selectedChat ref
-    useEffect(() => {
-        const socket = socketService.getSocket();
-        if (!socket) {
-            console.log("No socket available for ChatPage listener");
-            return;
-        }
-
-        const handleReceive = (newMessage: MessageEntity) => {
-            console.log("ChatPage: Received new message via socket:", newMessage);
-            // Check if the message belongs to the currently open chat
-            const selectedId = (selectedChat?.id || (selectedChat as any)?._id)?.toString();
-            const messageConvId = newMessage.conversationId?.toString();
-
-            if (selectedId && messageConvId === selectedId) {
-                setMessages((prev: MessageEntity[]) => {
-                    const exists = prev.some(m => (m.id || (m as any)._id)?.toString() === (newMessage.id || (newMessage as any)._id)?.toString());
-                    if (exists) return prev;
-                    return [...prev, newMessage];
-                });
-                markChatAsRead(selectedId);
-            }
-            fetchConversations();
-        };
-
-        socket.on("receive-message", handleReceive);
-        return () => {
-            socket.off("receive-message", handleReceive);
-        };
-    }, [selectedChat, currentUserId]);
-
-    // Handle initial selection via query param
-    useEffect(() => {
-        const ensureAndSelect = async () => {
-            if (bookingIdParam && currentUser && !selectedChat) {
-                try {
-                    // Try to find in existing list first
-                    const match = conversations.find((c: ConversationEntity) => c.bookingId === bookingIdParam);
-                    if (match) {
-                        handleSelectChat(match);
-                        return;
-                    }
-
-                    // If not found, ensure it exists on backend
-                    const res = await api.get(`/chat/ensure-conversation/${bookingIdParam}`);
-                    if (res.data.success && res.data.conversation) {
-                        const newConv = res.data.conversation;
-                        // Map to frontend interface if needed (backend already does mapping usually)
-                        const mappedConv = {
-                            ...newConv,
-                            id: newConv.id || (newConv as any)._id
-                        };
-
-                        // Reload list to include it
-                        await fetchConversations();
-                        handleSelectChat(mappedConv);
-                    }
-                } catch (err) {
-                    console.error("Failed to ensure conversation", err);
-                }
-            }
-        };
-
-        if (conversations.length > 0 || bookingIdParam) {
-            ensureAndSelect();
-        }
-    }, [conversations, bookingIdParam, currentUser]);
-
-    const fetchConversations = async () => {
+    const fetchConversations = useCallback(async () => {
         try {
             const res = await api.get('/chat/conversations');
             setConversations(res.data.conversation || []);
-        } catch (err) {
+        } catch (err: unknown) {
             console.error("Failed to fetch conversations", err);
         }
-    };
+    }, []);
 
-    const fetchMessages = async (convId: string) => {
+    const fetchMessages = useCallback(async (convId: string) => {
         try {
             const res = await api.get(`/chat/messages/${convId}`);
             setMessages(res.data.message || []);
-        } catch (err) {
+        } catch (err: unknown) {
             console.error("Failed to fetch messages", err);
         }
-    };
+    }, []);
 
-    const handleSelectChat = (conv: ConversationEntity) => {
+    const handleSelectChat = useCallback((conv: ConversationEntity) => {
         setSelectedChat(conv);
         setIsSidebarVisible(false); // Hide sidebar on mobile when chat is selected
-        const convId = conv.id || (conv as any)._id;
+        const convId = conv.id || (conv as unknown as { _id?: string })._id;
         if (convId) {
             fetchMessages(convId);
             markChatAsRead(convId);
         }
-    };
+    }, [fetchMessages, markChatAsRead]);
 
-    const handleSendMessage = async (text: string) => {
+    const handleSendMessage = useCallback(async (text: string) => {
         if (!selectedChat || !currentUserId) return;
-        const conversationId = selectedChat.id || (selectedChat as any)._id;
+        const conversationId = selectedChat.id || (selectedChat as unknown as { _id?: string })._id;
         if (!conversationId) return;
 
         // More robust receiverId extraction
         const receiverId = selectedChat.participants
-            .map((p: any) => (typeof p === 'object' ? (p._id || p.id) : p)?.toString())
-            .find((id: string) => id !== currentUserId.toString());
+            .map((p: unknown) => (typeof p === 'object' && p !== null ? ((p as { _id?: string })._id || (p as { id?: string }).id) : p)?.toString())
+            .find((id?: string) => id !== currentUserId.toString());
 
         if (!receiverId) {
             console.error("Could not determine receiverId", selectedChat.participants);
@@ -172,15 +98,90 @@ const ChatPage = () => {
 
             // 3. Update local UI (sender side)
             setMessages((prev: MessageEntity[]) => {
-                const exists = prev.some(m => (m.id || (m as any)._id)?.toString() === (res.data.message.id || (res.data.message as any)._id)?.toString());
+                const exists = prev.some(m => (m.id || (m as unknown as { _id?: string })._id)?.toString() === (res.data.message.id || (res.data.message as unknown as { _id?: string })._id)?.toString());
                 if (exists) return prev;
                 return [...prev, res.data.message];
             });
             fetchConversations(); // Update last message in list
-        } catch (err) {
+        } catch (err: unknown) {
             console.error("Failed to send message", err);
         }
-    };
+    }, [selectedChat, currentUserId, fetchConversations]);
+
+    // 1. Connect socket and fetch conversations once on mount / user change
+    useEffect(() => {
+        if (!currentUserId) return;
+        socketService.connect(currentUserId);
+        fetchConversations();
+    }, [currentUserId, fetchConversations]);
+
+    // 2. Register receive-message listener separately so it has latest selectedChat ref
+    useEffect(() => {
+        const socket = socketService.getSocket();
+        if (!socket) {
+            console.log("No socket available for ChatPage listener");
+            return;
+        }
+
+        const handleReceive = (newMessage: MessageEntity) => {
+            console.log("ChatPage: Received new message via socket:", newMessage);
+            // Check if the message belongs to the currently open chat
+            const selectedId = (selectedChat?.id || (selectedChat as unknown as { _id?: string })?._id)?.toString();
+            const messageConvId = newMessage.conversationId?.toString();
+
+            if (selectedId && messageConvId === selectedId) {
+                setMessages((prev: MessageEntity[]) => {
+                    const exists = prev.some(m => (m.id || (m as unknown as { _id?: string })._id)?.toString() === (newMessage.id || (newMessage as unknown as { _id?: string })._id)?.toString());
+                    if (exists) return prev;
+                    return [...prev, newMessage];
+                });
+                markChatAsRead(selectedId);
+            }
+            fetchConversations();
+        };
+
+        socket.on("receive-message", handleReceive);
+        return () => {
+            socket.off("receive-message", handleReceive);
+        };
+    }, [selectedChat, currentUserId, markChatAsRead, fetchConversations]);
+
+    // Handle initial selection via query param
+    useEffect(() => {
+        const ensureAndSelect = async () => {
+            if (bookingIdParam && currentUser && !selectedChat) {
+                try {
+                    // Try to find in existing list first
+                    const match = conversations.find((c: ConversationEntity) => c.bookingId === bookingIdParam);
+                    if (match) {
+                        handleSelectChat(match);
+                        return;
+                    }
+
+                    // If not found, ensure it exists on backend
+                    const res = await api.get(`/chat/ensure-conversation/${bookingIdParam}`);
+                    if (res.data.success && res.data.conversation) {
+                        const newConv = res.data.conversation;
+                        // Map to frontend interface if needed (backend already does mapping usually)
+                        const mappedConv = {
+                            ...newConv,
+                            id: newConv.id || (newConv as unknown as { _id?: string })._id
+                        };
+
+                        // Reload list to include it
+                        await fetchConversations();
+                        handleSelectChat(mappedConv);
+                    }
+                } catch (err: unknown) {
+                    console.error("Failed to ensure conversation", err);
+                }
+            }
+        };
+
+        if (conversations.length > 0 || bookingIdParam) {
+            ensureAndSelect();
+        }
+    }, [conversations, bookingIdParam, currentUser, handleSelectChat, selectedChat, fetchConversations]);
 
     if (!currentUser) return <div className="p-8 text-center text-gray-500 font-sans uppercase tracking-[0.2em] pt-32">Authentication Required</div>;
 
@@ -194,7 +195,7 @@ const ChatPage = () => {
                     <ConversationList
                         conversations={conversations}
                         onSelect={handleSelectChat}
-                        selectedId={selectedChat?.id || (selectedChat as any)?._id}
+                        selectedId={selectedChat?.id || (selectedChat as unknown as { _id?: string })?._id}
                     />
                 </div>
 

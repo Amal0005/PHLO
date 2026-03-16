@@ -43,8 +43,8 @@ const ComplaintForm: React.FC<ComplaintFormProps> = ({ bookingId, creatorId, onS
             });
             toast.success("Complaint registered successfully. Our team will review it.");
             onSuccess();
-        } catch (error: any) {
-            toast.error(error.response?.data?.error || "Failed to register complaint");
+        } catch (error: unknown) {
+            toast.error((error as { response?: { data?: { error?: string } } }).response?.data?.error || "Failed to register complaint");
         } finally {
             setSubmitting(false);
         }

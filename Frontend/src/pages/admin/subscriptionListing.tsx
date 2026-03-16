@@ -31,7 +31,7 @@ export default function SubscriptionListingPage() {
       const response = await AdminSubscriptionService.getSubscriptions(page, 10, debouncedSearch, isActive);
       setSubscriptions(response.result.data);
       setTotalPages(response.result.totalPages);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to fetch subscriptions", error);
       // toast.error("Failed to load subscriptions");
     } finally {
@@ -47,7 +47,7 @@ export default function SubscriptionListingPage() {
     fetchSubscriptions();
   }, [fetchSubscriptions]);
 
-  const handleFilterChange = (newStatus: typeof filterStatus) => {
+  const handleFilterChange = (newStatus: "all" | "active" | "inactive") => {
     setFilterStatus(newStatus);
     setPage(1);
   };
@@ -68,7 +68,8 @@ export default function SubscriptionListingPage() {
       await AdminSubscriptionService.deleteSubscription(deleteId);
       fetchSubscriptions();
       toast.success("Subscription deleted successfully");
-    } catch {
+    } catch (error: unknown) {
+      console.error("Delete subscription error:", error);
       toast.error("Failed to delete subscription");
     } finally {
       setDeleteId(null);
@@ -138,7 +139,7 @@ export default function SubscriptionListingPage() {
           />
           <FilterSelect
             value={filterStatus}
-            onChange={(val) => handleFilterChange(val as any)}
+            onChange={(val) => handleFilterChange(val as "all" | "active" | "inactive")}
             placeholder="Filter Status"
             className="sm:w-48"
             options={[

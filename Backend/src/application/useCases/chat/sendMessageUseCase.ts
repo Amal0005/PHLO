@@ -5,6 +5,7 @@ import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendN
 import { NotificationType } from "@/domain/entities/notificationEntity";
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { Types } from "mongoose";
 
 export class SendMessageUseCase implements ISendMessageUseCase {
     constructor(
@@ -12,12 +13,12 @@ export class SendMessageUseCase implements ISendMessageUseCase {
         private _sendNotificationUseCase: ISendNotificationUseCase,
         private _userRepo: IUserRepository,
         private _creatorRepo: ICreatorRepository
-    ) {}
+    ) { }
 
     async sendMessage(data: { conversationId: string; senderId: string; message: string; recipientId: string }): Promise<MessageEntity> {
         const message = await this._chatRepo.saveMessage({
-            conversationId: data.conversationId as any,
-            senderId: data.senderId as any,
+            conversationId: new Types.ObjectId(data.conversationId),
+            senderId: new Types.ObjectId(data.senderId),
             message: data.message
         });
 

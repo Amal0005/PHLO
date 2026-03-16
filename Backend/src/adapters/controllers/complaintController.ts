@@ -25,8 +25,8 @@ export class ComplaintController {
       const userId = req.user?.userId || "";
       const complaint = await this.registerUseCase.registerComplaint(userId, req.body);
       res.status(201).json(complaint);
-    } catch (err: unknown) {
-      res.status(500).json({ error: (err as Error).message });
+    } catch (_err: unknown) {
+      res.status(500).json({ error: (_err as Error).message });
     }
   }
 
@@ -35,8 +35,8 @@ export class ComplaintController {
       const { bookingId } = req.params;
       const complaint = await this.getByBookingUseCase.execute(bookingId);
       res.status(200).json(complaint);
-    } catch (err: unknown) {
-      res.status(500).json({ error: (err as Error).message });
+    } catch (_err: unknown) {
+      res.status(500).json({ error: (_err as Error).message });
     }
   }
 
@@ -44,7 +44,7 @@ export class ComplaintController {
     try {
       const complaints = await this.getAllUseCase.getAllComplaint();
       res.status(200).json(complaints);
-    } catch (err: unknown) {
+    } catch {
       res.status(500).json({ error: "Failed to fetch complaints" });
     }
   }
@@ -55,8 +55,8 @@ export class ComplaintController {
       const { action, adminComment } = req.body;
       const result = await this.resolveUseCase.resolveComplaint(id, action, adminComment);
       res.status(200).json(result);
-    } catch (err: unknown) {
-      res.status(500).json({ error: (err as Error).message });
+    } catch (_err: unknown) {
+      res.status(500).json({ error: (_err as Error).message });
     }
   }
 
@@ -66,8 +66,8 @@ export class ComplaintController {
       const { adminComment } = req.body;
       const result = await this.rejectUseCase.rejectComplaint(id, adminComment);
       res.status(200).json(result);
-    } catch (err: unknown) {
-      res.status(500).json({ error: (err as Error).message });
+    } catch (_err: unknown) {
+      res.status(500).json({ error: (_err as Error).message });
     }
   }
 }

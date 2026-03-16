@@ -2,7 +2,7 @@ import { IGetConversationUseCase } from "@/domain/interface/chat/IGetConversatio
 import { IGetMessagesUseCase } from "@/domain/interface/chat/IGetMessageUseCase";
 import { ISendMessageUseCase } from "@/domain/interface/chat/ISendMessageUseCase";
 import { CreateConversationUseCase } from "@/application/useCases/chat/createConversationUseCase";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
 import { StatusCode } from "@/constants/statusCodes";
 

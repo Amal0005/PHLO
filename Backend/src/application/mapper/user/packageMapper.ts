@@ -4,7 +4,7 @@ import { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class PackageMapper {
   static toDto(entity: PackageEntity): PackageResponseDto {
-    let creatorId: any = entity.creatorId;
+    let creatorId: string | { _id: string; fullName: string; profilePhoto?: string; city?: string } = entity.creatorId as string;
     if (typeof entity.creatorId === 'object' && entity.creatorId !== null) {
       const creator = entity.creatorId as CreatorEntity;
       creatorId = {
@@ -26,7 +26,7 @@ export class PackageMapper {
       locations: entity.locations,
       createdAt: entity.createdAt!,
       updatedAt: entity.updatedAt!,
-      distance: (entity as any).distance,
+      distance: (entity as unknown as { distance?: number }).distance,
     };
   }
 }

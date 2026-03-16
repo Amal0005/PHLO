@@ -55,7 +55,8 @@ export default function WallpaperListingPage() {
       const data = await AdminWallpaperService.getWallpapers(page, limit, filters);
       setWallpapers(data.data);
       setTotalPages(data.totalPages);
-    } catch {
+    } catch (error: unknown) {
+      console.error("Load wallpapers error:", error);
       setError("Failed to fetch wallpapers");
     } finally {
       setLoading(false);
@@ -82,7 +83,8 @@ export default function WallpaperListingPage() {
       await AdminWallpaperService.approveWallpaper(approveTarget._id);
       toast.success("Wallpaper approved");
       loadWallpapers();
-    } catch {
+    } catch (error: unknown) {
+      console.error("Approve wallpaper error:", error);
       toast.error("Failed to approve wallpaper");
     } finally {
       setShowApproveConfirm(false);
@@ -97,7 +99,8 @@ export default function WallpaperListingPage() {
       setShowRejectModal(false);
       setRejectionReason("");
       loadWallpapers();
-    } catch {
+    } catch (error: unknown) {
+      console.error("Reject wallpaper error:", error);
       toast.error("Failed to reject wallpaper");
     }
   }
@@ -141,7 +144,7 @@ export default function WallpaperListingPage() {
       key: "creator",
       render: (wp) => (
         <span className="text-gray-400 text-sm">
-          {typeof wp.creatorId === "object" ? wp.creatorId.fullName : wp.creatorId}
+          {typeof wp.creatorId === "object" ? (wp.creatorId as { fullName: string }).fullName : wp.creatorId}
         </span>
       ),
     },
@@ -265,7 +268,7 @@ export default function WallpaperListingPage() {
           />
           <FilterSelect
             value={statusFilter}
-            onChange={(val) => handleStatusFilterChange(val as any)}
+            onChange={(val) => handleStatusFilterChange(val as StatusFilter)}
             placeholder="Filter Status"
             className="sm:w-48"
             options={STATUS_TABS.map(tab => ({ value: tab.value, label: tab.label }))}

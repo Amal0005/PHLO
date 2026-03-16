@@ -26,7 +26,7 @@ export class ChatRepository implements IChatRepository {
         UserModel.findById(uId).select("name image").lean(),
         CreatorModel.findById(cId).select("fullName profilePhoto").lean()
       ]),
-      BookingModel.findById(d.bookingId).populate('packageId', 'title').lean() as any
+      BookingModel.findById(d.bookingId).populate('packageId', 'title').lean() as unknown as { packageId?: { title?: string } }
     ]);
 
     const packageName = booking?.packageId?.title || "Unknown Package";
@@ -48,7 +48,7 @@ export class ChatRepository implements IChatRepository {
           UserModel.findById(uId).select("name image").lean(),
           CreatorModel.findById(cId).select("fullName profilePhoto").lean()
         ]),
-        BookingModel.findById(d.bookingId).populate('packageId', 'title').lean() as any
+        BookingModel.findById(d.bookingId).populate('packageId', 'title').lean() as unknown as { packageId?: { title?: string } }
       ]);
 
       const packageName = booking?.packageId?.title || "Unknown Package";

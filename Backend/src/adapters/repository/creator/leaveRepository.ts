@@ -13,8 +13,8 @@ export class LeaveRepository extends BaseRepository<LeaveEntity, ILeaveModel> im
       id: doc._id.toString(),
       creatorId: doc.creatorId.toString(),
       date: doc.date,
-      createdAt: (doc as any).createdAt,
-      updatedAt: (doc as any).updatedAt,
+      createdAt: (doc as unknown as { createdAt?: Date }).createdAt,
+      updatedAt: (doc as unknown as { updatedAt?: Date }).updatedAt,
     };
   }
   async addLeave(leaveData: LeaveEntity): Promise<LeaveEntity> {

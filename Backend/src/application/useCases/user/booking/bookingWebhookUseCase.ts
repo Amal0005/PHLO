@@ -6,11 +6,12 @@ import { IPackageRepository } from "@/domain/interface/repository/IPackageReposi
 import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IChatRepository } from "@/domain/interface/repository/IChatRepository ";
+import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { logger } from "@/utils/logger";
-import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 import Stripe from "stripe";
+import { Types } from "mongoose";
 
 export class BookingWebhookUseCase implements IBookingWebhookUseCase {
   constructor(
@@ -40,7 +41,7 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
           return;
         }
         await this._bookingRepo.updateStatus(bookingId, BookingStatus.COMPLETED);
-        await (this._bookingRepo as any).updatePaymentStatus(bookingId, "held");
+        await this._bookingRepo.updatePaymentStatus(bookingId, "held");
 
         // Credit Admin Wallet & Create Conversation
         if (booking) {
@@ -63,8 +64,8 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
             const existingConv = await this._chatRepo.getConversationByBooking(bookingId);
             if (!existingConv) {
               await this._chatRepo.createConversation({
-                bookingId: bookingId as any,
-                participants: [booking.userId as any, pkg.creatorId as any],
+                bookingId: new Types.ObjectId(bookingId),
+                participants: [new Types.ObjectId(booking.userId as string), new Types.ObjectId(pkg.creatorId as string)],
                 lastMessage: "Booking confirmed! You can now start chatting.",
                 lastMessageAt: new Date()
               });
@@ -73,24 +74,28 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
 
             // 3. Send Notifications
             // To Creator
-            const creatorId = typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as any)._id?.toString() || (pkg.creatorId as any).id?.toString();
-            await this._sendNotificationUseCase.sendNotification({
-              recipientId: creatorId,
-              type: NotificationType.BOOKING,
-              title: "New Booking",
-              message: `You have a new booking for ${pkg.title}`,
-              isRead: false
-            });
+            const creatorId = typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as unknown as { _id?: { toString(): string } })._id?.toString() || (pkg.creatorId as unknown as { id?: { toString(): string } }).id?.toString() || "";
+            if (creatorId) {
+              await this._sendNotificationUseCase.sendNotification({
+                recipientId: creatorId,
+                type: NotificationType.BOOKING,
+                title: "New Booking",
+                message: `You have a new booking for ${pkg.title}`,
+                isRead: false
+              });
+            }
 
             // To User
-            const bookingUserId = typeof booking.userId === 'string' ? booking.userId : (booking.userId as any)._id?.toString() || (booking.userId as any).id?.toString();
-            await this._sendNotificationUseCase.sendNotification({
-              recipientId: bookingUserId,
-              type: NotificationType.BOOKING,
-              title: "Booking Confirmed",
-              message: `Your booking for ${pkg.title} has been confirmed`,
-              isRead: false
-            });
+            const bookingUserId = typeof booking.userId === 'string' ? booking.userId : (booking.userId as unknown as { _id?: { toString(): string } })._id?.toString() || (booking.userId as unknown as { id?: { toString(): string } }).id?.toString() || "";
+            if (bookingUserId) {
+              await this._sendNotificationUseCase.sendNotification({
+                recipientId: bookingUserId,
+                type: NotificationType.BOOKING,
+                title: "Booking Confirmed",
+                message: `Your booking for ${pkg.title} has been confirmed`,
+                isRead: false
+              });
+            }
 
             // To Admin
             const adminId = await this._userRepo.findAdminId();

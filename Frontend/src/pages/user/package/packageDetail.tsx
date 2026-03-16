@@ -20,6 +20,7 @@ import Map, { Marker } from 'react-map-gl/mapbox';
 
 
 import 'mapbox-gl/dist/mapbox-gl.css';
+import type { Map as MapboxMap } from 'mapbox-gl';
 
 const PackageDetailPage: React.FC = () => {
   const { packageId } = useParams<{ packageId: string }>();
@@ -52,7 +53,7 @@ const PackageDetailPage: React.FC = () => {
         setLoading(true);
         const response = await UserPackageService.getPackageById(packageId!);
         if (response?.success) setPackageData(response.data);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Failed to fetch package details", error);
       } finally {
         setLoading(false);
@@ -347,17 +348,17 @@ const PackageDetailPage: React.FC = () => {
                   <div className="relative">
                     <LocationSearchBar
                       ref={locationBarRef}
-                      onChange={(location: any) => {
+                      onChange={(location: { placeName?: string; latitude?: number; longitude?: number }) => {
                         setSelectedLocation(location.placeName || "");
                         if (location.latitude && location.longitude) {
                           setViewState(prev => ({
                             ...prev,
-                            latitude: location.latitude,
-                            longitude: location.longitude,
+                            latitude: location.latitude || prev.latitude,
+                            longitude: location.longitude || prev.longitude,
                             zoom: 13,
                           }));
 
-                          setMarkerLoc({ lat: location.latitude, lng: location.longitude });
+                          setMarkerLoc({ lat: location.latitude || 0, lng: location.longitude || 0 });
                         }
                       }}
                     />
@@ -561,12 +562,12 @@ const PackageDetailPage: React.FC = () => {
           <div className="flex-1 relative">
             <Map
               {...viewState}
-              onMove={(evt: any) => setViewState(evt.viewState)}
+              onMove={(evt: { viewState: typeof viewState }) => setViewState(evt.viewState)}
               mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
               mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
               style={{ width: "100%", height: "100%" }}
               antialias={true}
-              onLoad={(evt: any) => {
+              onLoad={(evt: { target: MapboxMap }) => {
                 const map = evt.target;
                 // Add Mapbox terrain for true 3D elevation
                 if (!map.getSource('mapbox-dem')) {
@@ -591,7 +592,7 @@ const PackageDetailPage: React.FC = () => {
                   });
                 }
               }}
-              onClick={async (e: any) => {
+              onClick={async (e: { lngLat: { lat: number; lng: number } }) => {
                 const { lat, lng } = e.lngLat;
                 setMarkerLoc({ lat, lng });
                 // Zoom into clicked spot with steep pitch for Google Earth feel

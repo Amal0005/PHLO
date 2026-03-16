@@ -1,5 +1,4 @@
 import { Schema } from "mongoose";
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 import { IComplaintModel } from "../model/complaintModel";
 
 export const ComplaintSchema = new Schema<IComplaintModel>(

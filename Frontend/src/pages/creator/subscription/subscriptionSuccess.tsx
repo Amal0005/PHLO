@@ -4,7 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
-import { setCreator } from "@/store/slices/creator/creatorSlice";
+import { setCreator, Creator } from "@/store/slices/creator/creatorSlice";
 
 export default function SubscriptionSuccess() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function SubscriptionSuccess() {
       try {
         const res = await CreatorProfileServices.getProfile();
         if (res.success) {
-          dispatch(setCreator(res.creator as any));
+          dispatch(setCreator(res.creator as unknown as Creator));
         }
       } catch (error) {
         console.error("Failed to refresh profile after success", error);

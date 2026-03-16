@@ -4,7 +4,7 @@ import { CreatorEntity } from "@/domain/entities/creatorEntities";
 import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 
 export class ComplaintMapper {
-  static toEntity(data: any): ComplaintEntity {
+  static toEntity(data: Record<string, unknown>): ComplaintEntity {
     return {
       _id: data._id ? String(data._id) : undefined,
       userId: data.userId as string | User,
@@ -19,7 +19,7 @@ export class ComplaintMapper {
     };
   }
 
-  static toEntityList(data: any[]): ComplaintEntity[] {
+  static toEntityList(data: Record<string, unknown>[]): ComplaintEntity[] {
     return data.map((item) => this.toEntity(item));
   }
 

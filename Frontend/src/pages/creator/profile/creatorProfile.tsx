@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useState, useEffect, ChangeEvent, FormEvent, useCallback } from "react";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import { CreatorProfileResponse, EditCreatorProfilePayload } from "@/interface/creator/creatorProfileInterface";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
@@ -21,11 +21,7 @@ export default function CreatorProfile() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const response = await CreatorProfileServices.getProfile();
       if (response.success && response.creator) {
@@ -41,7 +37,11 @@ export default function CreatorProfile() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
   const handleEditChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -104,7 +104,7 @@ export default function CreatorProfile() {
       }
 
       const payload = { ...editForm, profilePhoto: profilePhotoKey };
-      const response = await CreatorProfileServices.editProfile(payload);
+      const response = await CreatorProfileServices.editProfile(payload as EditCreatorProfilePayload);
 
       if (response.success) {
         setProfile(response.creator);

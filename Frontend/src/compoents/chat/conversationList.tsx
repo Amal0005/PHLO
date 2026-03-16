@@ -44,7 +44,7 @@ const ConversationList: React.FC<Props> = ({ conversations, onSelect, selectedId
                     </div>
                 ) : (
                     filteredConversations.map((conv) => {
-                        const id = conv.id || (conv as any)._id || (conv.bookingId as any).toString();
+                        const id = conv.id || (conv as unknown as { _id?: string })._id || (conv.bookingId as unknown as { toString(): string }).toString();
                         const isSelected = selectedId === id;
 
                         return (

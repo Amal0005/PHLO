@@ -23,23 +23,23 @@ export class CreateConversationUseCase {
 
         const packageId = typeof booking.packageId === "string"
             ? booking.packageId
-            : (booking.packageId as any)._id?.toString() || booking.packageId?.toString();
+            : (booking.packageId as unknown as { _id?: { toString(): string } })._id?.toString() || booking.packageId?.toString();
 
         const pkg = await this._packageRepo.findById(packageId);
         if (!pkg) throw new AppError("Package not found", StatusCode.NOT_FOUND);
 
         const creatorId = typeof pkg.creatorId === "string"
             ? pkg.creatorId
-            : (pkg.creatorId as any)._id?.toString() || pkg.creatorId?.toString();
+            : (pkg.creatorId as unknown as { _id?: { toString(): string } })._id?.toString() || pkg.creatorId?.toString();
 
         const userId = typeof booking.userId === "string"
             ? booking.userId
-            : (booking.userId as any)._id?.toString() || booking.userId?.toString();
+            : (booking.userId as unknown as { _id?: { toString(): string } })._id?.toString() || booking.userId?.toString();
 
         // 3. Create the conversation
         await this._chatRepo.createConversation({
-            bookingId: bookingId as any,
-            participants: [userId as any, creatorId as any],
+            bookingId: bookingId as string,
+            participants: [userId as string, creatorId as string],
             lastMessage: "Booking confirmed! You can now start chatting.",
             lastMessageAt: new Date(),
         });
