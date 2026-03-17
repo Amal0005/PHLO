@@ -12,12 +12,10 @@ export class CreateConversationUseCase {
         private _packageRepo: IPackageRepository
     ) {}
 
-    async execute(bookingId: string): Promise<ConversationEntity> {
-        // 1. Check if conversation already exists
+    async createConversation(bookingId: string): Promise<ConversationEntity> {
         const existing = await this._chatRepo.getConversationByBooking(bookingId);
         if (existing) return existing;
 
-        // 2. Load the booking to get userId and packageId (and from that, creatorId)
         const booking = await this._bookingRepo.findById(bookingId);
         if (!booking) throw new AppError("Booking not found", StatusCode.NOT_FOUND);
 
@@ -36,7 +34,6 @@ export class CreateConversationUseCase {
             ? booking.userId
             : (booking.userId as unknown as { _id?: { toString(): string } })._id?.toString() || booking.userId?.toString();
 
-        // 3. Create the conversation
         await this._chatRepo.createConversation({
             bookingId: bookingId as string,
             participants: [userId as string, creatorId as string],
@@ -44,7 +41,6 @@ export class CreateConversationUseCase {
             lastMessageAt: new Date(),
         });
 
-        // 4. Return the populated version
         const newConversation = await this._chatRepo.getConversationByBooking(bookingId);
         if (!newConversation) throw new AppError("Failed to create conversation", StatusCode.INTERNAL_SERVER_ERROR);
 

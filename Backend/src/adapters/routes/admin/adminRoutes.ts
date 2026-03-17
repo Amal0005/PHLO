@@ -7,6 +7,7 @@ import {
   subscriptionController,
   adminWallpaperController,
   adminWalletController,
+  adminDashboardController,
 } from "../../../framework/depInjection/admin/adminInjections";
 
 import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
@@ -107,5 +108,6 @@ export class AdminRoutes {
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.COMPLAINTS, (req: Request, res: Response) => complaintController.getAll(req, res));
     this.adminRouter.patch(BACKEND_ROUTES.ADMIN.RESOLVE_COMPLAINT, (req: Request, res: Response) => complaintController.resolve(req, res));
     this.adminRouter.patch(BACKEND_ROUTES.ADMIN.REJECT_COMPLAINT, (req: Request, res: Response) => complaintController.reject(req, res));
+    this.adminRouter.get(BACKEND_ROUTES.ADMIN.DASHBOARD_STATS, (req: Request, res: Response) => adminDashboardController.getStats(req, res));
   }
 }

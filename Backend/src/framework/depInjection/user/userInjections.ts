@@ -35,7 +35,7 @@ import { EditProfileController } from "@/adapters/controllers/user/profile/editP
 import { ChangePasswordController } from "@/adapters/controllers/user/profile/changePasswordController";
 import { EditUserProfileUsecase } from "@/application/useCases/user/profile/editUserProfileUseCase";
 import { ChangePasswordUseCase } from "@/application/useCases/user/profile/changePasswordUseCase";
-import { UserPackageController } from "@/adapters/controllers/user/UserPackageController";
+import { UserPackageController } from "@/adapters/controllers/user/userPackageController";
 import { ListUserPackagesUseCase } from "@/application/useCases/user/package/listUserPackagesUseCase";
 import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
 import { GetPackageDetailUseCase } from "@/application/useCases/user/package/getPackageDetailUseCase";

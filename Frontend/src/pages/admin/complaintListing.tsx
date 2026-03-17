@@ -128,10 +128,7 @@ export default function ComplaintListingPage() {
     <div className="p-8 space-y-8 bg-black min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-[10px] font-black uppercase tracking-[0.2em] text-rose-500">
-            <ShieldAlert className="w-3 h-3" />
-            Moderation Queue
-          </div>
+        
           <h1 className="text-4xl font-black tracking-tighter text-white uppercase">User <span className="text-zinc-800">Complaints</span></h1>
         </div>
 

@@ -1,14 +1,11 @@
 import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
-
-export interface IGetComplaintByBookingUseCase {
-    execute(bookingId: string): Promise<ComplaintEntity | null>;
-}
+import { IGetComplaintByBookingUseCase } from "@/domain/interface/user/complaint/IGetComplaintByBookingUseCase";
 
 export class GetComplaintByBookingUseCase implements IGetComplaintByBookingUseCase {
     constructor(private complaintRepository: IComplaintRepository) {}
 
-    async execute(bookingId: string): Promise<ComplaintEntity | null> {
+    async getComplaint(bookingId: string): Promise<ComplaintEntity | null> {
         return await this.complaintRepository.findByBookingId(bookingId);
     }
 }

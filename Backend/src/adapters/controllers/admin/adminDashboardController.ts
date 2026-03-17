@@ -9,8 +9,12 @@ export class AdminDashboardController {
     try {
       const stats = await this._statsUseCase.getStats();
       return res.status(StatusCode.OK).json({ success: true, result: stats });
-    } catch (error:unknown) {
-      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message: "Failed to fetch stats" ,error});
+    } catch (error: unknown) {
+      console.error("Dashboard Stats Fetch Error:", error);
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ 
+        success: false, 
+        message: "Failed to fetch dashboard statistics" 
+      });
     }
   }
 }
