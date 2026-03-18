@@ -126,9 +126,8 @@ export default function SubscriptionListingPage() {
   return (
     <div className="p-4 lg:p-8 space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <CreditCard className="w-8 h-8" />
-          Subscription Management
+        <h1 className="text-6xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent">
+          Subscriptions
         </h1>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <FilterSearch

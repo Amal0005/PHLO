@@ -4,7 +4,8 @@ import {
   RecentBooking,
   RecentUser,
   RecentCreator,
-  RecentTransaction
+  RecentTransaction,
+  TimeFrameData
 } from "@/domain/interface/admin/IDashboardStatsUseCase";
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
@@ -13,6 +14,7 @@ import { IWalletRepository } from "@/domain/interface/repository/IWalletReposito
 import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+import { startOfDay, subDays, startOfMonth, subMonths, startOfYear, subYears, format, isAfter, endOfDay } from "date-fns";
 
 export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
   constructor(
@@ -23,9 +25,9 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
     private _packageRepo: IPackageRepository,
     private _wallpaperRepo: IWallpaperRepository,
     private _complaintRepo: IComplaintRepository
-  ) { }
+  ) {}
 
-  async getStats(): Promise<IDashboardStats> {
+  async getStats(timeframe: string = "monthly"): Promise<IDashboardStats> {
     const [
       users,
       creators,
@@ -60,33 +62,103 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       }));
     }
 
-    // Monthly Revenue Calculation (last 6 months)
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const currentMonth = new Date().getMonth();
-    const last6MonthsIndices: number[] = [];
-    for (let i = 5; i >= 0; i--) {
-      let m = currentMonth - i;
-      if (m < 0) m += 12;
-      last6MonthsIndices.push(m);
+    const now = new Date();
+    const revenueData: TimeFrameData[] = [];
+    const userGrowthData: TimeFrameData[] = [];
+    
+    // Determine start date for total filtering based on timeframe
+    let statsStartDate: Date;
+    if (timeframe === "weekly") {
+      statsStartDate = startOfDay(subDays(now, 6));
+      
+      for (let i = 6; i >= 0; i--) {
+        const date = subDays(now, i);
+        const label = format(date, "EEE");
+        const start = startOfDay(date);
+        const end = endOfDay(date);
+
+        const rev = bookings
+          .filter(b => b.status !== "cancelled" && isAfter(new Date(b.createdAt || b.bookingDate), start) && !isAfter(new Date(b.createdAt || b.bookingDate), end))
+          .reduce((acc, curr) => acc + curr.amount, 0);
+
+        const uCount = users
+          .filter(u => u.createdAt && isAfter(new Date(u.createdAt), start) && !isAfter(new Date(u.createdAt), end))
+          .length;
+
+        revenueData.push({ label, amount: rev });
+        userGrowthData.push({ label, amount: uCount });
+      }
+    } else if (timeframe === "yearly") {
+      statsStartDate = startOfMonth(subMonths(now, 11)); // Last 12 months for yearly view
+      
+      for (let i = 11; i >= 0; i--) {
+        const date = subMonths(now, i);
+        const label = format(date, "MMM");
+        const start = startOfMonth(date);
+        const end = startOfMonth(subMonths(date, -1));
+
+        const rev = bookings
+          .filter(b => b.status !== "cancelled" && isAfter(new Date(b.createdAt || b.bookingDate), start) && !isAfter(new Date(b.createdAt || b.bookingDate), end))
+          .reduce((acc, curr) => acc + curr.amount, 0);
+
+        const uCount = users
+          .filter(u => u.createdAt && isAfter(new Date(u.createdAt), start) && !isAfter(new Date(u.createdAt), end))
+          .length;
+
+        revenueData.push({ label, amount: rev });
+        userGrowthData.push({ label, amount: uCount });
+      }
+    } else {
+      // Monthly (Default) - Last 6 months
+      statsStartDate = startOfMonth(subMonths(now, 5));
+      
+      for (let i = 5; i >= 0; i--) {
+        const date = subMonths(now, i);
+        const label = format(date, "MMM");
+        const start = startOfMonth(date);
+        const end = startOfMonth(subMonths(date, -1));
+
+        const rev = bookings
+          .filter(b => b.status !== "cancelled" && isAfter(new Date(b.createdAt || b.bookingDate), start) && !isAfter(new Date(b.createdAt || b.bookingDate), end))
+          .reduce((acc, curr) => acc + curr.amount, 0);
+
+        const uCount = users
+          .filter(u => u.createdAt && isAfter(new Date(u.createdAt), start) && !isAfter(new Date(u.createdAt), end))
+          .length;
+
+        revenueData.push({ label, amount: rev });
+        userGrowthData.push({ label, amount: uCount });
+      }
     }
 
-    const monthlyRevenueMap: Record<number, number> = {};
-    last6MonthsIndices.forEach(m => monthlyRevenueMap[m] = 0);
+    // Filter data for Pie Charts based on the selected timeframe
+    const filteredBookings = bookings.filter(b => isAfter(new Date(b.createdAt || b.bookingDate), statsStartDate));
+    const filteredPopulatedBookings = populatedBookings.filter(b => isAfter(new Date(b.createdAt || b.bookingDate), statsStartDate));
 
-    bookings.forEach(booking => {
-      const date = booking.createdAt || booking.bookingDate;
-      const month = new Date(date).getMonth();
-      if (monthlyRevenueMap[month] !== undefined && booking.status !== "cancelled") {
-        monthlyRevenueMap[month] += booking.amount;
+    // Booking Status Distribution (within timeframe)
+    const bookingStatusCounts: Record<string, number> = {};
+    filteredBookings.forEach(b => {
+      bookingStatusCounts[b.status || "confirmed"] = (bookingStatusCounts[b.status || "confirmed"] || 0) + 1;
+    });
+    const bookingStatusStats = Object.entries(bookingStatusCounts).map(([status, count]) => ({
+      status: status.charAt(0).toUpperCase() + status.slice(1),
+      count
+    }));
+
+    // Booking Category Distribution (within timeframe)
+    const bookingCategoryCounts: Record<string, number> = {};
+    filteredPopulatedBookings.forEach(b => {
+      if (b.status === "completed") {
+        const cat = (typeof b.packageId === 'object' && b.packageId?.category) ? b.packageId.category : "Uncategorized";
+        bookingCategoryCounts[cat] = (bookingCategoryCounts[cat] || 0) + 1;
       }
     });
 
-    const monthlyRevenue = last6MonthsIndices.map(m => ({
-      month: months[m],
-      amount: monthlyRevenueMap[m]
-    }));
+    const bookingCategoryStats = Object.entries(bookingCategoryCounts)
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => b.count - a.count);
 
-    // Recent activities (Users)
+    // Recent activities (Keep these as latest 5 regardless of timeframe)
     const recentUsers: RecentUser[] = users
       .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
       .slice(0, 5)
@@ -97,12 +169,10 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
         createdAt: u.createdAt || new Date()
       }));
 
-    // Recent activities (Creators)
     const recentCreators: RecentCreator[] = creators
       .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
       .slice(0, 5)
       .map(c => {
-        // Safe access based on CreatorEntity definition (fullName/email)
         const creatorData = c as unknown as Record<string, unknown>;
         return {
           id: c._id || "",
@@ -133,7 +203,10 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       totalComplaints: complaints.length,
       pendingWallpapers: wallpapers.filter(w => w.status === "pending").length,
       pendingCreators: creators.filter(c => c.status === "pending").length,
-      monthlyRevenue,
+      revenueData,
+      userGrowthData,
+      bookingStatusStats,
+      bookingCategoryStats,
       recentBookings,
       recentUsers,
       recentCreators,

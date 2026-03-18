@@ -83,10 +83,18 @@ export class BookingRepository
     const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && 'title' in doc.packageId;
     const isUserPopulated = doc.userId && typeof doc.userId === 'object' && 'name' in doc.userId;
 
+    let packageData: any = doc.packageId;
+    if (isPackagePopulated) {
+        // Handle nested category name if populated
+        if (packageData.category && typeof packageData.category === 'object' && 'name' in packageData.category) {
+            packageData = { ...packageData.toObject(), category: String(packageData.category.name) };
+        }
+    }
+
     return {
       id: doc._id.toString(),
       userId: isUserPopulated ? (doc.userId as User) : (doc.userId?.toString() || ""),
-      packageId: isPackagePopulated ? (doc.packageId as PackageEntity) : (doc.packageId?.toString() || ""),
+      packageId: isPackagePopulated ? (packageData as PackageEntity) : (doc.packageId?.toString() || ""),
       amount: doc.amount,
       currency: doc.currency as "inr",
       status: doc.status,
@@ -102,7 +110,10 @@ export class BookingRepository
   async findAllPopulated(filter: Record<string, unknown> = {}): Promise<BookingEntity[]> {
     const docs = await this.model
       .find(filter as QueryFilter<BookingDocument>)
-      .populate("packageId")
+      .populate({
+        path: "packageId",
+        populate: { path: "category", model: "Category" }
+      })
       .populate("userId")
       .sort({ createdAt: -1 })
       .exec();

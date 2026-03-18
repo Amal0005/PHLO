@@ -7,7 +7,8 @@ export class AdminDashboardController {
 
   async getStats(req: Request, res: Response): Promise<Response> {
     try {
-      const stats = await this._statsUseCase.getStats();
+      const timeframe = String(req.query.timeframe || "monthly");
+      const stats = await this._statsUseCase.getStats(timeframe);
       return res.status(StatusCode.OK).json({ success: true, result: stats });
     } catch (error: unknown) {
       console.error("Dashboard Stats Fetch Error:", error);

@@ -30,6 +30,12 @@ export interface RecentTransaction {
   timestamp: Date;
 }
 
+export interface TimeFrameData {
+  label: string;
+  amount: number;
+  count?: number;
+}
+
 export interface IDashboardStats {
   totalUsers: number;
   totalCreators: number;
@@ -40,7 +46,10 @@ export interface IDashboardStats {
   totalComplaints: number;
   pendingWallpapers: number;
   pendingCreators: number;
-  monthlyRevenue: { month: string; amount: number }[];
+  revenueData: TimeFrameData[];
+  userGrowthData: TimeFrameData[];
+  bookingStatusStats: { status: string; count: number }[];
+  bookingCategoryStats: { category: string; count: number }[];
   recentBookings: RecentBooking[];
   recentUsers: RecentUser[];
   recentCreators: RecentCreator[];
@@ -48,5 +57,5 @@ export interface IDashboardStats {
 }
 
 export interface IDashboardStatsUseCase {
-  getStats(): Promise<IDashboardStats>;
+  getStats(timeframe: string): Promise<IDashboardStats>;
 }
