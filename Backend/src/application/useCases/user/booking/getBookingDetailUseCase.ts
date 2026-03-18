@@ -9,7 +9,7 @@ export class GetBookingDetailUseCase implements IGetBookingDetailUseCase {
     constructor(
         private _bookingRepo: IBookingRepository,
         private _stripeService: IStripeService
-    ) { }
+    ) {}
     async getBookingDetail(sessionId: string): Promise<BookingResponseDTO | null> {
         const booking = await this._bookingRepo.findByStripeSessionId(sessionId);
         if (!booking) return null;

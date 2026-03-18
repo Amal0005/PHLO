@@ -13,7 +13,7 @@ export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
     private bookingRepository: IBookingRepository,
     private userRepository: IUserRepository,
     private sendNotificationUseCase: ISendNotificationUseCase
-  ) { }
+  ) {}
 
   async registerComplaint(userId: string, dto: ComplaintRequestDTO): Promise<ComplaintEntity> {
     const booking = await this.bookingRepository.findById(dto.bookingId);
@@ -25,17 +25,6 @@ export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
     if (existingComplaint) {
       throw new Error("A complaint has already been registered for this booking. You can only report once.");
     }
-
-    // // Security check: Ensure the booking belongs to the reporting user
-    // const bookingUserId = typeof booking.userId === 'string' ? booking.userId : (booking.userId as any)._id?.toString() || (booking.userId as any).id?.toString();
-    // if (bookingUserId !== userId) {
-    //   throw new Error("You are not authorized to report this booking");
-    // }
-
-    // // Check status: Only completed bookings can be reported
-    // if (booking.status !== 'completed') {
-    //   throw new Error("Only completed bookings can be reported");
-    // }
 
     const today = new Date();
     const scheduledDate = new Date(booking.bookingDate);
@@ -51,7 +40,6 @@ export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
     };
     const createdComplaint = await this.complaintRepository.create(complaint);
 
-    // Send notification to admin
     try {
       const adminId = await this.userRepository.findAdminId();
       if (adminId) {
@@ -69,7 +57,6 @@ export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
       }
     } catch (error) {
       console.error("Failed to send notification to admin:", error);
-      // We don't want to fail the whole request if notification fails
     }
 
     return createdComplaint;

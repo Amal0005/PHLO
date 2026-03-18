@@ -22,7 +22,7 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
         private _chatRepo: IChatRepository,
         private _sendNotificationUseCase: ISendNotificationUseCase,
         private _userRepo: IUserRepository
-    ) { }
+    ) {}
 
     async handleWebhook(payload: string | Buffer, signature: string): Promise<void> {
         const event = this._stripeService.constructEvent(payload, signature);
@@ -42,13 +42,11 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
                 await this._bookingRepo.updateStatus(bookingId, BookingStatus.COMPLETED);
                 await this._bookingRepo.updatePaymentStatus(bookingId, "held");
 
-                // Credit Admin Wallet & Create Conversation
                 if (booking) {
                     const pkg = await this._packageRepo.findById(booking.packageId as string);
                     if (pkg) {
                         const creator = await this._creatorRepo.findById(pkg.creatorId as string);
 
-                        // 1. Credit Wallet
                         await this._creditWalletUseCase.creditWallet("admin", "admin", booking.amount, {
                             amount: booking.amount,
                             type: "credit",
@@ -59,7 +57,6 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
                         });
                         logger.info("Admin wallet credited for booking", { bookingId, amount: booking.amount });
 
-                        // 2. Create Conversation for the chat
                         const existingConv = await this._chatRepo.getConversationByBooking(bookingId);
                         if (!existingConv) {
                             await this._chatRepo.createConversation({
@@ -71,8 +68,6 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
                             logger.info("Conversation created for new booking", { bookingId });
                         }
 
-                        // 3. Send Notifications
-                        // To Creator
                         const creatorId = typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as unknown as { _id?: { toString(): string } })._id?.toString() || (pkg.creatorId as unknown as { id?: { toString(): string } }).id?.toString() || "";
                         if (creatorId) {
                             await this._sendNotificationUseCase.sendNotification({
@@ -84,7 +79,6 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
                             });
                         }
 
-                        // To User
                         const bookingUserId = typeof booking.userId === 'string' ? booking.userId : (booking.userId as unknown as { _id?: { toString(): string } })._id?.toString() || (booking.userId as unknown as { id?: { toString(): string } }).id?.toString() || "";
                         if (bookingUserId) {
                             await this._sendNotificationUseCase.sendNotification({
@@ -96,7 +90,6 @@ export class BookingWebhookUseCase implements IBookingWebhookUseCase {
                             });
                         }
 
-                        // To Admin
                         const adminId = await this._userRepo.findAdminId();
                         if (adminId) {
                             await this._sendNotificationUseCase.sendNotification({

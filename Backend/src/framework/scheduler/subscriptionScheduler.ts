@@ -22,7 +22,6 @@ cron.schedule("*/5 * * * *", async () => {
     private async _promoteExpiredSubscriptions(): Promise<void> {
         logger.info("Running subscription promotion job...");
 
-        // 1. Handle Upgrades (Promotions)
         const creatorsToPromote = await this._creatorRepo.findCreatorsWithExpiredSubscriptions();
 
         for (const creator of creatorsToPromote) {
@@ -51,7 +50,6 @@ cron.schedule("*/5 * * * *", async () => {
             );
         }
 
-        // 2. Handle Plain Expirations (No upgrade queued)
         const now = new Date();
         const creatorsToExpire = await this._creatorRepo.findAll({
             "subscription.status": "active",

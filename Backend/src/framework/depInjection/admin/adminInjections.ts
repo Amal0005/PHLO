@@ -37,9 +37,10 @@ import { AdminWalletController } from "@/adapters/controllers/admin/adminWalletC
 import { DeleteSubscriptionUseCase } from "@/application/useCases/admin/deleteSubscriptionUseCase";
 import { BookingRepository } from "@/adapters/repository/user/bookingRepository";
 import { GetDashboardStatsUseCase } from "@/application/useCases/admin/getDashboardStatsUseCase";
+import { GenerateDashboardReportUseCase } from "@/application/useCases/admin/GenerateDashboardReportUseCase";
+import { DashboardReportGenerator } from "@/domain/services/admin/DashboardReportGenerator";
 import { AdminDashboardController } from "@/adapters/controllers/admin/adminDashboardController";
 import { ComplaintRepository } from "../../../adapters/repository/complaintRepository";
-
 
 const userRepo = new UserRepository();
 const creatorRepo = new CreatorRepository();
@@ -54,7 +55,7 @@ const complaintRepo = new ComplaintRepository();
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
 const mailService = new MailService()
-
+const reportGenerator = new DashboardReportGenerator();
 
 const adminLoginUseCase = new AdminLoginUseCase(userRepo, passwordService, jwtService);
 const adminUserlistingUseCase = new AdminUserListingUseCase(userRepo);
@@ -77,6 +78,7 @@ const getAllWallpapersUseCase = new GetAllWallpapersUseCase(wallpaperRepo);
 const getWalletUseCase = new GetWalletUseCase(walletRepo);
 const creditWalletUseCase = new CreditWalletUseCase(walletRepo);
 const getDashboardStatsUseCase = new GetDashboardStatsUseCase(userRepo, creatorRepo, bookingRepo, walletRepo, packageRepo, wallpaperRepo, complaintRepo);
+const generateDashboardReportUseCase = new GenerateDashboardReportUseCase(getDashboardStatsUseCase, reportGenerator);
 
 export const adminLoginController = new AdminLoginController(adminLoginUseCase);
 export const adminUserController = new AdminUserController(adminUserlistingUseCase, toggleUserStatusUseCase);
@@ -85,4 +87,4 @@ export const categoryController = new CategoryController(addCategoryUseCase, edi
 export const subscriptionController = new SubscriptionController(addSubscriptionUseCase, editSubscriptionUseCase, deleteSubscriptionUseCase, getSubscriptionUseCase);
 export const adminWallpaperController = new AdminWallpaperController(approveWallpaperUseCase, rejectWallpaperUseCase, getAllWallpapersUseCase);
 export const adminWalletController = new AdminWalletController(getWalletUseCase, creditWalletUseCase);
-export const adminDashboardController = new AdminDashboardController(getDashboardStatsUseCase);
+export const adminDashboardController = new AdminDashboardController(getDashboardStatsUseCase, generateDashboardReportUseCase);

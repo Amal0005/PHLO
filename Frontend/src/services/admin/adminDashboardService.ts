@@ -59,3 +59,11 @@ export const getDashboardStats = async (timeframe: string = "monthly"): Promise<
   });
   return response.data;
 };
+
+export const downloadDashboardReport = async (timeframe: string = "monthly") => {
+  const response = await api.get("/admin/dashboard-report", {
+    params: { timeframe },
+    responseType: "blob"
+  });
+  return response.data;
+};

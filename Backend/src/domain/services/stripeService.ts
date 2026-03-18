@@ -26,7 +26,6 @@ export class StripeService implements IStripeService {
 
     this.stripe = new Stripe(secretKey, {
       apiVersion: "2026-01-28.clover",
-      // apiVersion: "2024-06-20",
     });
 
     this.webhookSecret = webhookSecret;

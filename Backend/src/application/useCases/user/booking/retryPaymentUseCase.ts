@@ -13,7 +13,7 @@ export class RetryPaymentUseCase implements IRetryPaymentUseCase {
         private _bookingRepo: IBookingRepository,
         private _packageRepo: IPackageRepository,
         private _stripeService: IStripeService
-    ) { }
+    ) {}
 
     async retryPayment(sessionId: string, baseUrl: string): Promise<CheckoutSessionResponseDTO> {
         const booking = await this._bookingRepo.findByStripeSessionId(sessionId);

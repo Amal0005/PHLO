@@ -24,7 +24,7 @@ export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWe
         private _creditWalletUseCase: ICreditWalletUseCase,
         private _sendNotificationUseCase: ISendNotificationUseCase,
         private _userRepo: IUserRepository
-    ) { }
+    ) {}
 
     async handle(payload: string | Buffer, signature: string) {
         const event = this._stripeService.constructEvent(payload, signature);

@@ -9,7 +9,7 @@ import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseC
 export class EditCategoryUseCase implements IEditCategoryUseCase {
     constructor(
         private _categoryRepo: ICategoryRepository
-    ) { }
+    ) {}
     async edit(categoryId: string, name: string, description?: string): Promise<CategoryResponseDto | null> {
         if (!categoryId) throw new AppError(MESSAGES.ADMIN.CATEGORY_ID_REQUIRED, StatusCode.BAD_REQUEST);
         if (!name) throw new AppError(MESSAGES.ADMIN.CATEGORY_NAME_REQUIRED, StatusCode.BAD_REQUEST);

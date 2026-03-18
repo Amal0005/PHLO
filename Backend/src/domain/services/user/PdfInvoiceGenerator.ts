@@ -21,7 +21,6 @@ export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
                 doc.on("end", () => resolve(Buffer.concat(chunks)));
                 doc.on("error", (err) => reject(err));
 
-                // Invoice Header
                 doc.fontSize(25).text("PHLO", { align: "right" });
                 doc.fontSize(10).text("Cinematic Photography Experience", { align: "right" });
                 doc.moveDown();
@@ -29,14 +28,12 @@ export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
                 doc.fontSize(20).text("INVOICE", { align: "left" });
                 doc.moveDown();
 
-                // Booking Info
                 const bookingId = (invoiceData.id || invoiceData._id || 'N/A').toString().toUpperCase();
                 doc.fontSize(10).text(`Booking ID: ${bookingId}`);
                 doc.text(`Reference: ${invoiceData.stripeSessionId || "N/A"}`);
                 doc.text(`Date: ${new Date().toLocaleDateString()}`);
                 doc.moveDown();
 
-                // Table Header
                 const startY = doc.y;
                 doc.text("Description", 50, startY);
                 doc.text("Quantity", 300, startY);
@@ -44,7 +41,6 @@ export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
                 doc.moveTo(50, startY + 15).lineTo(550, startY + 15).stroke();
                 doc.moveDown();
 
-                // Line Items
                 const itemY = doc.y + 10;
                 doc.text(invoiceData.packageId?.title as string || "Photography Package", 50, itemY);
                 doc.text("1", 300, itemY);
@@ -53,7 +49,6 @@ export class PdfInvoiceGenerator implements IPdfInvoiceGenerator {
                 doc.moveTo(50, itemY + 15).lineTo(550, itemY + 15).stroke();
                 doc.moveDown(2);
 
-                // Totals
                 const totalY = doc.y;
                 doc.fontSize(12).font("Helvetica-Bold").text("Total Amount", 300, totalY);
                 doc.text(`₹${(invoiceData.amount || 0).toLocaleString()}`, 450, totalY);

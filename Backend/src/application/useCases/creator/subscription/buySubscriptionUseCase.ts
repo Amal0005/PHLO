@@ -11,7 +11,7 @@ export class BuySubscriptionUseCase implements IBuySubscriptionUseCase {
         private _subscriptionRepo: ISubscriptionRepository,
         private _stripeService: IStripeService,
         private _creatorRepo: ICreatorRepository
-    ) { }
+    ) {}
     async buySubscription(creatorId: string, subscriptionId: string, successUrl: string, cancelUrl: string): Promise<CheckoutSessionResponseDTO> {
         const creator = await this._creatorRepo.findById(creatorId);
         if (creator?.upcomingSubscription) {

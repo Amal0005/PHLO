@@ -9,7 +9,7 @@ export class AddReviewUseCase implements IAddReviewUseCase {
     constructor(
         private _reviewRepo: IReviewRepository,
         private _bookingRepo: IBookingRepository
-    ) { }
+    ) {}
     async addReview(userId: string, data: reviewRequestDTO): Promise<void> {
         const booking = await this._bookingRepo.findById(data.bookingId)
         console.log("booooo", booking)

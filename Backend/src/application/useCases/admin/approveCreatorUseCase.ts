@@ -9,7 +9,7 @@ export class ApproveCreatorUseCase implements IApproveCreatorUseCase {
   constructor(
     private _creatorRepo: ICreatorRepository,
     private _mailService: IMailService,
-  ) { }
+  ) {}
   async approveCreator(creatorId: string): Promise<void> {
     if (!creatorId) throw new Error(MESSAGES.ADMIN.CREATOR_ID_REQUIRED);
     const creator = await this._creatorRepo.findById(creatorId);

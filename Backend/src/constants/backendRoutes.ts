@@ -89,6 +89,7 @@ export const BACKEND_ROUTES = {
     RESOLVE_COMPLAINT: "/complaints/:id/resolve",
     REJECT_COMPLAINT: "/complaints/:id/reject",
     DASHBOARD_STATS: "/dashboard-stats",
+    DASHBOARD_REPORT: "/dashboard-report",
   },
   UPLOAD: {
     BASE: "/upload",

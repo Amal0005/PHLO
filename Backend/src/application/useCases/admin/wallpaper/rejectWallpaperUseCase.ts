@@ -5,7 +5,7 @@ import { MESSAGES } from "@/constants/commonMessages";
 export class RejectWallpaperUseCase implements IRejectWallpaperUseCase {
     constructor(
         private _wallpaperRepo: IWallpaperRepository
-    ) { }
+    ) {}
     async rejectWallpaper(wallpaperId: string, reason: string): Promise<void> {
         if (!wallpaperId) throw new Error(MESSAGES.WALLPAPER.ID_REQUIRED)
         if (!reason) throw new Error(MESSAGES.WALLPAPER.REJECTION_REASON_REQUIRED)

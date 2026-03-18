@@ -16,7 +16,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private _packageRepo: IPackageRepository,
     private _leaveRepo: ILeaveRepository,
     private _stripeService: IStripeService
-  ) { }
+  ) {}
   async createBooking(
     userId: string,
     data: CreateBookingRequestDTO
@@ -37,13 +37,11 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
       throw new AppError("Creator not found for this package", StatusCode.NOT_FOUND);
     }
 
-    // 1. Check if creator is on leave
     const isCreatorOnLeave = await this._leaveRepo.isDateBlocked(creatorId, bookingDate);
     if (isCreatorOnLeave) {
       throw new AppError("Creator is unavailable on this date", StatusCode.CONFLICT);
     }
 
-    // 2. Check if specific package is already booked
     const isAvailable = await this._bookingRepo.checkAvailability(data.packageId, bookingDate)
     if (!isAvailable) throw new AppError("Date already booked", StatusCode.CONFLICT)
 

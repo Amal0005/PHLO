@@ -2,6 +2,8 @@ import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
 import { ComplaintModel } from "@/framework/database/model/complaintModel";
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
+import { User } from "@/domain/entities/userEntities";
+import { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class ComplaintRepository implements IComplaintRepository {
   async create(complaint: ComplaintEntity): Promise<ComplaintEntity> {
@@ -25,9 +27,17 @@ export class ComplaintRepository implements IComplaintRepository {
   async update(complaint: ComplaintEntity): Promise<ComplaintEntity | null> {
     const { _id, userId, creatorId, ...rest } = complaint;
     
-    const updateData: any = { ...rest };
-    if (userId) updateData.userId = typeof userId === 'object' ? (userId as any)._id || (userId as any).id : userId;
-    if (creatorId) updateData.creatorId = typeof creatorId === 'object' ? (creatorId as any)._id || (creatorId as any).id : creatorId;
+    const updateData: Partial<ComplaintEntity> = { ...rest };
+    if (userId) {
+      updateData.userId = typeof userId === 'object' 
+        ? (userId as User)._id 
+        : userId;
+    }
+    if (creatorId) {
+      updateData.creatorId = typeof creatorId === 'object' 
+        ? (creatorId as CreatorEntity)._id 
+        : creatorId;
+    }
 
     const updatedComplaint = await ComplaintModel.findByIdAndUpdate(
       _id,

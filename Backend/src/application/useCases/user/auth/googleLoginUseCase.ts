@@ -11,7 +11,7 @@ export class GoogleLoginUseCase implements IGoogleLoginUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _jwtService: IJwtServices
-  ) { }
+  ) {}
 
   async login(idToken: string): Promise<{ user: UserResponseDto; accessToken: string; refreshToken: string }> {
 

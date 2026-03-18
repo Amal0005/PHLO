@@ -17,7 +17,7 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
     private _watermarkService: IWatermarkService,
     private _userRepo: IUserRepository,
     private _sendNotificationUseCase: ISendNotificationUseCase,
-  ) { }
+  ) {}
   async addWallpaper(data: Partial<WallpaperEntity>): Promise<WallpaperResponseDto> {
     if (!data.title || !data.imageUrl || data.price === undefined || data.price === null) {
       throw new Error(MESSAGES.ERROR.ALL_FIELDS_REQUIRED);

@@ -7,7 +7,7 @@ import { CreatorEntity } from "@/domain/entities/creatorEntities";
 export class EditCreatorProfileUseCase implements IeditCreatorProfileUseCase {
     constructor(
         private _creatorRepo: ICreatorRepository
-    ) { }
+    ) {}
     async editProfile(creatorId: string, data: Partial<CreatorEntity>): Promise<CreatorResponseDto | null> {
         if (!creatorId) throw new Error("Creator id is required")
 

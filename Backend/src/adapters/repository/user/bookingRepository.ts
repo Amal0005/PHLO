@@ -83,11 +83,13 @@ export class BookingRepository
     const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && 'title' in doc.packageId;
     const isUserPopulated = doc.userId && typeof doc.userId === 'object' && 'name' in doc.userId;
 
-    let packageData: any = doc.packageId;
+    let packageData = doc.packageId as unknown;
     if (isPackagePopulated) {
-        // Handle nested category name if populated
-        if (packageData.category && typeof packageData.category === 'object' && 'name' in packageData.category) {
-            packageData = { ...packageData.toObject(), category: String(packageData.category.name) };
+        const pkg = doc.packageId as unknown as { toObject: () => Record<string, unknown>, category: { name: string } | string };
+        if (pkg.category && typeof pkg.category === 'object' && 'name' in pkg.category) {
+            packageData = { ...pkg.toObject(), category: String(pkg.category.name) };
+        } else if (typeof (pkg as { toObject?: () => void }).toObject === 'function') {
+            packageData = pkg.toObject();
         }
     }
 

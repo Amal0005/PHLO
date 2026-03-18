@@ -43,7 +43,6 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                         const commission = Math.round(totalAmount * 0.1);
                         const creatorAmount = totalAmount - commission;
 
-                        // 1. Credit Admin Wallet (Commission Only - 10%)
                         await this._creditWalletUseCase.creditWallet("admin", "admin", commission, {
                             amount: commission,
                             type: "credit",
@@ -53,7 +52,6 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                             relatedName: creator?.fullName || 'Creator'
                         });
 
-                        // 2. Credit Creator Wallet (Creator Share - 90%)
                         await this._walletRepo.updateBalance(creatorId, "creator", creatorAmount, {
                             amount: creatorAmount,
                             type: "credit",
@@ -62,8 +60,6 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                             sourceId: wallpaperId,
                         });
 
-                        // 3. Send Notifications
-                        // To Creator
                         await this._sendNotificationUseCase.sendNotification({
                             recipientId: creatorId,
                             type: NotificationType.WALLET,
@@ -72,7 +68,6 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                             isRead: false
                         });
 
-                        // To User
                         await this._sendNotificationUseCase.sendNotification({
                             recipientId: userId,
                             type: NotificationType.WALLET,
@@ -81,7 +76,6 @@ export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
                             isRead: false
                         });
 
-                        // To Admin
                         const adminId = await this._userRepo.findAdminId();
                         if (adminId) {
                             await this._sendNotificationUseCase.sendNotification({

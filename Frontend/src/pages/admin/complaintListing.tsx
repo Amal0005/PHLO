@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from "react";
-import { ShieldAlert } from "lucide-react";
 import { AdminComplaintService } from "@/services/admin/adminComplaintService";
 import { Complaint } from "@/interface/admin/AdminComplaintInterface";
 import DataTable, { Column } from "@/compoents/reusable/dataTable";

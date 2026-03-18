@@ -7,7 +7,7 @@ import { MESSAGES } from "@/constants/commonMessages";
 export class CreatorLoginController {
   constructor(
     private _loginUseCase: ICreatorLoginUseCase
-  ) { }
+  ) {}
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body.Creator as {

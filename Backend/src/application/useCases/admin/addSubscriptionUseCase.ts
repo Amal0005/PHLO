@@ -8,7 +8,7 @@ import { MESSAGES } from "@/constants/commonMessages";
 export class AddSubscriptionUseCase implements IAddSubscriptionUseCase {
     constructor(
         private _subscriptionRepo: ISubscriptionRepository
-    ) { }
+    ) {}
     async addSubscription(data: Partial<SubscriptionEntity>): Promise<SubscriptionDTO> {
         if (!data.name) throw new Error(MESSAGES.ADMIN.SUBSCRIPTION_NAME_REQUIRED);
         const existing = await this._subscriptionRepo.findByName(data.name);

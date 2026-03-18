@@ -20,7 +20,7 @@ export class UserBookingController {
         private _getBookingDetailUseCase: IGetBookingDetailUseCase,
         private _downloadInvoiceUseCase: IDownloadInvoiceUseCase,
         private _retryPaymentUseCase: IRetryPaymentUseCase
-    ) { }
+    ) {}
 
     async CreateBooking(req: AuthRequest, res: Response) {
         try {

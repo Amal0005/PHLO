@@ -14,7 +14,7 @@ import { IWalletRepository } from "@/domain/interface/repository/IWalletReposito
 import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
-import { startOfDay, subDays, startOfMonth, subMonths, startOfYear, subYears, format, isAfter, endOfDay } from "date-fns";
+import { startOfDay, subDays, startOfMonth, subMonths, format, isAfter, endOfDay } from "date-fns";
 
 export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
   constructor(
@@ -48,7 +48,6 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       this._bookingRepo.findAllPopulated({})
     ]);
 
-    // Fetch recent wallet transactions (5)
     let recentTransactions: RecentTransaction[] = [];
     if (wallet && wallet.id) {
       const transactionResult = await this._walletRepo.getTransactions(wallet.id, "", "", 1, 5);
@@ -66,7 +65,6 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
     const revenueData: TimeFrameData[] = [];
     const userGrowthData: TimeFrameData[] = [];
     
-    // Determine start date for total filtering based on timeframe
     let statsStartDate: Date;
     if (timeframe === "weekly") {
       statsStartDate = startOfDay(subDays(now, 6));
@@ -109,7 +107,6 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
         userGrowthData.push({ label, amount: uCount });
       }
     } else {
-      // Monthly (Default) - Last 6 months
       statsStartDate = startOfMonth(subMonths(now, 5));
       
       for (let i = 5; i >= 0; i--) {
@@ -131,11 +128,9 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       }
     }
 
-    // Filter data for Pie Charts based on the selected timeframe
     const filteredBookings = bookings.filter(b => isAfter(new Date(b.createdAt || b.bookingDate), statsStartDate));
     const filteredPopulatedBookings = populatedBookings.filter(b => isAfter(new Date(b.createdAt || b.bookingDate), statsStartDate));
 
-    // Booking Status Distribution (within timeframe)
     const bookingStatusCounts: Record<string, number> = {};
     filteredBookings.forEach(b => {
       bookingStatusCounts[b.status || "confirmed"] = (bookingStatusCounts[b.status || "confirmed"] || 0) + 1;
@@ -145,7 +140,6 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       count
     }));
 
-    // Booking Category Distribution (within timeframe)
     const bookingCategoryCounts: Record<string, number> = {};
     filteredPopulatedBookings.forEach(b => {
       if (b.status === "completed") {
@@ -158,7 +152,6 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       .map(([category, count]) => ({ category, count }))
       .sort((a, b) => b.count - a.count);
 
-    // Recent activities (Keep these as latest 5 regardless of timeframe)
     const recentUsers: RecentUser[] = users
       .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
       .slice(0, 5)

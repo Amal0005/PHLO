@@ -57,7 +57,6 @@ export class PaymentReleaseScheduler {
                     const commission = Math.round(totalAmount * 0.2);
                     const creatorAmount = totalAmount - commission;
 
-                    // 1. Debit Admin Wallet (Only the creator's share, admin retains commission)
                     await this.walletRepository.updateBalance("admin", "admin", -creatorAmount, {
                         amount: creatorAmount,
                         type: "debit",
@@ -67,7 +66,6 @@ export class PaymentReleaseScheduler {
                         relatedName: "creator_payout"
                     });
 
-                    // 2. Credit Creator Wallet
                     await this.walletRepository.updateBalance(creatorId, "creator", creatorAmount, {
                         amount: creatorAmount,
                         type: "credit",
@@ -76,10 +74,8 @@ export class PaymentReleaseScheduler {
                         sourceId: bookingId,
                     });
 
-                    // 3. Update Booking Payment Status
                     await this.bookingRepository.updatePaymentStatus(bookingId, "released");
 
-                    // 4. Notify Creator
                     await this.sendNotificationUseCase.sendNotification({
                         recipientId: creatorId,
                         type: NotificationType.WALLET,

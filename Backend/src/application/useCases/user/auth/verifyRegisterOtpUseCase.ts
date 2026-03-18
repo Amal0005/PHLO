@@ -11,7 +11,7 @@ export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {
     private _userRepo: IUserRepository,
     private _otpService: IOTPService,
     private _pendingUser: IPendingUserService
-  ) { }
+  ) {}
   async verifyUser(email: string, otp: string): Promise<UserResponseDto> {
     email = email.trim().toLowerCase();
     const result = await this._otpService.verifyOtp(email, otp);

@@ -5,7 +5,7 @@ import { MESSAGES } from "@/constants/commonMessages";
 export class ApproveWallpaperUseCase implements IApproveWallpaperUseCase {
     constructor(
         private _wallpaperRepo: IWallpaperRepository
-    ) { }
+    ) {}
     async approveWallpaper(wallpaperId: string): Promise<void> {
         if (!wallpaperId) throw new Error(MESSAGES.WALLPAPER.ID_REQUIRED);
         const wallpaper = await this._wallpaperRepo.findById(wallpaperId)

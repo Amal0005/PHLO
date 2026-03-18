@@ -6,7 +6,7 @@ import { StatusCode } from "@/constants/statusCodes";
 export class DeleteReviewUseCase implements IDeleteReviewUseCase {
     constructor(
         private _reviewRepo: IReviewRepository,
-    ) { }
+    ) {}
     async deleteReview(userId: string, reviewId: string): Promise<void> {
         const review = await this._reviewRepo.findById(reviewId)
         if (!review) throw new AppError("Review Not Found", StatusCode.NOT_FOUND)

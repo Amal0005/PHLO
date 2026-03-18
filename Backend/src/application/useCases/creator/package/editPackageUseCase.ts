@@ -7,7 +7,7 @@ import { IPackageRepository } from "@/domain/interface/repository/IPackageReposi
 export class EditPackageUseCase implements IEditPackageUseCase {
   constructor(
     private _packageRepo: IPackageRepository
-  ) { }
+  ) {}
 
   async editPackage(
     packageId: string,

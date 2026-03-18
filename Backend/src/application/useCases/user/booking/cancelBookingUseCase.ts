@@ -30,20 +30,13 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
       throw new AppError("Booking cannot be cancelled in its current state", StatusCode.BAD_REQUEST);
     }
 
-    // Refund Logic (Updated):
-    // 1. 100% Refund (Grace Period): If cancelled within 24 hours of MAKING the booking.
-    // 2. 50% Refund: If cancelled more than 5 days (120h) BEFORE the booking date.
-    // 3. No Refund: If cancelled less than 5 days (120h) before.
-
     const now = new Date();
     const createdAt = new Date(booking.createdAt || now);
     const bookingDate = new Date(booking.bookingDate);
 
-    // Check Grace Period (24h from creation)
     const creationDiffH = (now.getTime() - createdAt.getTime()) / (1000 * 3600);
     const isWithinGracePeriod = creationDiffH <= 24;
 
-    // Check Session Cutoff (5 days before session)
     const sessionDiffH = (bookingDate.getTime() - now.getTime()) / (1000 * 3600);
     const isBeforeSessionCutoff = sessionDiffH >= 120;
 
@@ -68,7 +61,6 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
     if (refundAmount > 0) {
       const bookingIdStr = (booking.id || (booking as unknown as { _id: string })._id) as string;
 
-      // 1. Debit Admin Wallet
       await this._walletRepo.updateBalance("admin", "admin", -refundAmount, {
         amount: refundAmount,
         type: "debit",
@@ -78,7 +70,6 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
         relatedName: "user_refund"
       });
 
-      // 2. Credit User Wallet
       await this._walletRepo.updateBalance(userId, "user", refundAmount, {
         amount: refundAmount,
         type: "credit",
@@ -96,12 +87,10 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
       throw new AppError("Failed to cancel booking", StatusCode.INTERNAL_SERVER_ERROR);
     }
 
-    // Trigger Notifications
     const pkg = await this._packageRepo.findById(booking.packageId as string);
     if (pkg) {
       const creatorId = typeof pkg.creatorId === 'string' ? pkg.creatorId : (pkg.creatorId as unknown as { _id?: { toString(): string } })._id?.toString() || (pkg.creatorId as unknown as { id?: { toString(): string } }).id?.toString();
       if (creatorId) {
-        // To Creator
         await this._sendNotificationUseCase.sendNotification({
           recipientId: creatorId,
           type: NotificationType.BOOKING,
@@ -111,7 +100,6 @@ export class CancelBookingUseCase implements ICancelBookingUseCase {
         });
       }
 
-      // To User
       await this._sendNotificationUseCase.sendNotification({
         recipientId: userId,
         type: NotificationType.BOOKING,

@@ -12,7 +12,7 @@ export class SendMessageUseCase implements ISendMessageUseCase {
         private _sendNotificationUseCase: ISendNotificationUseCase,
         private _userRepo: IUserRepository,
         private _creatorRepo: ICreatorRepository
-    ) { }
+    ) {}
 
     async sendMessage(data: { conversationId: string; senderId: string; message: string; recipientId: string }): Promise<MessageEntity> {
         const message = await this._chatRepo.saveMessage({
@@ -23,7 +23,6 @@ export class SendMessageUseCase implements ISendMessageUseCase {
 
         await this._chatRepo.updateConversationLastMessage(data.conversationId, data.message);
 
-        // Fetch sender's name for notification via repositories
         const [user, creator] = await Promise.all([
             this._userRepo.findById(data.senderId),
             this._creatorRepo.findById(data.senderId)

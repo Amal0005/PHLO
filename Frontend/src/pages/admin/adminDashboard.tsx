@@ -14,7 +14,8 @@ import {
   PieChart as PieChartIcon,
   BarChart as BarChartIcon,
   ChevronDown,
-  Target
+  Target,
+  FileDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -33,7 +34,7 @@ import {
   Legend
 } from "recharts";
 import { useNavigate } from "react-router-dom";
-import { getDashboardStats } from "@/services/admin/adminDashboardService";
+import { getDashboardStats, downloadDashboardReport } from "@/services/admin/adminDashboardService";
 import { format } from "date-fns";
 import { fetchAdminCreators, approveCreator } from "@/services/admin/adminCreatorService";
 import { Creator } from "@/interface/admin/creatorInterface";
@@ -120,7 +121,7 @@ const AnimatedNumber = ({ value, prefix = "" }: { value: number; prefix?: string
   return <span>{prefix}{displayValue.toLocaleString()}</span>;
 };
 
-const GlassCard = ({ children, className = "", title, icon: Icon, action }: { children: React.ReactNode; className?: string; title?: string; icon?: any; action?: React.ReactNode }) => (
+const GlassCard = ({ children, className = "", title, icon: Icon, action }: { children: React.ReactNode; className?: string; title?: string; icon?: React.ComponentType<{ className?: string }>; action?: React.ReactNode }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -168,7 +169,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchStats(true);
-  }, []); // Initial load only
+  }, [])
 
   // Refresh when timeframe changes
   useEffect(() => {
@@ -201,6 +202,25 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error("Approve error:", error);
       toast.error("Failed to approve creator");
+    }
+  };
+
+  const handleDownloadReport = async () => {
+    try {
+      const blob = await downloadDashboardReport(timeframe);
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      const date = new Date().toISOString().split('T')[0];
+      link.setAttribute('download', `PHLO_Dashboard_Report_${timeframe}_${date}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success(`${timeframe.toUpperCase()} REPORT EXPORTED`);
+    } catch (error) {
+      console.error("Failed to download report:", error);
+      toast.error("SYSTEM ERROR: REPORT GENERATION FAILED");
     }
   };
 
@@ -299,6 +319,16 @@ export default function AdminDashboard() {
                 )}
               </AnimatePresence>
             </div>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleDownloadReport}
+              className="flex items-center gap-4 px-8 py-4 bg-blue-600/10 border border-blue-500/20 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-blue-600/20 transition-all italic"
+            >
+              <FileDown className="w-4 h-4" />
+              Export
+            </motion.button>
 
             <motion.button
               whileHover={{ scale: 1.02, backgroundColor: "#fff" }}
