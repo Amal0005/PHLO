@@ -255,9 +255,11 @@ export default function WallpaperListingPage() {
   if (error) return <p className="p-6 text-red-400">{error}</p>;
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-bold text-white">Wallpaper Management</h1>
+    <div className="p-4 lg:p-10 space-y-10">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <h1 className="text-6xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent">
+          Visual Archive
+        </h1>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <FilterSearch

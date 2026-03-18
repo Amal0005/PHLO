@@ -16,7 +16,7 @@ export class NotificationController {
         private _markNotificationReadUseCase: IMarkNotificationReadUseCase,
         private _markAllReadUseCase: IMarkAllNotificationReadUseCase,
         private _markChatReadUseCase: IMarkChatNotificationReadUseCase
-    ) { }
+    ) {}
     async getNotification(req: AuthRequest, res: Response) {
         const userId = req.user?.userId as string
         const notifications = await this._getNotificationUseCase.getNotification(userId)

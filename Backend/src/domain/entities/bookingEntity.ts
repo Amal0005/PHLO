@@ -12,7 +12,7 @@ export interface BookingEntity {
   status: BookingStatus;
   stripeSessionId?: string;
   location?: string;
-  paymentStatus?: "held" | "released" | "refunded";
+  paymentStatus?: "held" | "released" | "refunded" | "partially_refunded";
   createdAt?: Date;
   updatedAt?: Date;
 }

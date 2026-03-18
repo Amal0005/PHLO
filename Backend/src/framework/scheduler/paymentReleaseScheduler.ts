@@ -14,11 +14,11 @@ export class PaymentReleaseScheduler {
         private walletRepository: IWalletRepository,
         private packageRepository: IPackageRepository,
         private sendNotificationUseCase: ISendNotificationUseCase
-    ) { }
+    ) {}
 
     start() {
         cron.schedule("*/5 * * * *", async () => {
-            logger.info("PaymentReleaseScheduler: Starting daily payment release check...");
+            logger.info("Starting daily payment release check...");
             await this.releasePayments();
         });
 

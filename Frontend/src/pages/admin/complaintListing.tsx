@@ -76,10 +76,10 @@ export default function ComplaintListingPage() {
       render: (c) => (
         <span
           className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${c.status === "resolved"
-              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-              : c.status === "dismissed"
-                ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+            : c.status === "dismissed"
+              ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
+              : "bg-amber-500/10 text-amber-400 border-amber-500/20"
             }`}
         >
           {c.status}
@@ -125,14 +125,12 @@ export default function ComplaintListingPage() {
   }
 
   return (
-    <div className="p-8 space-y-8 bg-black min-h-screen">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-[10px] font-black uppercase tracking-[0.2em] text-rose-500">
-            <ShieldAlert className="w-3 h-3" />
-            Moderation Queue
-          </div>
-          <h1 className="text-4xl font-black tracking-tighter text-white uppercase">User <span className="text-zinc-800">Complaints</span></h1>
+    <div className="p-4 lg:p-10 space-y-10 bg-black min-h-screen">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8">
+        <div className="space-y-4">
+          <h1 className="text-6xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent">
+            Complaints
+          </h1>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">

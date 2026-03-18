@@ -83,19 +83,40 @@ export class BookingRepository
     const isPackagePopulated = doc.packageId && typeof doc.packageId === 'object' && 'title' in doc.packageId;
     const isUserPopulated = doc.userId && typeof doc.userId === 'object' && 'name' in doc.userId;
 
+    let packageData: any = doc.packageId;
+    if (isPackagePopulated) {
+        // Handle nested category name if populated
+        if (packageData.category && typeof packageData.category === 'object' && 'name' in packageData.category) {
+            packageData = { ...packageData.toObject(), category: String(packageData.category.name) };
+        }
+    }
+
     return {
       id: doc._id.toString(),
-      userId: isUserPopulated ? (doc.userId as User) : doc.userId.toString(),
-      packageId: isPackagePopulated ? (doc.packageId as PackageEntity) : doc.packageId.toString(),
+      userId: isUserPopulated ? (doc.userId as User) : (doc.userId?.toString() || ""),
+      packageId: isPackagePopulated ? (packageData as PackageEntity) : (doc.packageId?.toString() || ""),
       amount: doc.amount,
       currency: doc.currency as "inr",
       status: doc.status,
       stripeSessionId: doc.stripeSessionId,
       bookingDate: doc.bookingDate,
       location: doc.location,
-      paymentStatus: (doc as unknown as { paymentStatus?: "held" | "released" | "refunded" | "partially_refunded" }).paymentStatus,
+      paymentStatus: doc.paymentStatus,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
+  }
+
+  async findAllPopulated(filter: Record<string, unknown> = {}): Promise<BookingEntity[]> {
+    const docs = await this.model
+      .find(filter as QueryFilter<BookingDocument>)
+      .populate({
+        path: "packageId",
+        populate: { path: "category", model: "Category" }
+      })
+      .populate("userId")
+      .sort({ createdAt: -1 })
+      .exec();
+    return docs.map((item) => this.mapToEntity(item));
   }
 }

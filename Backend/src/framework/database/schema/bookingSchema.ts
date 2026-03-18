@@ -40,7 +40,7 @@ export const bookingSchema = new Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["held", "released", "refunded"],
+      enum: ["held", "released", "refunded", "partially_refunded"],
       default: "held",
     },
   },

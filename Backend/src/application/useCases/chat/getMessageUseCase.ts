@@ -1,6 +1,6 @@
 import { MessageEntity } from "@/domain/entities/messageEntity";
 import { IGetMessagesUseCase } from "@/domain/interface/chat/IGetMessageUseCase";
-import { IChatRepository } from "@/domain/interface/repository/IChatRepository ";
+import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
 
 export class GetMessageUseCase implements IGetMessagesUseCase{
     constructor(

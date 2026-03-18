@@ -11,4 +11,5 @@ export interface IBookingRepository extends IBaseRepository<BookingEntity> {
   findByCreatorId(creatorId: string): Promise<BookingEntity[]>
   findBookingsForPaymentRelease(date: Date): Promise<BookingEntity[]>
   updatePaymentStatus(id: string, paymentStatus: "held" | "released" | "refunded" | "partially_refunded"): Promise<BookingEntity | null>
+  findAllPopulated(filter: Record<string, unknown>): Promise<BookingEntity[]>;
 }

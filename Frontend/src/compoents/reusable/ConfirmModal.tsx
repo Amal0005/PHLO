@@ -64,7 +64,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                                 </button>
                             </div>
 
-                            <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
+                            <h3 className="text-3xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent mb-4">
+                                {title}
+                            </h3>
                             <p className="text-gray-400 text-lg leading-relaxed mb-8">{message}</p>
 
                             <div className="flex gap-4">

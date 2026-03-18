@@ -2,6 +2,7 @@ import { AdminCreatorController } from "../../../adapters/controllers/admin/admi
 import { AdminLoginController } from "../../../adapters/controllers/admin/adminLoginController";
 import { AdminUserController } from "../../../adapters/controllers/admin/adminUserController";
 import { CreatorRepository } from "../../../adapters/repository/creator/creatorRepository";
+import { PackageRepository } from "../../../adapters/repository/creator/packageRepository";
 import { UserRepository } from "../../../adapters/repository/user/userRepository";
 import { JwtServices } from "../../../domain/services/user/jwtServices";
 import { PasswordService } from "../../../domain/services/user/passwordService";
@@ -34,14 +35,21 @@ import { CreditWalletUseCase } from "@/application/useCases/wallet/creditWalletU
 import { GetWalletUseCase } from "@/application/useCases/wallet/getWalletUseCase";
 import { AdminWalletController } from "@/adapters/controllers/admin/adminWalletController";
 import { DeleteSubscriptionUseCase } from "@/application/useCases/admin/deleteSubscriptionUseCase";
+import { BookingRepository } from "@/adapters/repository/user/bookingRepository";
+import { GetDashboardStatsUseCase } from "@/application/useCases/admin/getDashboardStatsUseCase";
+import { AdminDashboardController } from "@/adapters/controllers/admin/adminDashboardController";
+import { ComplaintRepository } from "../../../adapters/repository/complaintRepository";
 
 
 const userRepo = new UserRepository();
 const creatorRepo = new CreatorRepository();
 const categoryRepo = new CategoryRepository()
 const subscriptionRepo = new SubscriptionRepository()
-const wallpaperRepo = new WallpaperRepository()
 const walletRepo = new WalletRepository()
+const bookingRepo = new BookingRepository();
+const packageRepo = new PackageRepository();
+const wallpaperRepo = new WallpaperRepository();
+const complaintRepo = new ComplaintRepository();
 
 const jwtService = new JwtServices();
 const passwordService = new PasswordService();
@@ -68,6 +76,7 @@ const rejectWallpaperUseCase = new RejectWallpaperUseCase(wallpaperRepo);
 const getAllWallpapersUseCase = new GetAllWallpapersUseCase(wallpaperRepo);
 const getWalletUseCase = new GetWalletUseCase(walletRepo);
 const creditWalletUseCase = new CreditWalletUseCase(walletRepo);
+const getDashboardStatsUseCase = new GetDashboardStatsUseCase(userRepo, creatorRepo, bookingRepo, walletRepo, packageRepo, wallpaperRepo, complaintRepo);
 
 export const adminLoginController = new AdminLoginController(adminLoginUseCase);
 export const adminUserController = new AdminUserController(adminUserlistingUseCase, toggleUserStatusUseCase);
@@ -76,3 +85,4 @@ export const categoryController = new CategoryController(addCategoryUseCase, edi
 export const subscriptionController = new SubscriptionController(addSubscriptionUseCase, editSubscriptionUseCase, deleteSubscriptionUseCase, getSubscriptionUseCase);
 export const adminWallpaperController = new AdminWallpaperController(approveWallpaperUseCase, rejectWallpaperUseCase, getAllWallpapersUseCase);
 export const adminWalletController = new AdminWalletController(getWalletUseCase, creditWalletUseCase);
+export const adminDashboardController = new AdminDashboardController(getDashboardStatsUseCase);

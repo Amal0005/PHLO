@@ -103,9 +103,9 @@ export default function AdminWallet() {
             {/* Header Section */}
             <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
                 <div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-zinc-500 bg-clip-text text-transparent">
-                        Admin Wallet
-                    </h1>
+                     <h1 className="text-6xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent">
+          Wallet
+        </h1>
                     <p className="text-zinc-500 mt-2">Manage platform revenue and transactions</p>
                 </div>
             </motion.div>

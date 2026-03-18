@@ -3,7 +3,7 @@ import { MessageEntity } from "@/domain/entities/messageEntity";
 
 export class ChatMapper {
   static toConversationEntity(
-    doc: { _id?: { toString(): string }; id?: string; bookingId: string; participants: string[]; lastMessage?: string; lastMessageAt?: Date; createdAt: Date },
+    doc: { _id?: { toString(): string }; id?: string; bookingId: { toString(): string }; participants: { toString(): string }[]; lastMessage?: string; lastMessageAt?: Date; createdAt: Date },
     user?: { name: string; image?: string } | null,
     creator?: { fullName: string; profilePhoto?: string } | null,
     packageName?: string,
@@ -11,8 +11,8 @@ export class ChatMapper {
   ): ConversationEntity {
     return {
       id: doc._id?.toString() || doc.id,
-      bookingId: doc.bookingId,
-      participants: doc.participants,
+      bookingId: doc.bookingId.toString(),
+      participants: doc.participants.map(p => p.toString()),
       lastMessage: doc.lastMessage,
       lastMessageAt: doc.lastMessageAt,
       createdAt: doc.createdAt,
@@ -26,11 +26,11 @@ export class ChatMapper {
     };
   }
 
-  static toMessageEntity(doc: { _id?: { toString(): string }; id?: string; conversationId: string; senderId: string; message: string; type?: "text" | "image" | "file"; seen?: boolean; createdAt: Date }): MessageEntity {
+  static toMessageEntity(doc: { _id?: { toString(): string }; id?: string; conversationId: { toString(): string }; senderId: { toString(): string }; message: string; type?: "text" | "image"; seen?: boolean; createdAt: Date }): MessageEntity {
     return {
       id: doc._id?.toString() || doc.id,
-      conversationId: doc.conversationId,
-      senderId: doc.senderId,
+      conversationId: doc.conversationId.toString(),
+      senderId: doc.senderId.toString(),
       message: doc.message,
       type: doc.type || "text",
       seen: doc.seen || false,

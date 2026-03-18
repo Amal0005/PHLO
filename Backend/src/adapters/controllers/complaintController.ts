@@ -1,15 +1,11 @@
 import { IGetAllComplaintsUseCase } from "@/domain/interface/admin/complaint/IGetAllComplaintsUseCase";
 import { IRejectComplaintUseCase } from "@/domain/interface/admin/complaint/IRejectComplaintUseCase";
 import { IResolveComplaintUseCase } from "@/domain/interface/admin/complaint/IResolveComplaintUseCase";
-import { IGetComplaintByBookingUseCase } from "@/application/useCases/user/complaint/getComplaintByBookingUseCase";
+import { IGetComplaintByBookingUseCase } from "@/domain/interface/user/complaint/IGetComplaintByBookingUseCase";
 import { IRegisterComplaintUseCase } from "@/domain/interface/user/complaint/IRegisterComplaintUseCase";
 import { Request, Response } from "express";
+import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
 
-interface AuthRequest extends Request {
-  user?: {
-    userId: string;
-  };
-}
 
 export class ComplaintController {
   constructor(
@@ -33,7 +29,7 @@ export class ComplaintController {
   async getByBooking(req: Request, res: Response): Promise<void> {
     try {
       const { bookingId } = req.params;
-      const complaint = await this.getByBookingUseCase.execute(bookingId);
+      const complaint = await this.getByBookingUseCase.getComplaint(bookingId);
       res.status(200).json(complaint);
     } catch (_err: unknown) {
       res.status(500).json({ error: (_err as Error).message });

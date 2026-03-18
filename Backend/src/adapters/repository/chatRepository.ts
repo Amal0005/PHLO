@@ -1,7 +1,7 @@
 import { ConversationEntity } from "@/domain/entities/conversationEntity";
 import { ConversationModel } from "../../framework/database/model/conversationModel";
 import { MessageModel } from "../../framework/database/model/messageModel";
-import { IChatRepository } from "@/domain/interface/repository/IChatRepository ";
+import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
 import { MessageEntity } from "@/domain/entities/messageEntity";
 import { UserModel } from "../../framework/database/model/userModel";
 import { CreatorModel } from "../../framework/database/model/creatorModel";
@@ -21,17 +21,23 @@ export class ChatRepository implements IChatRepository {
     const uId = d.participants[0];
     const cId = d.participants[1];
 
-    const [[user, creator], booking] = await Promise.all([
+    const [participantData, booking] = await Promise.all([
       Promise.all([
         UserModel.findById(uId).select("name image").lean(),
         CreatorModel.findById(cId).select("fullName profilePhoto").lean()
       ]),
-      BookingModel.findById(d.bookingId).populate('packageId', 'title').lean() as unknown as { packageId?: { title?: string } }
+      BookingModel.findById(d.bookingId).populate<{ packageId: { title: string } }>('packageId', 'title').lean()
     ]);
 
+    const [user, creator] = participantData;
     const packageName = booking?.packageId?.title || "Unknown Package";
 
-    return ChatMapper.toConversationEntity(d, user, creator, packageName);
+    return ChatMapper.toConversationEntity({
+      ...d,
+      _id: d._id.toString(),
+      bookingId: d.bookingId.toString(),
+      participants: d.participants.map(p => p.toString())
+    }, user, creator, packageName);
   }
 
   async getConversationsByUserId(userId: string): Promise<ConversationEntity[]> {
@@ -43,17 +49,23 @@ export class ChatRepository implements IChatRepository {
       const uId = d.participants[0];
       const cId = d.participants[1];
 
-      const [[user, creator], booking] = await Promise.all([
+      const [participantData, booking] = await Promise.all([
         Promise.all([
           UserModel.findById(uId).select("name image").lean(),
           CreatorModel.findById(cId).select("fullName profilePhoto").lean()
         ]),
-        BookingModel.findById(d.bookingId).populate('packageId', 'title').lean() as unknown as { packageId?: { title?: string } }
+        BookingModel.findById(d.bookingId).populate<{ packageId: { title: string } }>('packageId', 'title').lean()
       ]);
 
+      const [user, creator] = participantData;
       const packageName = booking?.packageId?.title || "Unknown Package";
 
-      return ChatMapper.toConversationEntity(d, user, creator, packageName, 'Client');
+      return ChatMapper.toConversationEntity({
+        ...d,
+        _id: d._id.toString(),
+        bookingId: d.bookingId.toString(),
+        participants: d.participants.map(p => p.toString())
+      }, user, creator, packageName, 'Client');
     }));
 
     return conversations;
