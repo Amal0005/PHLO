@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, Image as ImageIcon, Package as PackageIcon, Download, MapPin, X } from "lucide-react";
+import { Bookmark, Image as ImageIcon, Package as PackageIcon, Download, MapPin, X } from "lucide-react";
 import { WishlistService } from "@/services/user/wishlistService";
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
 import { UserPackageService } from "@/services/user/userPackageService";
@@ -153,6 +153,45 @@ const WishlistPage: React.FC = () => {
     }
   };
 
+  const handleBuy = async (wp: WallpaperData) => {
+    try {
+      setLoading(true);
+      const successUrl = `${window.location.origin}/wishlist?success=true&id=${wp._id}`;
+      const cancelUrl = `${window.location.origin}/wishlist?cancel=true`;
+
+      const res = await UserWallpaperService.buyWallpaper(wp._id, successUrl, cancelUrl);
+      if (res.success && res.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error("Failed to initiate payment");
+      }
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      toast.error(axiosError.response?.data?.message || "Payment initiation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("success") === "true") {
+      const id = params.get("id");
+      if (id) {
+        toast.success("Purchase successful! You can now download the wallpaper.");
+        setWallpapers(prev => prev.map(wp => 
+          wp._id === id ? { ...wp, isPurchased: true } : wp
+        ));
+      }
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+    } else if (params.get("cancel") === "true") {
+      toast.error("Payment cancelled.");
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-white">
       <UserNavbar />
@@ -160,8 +199,8 @@ const WishlistPage: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-              <Heart size={24} className="text-red-400" fill="currentColor" />
+            <div className="w-12 h-12 rounded-2xl bg-zinc-500/10 border border-white/20 flex items-center justify-center">
+              <Bookmark size={24} className="text-white" fill="currentColor" />
             </div>
             <h1 className="text-5xl font-black">My Wishlist</h1>
           </div>
@@ -257,7 +296,7 @@ const WishlistPage: React.FC = () => {
                           className="absolute top-3 right-16 p-2.5 bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-2xl text-red-400 hover:bg-red-500/30 hover:scale-110 transition-all duration-300 active:scale-95"
                           title="Remove from wishlist"
                         >
-                          <Heart size={16} fill="currentColor" />
+                          <Bookmark size={16} fill="currentColor" />
                         </button>
                         <div className="absolute bottom-3 left-3 right-3">
                           <p className="text-white font-bold text-sm line-clamp-1">
@@ -327,7 +366,7 @@ const WishlistPage: React.FC = () => {
                         className="p-2.5 bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-2xl text-red-400 hover:bg-red-500/30 hover:scale-110 transition-all duration-300 active:scale-95"
                         title="Remove from wishlist"
                       >
-                        <Heart size={16} fill="currentColor" />
+                        <Bookmark size={16} fill="currentColor" />
                       </button>
                     </div>
                   </div>
@@ -400,18 +439,24 @@ const WishlistPage: React.FC = () => {
               </div>
               <div className="flex gap-3">
                 <button
-                  onClick={() => handleDownload(selectedWallpaper)}
+                  onClick={() => {
+                    if (selectedWallpaper.price > 0 && !selectedWallpaper.isPurchased) {
+                      handleBuy(selectedWallpaper);
+                    } else {
+                      handleDownload(selectedWallpaper);
+                    }
+                  }}
                   className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-white to-gray-200 text-black rounded-2xl hover:from-gray-100 hover:to-white hover:shadow-lg hover:shadow-white/10 hover:scale-105 active:scale-95 transition-all duration-300 font-semibold"
                 >
-                  <Download size={18} />
-                  <span>Download</span>
+                  <Download size={18} className={selectedWallpaper.price > 0 && !selectedWallpaper.isPurchased ? "text-green-600" : "text-black"} />
+                  <span>{selectedWallpaper.price > 0 && !selectedWallpaper.isPurchased ? "Buy Now" : "Download"}</span>
                 </button>
                 <button
                   onClick={() => { setSelectedWallpaper(null); openRemoveConfirm(selectedWallpaper._id); }}
                   className="p-3 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition-all duration-300 hover:scale-105 active:scale-95"
                   title="Remove from wishlist"
                 >
-                  <Heart size={20} fill="currentColor" />
+                  <Bookmark size={20} fill="currentColor" />
                 </button>
                 <button
                   onClick={() => setSelectedWallpaper(null)}
@@ -434,7 +479,7 @@ const WishlistPage: React.FC = () => {
         confirmLabel="Remove"
         cancelLabel="Keep"
         variant="danger"
-        icon={<Heart size={28} />}
+        icon={<Bookmark size={28} />}
         loading={removeLoading}
       />
     </div>

@@ -9,7 +9,7 @@ export class CreatorSubscriptionController {
   constructor(
     private _buySubscriptionUseCase: IBuySubscriptionUseCase,
     private _getSubscriptionUseCase: IGetSubscriptionUseCase,
-  ) { }
+  ) {}
 
   async getSubscriptions(req: Request, res: Response) {
     try {

@@ -8,5 +8,6 @@ chatRouter.get("/conversations", authMiddleware, (req, res) => chatController.ge
 chatRouter.get("/messages/:conversationId", authMiddleware, (req, res) => chatController.getMessage(req,res));
 chatRouter.post("/message", authMiddleware, (req, res) => chatController.sendMessage(req,res));
 chatRouter.get("/ensure-conversation/:bookingId", authMiddleware, (req, res) => chatController.createConversation(req,res));
+chatRouter.patch("/mark-seen", authMiddleware, (req, res) => chatController.markSeen(req,res));
 
 export default chatRouter;

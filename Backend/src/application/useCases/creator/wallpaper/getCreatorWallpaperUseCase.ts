@@ -8,7 +8,7 @@ import { WallpaperStatus } from "@/constants/wallpaperStatus";
 export class GetCreatorWallpaperUseCase implements IGetCreatorWallpapersUseCase {
     constructor(
         private wallpaperRepo: IWallpaperRepository
-    ) { }
+    ) {}
     async getWallpapers(creatorId: string, page: number, limit: number, search?: string, status?: WallpaperStatus): Promise<PaginatedResult<WallpaperResponseDto>> {
         const result = await this.wallpaperRepo.findByCreatorId(creatorId, page, limit, search, status);
         return {

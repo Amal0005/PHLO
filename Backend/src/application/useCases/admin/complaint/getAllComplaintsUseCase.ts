@@ -2,12 +2,19 @@ import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
 import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 import { IGetAllComplaintsUseCase } from "@/domain/interface/admin/complaint/IGetAllComplaintsUseCase";
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+import { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetAllComplaintsUseCase implements IGetAllComplaintsUseCase {
   constructor(private complaintRepository: IComplaintRepository) {}
 
-  async getAllComplaint(): Promise<ComplaintResponseDTO[]> {
-    const complaints = await this.complaintRepository.findAll();
-    return complaints.map(ComplaintMapper.toDto);
+  async getAllComplaint(page: number, limit: number, search?: string, status?: string): Promise<PaginatedResult<ComplaintResponseDTO>> {
+    const { complaints, total } = await this.complaintRepository.findAll(page, limit, search, status);
+    return {
+      data: complaints.map(ComplaintMapper.toDto),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 }

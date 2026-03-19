@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { Menu, X, ChevronDown, User, LogOut, Heart, MessageCircle, Wallet } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Bookmark, MessageCircle, Wallet } from "lucide-react";
 import { useRef } from "react";
 import LogoWhite from "../../../public/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
@@ -129,7 +129,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
               className="text-gray-300 hover:text-white transition-all hover:scale-110"
               title="Wishlist"
             >
-              <Heart size={18} />
+              <Bookmark size={18} />
             </button>
             <button
               onClick={() => navigate(ROUTES.USER.CHAT)}
@@ -246,7 +246,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
               }}
               className="w-full flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
-              <Heart size={16} />
+              <Bookmark size={16} />
             </button>
             <button
               onClick={() => {

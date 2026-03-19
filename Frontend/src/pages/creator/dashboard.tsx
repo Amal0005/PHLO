@@ -54,11 +54,21 @@ export default function CreatorDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <CreatorNavbar />
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Background Layer */}
+      <div className="fixed inset-0 z-0">
+        <img 
+          src="/creator_dashboard_bg.png" 
+          className="w-full h-full object-cover grayscale brightness-[0.7] opacity-60" 
+          alt="Dashboard Background"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/60" />
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
-        <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 lg:p-12 mb-8 shadow-2xl">
+      <div className="relative z-10">
+        <CreatorNavbar />
+        <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
+        <div className="bg-zinc-900/40 border border-white/10 rounded-3xl p-8 lg:p-12 mb-8 shadow-2xl">
           <div className="max-w-3xl">
             <h2 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">
               Creator Dashboard
@@ -251,5 +261,6 @@ export default function CreatorDashboard() {
         />
       </main>
     </div>
+  </div>
   );
 }

@@ -8,7 +8,7 @@ import { AuthRequest } from "../../middlewares/jwtAuthMiddleware";
 export class CreatorWalletController {
   constructor(
     private _getWalletUseCase: IGetWalletUseCase,
-  ) { }
+  ) {}
 
   async getWallet(req: AuthRequest, res: Response): Promise<Response> {
     try {

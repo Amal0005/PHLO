@@ -1,19 +1,24 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Wallet, ArrowUpRight, ArrowDownLeft, Search, Filter, Clock, Receipt, CreditCard } from "lucide-react";
+import { Wallet, ArrowUpRight, ArrowDownLeft, Search, Clock, Receipt, CreditCard, ChevronLeft } from "lucide-react";
 import { WalletService, WalletData, WalletTransaction } from "@/services/walletService";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
 
 const CreatorWalletPage: React.FC = () => {
     const [data, setData] = useState<WalletData | null>(null);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
+    const [source, setSource] = useState("all");
+    const navigate = useNavigate();
 
     const fetchWallet = useCallback(async () => {
         try {
             setLoading(true);
-            const result = await WalletService.getWallet("creator", { page, search });
+            const sourceParam = source === "all" ? "" : source;
+            const result = await WalletService.getWallet("creator", { page, search, source: sourceParam });
             setData(result);
         } catch (error) {
             console.error(error);
@@ -21,16 +26,30 @@ const CreatorWalletPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [page, search]);
+    }, [page, search, source]);
 
     useEffect(() => {
         fetchWallet();
     }, [fetchWallet]);
 
     return (
-        <div className="min-h-screen bg-black text-white p-8 lg:p-12 space-y-12 animate-in fade-in duration-700">
-            {/* Header Section */}
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+        <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black">
+            <CreatorNavbar />
+
+            <main className="max-w-7xl mx-auto px-6 pt-32 pb-20 space-y-12 animate-in fade-in duration-700">
+                {/* Back Button */}
+                <button
+                    onClick={() => navigate(-1)}
+                    className="group flex items-center gap-2 text-zinc-500 hover:text-white transition-colors mb-12"
+                >
+                    <div className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center group-hover:border-zinc-600 transition-colors">
+                        <ChevronLeft className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-zinc-500 group-hover:text-white transition-colors">Back</span>
+                </button>
+
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white">
@@ -73,19 +92,37 @@ const CreatorWalletPage: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="flex bg-black p-1 rounded-2xl border border-white/5">
+                            {["all", "booking", "wallpaper"].map((type) => (
+                                <button
+                                    key={type}
+                                    onClick={() => {
+                                        setSource(type);
+                                        setPage(1);
+                                    }}
+                                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                        source === type 
+                                        ? "bg-white text-black shadow-xl" 
+                                        : "text-zinc-500 hover:text-white"
+                                    }`}
+                                >
+                                    {type}
+                                </button>
+                            ))}
+                        </div>
                         <div className="relative flex-1 md:w-80">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                             <input
                                 type="text"
                                 value={search}
-                                onChange={(e) => setSearch(e.target.value)}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setPage(1);
+                                }}
                                 placeholder="Search earnings..."
                                 className="w-full bg-black border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-xs font-bold focus:border-white/20 transition-all outline-none"
                             />
                         </div>
-                        <button className="p-3 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-colors">
-                            <Filter className="w-5 h-5" />
-                        </button>
                     </div>
                 </div>
 
@@ -132,8 +169,9 @@ const CreatorWalletPage: React.FC = () => {
                     </div>
                 )}
             </div>
-        </div>
-    );
+        </main>
+    </div>
+);
 };
 
 const TransactionItem: React.FC<{ tx: WalletTransaction }> = ({ tx }) => {

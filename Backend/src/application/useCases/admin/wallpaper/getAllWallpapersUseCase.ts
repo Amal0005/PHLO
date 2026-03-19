@@ -8,7 +8,7 @@ import { WallpaperStatus } from "@/constants/wallpaperStatus";
 export class GetAllWallpapersUseCase implements IGetAllWallpapersUseCase {
     constructor(
         private _wallpaperRepo: IWallpaperRepository
-    ) { }
+    ) {}
 
     async getAllWallpapers(
         page: number,

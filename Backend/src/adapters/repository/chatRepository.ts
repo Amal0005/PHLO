@@ -88,5 +88,12 @@ export class ChatRepository implements IChatRepository {
       lastMessageAt: new Date()
     });
   }
+
+  async markMessagesAsSeen(conversationId: string, userId: string): Promise<void> {
+    await MessageModel.updateMany(
+      { conversationId, senderId: { $ne: userId }, seen: false },
+      { $set: { seen: true } }
+    );
+  }
 }
 

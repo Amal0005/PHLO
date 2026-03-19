@@ -160,7 +160,7 @@ const PackageListing: React.FC = () => {
         }
         return next;
       });
-      toast.success(res.wishlisted ? "Added to wishlist" : "Removed from wishlist");
+      toast.success(res.wishlisted ? "Saved" : "Unsaved");
     } catch {
       toast.error("Failed to update wishlist");
     }
@@ -183,7 +183,7 @@ const PackageListing: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
         <div className="mb-12 text-center">
-          <h1 className="text-5xl font-black mb-4">Browse Packages</h1>
+          <h1 className="text-5xl font-black mb-4">Explore Packages</h1>
           <p className="text-gray-400 text-lg">
             Discover amazing photography packages from talented creators
           </p>

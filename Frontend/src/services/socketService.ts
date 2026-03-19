@@ -14,7 +14,6 @@ class SocketService {
         const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BASE_URL?.replace('/api', '') || "http://localhost:5000";
         console.log("Connecting/Reconnecting to socket at:", backendUrl, "for user:", userId);
 
-        // Disconnect only if it's a different user or disconnected
         if (this.socket) {
             this.socket.disconnect();
         }
@@ -25,7 +24,6 @@ class SocketService {
             transports: ['websocket', 'polling']
         });
 
-        // Wait for connection before joining the room
         this.socket.on("connect", () => {
             console.log("Socket connected successfully with ID:", this.socket?.id);
             this.socket?.emit("join", userId);

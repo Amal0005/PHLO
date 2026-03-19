@@ -1,14 +1,17 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Wallet, ArrowUpRight, ArrowDownLeft, Search, Filter, Clock, Receipt, CreditCard } from "lucide-react";
+import { Wallet, ArrowUpRight, ArrowDownLeft, Search, Filter, Clock, Receipt, CreditCard, ChevronLeft } from "lucide-react";
 import { WalletService, WalletData, WalletTransaction } from "@/services/walletService";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import UserNavbar from "@/compoents/reusable/userNavbar";
 
 const UserWalletPage: React.FC = () => {
     const [data, setData] = useState<WalletData | null>(null);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
+    const navigate = useNavigate();
 
     const fetchWallet = useCallback(async () => {
         try {
@@ -28,9 +31,23 @@ const UserWalletPage: React.FC = () => {
     }, [fetchWallet]);
 
     return (
-        <div className="min-h-screen bg-black text-white p-8 lg:p-12 space-y-12 animate-in fade-in duration-700">
-            {/* Header Section */}
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+        <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black">
+            <UserNavbar />
+
+            <main className="max-w-7xl mx-auto px-6 pt-32 pb-20 space-y-12 animate-in fade-in duration-700">
+                {/* Back Button */}
+                <button
+                    onClick={() => navigate(-1)}
+                    className="group flex items-center gap-2 text-zinc-500 hover:text-white transition-colors mb-12"
+                >
+                    <div className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center group-hover:border-zinc-600 transition-colors">
+                        <ChevronLeft className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-bold uppercase tracking-widest text-zinc-500 group-hover:text-white transition-colors">Back</span>
+                </button>
+
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white">
@@ -132,8 +149,9 @@ const UserWalletPage: React.FC = () => {
                     </div>
                 )}
             </div>
-        </div>
-    );
+        </main>
+    </div>
+);
 };
 
 const TransactionItem: React.FC<{ tx: WalletTransaction }> = ({ tx }) => {

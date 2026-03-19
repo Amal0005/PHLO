@@ -5,7 +5,7 @@ import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class LogoutController {
-  constructor(private _logoutUseCase: ILogoutUseCase) { }
+  constructor(private _logoutUseCase: ILogoutUseCase) {}
 
   async logout(req: AuthRequest, res: Response) {
     try {

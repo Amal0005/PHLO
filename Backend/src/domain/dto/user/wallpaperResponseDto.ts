@@ -15,5 +15,6 @@ export interface WallpaperResponseDto {
     status: WallpaperStatus;
     downloadCount: number;
     createdAt: Date;
+    rejectionReason?: string;
     isPurchased?: boolean;
 }

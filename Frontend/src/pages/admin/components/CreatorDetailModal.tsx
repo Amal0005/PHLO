@@ -35,29 +35,29 @@ export const CreatorDetailModal = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 overflow-y-auto">
-        <div className="flex min-h-full items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-xl"
-            onClick={onClose}
-          />
+      <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
+          className="fixed inset-0 bg-black/80 backdrop-blur-xl"
+          onClick={onClose}
+        />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 30,
-              mass: 0.8,
-            }}
-            className="relative bg-[#0a0a0a] rounded-[2rem] max-w-4xl w-full shadow-[0_0_100px_rgba(0,0,0,1)] border border-white/10 overflow-hidden z-10"
-          >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+          transition={{
+            type: "spring",
+            stiffness: 400,
+            damping: 30,
+            mass: 0.8,
+          }}
+          className="relative bg-[#0a0a0a] rounded-[2.5rem] max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,1)] border border-white/10 z-[101] m-4"
+        >
+          <div className="h-full overflow-y-auto custom-scrollbar">
             <button
               onClick={onClose}
               className="absolute top-6 right-6 z-20 text-white/50 hover:text-white 
@@ -325,8 +325,8 @@ export const CreatorDetailModal = ({
                 </div>
               </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
 
       <AnimatePresence>

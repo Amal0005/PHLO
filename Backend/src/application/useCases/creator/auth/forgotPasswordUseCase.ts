@@ -12,7 +12,7 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
         private _creatorRepo: ICreatorRepository,
         private _otpService: IOTPService,
         private _mailService: IMailService
-    ) { }
+    ) {}
 
     async sendOtp(email: string): Promise<void> {
         email = email.trim().toLowerCase();

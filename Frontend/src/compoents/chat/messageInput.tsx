@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Smile, Sparkles } from 'lucide-react';
+import { Smile, Sparkles, Image as ImageIcon } from 'lucide-react';
 import EmojiPicker, { Theme, EmojiClickData } from 'emoji-picker-react';
 
 interface Props {
     onSendMessage: (text: string) => void;
+    onImageSelect: (file: File) => void;
 }
 
-const MessageInput: React.FC<Props> = ({ onSendMessage }) => {
+const MessageInput: React.FC<Props> = ({ onSendMessage, onImageSelect }) => {
     const [text, setText] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const pickerRef = useRef<HTMLDivElement>(null);
 
@@ -70,7 +72,25 @@ const MessageInput: React.FC<Props> = ({ onSendMessage }) => {
                     className="w-full bg-[#1A1A1A] text-zinc-200 text-[13px] font-medium tracking-wide py-4 pl-6 pr-14 rounded-[1.2rem] border border-white/5 focus:outline-none focus:border-white/10 transition-all placeholder:text-zinc-600 shadow-inner"
                 />
                 
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center text-zinc-500">
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3 text-zinc-500">
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="hover:text-zinc-200 transition-colors"
+                    >
+                        <ImageIcon size={18} />
+                    </button>
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) onImageSelect(file);
+                            e.target.value = ''; // Reset to allow re-selection
+                        }}
+                        accept="image/*"
+                        className="hidden"
+                    />
                     <button 
                         type="button" 
                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}

@@ -1,3 +1,5 @@
+import { PaginatedResponse } from "./pagination";
+
 export interface Complaint {
   id: string;
   userId: string;
@@ -11,3 +13,5 @@ export interface Complaint {
   adminComment?: string;
   createdAt: string;
 }
+
+export type PaginatedComplaintResponse = PaginatedResponse<Complaint>;

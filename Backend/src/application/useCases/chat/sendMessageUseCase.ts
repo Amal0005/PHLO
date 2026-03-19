@@ -14,14 +14,17 @@ export class SendMessageUseCase implements ISendMessageUseCase {
         private _creatorRepo: ICreatorRepository
     ) {}
 
-    async sendMessage(data: { conversationId: string; senderId: string; message: string; recipientId: string }): Promise<MessageEntity> {
+    async sendMessage(data: { conversationId: string; senderId: string; message: string; recipientId: string; type?: "text" | "image" }): Promise<MessageEntity> {
+        const messageType = data.type || "text";
         const message = await this._chatRepo.saveMessage({
             conversationId: data.conversationId,
             senderId: data.senderId,
-            message: data.message
+            message: data.message,
+            type: messageType
         });
 
-        await this._chatRepo.updateConversationLastMessage(data.conversationId, data.message);
+        const lastMessageText = messageType === "image" ? "Sent an image" : data.message;
+        await this._chatRepo.updateConversationLastMessage(data.conversationId, lastMessageText);
 
         const [user, creator] = await Promise.all([
             this._userRepo.findById(data.senderId),

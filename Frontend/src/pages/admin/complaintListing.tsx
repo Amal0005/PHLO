@@ -4,6 +4,8 @@ import { Complaint } from "@/interface/admin/AdminComplaintInterface";
 import DataTable, { Column } from "@/compoents/reusable/dataTable";
 import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
 import { ComplaintDetailModal } from "@/pages/admin/components/ComplaintDetailModal";
+import Pagination from "@/compoents/reusable/pagination";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function ComplaintListingPage() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
@@ -12,31 +14,37 @@ export default function ComplaintListingPage() {
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const limit = 4;
 
   const loadComplaints = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await AdminComplaintService.getAllComplaints();
-      setComplaints(data);
+      const data = await AdminComplaintService.getAllComplaints(page, limit, debouncedSearch, filterStatus);
+      if (data.success) {
+        setComplaints(data.data);
+        setTotalItems(data.total);
+        setTotalPages(data.totalPages);
+      }
     } catch {
       console.error("Failed to fetch complaints");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page, limit, debouncedSearch, filterStatus]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, filterStatus]);
 
   useEffect(() => {
     loadComplaints();
   }, [loadComplaints]);
-
-  const filteredComplaints = complaints.filter((c) => {
-    const matchesStatus = filterStatus === "all" || c.status === filterStatus;
-    const searchLower = search.toLowerCase();
-    const userName = c.userName.toLowerCase();
-    const creatorName = c.creatorName.toLowerCase();
-    const matchesSearch = userName.includes(searchLower) || creatorName.includes(searchLower) || c.reason.toLowerCase().includes(searchLower);
-    return matchesStatus && matchesSearch;
-  });
 
   const columns: Column<Complaint>[] = [
     {
@@ -136,7 +144,7 @@ export default function ComplaintListingPage() {
           <FilterSearch
             value={search}
             onChange={setSearch}
-            placeholder="Search by User, Creator or Reason..."
+            placeholder="Search by Reason or Description..."
             className="sm:w-80"
           />
           <FilterSelect
@@ -154,21 +162,35 @@ export default function ComplaintListingPage() {
         </div>
       </div>
 
-      <div className="bg-zinc-900/30 backdrop-blur-xl border border-zinc-800 rounded-[2.5rem] overflow-hidden">
-        <DataTable
-          columns={columns}
-          data={filteredComplaints}
-          loading={loading}
-          keyExtractor={(c) => c.id}
-          emptyMessage="No complaints found in the moderation queue."
-        />
+      <div className="space-y-6">
+        <div className="bg-zinc-900/30 backdrop-blur-xl border border-zinc-800 rounded-[2.5rem] overflow-hidden">
+          <DataTable
+            columns={columns}
+            data={complaints}
+            loading={loading}
+            keyExtractor={(c) => c.id}
+            emptyMessage="No complaints found in the moderation queue."
+          />
+        </div>
+
+        {/* Improved Pagination Section */}
+        <div className="px-4">
+           <Pagination 
+              page={page} 
+              totalPages={totalPages} 
+              onPageChange={setPage} 
+            />
+            <p className="text-center sm:text-left text-zinc-500 text-xs mt-2 uppercase tracking-[0.2em] font-black">
+              Showing {Math.min(page * limit, totalItems)} of {totalItems} total complaints
+            </p>
+        </div>
       </div>
 
       {showDetails && selectedComplaint && (
         <ComplaintDetailModal
           complaint={selectedComplaint}
           onClose={() => setShowDetails(false)}
-          onUpdate={loadComplaints}
+          onUpdate={() => loadComplaints()}
         />
       )}
     </div>

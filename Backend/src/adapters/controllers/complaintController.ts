@@ -38,10 +38,14 @@ export class ComplaintController {
 
   async getAll(req: Request, res: Response): Promise<void> {
     try {
-      const complaints = await this.getAllUseCase.getAllComplaint();
-      res.status(200).json(complaints);
-    } catch {
-      res.status(500).json({ error: "Failed to fetch complaints" });
+      const page = Math.max(1, parseInt(req.query.page as string) || 1);
+      const limit = Math.max(1, parseInt(req.query.limit as string) || 10);
+      const search = req.query.search as string;
+      const status = req.query.status as string;
+      const data = await this.getAllUseCase.getAllComplaint(page, limit, search, status);
+      res.status(200).json({ success: true, ...data });
+    } catch (err: unknown) {
+      res.status(500).json({ success: false, error: (err as Error).message });
     }
   }
 

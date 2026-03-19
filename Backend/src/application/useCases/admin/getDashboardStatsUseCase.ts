@@ -34,7 +34,7 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       bookings,
       packages,
       wallpapers,
-      complaints,
+      complaintResult,
       wallet,
       populatedBookings
     ] = await Promise.all([
@@ -43,10 +43,12 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       this._bookingRepo.findAll({}),
       this._packageRepo.findAll({}),
       this._wallpaperRepo.findAll({}),
-      this._complaintRepo.findAll(),
+      this._complaintRepo.findAll(1, 1),
       this._walletRepo.getWallet("admin", "admin"),
       this._bookingRepo.findAllPopulated({})
     ]);
+
+    const totalComplaintsCount = (complaintResult as { total: number }).total;
 
     let recentTransactions: RecentTransaction[] = [];
     if (wallet && wallet.id) {
@@ -87,7 +89,7 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
         userGrowthData.push({ label, amount: uCount });
       }
     } else if (timeframe === "yearly") {
-      statsStartDate = startOfMonth(subMonths(now, 11)); // Last 12 months for yearly view
+      statsStartDate = startOfMonth(subMonths(now, 11));
       
       for (let i = 11; i >= 0; i--) {
         const date = subMonths(now, i);
@@ -193,7 +195,7 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       totalPackages: packages.length,
       totalWallpapers: wallpapers.length,
       totalRevenue: wallet?.balance || 0,
-      totalComplaints: complaints.length,
+      totalComplaints: totalComplaintsCount,
       pendingWallpapers: wallpapers.filter(w => w.status === "pending").length,
       pendingCreators: creators.filter(c => c.status === "pending").length,
       revenueData,

@@ -4,7 +4,7 @@ import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class TokenController {
-  constructor(private _jwtService: IJwtServices) { }
+  constructor(private _jwtService: IJwtServices) {}
 
   async refreshToken(req: Request, res: Response) {
     try {

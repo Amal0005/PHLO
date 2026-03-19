@@ -7,7 +7,7 @@ import { Response } from "express";
 export class CreatorBookingController {
     constructor(
         private _listCreatorBookingsUseCase: IListCreatorBookingsUseCase
-    ) { }
+    ) {}
 
     async ListCreatorBookings(req: AuthRequest, res: Response) {
         try {

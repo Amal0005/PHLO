@@ -9,7 +9,7 @@ export class AdminWalletController {
   constructor(
     private _getWalletUseCase: IGetWalletUseCase,
     private _creditWalletUseCase: ICreditWalletUseCase,
-  ) { }
+  ) {}
 
   async getWallet(req: Request, res: Response): Promise<Response> {
     try {

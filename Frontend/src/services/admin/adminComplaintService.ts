@@ -1,10 +1,17 @@
 import api from "@/axios/axiosConfig";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
-import { Complaint } from "@/interface/admin/AdminComplaintInterface";
+import { Complaint, PaginatedComplaintResponse } from "@/interface/admin/AdminComplaintInterface";
 
 export const AdminComplaintService = {
-  getAllComplaints: async (): Promise<Complaint[]> => {
-    const res = await api.get(FRONTEND_ROUTES.ADMIN.COMPLAINTS);
+  getAllComplaints: async (
+    page: number = 1,
+    limit: number = 10,
+    search?: string,
+    status?: string
+  ): Promise<PaginatedComplaintResponse> => {
+    const res = await api.get(FRONTEND_ROUTES.ADMIN.COMPLAINTS, {
+      params: { page, limit, search, status }
+    });
     return res.data;
   },
 

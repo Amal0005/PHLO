@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Image as ImageIcon, Download, X, Heart } from "lucide-react";
+import { Image as ImageIcon, Download, X, Bookmark } from "lucide-react";
 
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
 import { WishlistService } from "@/services/user/wishlistService";
@@ -109,7 +109,7 @@ const WallpaperGallery: React.FC = () => {
         }
         return next;
       });
-      toast.success(res.wishlisted ? "Added to wishlist" : "Removed from wishlist");
+      toast.success(res.wishlisted ? "Saved" : "Unsaved");
     } catch {
       toast.error("Failed to update wishlist");
     }
@@ -323,7 +323,7 @@ const WallpaperGallery: React.FC = () => {
                           }`}
                         title="Wishlist"
                       >
-                        <Heart size={16} fill={wishlistedIds.has(wp._id) ? "currentColor" : "none"} />
+                        <Bookmark size={16} fill={wishlistedIds.has(wp._id) ? "currentColor" : "none"} />
                       </button>
                       <div className="absolute bottom-3 left-3 right-3">
                         <p className="text-white font-bold text-sm line-clamp-1">{wp.title}</p>
@@ -423,7 +423,7 @@ const WallpaperGallery: React.FC = () => {
                       }`}
                     title="Wishlist"
                   >
-                    <Heart size={20} fill={wishlistedIds.has(selectedWallpaper._id) ? "currentColor" : "none"} />
+                    <Bookmark size={20} fill={wishlistedIds.has(selectedWallpaper._id) ? "currentColor" : "none"} />
                   </button>
                   <button
                     onClick={() => setSelectedWallpaper(null)}

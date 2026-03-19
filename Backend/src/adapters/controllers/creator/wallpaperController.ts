@@ -12,7 +12,7 @@ export class WallpaperController {
     private _addWallpaperUseCase: IAddWallpaperUseCase,
     private _deleteWallpaperUseCase: IDeleteWallpaperUseCase,
     private getCreatorWallpapaperUseCase: IGetCreatorWallpapersUseCase,
-  ) { }
+  ) {}
   async addWallpaper(req: AuthRequest, res: Response) {
     try {
       const creatorId = req.user?.userId;

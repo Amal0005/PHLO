@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MessageEntity } from "@/interface/chat/chatInterface";
 import { S3Media } from '../reusable/s3Media';
 import { format, isToday, isYesterday } from 'date-fns';
+import { X } from 'lucide-react';
 
 interface Props {
     messages: MessageEntity[];
@@ -12,6 +13,7 @@ interface Props {
 
 const ChatWindow: React.FC<Props> = ({ messages, currentUserId, recipientName, recipientImage }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,14 +71,28 @@ const ChatWindow: React.FC<Props> = ({ messages, currentUserId, recipientName, r
                                                 : 'bg-[#2A2A2A] text-zinc-200 rounded-[1.5rem] rounded-bl-none border border-white/5'
                                                 }`}
                                         >
-                                            <p className="text-[12px] font-medium leading-relaxed tracking-tight break-words">
-                                                {msg.message}
-                                            </p>
+                                            <div className="text-[12px] font-medium leading-relaxed tracking-tight break-words">
+                                                {msg.type === "image" ? (
+                                                    <div 
+                                                        className="rounded-xl overflow-hidden border border-white/5 max-w-[280px] cursor-pointer hover:opacity-90 transition-opacity"
+                                                        onClick={() => setPreviewUrl(msg.message)}
+                                                    >
+                                                        <S3Media s3Key={msg.message} className="w-full h-auto object-contain" />
+                                                    </div>
+                                                ) : (
+                                                    msg.message
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className={`flex ${isMine ? 'justify-end' : 'justify-start'} px-2`}>
+                                        <div className={`flex ${isMine ? 'justify-end' : 'justify-start'} px-2 items-center gap-2`}>
                                             <span className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest">
                                                 {format(date, 'hh:mm a')}
                                             </span>
+                                            {isMine && (
+                                                <span className={`text-[8px] font-black uppercase tracking-tighter opacity-80 ${msg.seen ? 'text-[#00E5FF]' : 'text-zinc-600'}`}>
+                                                    {msg.seen ? 'Seen' : 'Sent'}
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -86,6 +102,28 @@ const ChatWindow: React.FC<Props> = ({ messages, currentUserId, recipientName, r
                 )}
                 <div ref={scrollRef} />
             </div>
+
+            {/* Image Preview Modal */}
+            {previewUrl && (
+                <div 
+                    className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-4 md:p-10 animate-in fade-in duration-300"
+                    onClick={() => setPreviewUrl(null)}
+                >
+                    <button 
+                        onClick={() => setPreviewUrl(null)}
+                        className="absolute top-6 right-6 p-3 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 text-white transition-all hover:scale-110 active:scale-90 z-[10000]"
+                    >
+                        <X size={24} />
+                    </button>
+                    
+                    <div className="relative w-full max-w-5xl h-full flex items-center justify-center pointer-events-none">
+                       <S3Media 
+                            s3Key={previewUrl} 
+                            className="max-w-full max-h-full object-contain pointer-events-auto rounded-xl shadow-[0_0_50px_rgba(255,255,255,0.05)]" 
+                       />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

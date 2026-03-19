@@ -11,12 +11,33 @@ export class ComplaintRepository implements IComplaintRepository {
     return ComplaintMapper.toEntity(newComplaint.toObject() as unknown as Record<string, unknown>);
   }
 
-  async findAll(): Promise<ComplaintEntity[]> {
-    const complaints = await ComplaintModel.find()
-      .populate("userId creatorId")
-      .sort({ createdAt: -1 })
-      .lean();
-    return ComplaintMapper.toEntityList(complaints as unknown as Record<string, unknown>[]);
+  async findAll(page: number, limit: number, search?: string, status?: string): Promise<{ complaints: ComplaintEntity[]; total: number }> {
+    const query: any = {};
+    if (status && status !== "all") {
+      query.status = status;
+    }
+
+    if (search) {
+      query.$or = [
+        { reason: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } }
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+    const [complaints, total] = await Promise.all([
+      ComplaintModel.find(query)
+        .populate("userId creatorId")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      ComplaintModel.countDocuments(query)
+    ]);
+    return {
+      complaints: ComplaintMapper.toEntityList(complaints as unknown as Record<string, unknown>[]),
+      total
+    };
   }
 
   async findById(id: string): Promise<ComplaintEntity | null> {
@@ -26,16 +47,16 @@ export class ComplaintRepository implements IComplaintRepository {
 
   async update(complaint: ComplaintEntity): Promise<ComplaintEntity | null> {
     const { _id, userId, creatorId, ...rest } = complaint;
-    
+
     const updateData: Partial<ComplaintEntity> = { ...rest };
     if (userId) {
-      updateData.userId = typeof userId === 'object' 
-        ? (userId as User)._id 
+      updateData.userId = typeof userId === 'object'
+        ? (userId as User)._id
         : userId;
     }
     if (creatorId) {
-      updateData.creatorId = typeof creatorId === 'object' 
-        ? (creatorId as CreatorEntity)._id 
+      updateData.creatorId = typeof creatorId === 'object'
+        ? (creatorId as CreatorEntity)._id
         : creatorId;
     }
 
@@ -44,7 +65,7 @@ export class ComplaintRepository implements IComplaintRepository {
       { $set: updateData },
       { new: true }
     ).lean();
-    
+
     return updatedComplaint ? ComplaintMapper.toEntity(updatedComplaint as unknown as Record<string, unknown>) : null;
   }
   async findByBookingId(bookingId: string): Promise<ComplaintEntity | null> {

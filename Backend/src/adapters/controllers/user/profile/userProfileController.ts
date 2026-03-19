@@ -18,7 +18,7 @@ export class UserProfileController {
         private _otpService: IOTPService,
         private _userRepo: IUserRepository,
         private _creatorRepo: ICreatorRepository,
-    ) { }
+    ) {}
 
 
     async getProfile(req: AuthRequest, res: Response): Promise<void> {

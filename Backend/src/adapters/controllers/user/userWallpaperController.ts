@@ -22,6 +22,7 @@ export class UserWallpaperController {
       const minPrice = req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined;
       const maxPrice = req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined;
       const userId = req.user?.userId;
+      const ids = req.query.ids ? (req.query.ids as string).split(",") : undefined;
 
       const result = await this._getApprovedWallpaperUseCase.getApprovedWallpapers(
         page,
@@ -30,7 +31,8 @@ export class UserWallpaperController {
         hashtag,
         !isNaN(minPrice!) ? minPrice : undefined,
         !isNaN(maxPrice!) ? maxPrice : undefined,
-        userId
+        userId,
+        ids
       );
 
       return res.status(StatusCode.OK).json({

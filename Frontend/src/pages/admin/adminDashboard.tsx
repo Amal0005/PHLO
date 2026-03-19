@@ -338,7 +338,7 @@ export default function AdminDashboard() {
               className="flex items-center gap-4 px-10 py-5 bg-white text-black rounded-full text-xs font-black shadow-[0_10px_40px_rgba(255,255,255,0.1)] disabled:opacity-50 transition-all uppercase tracking-widest"
             >
               <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
-              Sync intelligence
+              Sync
             </motion.button>
           </div>
         </header>
@@ -546,7 +546,7 @@ export default function AdminDashboard() {
             </div>
           </GlassCard>
 
-          <GlassCard title="Global Health Metrics">
+          <GlassCard title=".....................">
             <div className="space-y-6 mt-2">
               {[
                 { label: "Pending Wallpapers", value: stats?.pendingWallpapers || 0, icon: ImageIcon, color: "text-pink-400" },
@@ -620,7 +620,7 @@ export default function AdminDashboard() {
                   <tr className="border-b border-white/5 bg-white/[0.01]">
                     <th className="px-10 py-6 text-[10px] uppercase tracking-[0.4em] text-gray-600 font-black">Origin</th>
                     <th className="px-10 py-6 text-[10px] uppercase tracking-[0.4em] text-gray-600 font-black">Record</th>
-                    <th className="px-10 py-6 text-[10px] uppercase tracking-[0.4em] text-gray-600 font-black text-right">Delta</th>
+                    <th className="px-10 py-6 text-[10px] uppercase tracking-[0.4em] text-gray-600 font-black text-right">Amount</th>
                   </tr>
                 </thead>
                 <tbody>

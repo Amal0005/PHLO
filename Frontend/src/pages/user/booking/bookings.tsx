@@ -82,7 +82,7 @@ const BookingsPage: React.FC = () => {
                             onClick={() => navigate(ROUTES.USER.PACKAGES)}
                             className="bg-white text-black px-10 py-4 rounded-2xl font-bold text-sm tracking-tight hover:bg-zinc-200 transition-all hover:scale-[1.02]"
                         >
-                            Browse Packages
+                            Explore Packages
                         </button>
                     </div>
                 ) : (

@@ -8,7 +8,7 @@ export class UserPackageController {
   constructor(
     private _listUserPackagesUseCase: IListUserPackagesUseCase,
     private _getPackageDetailUseCase: IGetPackageDetailUseCase
-  ) { }
+  ) {}
 
   async listPackages(req: Request, res: Response) {
     try {

@@ -97,12 +97,25 @@ const PaymentSuccess: React.FC = () => {
           )}
         </div>
 
-        <button
-          onClick={() => navigate(ROUTES.USER.HOME)}
-          className="w-full bg-white text-black py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors"
-        >
-          {status === "verifying" ? "Return to Home" : "Return Home"}
-        </button>
+        <div className="flex flex-col gap-3">
+          {status === "completed" && (
+            <button
+              onClick={() => navigate(ROUTES.USER.BOOKINGS)}
+              className="w-full bg-white text-black py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors"
+            >
+              View My Bookings
+            </button>
+          )}
+
+          <button
+            onClick={() => navigate(ROUTES.USER.HOME)}
+            className={`w-full py-4 rounded-xl font-bold transition-colors ${status === "completed" 
+              ? "bg-zinc-800 text-white hover:bg-zinc-700" 
+              : "bg-white text-black hover:bg-gray-200"}`}
+          >
+            {status === "verifying" ? "Return to Home" : "Return Home"}
+          </button>
+        </div>
       </div>
     </div>
   );

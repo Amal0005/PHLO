@@ -58,7 +58,12 @@ export class WalletRepository implements IWalletRepository {
         }
 
         if (source && source.trim() !== "") {
-            query.source = source.trim();
+            const sources = source.split(",").map(s => s.trim()).filter(Boolean);
+            if (sources.length > 1) {
+                query.source = { $in: sources };
+            } else if (sources.length === 1) {
+                query.source = sources[0];
+            }
         }
 
         const skip = (page - 1) * limit;

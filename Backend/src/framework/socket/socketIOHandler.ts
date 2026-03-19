@@ -7,6 +7,7 @@ interface SendMessageData {
   receiverId: string;
   message: string;
   createdAt: Date;
+  type?: "text" | "image";
 }
 
 export class SocketIOHandler {

@@ -26,6 +26,7 @@ export class WallpaperMapper {
             price: entity.price,
             hashtags: entity.hashtags,
             status: entity.status,
+            rejectionReason: entity.rejectionReason,
             downloadCount: entity.downloadCount || 0,
             createdAt: entity.createdAt!,
             isPurchased: entity.isPurchased,

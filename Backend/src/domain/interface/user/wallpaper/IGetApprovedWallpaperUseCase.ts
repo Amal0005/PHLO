@@ -9,6 +9,7 @@ export interface IGetApprovedWallpapersUseCase {
     hashtag?: string,
     minPrice?: number,
     maxPrice?: number,
-    userId?: string
+    userId?: string,
+    ids?: string[]
   ): Promise<PaginatedResult<WallpaperResponseDto>>;
 }

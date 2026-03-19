@@ -12,6 +12,8 @@ import Navbar from "@/compoents/reusable/userNavbar";
 import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
 import { S3Media } from '@/compoents/reusable/s3Media';
 import { useNotifications } from '@/hooks/useNotifications';
+import { S3Service } from '@/services/s3Service';
+import { toast } from 'react-toastify';
 
 const ChatPage = () => {
     const { markChatAsRead } = useNotifications();
@@ -24,7 +26,7 @@ const ChatPage = () => {
     const [conversations, setConversations] = useState<ConversationEntity[]>([]);
     const [selectedChat, setSelectedChat] = useState<ConversationEntity | null>(null);
     const [messages, setMessages] = useState<MessageEntity[]>([]);
-    const [isSidebarVisible, setIsSidebarVisible] = useState(true); // For mobile responsiveness
+    const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
     const currentUserId = currentUser?.id || (currentUser as unknown as { _id?: string })?._id;
 
@@ -46,22 +48,38 @@ const ChatPage = () => {
         }
     }, []);
 
+    const markSeen = useCallback(async (conv: ConversationEntity) => {
+        if (!currentUserId) return;
+        const conversationId = conv.id || (conv as unknown as { _id?: string })._id;
+        if (!conversationId) return;
+
+        const receiverId = conv.participants
+            ?.map((p: any) => (p?._id || p?.id || p)?.toString())
+            .find((id?: string) => id !== currentUserId.toString());
+
+        try {
+            await api.patch('/chat/mark-seen', { conversationId, recipientId: receiverId });
+        } catch (err) {
+            console.error("Failed to mark messages as seen", err);
+        }
+    }, [currentUserId]);
+
     const handleSelectChat = useCallback((conv: ConversationEntity) => {
         setSelectedChat(conv);
-        setIsSidebarVisible(false); // Hide sidebar on mobile when chat is selected
+        setIsSidebarVisible(false);
         const convId = conv.id || (conv as unknown as { _id?: string })._id;
         if (convId) {
             fetchMessages(convId);
             markChatAsRead(convId);
+            markSeen(conv);
         }
-    }, [fetchMessages, markChatAsRead]);
+    }, [fetchMessages, markChatAsRead, markSeen]);
 
-    const handleSendMessage = useCallback(async (text: string) => {
+    const handleSendMessage = useCallback(async (text: string, type: "text" | "image" = "text") => {
         if (!selectedChat || !currentUserId) return;
         const conversationId = selectedChat.id || (selectedChat as unknown as { _id?: string })._id;
         if (!conversationId) return;
 
-        // More robust receiverId extraction
         const receiverId = selectedChat.participants
             .map((p: unknown) => (typeof p === 'object' && p !== null ? ((p as { _id?: string })._id || (p as { id?: string }).id) : p)?.toString())
             .find((id?: string) => id !== currentUserId.toString());
@@ -73,10 +91,10 @@ const ChatPage = () => {
 
         const payload = {
             message: text,
-            receiverId
+            receiverId,
+            type
         };
 
-        // 1. Emit via socket for real-time
         const socket = socketService.getSocket();
         if (socket?.connected) {
             socket.emit("send-message", {
@@ -90,32 +108,39 @@ const ChatPage = () => {
         }
 
         try {
-            // 2. Save to database
             const res = await api.post('/chat/message', {
                 ...payload,
                 conversationId
             });
 
-            // 3. Update local UI (sender side)
             setMessages((prev: MessageEntity[]) => {
                 const exists = prev.some(m => (m.id || (m as unknown as { _id?: string })._id)?.toString() === (res.data.message.id || (res.data.message as unknown as { _id?: string })._id)?.toString());
                 if (exists) return prev;
                 return [...prev, res.data.message];
             });
-            fetchConversations(); // Update last message in list
+            fetchConversations();
         } catch (err: unknown) {
             console.error("Failed to send message", err);
         }
     }, [selectedChat, currentUserId, fetchConversations]);
 
-    // 1. Connect socket and fetch conversations once on mount / user change
+    const handleImageSelect = useCallback(async (file: File) => {
+        try {
+            toast.info("Sending image...");
+            const publicUrl = await S3Service.uploadToS3(file, "chat-images");
+            await handleSendMessage(publicUrl, "image");
+        } catch (err) {
+            console.error("Image upload failed", err);
+            toast.error("Failed to upload image");
+        }
+    }, [handleSendMessage]);
+
     useEffect(() => {
         if (!currentUserId) return;
         socketService.connect(currentUserId);
         fetchConversations();
     }, [currentUserId, fetchConversations]);
 
-    // 2. Register receive-message listener separately so it has latest selectedChat ref
     useEffect(() => {
         const socket = socketService.getSocket();
         if (!socket) {
@@ -125,7 +150,6 @@ const ChatPage = () => {
 
         const handleReceive = (newMessage: MessageEntity) => {
             console.log("ChatPage: Received new message via socket:", newMessage);
-            // Check if the message belongs to the currently open chat
             const selectedId = (selectedChat?.id || (selectedChat as unknown as { _id?: string })?._id)?.toString();
             const messageConvId = newMessage.conversationId?.toString();
 
@@ -136,39 +160,46 @@ const ChatPage = () => {
                     return [...prev, newMessage];
                 });
                 markChatAsRead(selectedId);
+                if (selectedChat) markSeen(selectedChat);
             }
             fetchConversations();
         };
 
+        const handleSeen = ({ conversationId }: { conversationId: string }) => {
+            const selectedId = (selectedChat?.id || (selectedChat as unknown as { _id?: string })?._id)?.toString();
+            if (selectedId && conversationId === selectedId) {
+                setMessages((prev: MessageEntity[]) => 
+                    prev.map(m => (!m.seen && (m.senderId?.toString() === currentUserId?.toString()) ? { ...m, seen: true } : m))
+                );
+            }
+        };
+
         socket.on("receive-message", handleReceive);
+        socket.on("messages-seen", handleSeen);
         return () => {
             socket.off("receive-message", handleReceive);
+            socket.off("messages-seen", handleSeen);
         };
-    }, [selectedChat, currentUserId, markChatAsRead, fetchConversations]);
+    }, [selectedChat, currentUserId, markChatAsRead, markSeen, fetchConversations]);
 
-    // Handle initial selection via query param
     useEffect(() => {
         const ensureAndSelect = async () => {
             if (bookingIdParam && currentUser && !selectedChat) {
                 try {
-                    // Try to find in existing list first
                     const match = conversations.find((c: ConversationEntity) => c.bookingId === bookingIdParam);
                     if (match) {
                         handleSelectChat(match);
                         return;
                     }
 
-                    // If not found, ensure it exists on backend
                     const res = await api.get(`/chat/ensure-conversation/${bookingIdParam}`);
                     if (res.data.success && res.data.conversation) {
                         const newConv = res.data.conversation;
-                        // Map to frontend interface if needed (backend already does mapping usually)
                         const mappedConv = {
                             ...newConv,
                             id: newConv.id || (newConv as unknown as { _id?: string })._id
                         };
 
-                        // Reload list to include it
                         await fetchConversations();
                         handleSelectChat(mappedConv);
                     }
@@ -258,7 +289,10 @@ const ChatPage = () => {
                             {/* Message Input */}
                             <div className="px-6 py-6 mt-auto">
                                 <div className="max-w-5xl mx-auto w-full">
-                                    <MessageInput onSendMessage={handleSendMessage} />
+                                    <MessageInput 
+                                        onSendMessage={handleSendMessage} 
+                                        onImageSelect={handleImageSelect}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -274,14 +308,7 @@ const ChatPage = () => {
                                 </div>
                             </div>
                             <div className="space-y-3 max-w-sm">
-                                <h3 className="text-white text-base md:text-lg font-black uppercase tracking-[0.4em] translate-x-1">Secure Channel</h3>
-                                <div className="flex items-center justify-center gap-3">
-                                    <div className="h-[1px] w-8 bg-zinc-800" />
-                                    <p className="text-zinc-600 text-[10px] md:text-xs font-black leading-relaxed uppercase tracking-[0.2em]">
-                                        End-to-end encrypted
-                                    </p>
-                                    <div className="h-[1px] w-8 bg-zinc-800" />
-                                </div>
+                               
                                 <p className="text-zinc-500 text-[10px] md:text-xs font-medium leading-loose uppercase tracking-[0.1em] pt-4">
                                     Initialize a discussion from your engagement panel to proceed.
                                 </p>
