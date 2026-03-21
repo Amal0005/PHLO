@@ -1,7 +1,6 @@
 import sharp from "sharp";
-import { S3Client, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { IWatermarkService } from "@/domain/interface/service/IWatermarkService";
-import { Readable } from "stream";
 
 export class WatermarkService implements IWatermarkService {
     private _s3: S3Client;
@@ -18,16 +17,7 @@ export class WatermarkService implements IWatermarkService {
         this._bucket = process.env.AWS_S3_BUCKET_NAME!;
     }
 
-    async generateWatermark(originalKey: string): Promise<string> {
-        const { Body } = await this._s3.send(
-            new GetObjectCommand({ Bucket: this._bucket, Key: originalKey })
-        );
-        const chunks: Buffer[] = [];
-        for await (const chunk of Body as Readable) {
-            chunks.push(Buffer.from(chunk));
-        }
-        const originalBuffer = Buffer.concat(chunks);
-
+    async generateWatermark(originalBuffer: Buffer, originalKey: string): Promise<string> {
         const { width = 800, height = 600 } = await sharp(originalBuffer).metadata();
 
         const fontSize = Math.max(Math.floor(width / 25), 14);

@@ -19,6 +19,9 @@ import { authMiddleware, logoutController, tokenController } from "@/framework/d
 import { editPackageSchema } from "@/adapters/validation/packageEditSchema";
 import { addPackageSchema } from "@/adapters/validation/packageAddSchema";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 export class CreatorRoutes {
   public creatorRouter: Router;
@@ -149,6 +152,7 @@ export class CreatorRoutes {
 
     this.creatorRouter.post(
       BACKEND_ROUTES.CREATOR.WALLPAPER,
+      upload.single("image"),
       (req: Request, res: Response) => {
         wallpaperController.addWallpaper(req, res);
       },

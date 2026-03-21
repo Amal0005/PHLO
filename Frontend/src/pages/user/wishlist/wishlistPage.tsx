@@ -199,9 +199,7 @@ const WishlistPage: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-zinc-500/10 border border-white/20 flex items-center justify-center">
-              <Bookmark size={24} className="text-white" fill="currentColor" />
-            </div>
+          
             <h1 className="text-5xl font-black">My Wishlist</h1>
           </div>
           <p className="text-gray-500 font-medium max-w-md mx-auto">

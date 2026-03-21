@@ -57,6 +57,7 @@ import { CreditWalletUseCase } from "@/application/useCases/wallet/creditWalletU
 import { CreatorPackageController } from "@/adapters/controllers/creator/creatorPackageController";
 import { GetWalletUseCase } from "@/application/useCases/wallet/getWalletUseCase";
 import { CreatorWalletController } from "@/adapters/controllers/creator/creatorWalletController";
+import { storageService } from "@/framework/depInjection/s3Injections";
 
 
 const creatorRepository = new CreatorRepository();
@@ -102,7 +103,7 @@ const getWalletUseCase = new GetWalletUseCase(walletRepo);
 
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase, userRepository)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
-const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService, userRepository, sendNotificationUseCase)
+const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService, userRepository, sendNotificationUseCase, storageService)
 const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)
 const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRepo)
 const addLeaveUseCase = new AddLeaveUseCase(leaveRepo)

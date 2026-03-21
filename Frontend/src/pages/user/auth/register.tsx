@@ -89,7 +89,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      <div className="absolute inset-0">
+      <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -170,8 +170,8 @@ export default function Register() {
         </div>
 
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-lg">
-            <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-4 sm:p-6 border border-white/10">
+          <div className="w-full max-w-md">
+            <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
               <div className="text-center mb-6 sm:mb-8">
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                   Create Account

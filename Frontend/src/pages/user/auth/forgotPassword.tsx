@@ -141,7 +141,7 @@ export default function ForgotPassword() {
   if (showResetForm) {
     return (
       <div className="min-h-screen bg-black relative overflow-hidden">
-        <div className="absolute inset-0">
+        <div className="fixed inset-0 z-0">
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
@@ -270,7 +270,7 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      <div className="absolute inset-0">
+      <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{

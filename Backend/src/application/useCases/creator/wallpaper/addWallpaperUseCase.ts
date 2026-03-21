@@ -8,7 +8,9 @@ import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRe
 import { IWatermarkService } from "@/domain/interface/service/IWatermarkService";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
+import { IStorageService } from "@/domain/interface/service/IS3Services";
 import { MESSAGES } from "@/constants/commonMessages";
+import crypto from "crypto";
 
 export class AddWallpaperUseCase implements IAddWallpaperUseCase {
   constructor(
@@ -17,9 +19,10 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
     private _watermarkService: IWatermarkService,
     private _userRepo: IUserRepository,
     private _sendNotificationUseCase: ISendNotificationUseCase,
+    private _storageService: IStorageService,
   ) {}
-  async addWallpaper(data: Partial<WallpaperEntity>): Promise<WallpaperResponseDto> {
-    if (!data.title || !data.imageUrl || data.price === undefined || data.price === null) {
+  async addWallpaper(data: Partial<WallpaperEntity>, imageBuffer: Buffer, contentType: string): Promise<WallpaperResponseDto> {
+    if (!data.title || data.price === undefined || data.price === null) {
       throw new Error(MESSAGES.ERROR.ALL_FIELDS_REQUIRED);
     }
     if (data.price < 0) {
@@ -34,12 +37,17 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
       throw new Error("subscription required to add wallpapers.");
     }
 
-    const watermarkedUrl = await this._watermarkService.generateWatermark(data.imageUrl);
+    // Generate path and upload original
+    const extension = contentType.split("/")[1];
+    const originalKey = `wallpapers/${crypto.randomUUID()}.${extension}`;
+    await this._storageService.uploadFile(imageBuffer, originalKey, contentType);
+
+    const watermarkedUrl = await this._watermarkService.generateWatermark(imageBuffer, originalKey);
 
     const newWallpaper: WallpaperEntity = {
       creatorId: data.creatorId!,
       title: data.title!,
-      imageUrl: data.imageUrl!,
+      imageUrl: originalKey,
       watermarkedUrl,
       price: data.price,
       hashtags: (data.hashtags || []).map(tag => tag.trim()).filter(tag => tag.length > 0),

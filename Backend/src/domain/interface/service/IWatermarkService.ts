@@ -1,3 +1,3 @@
 export interface IWatermarkService {
-    generateWatermark(originalS3Key: string): Promise<string>;
+    generateWatermark(originalBuffer: Buffer, originalS3Key: string): Promise<string>;
 }

@@ -7,7 +7,7 @@ import { GetPresignedViewUrlUseCase } from "@/application/useCases/getPresignedV
 import { GetPresignedUploadUrlUseCase } from "@/application/useCases/getUrlUseCase";
 
 
-const storageService=new S3StorageService
+export const storageService=new S3StorageService
 const createRepository=new CreatorRepository
 
 

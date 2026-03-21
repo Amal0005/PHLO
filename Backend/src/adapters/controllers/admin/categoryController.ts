@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { AppError } from "@/domain/errors/appError";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IAddCategoryUseCase } from "@/domain/interface/admin/IAddCategoryUseCase";
-import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseCase";
-import { IDeleteCategoryUseCase } from "@/domain/interface/admin/IDeleteCategoryUseCase";
-import { IAdminCategoryListingUseCase } from "@/domain/interface/admin/IAdminCategoryListingUseCase";
+import { IAddCategoryUseCase } from "@/domain/interface/admin/category/IAddCategoryUseCase";
+import { IEditCategoryUseCase } from "@/domain/interface/admin/category/IEditCategoryUseCase";
+import { IDeleteCategoryUseCase } from "@/domain/interface/admin/category/IDeleteCategoryUseCase";
+import { IAdminCategoryListingUseCase } from "@/domain/interface/admin/category/IAdminCategoryListingUseCase";
 
 interface CategoryRequestBody {
     name: string;

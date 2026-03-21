@@ -77,7 +77,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      <div className="absolute inset-0">
+      <div className="fixed inset-0 z-0">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -108,8 +108,8 @@ export default function Login() {
           </h2>
 
           <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
-            Log in to access your photography sessions, download premium
-            wallpapers, and manage your bookings.
+            Join thousands of photography lovers. Book sessions and explore
+            stunning wallpapers.
           </p>
 
           <div className="hidden sm:flex flex-col gap-4 lg:gap-6">
@@ -119,10 +119,10 @@ export default function Login() {
               </div>
               <div>
                 <h3 className="font-semibold text-base lg:text-lg text-white">
-                  Manage Bookings
+                  Easy Booking
                 </h3>
                 <p className="text-xs lg:text-sm text-gray-400">
-                  View and reschedule your sessions
+                  Schedule photography sessions instantly
                 </p>
               </div>
             </div>
@@ -133,10 +133,10 @@ export default function Login() {
               </div>
               <div>
                 <h3 className="font-semibold text-base lg:text-lg text-white">
-                  Your Collections
+                  Premium Wallpapers
                 </h3>
                 <p className="text-xs lg:text-sm text-gray-400">
-                  Access your downloaded wallpapers
+                  Download high-quality images for free
                 </p>
               </div>
             </div>
@@ -147,10 +147,10 @@ export default function Login() {
               </div>
               <div>
                 <h3 className="font-semibold text-base lg:text-lg text-white">
-                  Portfolio Access
+                  AI Enhancement
                 </h3>
                 <p className="text-xs lg:text-sm text-gray-400">
-                  View and share your photo gallery
+                  Enhance your photos with AI magic
                 </p>
               </div>
             </div>

@@ -41,12 +41,24 @@ if (!fileType.includes('/')) {
     return { uploadUrl, publicUrl:fileName };
   }
   async getSignedViewUrl(key: string) {
-  const command = new GetObjectCommand({
-    Bucket: process.env.AWS_S3_BUCKET_NAME!,
-    Key: key,
-  });
+    const command = new GetObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET_NAME!,
+      Key: key,
+    });
 
-  return getSignedUrl(this.s3, command, { expiresIn: 300 });
-}
+    return getSignedUrl(this.s3, command, { expiresIn: 300 });
+  }
+
+  async uploadFile(buffer: Buffer, key: string, contentType: string): Promise<string> {
+    const command = new PutObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET_NAME!,
+      Key: key,
+      Body: buffer,
+      ContentType: contentType,
+    });
+
+    await this.s3.send(command);
+    return key;
+  }
 }
 

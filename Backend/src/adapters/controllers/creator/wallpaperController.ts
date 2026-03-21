@@ -21,9 +21,35 @@ export class WallpaperController {
           .status(StatusCode.UNAUTHORIZED)
           .json({ success: false, message: MESSAGES.ERROR.UNAUTHORIZED });
       }
-      const wallpaperData = { ...req.body, creatorId };
-      const result =
-        await this._addWallpaperUseCase.addWallpaper(wallpaperData);
+      
+      const file = req.file;
+      if (!file) {
+        return res
+          .status(StatusCode.BAD_REQUEST)
+          .json({ success: false, message: "Image is required" });
+      }
+
+      // Convert body fields (hashtags might be sent as JSON string if using FormData)
+      let hashtags = req.body.hashtags;
+      if (typeof hashtags === "string") {
+        try {
+          hashtags = JSON.parse(hashtags);
+        } catch (e) {
+          hashtags = hashtags.split(",").map((s: string) => s.trim());
+        }
+      }
+
+      const wallpaperData = { 
+        ...req.body, 
+        hashtags,
+        creatorId 
+      };
+
+      const result = await this._addWallpaperUseCase.addWallpaper(
+        wallpaperData,
+        file.buffer,
+        file.mimetype
+      );
       res.status(StatusCode.CREATED).json({ success: true, data: result });
     } catch (error: unknown) {
       const message =

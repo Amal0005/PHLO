@@ -11,8 +11,16 @@ export const CreatorWallpaperService = {
     return res.data;
   },
 
-  addWallpaper: async (data: AddWallpaperPayload) => {
-    const res = await api.post(FRONTEND_ROUTES.CREATOR.WALLPAPER, data);
+  addWallpaper: async (data: AddWallpaperPayload, file: File) => {
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("title", data.title);
+    formData.append("price", data.price.toString());
+    formData.append("hashtags", JSON.stringify(data.hashtags));
+    
+    const res = await api.post(FRONTEND_ROUTES.CREATOR.WALLPAPER, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return res.data;
   },
 

@@ -7,5 +7,5 @@ export interface IStorageService {
     publicUrl: string;
   }>;
     getSignedViewUrl(key: string): Promise<string>;
-
+    uploadFile(buffer: Buffer, key: string, contentType: string): Promise<string>;
 }

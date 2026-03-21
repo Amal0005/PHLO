@@ -66,16 +66,12 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
 
     setLoading(true);
     try {
-      // Upload image to S3 first
-      const imageUrl = await S3Service.uploadToS3(file, "wallpapers");
-
-      // Then save wallpaper with the S3 key
+      // Save wallpaper with the file directly (backend handles S3 upload)
       await CreatorWallpaperService.addWallpaper({
         title: title.trim(),
-        imageUrl,
         price,
         hashtags,
-      });
+      }, file);
 
       toast.success("Wallpaper submitted for review!");
       resetForm();

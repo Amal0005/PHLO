@@ -1,6 +1,6 @@
-import { IDeleteCategoryUseCase } from "@/domain/interface/admin/IDeleteCategoryUseCase";
 import { ICategoryRepository } from "@/domain/interface/repository/ICategoryRepository";
 import { MESSAGES } from "@/constants/commonMessages";
+import { IDeleteCategoryUseCase } from "@/domain/interface/admin/category/IDeleteCategoryUseCase";
 
 export class DeleteCategoryUseCase implements IDeleteCategoryUseCase {
   constructor(

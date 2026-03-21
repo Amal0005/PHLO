@@ -16,7 +16,7 @@ export interface WallpaperData {
 
 export interface AddWallpaperPayload {
   title: string;
-  imageUrl: string;
+  imageUrl?: string;
   price: number;
   hashtags: string[];
 }
