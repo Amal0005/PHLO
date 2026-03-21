@@ -3,6 +3,7 @@ import { IAddLeaveUseCase } from "@/domain/interface/creator/leave/IAddLeaveUseC
 import { IRemoveLeaveUseCase } from "@/domain/interface/creator/leave/IRemoveLeaveUseCase";
 import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { IGetLeavesUseCase } from "@/domain/interface/creator/leave/IGetLeaveUseCase";
+import { StatusCode } from "@/constants/statusCodes";
 
 export class CreatorLeaveController {
   constructor(
@@ -15,10 +16,10 @@ export class CreatorLeaveController {
     try {
       const creatorId = req.user?.userId as string;
       const leaves = await this.getLeavesUseCase.getLeave(creatorId);
-      res.status(200).json(leaves);
+      res.status(StatusCode.OK).json(leaves);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(500).json({ message: error.message });
+        res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message: error.message });
       }
     }
   }
@@ -28,10 +29,10 @@ export class CreatorLeaveController {
       const creatorId = req.user?.userId as string;
       const { date } = req.body;
       const result = await this.addLeaveUseCase.addLeave({ creatorId, date });
-      res.status(201).json(result);
+      res.status(StatusCode.CREATED).json(result);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
+        res.status(StatusCode.BAD_REQUEST).json({ message: error.message });
       }
     }
   }
@@ -41,11 +42,12 @@ export class CreatorLeaveController {
       const creatorId = req.user?.userId as string;
       const { date } = req.params;
       await this.removeLeaveUseCase.removeLeave(creatorId, new Date(date));
-      res.status(200).json({ message: "Leave removed successfully" });
+      res.status(StatusCode.OK).json({ message: "Leave removed successfully" });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
+        res.status(StatusCode.BAD_REQUEST).json({ message: error.message });
       }
     }
   }
 }
+

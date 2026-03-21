@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { logger } from "@/utils/logger";
+import { StatusCode } from "@/constants/statusCodes";
 
 export const errorHandler = (
   err: unknown,
@@ -22,7 +23,7 @@ export const errorHandler = (
     url: req.originalUrl,
   });
 
-  res.status(500).json({
+  res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
     success: false,
     message,
   });

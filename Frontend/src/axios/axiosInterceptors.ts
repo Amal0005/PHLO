@@ -3,6 +3,7 @@ import api from "./axiosConfig";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { removeUser, setToken } from "@/store/slices/auth/authSlice";
+import { StatusCode } from "@/constants/statusCodes";
 
 interface QueueItem {
   resolve: (value?: unknown) => void;
@@ -69,7 +70,7 @@ export const setUpInterceptors = () => {
 
       getRoleFromUrl(url);
 
-      if (status === 401 && !originalRequest._retry) {
+      if (status === StatusCode.UNAUTHORIZED && !originalRequest._retry) {
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({
@@ -111,7 +112,7 @@ export const setUpInterceptors = () => {
         }
       }
 
-      if (status === 403) {
+      if (status === StatusCode.FORBIDDEN) {
         toast.info(message || "Your account has been restricted.");
         forceLogout();
       }
@@ -120,3 +121,4 @@ export const setUpInterceptors = () => {
     }
   );
 };
+

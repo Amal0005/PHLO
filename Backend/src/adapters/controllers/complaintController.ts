@@ -5,6 +5,7 @@ import { IGetComplaintByBookingUseCase } from "@/domain/interface/user/complaint
 import { IRegisterComplaintUseCase } from "@/domain/interface/user/complaint/IRegisterComplaintUseCase";
 import { Request, Response } from "express";
 import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
+import { StatusCode } from "@/constants/statusCodes";
 
 
 export class ComplaintController {
@@ -20,9 +21,9 @@ export class ComplaintController {
     try {
       const userId = req.user?.userId || "";
       const complaint = await this.registerUseCase.registerComplaint(userId, req.body);
-      res.status(201).json(complaint);
-    } catch (_err: unknown) {
-      res.status(500).json({ error: (_err as Error).message });
+      res.status(StatusCode.CREATED).json(complaint);
+    } catch (err: unknown) {
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: (err as Error).message });
     }
   }
 
@@ -30,9 +31,9 @@ export class ComplaintController {
     try {
       const { bookingId } = req.params;
       const complaint = await this.getByBookingUseCase.getComplaint(bookingId);
-      res.status(200).json(complaint);
-    } catch (_err: unknown) {
-      res.status(500).json({ error: (_err as Error).message });
+      res.status(StatusCode.OK).json(complaint);
+    } catch (err: unknown) {
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: (err as Error).message });
     }
   }
 
@@ -43,9 +44,9 @@ export class ComplaintController {
       const search = req.query.search as string;
       const status = req.query.status as string;
       const data = await this.getAllUseCase.getAllComplaint(page, limit, search, status);
-      res.status(200).json({ success: true, ...data });
+      res.status(StatusCode.OK).json({ success: true, ...data });
     } catch (err: unknown) {
-      res.status(500).json({ success: false, error: (err as Error).message });
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, error: (err as Error).message });
     }
   }
 
@@ -54,9 +55,9 @@ export class ComplaintController {
       const { id } = req.params;
       const { action, adminComment } = req.body;
       const result = await this.resolveUseCase.resolveComplaint(id, action, adminComment);
-      res.status(200).json(result);
-    } catch (_err: unknown) {
-      res.status(500).json({ error: (_err as Error).message });
+      res.status(StatusCode.OK).json(result);
+    } catch (err: unknown) {
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: (err as Error).message });
     }
   }
 
@@ -65,9 +66,10 @@ export class ComplaintController {
       const { id } = req.params;
       const { adminComment } = req.body;
       const result = await this.rejectUseCase.rejectComplaint(id, adminComment);
-      res.status(200).json(result);
-    } catch (_err: unknown) {
-      res.status(500).json({ error: (_err as Error).message });
+      res.status(StatusCode.OK).json(result);
+    } catch (err: unknown) {
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: (err as Error).message });
     }
   }
 }
+
