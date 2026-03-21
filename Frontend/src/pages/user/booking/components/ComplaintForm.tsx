@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { AlertCircle, X, ChevronRight, MessageSquare, Info } from "lucide-react";
 import { UserComplaintService } from "@/services/user/userComplaintService";
 import { toast } from "react-toastify";
+import { MESSAGES } from "@/constants/messages";
 
 interface ComplaintFormProps {
     bookingId: string;
@@ -25,11 +26,11 @@ const ComplaintForm: React.FC<ComplaintFormProps> = ({ bookingId, creatorId, onS
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!reason) {
-            toast.error("Please select a reason");
+            toast.error(MESSAGES.COMPLAINT.SELECT_REASON);
             return;
         }
         if (description.length < 20) {
-            toast.error("Description must be at least 20 characters");
+            toast.error(MESSAGES.COMPLAINT.DESCRIPTION_MIN_LENGTH);
             return;
         }
 
@@ -41,7 +42,7 @@ const ComplaintForm: React.FC<ComplaintFormProps> = ({ bookingId, creatorId, onS
                 reason,
                 description
             });
-            toast.success("Complaint registered successfully. Our team will review it.");
+            toast.success(MESSAGES.COMPLAINT.REGISTERED_SUCCESS);
             onSuccess();
         } catch (error: unknown) {
             toast.error((error as { response?: { data?: { error?: string } } }).response?.data?.error || "Failed to register complaint");

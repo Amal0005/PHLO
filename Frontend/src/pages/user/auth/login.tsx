@@ -13,6 +13,7 @@ import InputError from "@/compoents/reusable/inputErrors";
 import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
+import { MESSAGES } from "@/constants/messages";
 import { AxiosError } from "axios";
 
 interface loginForm {
@@ -54,16 +55,16 @@ export default function Login() {
         dispatch(setToken(data.data.accessToken));
         dispatch(setRole("user"));
 
-        toast.success("Login Successful");
+        toast.success(MESSAGES.AUTH.LOGIN_SUCCESS);
         navigate(ROUTES.USER.HOME, { replace: true });
       } else {
         console.error("Login failed: Missing token or user data", data);
-        toast.error("Login failed: Invalid server response");
+        toast.error(MESSAGES.AUTH.LOGIN_FAILED);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message: string }>;
       const message =
-        axiosError.response?.data?.message || "Invalid email or password";
+        axiosError.response?.data?.message || MESSAGES.AUTH.INVALID_CREDENTIALS;
 
       toast.error(message);
     } finally {
@@ -262,10 +263,10 @@ export default function Login() {
                           "Google Login: Missing token/user",
                           response,
                         );
-                        toast.error("Google login failed: Invalid response");
+                        toast.error(MESSAGES.AUTH.GOOGLE_LOGIN_INVALID_RESPONSE);
                       }
                     } catch (err) {
-                      toast.error("Google login failed");
+                      toast.error(MESSAGES.AUTH.GOOGLE_LOGIN_FAILED);
                       console.log(err);
                     }
                   }}

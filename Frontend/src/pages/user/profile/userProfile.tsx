@@ -14,6 +14,7 @@ import { EditUserProfile } from "./components/editUserProfile";
 import { EditUserPassword } from "./components/editUserPassword";
 import { ViewProfileImage } from "./components/viewProfileImage";
 import OtpVerificationModal from "@/compoents/reusable/OtpVerificationModal";
+import { MESSAGES } from "@/constants/messages";
 
 import { User } from "@/interface/admin/userInterface";
 
@@ -57,11 +58,11 @@ export default function UserProfile() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
+      toast.error(MESSAGES.PROFILE.IMAGE_REQUIRED);
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size must be less than 5MB");
+      toast.error(MESSAGES.PROFILE.FILE_SIZE_ERROR);
       return;
     }
 
@@ -85,11 +86,11 @@ export default function UserProfile() {
           phone: response.user.phone,
           image: response.user.image,
         }));
-        toast.success("Profile photo updated!");
+        toast.success(MESSAGES.PROFILE.PHOTO_UPDATED);
       }
     } catch (error: unknown) {
       console.error(error);
-      toast.error("Failed to upload image");
+      toast.error(MESSAGES.PROFILE.PHOTO_FAILED);
     } finally {
       setIsLoading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -121,7 +122,7 @@ export default function UserProfile() {
           });
         }
       } catch (error: unknown) {
-        const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to load profile";
+        const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || MESSAGES.PROFILE.LOAD_PROFILE_FAILED;
         toast.error(message);
         navigate(ROUTES.USER.HOME);
       } finally {
@@ -158,10 +159,10 @@ export default function UserProfile() {
           newPassword: "",
           confirmPassword: "",
         });
-        toast.success("Password updated successfully!");
+        toast.success(MESSAGES.PROFILE.PASSWORD_UPDATED);
       }
     } catch (error: unknown) {
-      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to update password";
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || MESSAGES.COMMON.UPDATE_FAILED;
       toast.error(message);
     } finally {
       setIsSaving(false);
@@ -229,7 +230,7 @@ export default function UserProfile() {
         }));
         setProfileData({ ...response.user, image: profileData?.image });
         setIsEditing(false);
-        toast.success("Profile updated successfully!");
+        toast.success(MESSAGES.PROFILE.UPDATED_SUCCESS);
       }
     } catch (error: unknown) {
       const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to update profile";
@@ -249,7 +250,7 @@ export default function UserProfile() {
     // Verify OTP first
     const verifyRes = await UserProfileService.verifyEmailChangeOtp(pendingForm.email, otp);
     if (!verifyRes.success) {
-      throw new Error(verifyRes.message || "Invalid OTP");
+      throw new Error(verifyRes.message || MESSAGES.AUTH.OTP_VERIFIED_SUCCESS);
     }
     // OTP verified — now save the profile with the new email
     const response = await UserProfileService.editProfile(pendingForm);
@@ -262,7 +263,7 @@ export default function UserProfile() {
       setIsVerifyingEmail(false);
       setPendingForm(null);
       setIsEditing(false);
-      toast.success("Profile updated successfully!");
+      toast.success(MESSAGES.PROFILE.UPDATED_SUCCESS);
     }
   };
 

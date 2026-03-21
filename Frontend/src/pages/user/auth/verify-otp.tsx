@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
+import { MESSAGES } from "@/constants/messages";
 
 export default function VerifyOtp() {
   const location = useLocation();
@@ -39,10 +40,10 @@ export default function VerifyOtp() {
       const res = await UserAuthService.verifyOtp({ email, otp });
 
       if (!res.success) {
-        throw new Error(res.message || "Verification failed");
+        throw new Error(res.message || MESSAGES.AUTH.OTP_VERIFIED_SUCCESS);
       }
 
-      toast.success("OTP Verified Successfully!");
+      toast.success(MESSAGES.AUTH.OTP_VERIFIED_SUCCESS);
       navigate(ROUTES.USER.LOGIN);
     } catch (error) {
       console.error("Verification error:", error);
@@ -62,7 +63,7 @@ export default function VerifyOtp() {
       setIsResending(true);
       await UserAuthService.resendOtp({ email });
 
-      toast.info("OTP resent successfully!");
+      toast.info(MESSAGES.AUTH.OTP_RESENT_SUCCESS);
       setTimer(60);
       setCanResend(false);
       setOtp("");

@@ -22,7 +22,7 @@ export class userLoginUserUseCase implements IUserLoginUseCase {
     }
 
     if (!existingUser.password)
-      throw new Error("Google Login to continue");
+      throw new Error(MESSAGES.AUTH.GOOGLE_LOGIN_REQUIRED);
 
     const isPasswordMatch = await this._passwordService.compare(
       user.password,

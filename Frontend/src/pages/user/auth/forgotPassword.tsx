@@ -6,6 +6,7 @@ import { passwordService } from "@/services/user/passwordService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
+import { MESSAGES } from "@/constants/messages";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState<string>("");
@@ -44,7 +45,7 @@ export default function ForgotPassword() {
       setIsLoading(true);
       const res = await passwordService.sendForgotPasswordOtp(email);
 
-      toast.success(res.message || "OTP sent successfully");
+      toast.success(res.message || MESSAGES.AUTH.OTP_SENT);
       setShowOtpModal(true);
       setTimer(60);
       setCanResend(false);
@@ -91,10 +92,10 @@ export default function ForgotPassword() {
       const res = await passwordService.verifyForgotOtp(email, otpValue);
 
       if (!res.success) {
-        throw new Error(res.message || "Invalid OTP");
+        throw new Error(res.message || MESSAGES.AUTH.OTP_VERIFIED_SUCCESS);
       }
 
-      toast.success("OTP Verified");
+      toast.success(MESSAGES.AUTH.OTP_VERIFIED);
       setShowOtpModal(false);
       setShowResetForm(true);
     } catch (error) {
@@ -113,12 +114,12 @@ export default function ForgotPassword() {
     e.preventDefault();
 
     if (passwords.newPassword !== passwords.confirmPassword) {
-      toast.error("Passwords don't match");
+      toast.error(MESSAGES.AUTH.PASSWORDS_DONT_MATCH);
       return;
     }
 
     if (passwords.newPassword.length < 8) {
-      toast.error("Password must be at least 8 characters");
+      toast.error(MESSAGES.AUTH.PASSWORD_MIN_LENGTH);
       return;
     }
 
@@ -126,7 +127,7 @@ export default function ForgotPassword() {
       setIsResetting(true);
       await passwordService.resetPassword(email, passwords.newPassword);
 
-      toast.success("Password reset successful!");
+      toast.success(MESSAGES.AUTH.PASSWORD_RESET_SUCCESS);
       navigate(ROUTES.USER.LOGIN)
     } catch (error) {
       console.error(error);

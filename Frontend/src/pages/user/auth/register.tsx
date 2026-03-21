@@ -12,6 +12,7 @@ import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
 import { AxiosError } from "axios";
 import { removeUser } from "@/store/slices/auth/authSlice";
+import { MESSAGES } from "@/constants/messages";
 
 interface RegisterForm {
   name: string;
@@ -45,7 +46,7 @@ export default function Register() {
     e.preventDefault();
 
     if (!acceptedTerms) {
-      toast.warn("Please accept the terms and privacy policy to continue");
+      toast.warn(MESSAGES.AUTH.ACCEPT_TERMS);
       return;
     }
     const result = registerUserSchema.safeParse(form);
@@ -65,7 +66,7 @@ export default function Register() {
     const { confirmPassword: _, ...submitData } = form;
     try {
       await UserAuthService.register(submitData)
-      toast.success("OTP sent successfully!");
+      toast.success(MESSAGES.AUTH.OTP_SENT);
 
       navigate(ROUTES.USER.VERIFY_OTP, { state: { email: form.email } });
 
@@ -76,7 +77,7 @@ export default function Register() {
       const axiosError = error as AxiosError<{ message: string }>;
       const message =
         axiosError.response?.data?.message ||
-        "Registration failed. Please try again.";
+        MESSAGES.AUTH.REGISTRATION_FAILED;
 
       toast.error(message);
       setIsLoading(false);
@@ -362,10 +363,10 @@ export default function Register() {
                         navigate(ROUTES.USER.HOME, { replace: true });
                       } else {
                         console.error("Google Login: Missing token/user", response);
-                        toast.error("Google login failed: Invalid response");
+                        toast.error(MESSAGES.AUTH.GOOGLE_LOGIN_INVALID_RESPONSE);
                       }
                     } catch (err) {
-                      toast.error("Google login failed");
+                      toast.error(MESSAGES.AUTH.GOOGLE_LOGIN_FAILED);
                       console.log(err);
                     }
                   }}

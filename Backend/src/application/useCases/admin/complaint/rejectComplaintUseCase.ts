@@ -5,6 +5,7 @@ import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRe
 import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
 import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 import { IRejectComplaintUseCase } from "@/domain/interface/admin/complaint/IRejectComplaintUseCase";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class RejectComplaintUseCase implements IRejectComplaintUseCase {
   constructor(
@@ -16,11 +17,11 @@ export class RejectComplaintUseCase implements IRejectComplaintUseCase {
 
   async rejectComplaint(complaintId: string, adminComment: string): Promise<ComplaintEntity | null> {
     const complaint = await this.complaintRepository.findById(complaintId);
-    if (!complaint) throw new Error("Complaint not found");
-    if (complaint.status !== "pending") throw new Error("Complaint already processed");
+    if (!complaint) throw new Error(MESSAGES.COMPLAINT.NOT_FOUND);
+    if (complaint.status !== "pending") throw new Error(MESSAGES.COMPLAINT.ALREADY_PROCESSED);
 
     const booking = await this.bookingRepository.findById(complaint.bookingId);
-    if (!booking) throw new Error("Booking not found");
+    if (!booking) throw new Error(MESSAGES.BOOKING.NOT_FOUND);
 
     const creatorId = typeof complaint.creatorId === 'string' 
       ? complaint.creatorId 

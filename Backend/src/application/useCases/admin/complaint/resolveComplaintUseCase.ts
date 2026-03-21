@@ -5,6 +5,7 @@ import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRe
 import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
 import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 import { IResolveComplaintUseCase } from "@/domain/interface/admin/complaint/IResolveComplaintUseCase";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
   constructor(
@@ -16,11 +17,11 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
 
   async resolveComplaint(complaintId: string, action: "resolve" | "dismiss", adminComment: string): Promise<ComplaintEntity | null> {
     const complaint = await this.complaintRepository.findById(complaintId);
-    if (!complaint) throw new Error("Complaint not found");
-    if (complaint.status !== "pending") throw new Error("Complaint already processed");
+    if (!complaint) throw new Error(MESSAGES.COMPLAINT.NOT_FOUND);
+    if (complaint.status !== "pending") throw new Error(MESSAGES.COMPLAINT.ALREADY_PROCESSED);
 
     const booking = await this.bookingRepository.findById(complaint.bookingId);
-    if (!booking) throw new Error("Booking not found");
+    if (!booking) throw new Error(MESSAGES.BOOKING.NOT_FOUND);
 
     if (action === "resolve") {
       const userId = typeof complaint.userId === 'string' ? complaint.userId : (complaint.userId as unknown as { _id: string })._id;

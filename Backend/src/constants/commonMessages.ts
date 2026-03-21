@@ -42,6 +42,8 @@ export const MESSAGES = {
         EMAIL_REGISTERED_AS_USER: "This email is already registered as a user",
         EMAIL_REQUIRED_FULL: "Email Required",
         CHECK_EMAIL_FAILED: "Failed to check email",
+        GOOGLE_LOGIN_REQUIRED: "Google Login to continue",
+        INVALID_GOOGLE_TOKEN: "Invalid Google ID token",
     },
     CREATOR: {
         NOT_FOUND: "Creator not found",
@@ -141,5 +143,15 @@ export const MESSAGES = {
         CREDIT_SUCCESS: "Wallet credited successfully",
         CREDIT_FAILED: "Failed to credit wallet",
         INSUFFICIENT_BALANCE: "Insufficient balance",
+    },
+    COMPLAINT: {
+        ALREADY_REGISTERED: "A complaint has already been registered for this booking. You can only report once.",
+        DATE_RESTRICTION: "Reports can only be filed on the scheduled booking date. You cannot report before or after.",
+        ALREADY_PROCESSED: "Complaint already processed",
+        NOT_FOUND: "Complaint not found",
+    },
+    JWT: {
+        SECRET_MISSING: "JWT_SECRET is missing",
+        INVALID_PAYLOAD: "Invalid token payload",
     }
 }

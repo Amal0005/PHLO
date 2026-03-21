@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { logger } from "@/utils/logger";
 import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export const errorHandler = (
   err: unknown,
@@ -8,7 +9,7 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction
 ): void => {
-  let message = "Internal Server Error";
+  let message = MESSAGES.ERROR.INTERNAL_SERVER_ERROR;
   let stack: string | undefined;
 
   if (err instanceof Error) {

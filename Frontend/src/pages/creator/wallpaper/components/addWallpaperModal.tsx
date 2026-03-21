@@ -3,6 +3,7 @@ import { X, Upload, Image as ImageIcon, Hash, Plus } from "lucide-react";
 import { CreatorWallpaperService } from "@/services/creator/creatorWallpaperService";
 import { S3Service } from "@/services/s3Service";
 import { toast } from "react-toastify";
+import { MESSAGES } from "@/constants/messages";
 import { AxiosError } from "axios";
 
 interface Props {
@@ -32,11 +33,11 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
     const tag = hashtagInput.trim().replace(/^#/, "");
     if (!tag) return;
     if (hashtags.includes(tag)) {
-      toast.error("This hashtag already exists");
+      toast.error(MESSAGES.WALLPAPER.HASHTAG_EXISTS);
       return;
     }
     if (hashtags.length >= 10) {
-      toast.error("Maximum 10 hashtags allowed");
+      toast.error(MESSAGES.WALLPAPER.MAX_HASHTAGS);
       return;
     }
     setHashtags([...hashtags, tag]);
@@ -56,11 +57,11 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
 
   const handleSubmit = async () => {
     if (!title.trim() || !file) {
-      toast.error("Please provide a title and select an image");
+      toast.error(MESSAGES.WALLPAPER.REQUIRED_FIELDS);
       return;
     }
     if (price < 0) {
-      toast.error("Price cannot be negative");
+      toast.error(MESSAGES.WALLPAPER.NEGATIVE_PRICE);
       return;
     }
 
@@ -73,13 +74,13 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
         hashtags,
       }, file);
 
-      toast.success("Wallpaper submitted for review!");
+      toast.success(MESSAGES.WALLPAPER.SUBMITTED_SUCCESS);
       resetForm();
       onSuccess();
       onClose();
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message: string }>;
-      toast.error(axiosError.response?.data?.message || "Failed to add wallpaper");
+      toast.error(axiosError.response?.data?.message || MESSAGES.WALLPAPER.SUBMIT_FAILED);
     } finally {
       setLoading(false);
     }

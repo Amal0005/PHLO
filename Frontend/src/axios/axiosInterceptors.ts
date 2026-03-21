@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { removeUser, setToken } from "@/store/slices/auth/authSlice";
 import { StatusCode } from "@/constants/statusCodes";
+import { MESSAGES } from "@/constants/messages";
 
 interface QueueItem {
   resolve: (value?: unknown) => void;
@@ -113,7 +114,7 @@ export const setUpInterceptors = () => {
       }
 
       if (status === StatusCode.FORBIDDEN) {
-        toast.info(message || "Your account has been restricted.");
+        toast.info(message || MESSAGES.COMMON.ACCOUNT_RESTRICTED);
         forceLogout();
       }
 

@@ -6,6 +6,7 @@ import { IBookingRepository } from "@/domain/interface/repository/IBookingReposi
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IRegisterComplaintUseCase } from "@/domain/interface/user/complaint/IRegisterComplaintUseCase";
+import { MESSAGES } from "@/constants/commonMessages";
 
 export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
   constructor(
@@ -18,19 +19,19 @@ export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
   async registerComplaint(userId: string, dto: ComplaintRequestDTO): Promise<ComplaintEntity> {
     const booking = await this.bookingRepository.findById(dto.bookingId);
     if (!booking) {
-      throw new Error("Booking not found");
+      throw new Error(MESSAGES.BOOKING.NOT_FOUND);
     }
 
     const existingComplaint = await this.complaintRepository.findByBookingId(dto.bookingId);
     if (existingComplaint) {
-      throw new Error("A complaint has already been registered for this booking. You can only report once.");
+      throw new Error(MESSAGES.COMPLAINT.ALREADY_REGISTERED);
     }
 
     const today = new Date();
     const scheduledDate = new Date(booking.bookingDate);
 
     if (today.toDateString() !== scheduledDate.toDateString()) {
-      throw new Error("Reports can only be filed on the scheduled booking date. You cannot report before or after.");
+      throw new Error(MESSAGES.COMPLAINT.DATE_RESTRICTION);
     }
 
     const complaint: ComplaintEntity = {

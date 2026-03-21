@@ -13,6 +13,7 @@ import Pagination from "@/compoents/reusable/pagination";
 import ConfirmModal from "@/compoents/reusable/ConfirmModal";
 import { ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
+import { MESSAGES } from "@/constants/messages";
 
 type TabType = "wallpaper" | "package";
 
@@ -112,9 +113,9 @@ const WishlistPage: React.FC = () => {
       } else {
         setPackages((prev) => prev.filter((pkg) => pkg._id !== itemToRemove));
       }
-      toast.success("Removed from wishlist");
+      toast.success(MESSAGES.WISHLIST.REMOVED);
     } catch {
-      toast.error("Failed to remove from wishlist");
+      toast.error(MESSAGES.WISHLIST.REMOVE_FAILED);
     } finally {
       setRemoveLoading(false);
       setConfirmModalOpen(false);
@@ -149,7 +150,7 @@ const WishlistPage: React.FC = () => {
       URL.revokeObjectURL(blobUrl);
       toast.success(`"${wp.title}" downloaded successfully`);
     } catch {
-      toast.error("Download failed. Please try again.");
+      toast.error(MESSAGES.PROFILE.PHOTO_FAILED);
     }
   };
 
@@ -163,11 +164,11 @@ const WishlistPage: React.FC = () => {
       if (res.success && res.url) {
         window.location.href = res.url;
       } else {
-        toast.error("Failed to initiate payment");
+        toast.error(MESSAGES.PAYMENT.INITIATE_FAILED);
       }
     } catch (error: unknown) {
       const axiosError = error as { response?: { data?: { message?: string } } };
-      toast.error(axiosError.response?.data?.message || "Payment initiation failed");
+      toast.error(axiosError.response?.data?.message || MESSAGES.PAYMENT.INITIATE_FAILED);
     } finally {
       setLoading(false);
     }
@@ -178,7 +179,7 @@ const WishlistPage: React.FC = () => {
     if (params.get("success") === "true") {
       const id = params.get("id");
       if (id) {
-        toast.success("Purchase successful! You can now download the wallpaper.");
+        toast.success(MESSAGES.PAYMENT.SUCCESS);
         setWallpapers(prev => prev.map(wp => 
           wp._id === id ? { ...wp, isPurchased: true } : wp
         ));
@@ -186,7 +187,7 @@ const WishlistPage: React.FC = () => {
       const newUrl = window.location.pathname;
       window.history.replaceState({}, "", newUrl);
     } else if (params.get("cancel") === "true") {
-      toast.error("Payment cancelled.");
+      toast.error(MESSAGES.PAYMENT.CANCELLED);
       const newUrl = window.location.pathname;
       window.history.replaceState({}, "", newUrl);
     }
