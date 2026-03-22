@@ -5,30 +5,33 @@ import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class EditProfileController {
-    constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) {}
+  constructor(private _editUserProfileUseCase: IEditUserProfileUseCase) {}
 
-    async editProfile(req: AuthRequest, res: Response): Promise<void> {
-        try {
-            const userId = req.user?.userId;
-            if (!userId) {
-                res.status(StatusCode.UNAUTHORIZED).json({ success: false, message: MESSAGES.AUTH.UNAUTHORIZED });
-                return;
-            }
+  async editProfile(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.user?.userId;
+      if (!userId) {
+        res
+          .status(StatusCode.UNAUTHORIZED)
+          .json({ success: false, message: MESSAGES.AUTH.UNAUTHORIZED });
+        return;
+      }
 
-            const user = await this._editUserProfileUseCase.editProfile(
-                userId,
-                req.body,
-            );
-            res.status(StatusCode.OK).json({
-                success: true,
-                user,
-            });
-        } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : MESSAGES.ERROR.BAD_REQUEST;
-            res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
-                success: false,
-                message,
-            });
-        }
+      const user = await this._editUserProfileUseCase.editProfile(
+        userId,
+        req.body,
+      );
+      res.status(StatusCode.OK).json({
+        success: true,
+        user,
+      });
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : MESSAGES.ERROR.BAD_REQUEST;
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message,
+      });
     }
+  }
 }

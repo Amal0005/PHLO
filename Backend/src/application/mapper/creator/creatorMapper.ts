@@ -17,6 +17,7 @@ export class CreatorMapper {
       status: entity.status,
       rejectionReason: entity.rejectionReason,
       specialties: entity.specialties || [],
+      isSubscribed: !!(entity.subscription && entity.subscription.status === "active" && new Date(entity.subscription.endDate) > new Date()),
       createdAt: entity.createdAt!,
       updatedAt: entity.updatedAt!,
       subscription: entity.subscription ? {

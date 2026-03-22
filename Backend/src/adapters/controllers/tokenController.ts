@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import { IJwtServices } from "@/domain/interface/service/IJwtServices";
 import { MESSAGES } from "@/constants/commonMessages";
+import { IRefreshTokenUseCase } from "@/domain/interface/user/auth/IRefreshTokenUseCase";
 
 export class TokenController {
-  constructor(private _jwtService: IJwtServices) {}
+  constructor(private _refreshTokenUseCase: IRefreshTokenUseCase) {}
 
   async refreshToken(req: Request, res: Response) {
     try {
@@ -15,20 +15,12 @@ export class TokenController {
           message: MESSAGES.AUTH.REFRESH_TOKEN_MISSING,
         });
       }
-
-      const decoded = this._jwtService.verifyToken(refreshToken);
-
-      const newPayload = {
-        userId: decoded.userId,
-        email: decoded.email,
-        role: decoded.role,
-      };
-
-      const newAccessToken = this._jwtService.generateAccessToken(newPayload);
+      
+      const result = await this._refreshTokenUseCase.refreshToken(refreshToken);
 
       return res.status(StatusCode.OK).json({
         success: true,
-        accessToken: newAccessToken,
+        accessToken: result.accessToken,
       });
     } catch (error: unknown) {
       const message =

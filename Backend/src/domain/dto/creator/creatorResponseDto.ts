@@ -12,6 +12,7 @@ export interface CreatorResponseDto {
     status: "pending" | "approved" | "rejected" | "blocked";
     rejectionReason?: string;
     specialties: string[];
+    isSubscribed?: boolean;
     createdAt: Date;
     updatedAt: Date;
     subscription?: {

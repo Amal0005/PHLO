@@ -29,12 +29,16 @@ import { VerifyForgotOtpUseCase } from "../../../application/useCases/user/auth/
 import { userLoginUserUseCase } from "../../../application/useCases/user/auth/loginUserUseCase";
 import { userRegisterUseCase } from "../../../application/useCases/user/auth/registerUserUseCase";
 import { verifyRegisterOtpUseCase } from "../../../application/useCases/user/auth/verifyRegisterOtpUseCase";
+import { RefreshTokenUseCase } from "../../../application/useCases/user/auth/refreshTokenUseCase";
 import { GetUserProfileUseCase } from "@/application/useCases/user/profile/getUserProfileUseCase";
 import { GetProfileController } from "@/adapters/controllers/user/profile/getProfileController";
 import { EditProfileController } from "@/adapters/controllers/user/profile/editProfileController";
 import { ChangePasswordController } from "@/adapters/controllers/user/profile/changePasswordController";
 import { EditUserProfileUsecase } from "@/application/useCases/user/profile/editUserProfileUseCase";
 import { ChangePasswordUseCase } from "@/application/useCases/user/profile/changePasswordUseCase";
+import { CheckEmailUseCase } from "@/application/useCases/user/profile/checkEmailUseCase";
+import { VerifyEmailChangeOtpUseCase } from "@/application/useCases/user/profile/verifyEmailChangeOtpUseCase";
+import { HandleStripeWebhookUseCase } from "@/application/useCases/payment/HandleStripeWebhookUseCase";
 import { UserPackageController } from "@/adapters/controllers/user/userPackageController";
 import { ListUserPackagesUseCase } from "@/application/useCases/user/package/listUserPackagesUseCase";
 import { PackageRepository } from "@/adapters/repository/creator/packageRepository";
@@ -117,9 +121,12 @@ const verifyForgotOtpUseCase = new VerifyForgotOtpUseCase(otpServices, redisServ
 const resetPasswordUseCase = new ResetPasswordUseCase(userRepo, passwordServices, redisService)
 const googleLoginUseCase = new GoogleLoginUseCase(userRepo, jwtService)
 const logoutUseCase = new LogoutUseCase(tokenBlacklistService)
+const refreshTokenUseCase = new RefreshTokenUseCase(jwtService)
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepo)
 const editUserProfileUseCase = new EditUserProfileUsecase(userRepo, creatorRepository)
 const changePasswordUseCase = new ChangePasswordUseCase(userRepo, passwordServices)
+const checkEmailUseCase = new CheckEmailUseCase(userRepo, creatorRepository)
+const verifyEmailChangeOtpUseCase = new VerifyEmailChangeOtpUseCase(otpServices)
 const listUserPackagesUseCase = new ListUserPackagesUseCase(packageRepository)
 const getPackageDetailUseCase = new GetPackageDetailUseCase(packageRepository);
 const adminCategoryListingUseCase = new AdminCategoryListingUseCase(categoryRepository);
@@ -149,6 +156,8 @@ const buyWallpaperUseCase = new BuyWallpaperUseCase(wallpaperRepo, stripeService
 const wallpaperWebhookUseCase = new WallpaperWebhookUseCase(wallpaperDownloadRepo, wallpaperRepo, creatorRepository, creditWalletUseCase, sendNotificationUseCase, userRepo, walletRepo)
 
 const retryPaymentUseCase = new RetryPaymentUseCase(bookingRepo, packageRepository, stripeService);
+
+const handleStripeWebhookUseCase = new HandleStripeWebhookUseCase(stripeService, bookingWebhookUseCase, creatorSubscriptionWebhookUseCase, wallpaperWebhookUseCase);
 const getWalletUseCase = new GetWalletUseCase(walletRepo);
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
@@ -156,15 +165,15 @@ export const loginController = new userLoginController(loginUseCase);
 export const userAuthController = new UserAuthController(forgotPasswordUseCase, verifyForgotOtpUseCase, resetPasswordUseCase)
 export const userGoogleController = new GoogleAuthController(googleLoginUseCase)
 export const logoutController = new LogoutController(logoutUseCase)
-export const tokenController = new TokenController(jwtService)
+export const tokenController = new TokenController(refreshTokenUseCase)
 export const getProfileController = new GetProfileController(getUserProfileUseCase)
 export const editProfileController = new EditProfileController(editUserProfileUseCase)
 export const changePasswordController = new ChangePasswordController(changePasswordUseCase)
 export const userPackageController = new UserPackageController(listUserPackagesUseCase, getPackageDetailUseCase)
 export const getCategoryController = new CategoryController(addCategoryUseCase, editCategoryUseCase, deleteCategoryUseCase, adminCategoryListingUseCase);
-export const userProfileController = new UserProfileController(getUserProfileUseCase, editUserProfileUseCase, changePasswordUseCase, otpServices, userRepo, creatorRepository);
+export const userProfileController = new UserProfileController(getUserProfileUseCase, editUserProfileUseCase, changePasswordUseCase, checkEmailUseCase, verifyEmailChangeOtpUseCase);
 export const userBookingController = new UserBookingController(createBookingUseCase, listBookingsUseCase, checkAvailabilityUseCase, cancelBookingUseCase, getBookingDetailUseCase, downloadInvoiceUseCase, retryPaymentUseCase);
-export const paymentController = new PaymentController(bookingWebhookUseCase, creatorSubscriptionWebhookUseCase, wallpaperWebhookUseCase, stripeService);
+export const paymentController = new PaymentController(handleStripeWebhookUseCase);
 export const userWallpaperController = new UserWallpaperController(getApprovedWallpapers, recordDownloadUseCase, buyWallpaperUseCase)
 export const wishlistController = new WishlistController(toggleWishlistUseCase, getWishlistUseCase, getWishlistIdsUseCase)
 export const reviewController = new ReviewController(addReviewUseCase, deleteReviewUseCase, getReviewUseCase, getReviewByBookingUseCase, editReviewUseCase)

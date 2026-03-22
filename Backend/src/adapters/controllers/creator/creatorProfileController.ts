@@ -16,10 +16,7 @@ export class CreatorProfileController {
             if (!creator) {
                 return res.status(StatusCode.NOT_FOUND).json({ success: false, message: MESSAGES.CREATOR.NOT_FOUND });
             }
-            const subscription = creator.subscription;
-            const isSubscribed = !!(subscription && subscription.status === "active" && new Date(subscription.endDate) > new Date());
-            const creatorWithSubStatus = { ...creator, isSubscribed };
-            res.status(StatusCode.OK).json({ success: true, creator: creatorWithSubStatus });
+            res.status(StatusCode.OK).json({ success: true, creator });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : MESSAGES.CREATOR.PROFILE_GET_FAILED;
             res.status(StatusCode.BAD_REQUEST).json({ success: false, message });

@@ -6,18 +6,16 @@ import { UserMapper } from "@/application/mapper/user/userMapper";
 import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
 import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
 import { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
-import { IOTPService } from "@/domain/interface/service/IOtpServices";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { ICheckEmailUseCase } from "@/domain/interface/user/profile/ICheckEmailUseCase";
+import { IVerifyEmailChangeOtpUseCase } from "@/domain/interface/user/profile/IVerifyEmailChangeOtpUseCase";
 
 export class UserProfileController {
     constructor(
         private _getUserProfileUseCase: IGetUserProfileUseCase,
         private _editUserProfileUseCase: IEditUserProfileUseCase,
         private _changePasswordUseCase: IChangePasswordUseCase,
-        private _otpService: IOTPService,
-        private _userRepo: IUserRepository,
-        private _creatorRepo: ICreatorRepository,
+        private _checkEmailUseCase: ICheckEmailUseCase,
+        private _verifyEmailChangeOtpUseCase: IVerifyEmailChangeOtpUseCase
     ) {}
 
 
@@ -93,16 +91,8 @@ export class UserProfileController {
                 res.status(StatusCode.BAD_REQUEST).json({ success: false, message: MESSAGES.AUTH.EMAIL_OTP_REQUIRED });
                 return;
             }
-            const result = await this._otpService.verifyOtp(email, otp);
-            if (result === "EXPIRED") {
-                res.status(StatusCode.BAD_REQUEST).json({ success: false, message: MESSAGES.AUTH.OTP_EXPIRED });
-                return;
-            }
-            if (result === "INVALID") {
-                res.status(StatusCode.BAD_REQUEST).json({ success: false, message: MESSAGES.AUTH.INVALID_OTP });
-                return;
-            }
-            res.status(StatusCode.OK).json({ success: true, message: MESSAGES.AUTH.OTP_VERIFIED_SUCCESS });
+            const result = await this._verifyEmailChangeOtpUseCase.verifyEmailChangeOtp(email, otp);
+            res.status(StatusCode.OK).json({ success: true, message: result.message });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : MESSAGES.ERROR.BAD_REQUEST;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message });
@@ -123,17 +113,8 @@ export class UserProfileController {
                 res.status(StatusCode.BAD_REQUEST).json({ success: false, message: MESSAGES.AUTH.EMAIL_IS_REQUIRED });
                 return;
             }
-            const existingUser = await this._userRepo.findByEmail(email);
-            if (existingUser && existingUser._id !== userId) {
-                res.status(StatusCode.CONFLICT).json({ success: false, message: MESSAGES.AUTH.EMAIL_ALREADY_IN_USE });
-                return;
-            }
-            const existingCreator = await this._creatorRepo.findByEmail(email);
-            if (existingCreator) {
-                res.status(StatusCode.CONFLICT).json({ success: false, message: MESSAGES.AUTH.EMAIL_REGISTERED_AS_CREATOR });
-                return;
-            }
-            res.status(StatusCode.OK).json({ success: true, message: MESSAGES.AUTH.EMAIL_AVAILABLE });
+            const result = await this._checkEmailUseCase.checkEmail(userId, email);
+            res.status(StatusCode.OK).json({ success: true, message: result.message });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : MESSAGES.AUTH.CHECK_EMAIL_FAILED;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ success: false, message });
