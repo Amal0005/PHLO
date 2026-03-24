@@ -80,7 +80,6 @@ interface DashboardStats {
   totalPackages: number;
   totalWallpapers: number;
   totalComplaints: number;
-  pendingWallpapers: number;
   pendingCreators: number;
   revenueData: TimeFrameData[];
   userGrowthData: TimeFrameData[];
@@ -549,7 +548,7 @@ export default function AdminDashboard() {
           <GlassCard title=".....................">
             <div className="space-y-6 mt-2">
               {[
-                { label: "Pending Wallpapers", value: stats?.pendingWallpapers || 0, icon: ImageIcon, color: "text-pink-400" },
+                { label: "Total Wallpapers", value: stats?.totalWallpapers || 0, icon: ImageIcon, color: "text-pink-400" },
                 { label: "Complaint Threshold", value: stats?.totalComplaints || 0, icon: AlertCircle, color: "text-red-400" },
                 { label: "Active Packages", value: stats?.totalPackages || 0, icon: Box, color: "text-indigo-400" },
                 { label: "Pending Verification", value: stats?.pendingCreators || 0, icon: Camera, color: "text-emerald-400" },

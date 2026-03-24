@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Upload, Image as ImageIcon, Hash, Plus } from "lucide-react";
+import { X, Upload, Image as ImageIcon, Hash, Plus, AlertTriangle } from "lucide-react";
 import { CreatorWallpaperService } from "@/services/creator/creatorWallpaperService";
 import { S3Service } from "@/services/s3Service";
 import { toast } from "react-toastify";
@@ -20,6 +20,7 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showGuidelines, setShowGuidelines] = useState(true);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -93,6 +94,7 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
     setHashtagInput("");
     setFile(null);
     setPreview(null);
+    setShowGuidelines(true);
   };
 
   if (!isOpen) return null;
@@ -112,151 +114,215 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-zinc-900 w-full max-w-4xl rounded-3xl border border-white/10 overflow-hidden max-h-[90vh] flex flex-col md:flex-row">
+      <div className="bg-zinc-900 w-full max-w-4xl rounded-3xl border border-white/10 overflow-hidden max-h-[90vh] flex flex-col md:flex-row shadow-2xl">
+        
+        {showGuidelines ? (
+          <div className="w-full p-10 flex flex-col items-center justify-center text-center space-y-8 min-h-[500px] bg-zinc-900">
+            <div className="w-24 h-24 bg-red-500/10 rounded-[2.5rem] flex items-center justify-center border border-red-500/20 shadow-inner">
+              <AlertTriangle size={48} className="text-red-500" />
+            </div>
+            
+            <div className="max-w-md space-y-3">
+              <h2 className="text-3xl font-black text-white tracking-tight">Content Guidelines</h2>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                To maintain a premium and safe community, we enforce strict content rules.
+              </p>
+            </div>
 
-        {/* Left — Image Upload / Preview */}
-        <div className="md:w-[45%] w-full bg-zinc-950 flex items-center justify-center relative min-h-[240px] md:min-h-0">
-          {preview ? (
-            <>
-              <img src={preview} alt="Preview" className="w-full h-full object-cover" />
-              <button
-                onClick={() => { setFile(null); setPreview(null); }}
-                className="absolute top-4 right-4 p-2 bg-black/60 backdrop-blur-sm rounded-full hover:bg-black/80 transition-colors text-white"
-              >
-                <X size={16} />
-              </button>
-              <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-            </>
-          ) : (
-            <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer group p-8">
-              <div className="w-20 h-20 rounded-2xl bg-white/5 border border-dashed border-white/20 flex items-center justify-center mb-4 group-hover:border-white/40 group-hover:bg-white/10 transition-all">
-                <Upload size={28} className="text-gray-500 group-hover:text-white transition-colors" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-xl">
+              <div className="bg-zinc-950/50 border border-white/5 p-5 rounded-3xl flex items-center gap-4 hover:border-white/10 transition-colors">
+                <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-red-500 text-xs font-black ring-1 ring-red-500/20">18+</div>
+                <div className="text-left">
+                  <span className="block text-sm text-white font-bold">No Adult Content</span>
+                  <span className="text-[10px] text-gray-500">Nudity or sexual content</span>
+                </div>
               </div>
-              <span className="text-sm text-gray-400 font-semibold group-hover:text-white transition-colors">Drop or click to upload</span>
-              <span className="text-xs text-gray-600 mt-1">PNG, JPG up to 10MB</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </label>
-          )}
-        </div>
-
-        {/* Right — Form */}
-        <div className="md:w-[55%] w-full flex flex-col">
-          {/* Header */}
-          <div className="flex items-center justify-between px-6 pt-6 pb-4">
-            <div>
-              <h2 className="text-xl font-black text-white">Add Wallpaper</h2>
-              <p className="text-xs text-gray-500 mt-0.5">Fill in the details and upload your image</p>
+              <div className="bg-zinc-950/50 border border-white/5 p-5 rounded-3xl flex items-center gap-4 hover:border-white/10 transition-colors">
+                <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-red-500 text-xs font-black ring-1 ring-red-500/20">GORE</div>
+                <div className="text-left">
+                  <span className="block text-sm text-white font-bold">No Violence</span>
+                  <span className="text-[10px] text-gray-500">Extreme gore or blood</span>
+                </div>
+              </div>
             </div>
-            <button
-              onClick={() => { resetForm(); onClose(); }}
-              className="p-2 hover:bg-white/10 rounded-xl transition-colors text-gray-400 hover:text-white"
-            >
-              <X size={20} />
-            </button>
+
+            <div className="bg-zinc-950/80 border border-white/5 rounded-2xl p-4 max-w-lg">
+              <p className="text-[11px] text-gray-500 italic">
+                All uploads are automatically scanned by Google AI. Violating these rules will result in an immediate rejection.
+              </p>
+            </div>
+
+            <div className="flex gap-4 w-full max-w-md pt-6">
+              <button
+                onClick={() => onClose()}
+                className="flex-1 px-8 py-4 border border-white/10 rounded-2xl text-gray-400 hover:bg-white/5 transition-all font-bold text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setShowGuidelines(false)}
+                className="flex-1 px-8 py-4 bg-white text-black rounded-2xl font-black hover:bg-zinc-200 transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] text-sm"
+              >
+                I Understand
+              </button>
+            </div>
           </div>
-
-          {/* Form Body */}
-          <div className="px-6 pb-2 space-y-4 overflow-y-auto flex-1">
-            {/* Title */}
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Title</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter wallpaper title"
-                className="w-full bg-zinc-800/60 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-white/25 transition-colors"
-              />
-            </div>
-
-            {/* Price */}
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Price (₹)</label>
-              <input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
-                placeholder="0 for free"
-                min={0}
-                className="w-full bg-zinc-800/60 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-white/25 transition-colors"
-              />
-              <p className="text-[11px] text-gray-600 mt-1">Set to 0 for free wallpapers</p>
-            </div>
-
-            {/* Hashtags */}
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                Hashtags
-                <span className="text-gray-600 font-normal normal-case tracking-normal ml-1.5">({hashtags.length}/10)</span>
-              </label>
-              <div className="flex gap-2">
-                <div className="flex-1 relative">
-                  <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+        ) : (
+          <>
+            {/* Left — Image Upload / Preview */}
+            <div className="md:w-[45%] w-full bg-zinc-950 flex items-center justify-center relative min-h-[300px] md:min-h-0">
+              {preview ? (
+                <>
+                  <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => { setFile(null); setPreview(null); }}
+                    className="absolute top-6 right-6 p-2.5 bg-black/60 backdrop-blur-md rounded-full hover:bg-black/80 transition-all text-white shadow-xl"
+                  >
+                    <X size={18} />
+                  </button>
+                  <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+                </>
+              ) : (
+                <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer group p-12">
+                  <div className="w-24 h-24 rounded-[2rem] bg-white/5 border-2 border-dashed border-white/10 flex items-center justify-center mb-6 group-hover:border-white/30 group-hover:bg-white/10 transition-all duration-500">
+                    <Upload size={32} className="text-gray-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <span className="text-base text-gray-400 font-bold group-hover:text-white transition-colors">Upload Wallpaper</span>
+                  <span className="text-xs text-gray-600 mt-2">PNG or JPG up to 10MB</span>
                   <input
-                    type="text"
-                    value={hashtagInput}
-                    onChange={(e) => setHashtagInput(e.target.value)}
-                    onKeyDown={handleHashtagKeyDown}
-                    placeholder="Type and press Enter"
-                    className="w-full bg-zinc-800/60 border border-white/10 rounded-xl pl-8 pr-4 py-2.5 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-white/25 transition-colors"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
                   />
+                </label>
+              )}
+            </div>
+
+            {/* Right — Form */}
+            <div className="md:w-[55%] w-full flex flex-col bg-zinc-900">
+              {/* Header */}
+              <div className="flex items-center justify-between px-8 pt-8 pb-6">
+                <div>
+                  <h2 className="text-2xl font-black text-white tracking-tight">Add Details</h2>
+                  <p className="text-xs text-gray-500 mt-1">Configure your wallpaper metadata</p>
                 </div>
                 <button
-                  type="button"
-                  onClick={addHashtag}
-                  disabled={!hashtagInput.trim()}
-                  className="px-3 py-2.5 bg-white/10 border border-white/10 rounded-xl text-white hover:bg-white/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  onClick={() => { resetForm(); onClose(); }}
+                  className="p-2.5 hover:bg-white/5 rounded-2xl transition-all text-gray-500 hover:text-white"
                 >
-                  <Plus size={16} />
+                  <X size={24} />
                 </button>
               </div>
 
-              {/* Hashtag pills */}
-              {hashtags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-2.5">
-                  {hashtags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-gray-300 hover:border-white/20 transition-colors"
-                    >
-                      <Hash size={10} className="text-gray-500" />
-                      {tag}
-                      <button
-                        onClick={() => removeHashtag(index)}
-                        className="ml-0.5 p-0.5 rounded-full hover:bg-white/10 text-gray-500 hover:text-white transition-colors"
-                      >
-                        <X size={10} />
-                      </button>
-                    </span>
-                  ))}
+              {/* Form Body */}
+              <div className="px-8 pb-4 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                {/* Title */}
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Title</label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="E.g. Neon Horizon 2077"
+                    className="w-full bg-zinc-950 border border-white/5 rounded-2xl px-5 py-4 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-white/20 transition-all font-medium"
+                  />
                 </div>
-              )}
-            </div>
-          </div>
 
-          {/* Footer */}
-          <div className="flex gap-3 px-6 py-4 border-t border-white/5 mt-auto">
-            <button
-              onClick={() => { resetForm(); onClose(); }}
-              className="flex-1 px-4 py-2.5 border border-white/10 rounded-xl text-gray-400 hover:bg-white/5 transition-colors font-bold text-sm"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={loading || !title.trim() || !file}
-              className="flex-1 px-4 py-2.5 bg-white text-black rounded-xl font-black hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
-            >
-              <ImageIcon size={16} />
-              Submit
-            </button>
-          </div>
-        </div>
+                {/* Price */}
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Price (₹)</label>
+                  <div className="relative">
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-sm">₹</span>
+                    <input
+                      type="number"
+                      value={price}
+                      onChange={(e) => setPrice(Number(e.target.value))}
+                      placeholder="0 for free"
+                      min={0}
+                      className="w-full bg-zinc-950 border border-white/5 rounded-2xl pl-10 pr-5 py-4 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-white/20 transition-all font-medium"
+                    />
+                  </div>
+                  <p className="text-[10px] text-gray-600 ml-1 italic">* Set to 0 for free download</p>
+                </div>
+
+                {/* Hashtags */}
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">
+                    Hashtags
+                    <span className="text-zinc-700 font-bold normal-case tracking-normal ml-2">({hashtags.length}/10)</span>
+                  </label>
+                  <div className="flex gap-3">
+                    <div className="flex-1 relative">
+                      <Hash size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600" />
+                      <input
+                        type="text"
+                        value={hashtagInput}
+                        onChange={(e) => setHashtagInput(e.target.value)}
+                        onKeyDown={handleHashtagKeyDown}
+                        placeholder="Nature, Tech, Abstract..."
+                        className="w-full bg-zinc-950 border border-white/5 rounded-2xl pl-11 pr-5 py-4 text-white text-sm placeholder-gray-600 focus:outline-none focus:border-white/20 transition-all font-medium"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={addHashtag}
+                      disabled={!hashtagInput.trim()}
+                      className="px-5 bg-white/5 border border-white/5 rounded-2xl text-white hover:bg-white/10 transition-all disabled:opacity-20 disabled:cursor-not-allowed group"
+                    >
+                      <Plus size={20} className="group-hover:scale-110 transition-transform" />
+                    </button>
+                  </div>
+
+                  {/* Hashtag pills */}
+                  {hashtags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      {hashtags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center gap-2 px-3.5 py-2 bg-zinc-950 border border-white/5 rounded-xl text-xs text-gray-400 hover:border-white/20 hover:text-white transition-all cursor-default"
+                        >
+                          <Hash size={12} className="text-zinc-600" />
+                          <span className="font-bold">{tag}</span>
+                          <button
+                            onClick={() => removeHashtag(index)}
+                            className="p-1 rounded-lg hover:bg-red-500/10 hover:text-red-500 transition-colors"
+                          >
+                            <X size={12} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex gap-4 px-8 py-6 bg-zinc-900/50 border-t border-white/5">
+                <button
+                  onClick={() => { resetForm(); onClose(); }}
+                  className="flex-1 px-6 py-4 border border-white/10 rounded-2xl text-gray-400 hover:bg-white/5 transition-all font-bold text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading || !title.trim() || !file}
+                  className="flex-[1.5] px-6 py-4 bg-white text-black rounded-2xl font-black hover:bg-zinc-200 transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-3 text-sm"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <ImageIcon size={18} />
+                      Publish Wallpaper
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

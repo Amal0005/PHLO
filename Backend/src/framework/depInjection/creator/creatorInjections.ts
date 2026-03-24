@@ -58,6 +58,7 @@ import { CreatorPackageController } from "@/adapters/controllers/creator/creator
 import { GetWalletUseCase } from "@/application/useCases/wallet/getWalletUseCase";
 import { CreatorWalletController } from "@/adapters/controllers/creator/creatorWalletController";
 import { storageService } from "@/framework/depInjection/s3Injections";
+import { ModerationService } from "@/domain/services/moderationService";
 
 
 const creatorRepository = new CreatorRepository();
@@ -77,6 +78,7 @@ const otpService = new OtpServices(redisService);
 const mailService = new MailService();
 const stripeService = new StripeService()
 const watermarkService = new WatermarkService()
+const moderationService = new ModerationService();
 
 const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService);
 const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository, userRepository);
@@ -103,7 +105,7 @@ const getWalletUseCase = new GetWalletUseCase(walletRepo);
 
 const creatorSubscriptionWebhookUseCase = new CreatorSubscriptionWebhookUseCase(creatorRepository, subscriptionRepo, stripeService, mailService, creditWalletUseCase, sendNotificationUseCase, userRepository)
 const getSubscriptionUseCase = new GetSubscriptionUseCase(subscriptionRepo);
-const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService, userRepository, sendNotificationUseCase, storageService)
+const addWallpaperUseCase = new AddWallpaperUseCase(wallpaperRepo, creatorRepository, watermarkService, userRepository, sendNotificationUseCase, moderationService, storageService)
 const deleteWallpaperUseCase = new DeleteWallpaperUseCase(wallpaperRepo)
 const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRepo)
 const addLeaveUseCase = new AddLeaveUseCase(leaveRepo)
