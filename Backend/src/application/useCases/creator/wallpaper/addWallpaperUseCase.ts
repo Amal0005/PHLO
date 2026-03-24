@@ -1,4 +1,5 @@
 import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
+import { IModerationService } from "@/domain/interface/service/IModerationService";
 import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
 import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
 import { IAddWallpaperUseCase } from "@/domain/interface/creator/walpapper/IAddWallpaperUseCase";
@@ -7,7 +8,7 @@ import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import { IWatermarkService } from "@/domain/interface/service/IWatermarkService";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
-import { NotificationType } from "@/domain/entities/notificationEntity";
+
 import { IStorageService } from "@/domain/interface/service/IS3Services";
 import { MESSAGES } from "@/constants/commonMessages";
 import crypto from "crypto";
@@ -19,6 +20,7 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
     private _watermarkService: IWatermarkService,
     private _userRepo: IUserRepository,
     private _sendNotificationUseCase: ISendNotificationUseCase,
+    private _moderationService: IModerationService,
     private _storageService: IStorageService,
   ) {}
   async addWallpaper(data: Partial<WallpaperEntity>, imageBuffer: Buffer, contentType: string): Promise<WallpaperResponseDto> {
@@ -42,7 +44,22 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
     const originalKey = `wallpapers/${crypto.randomUUID()}.${extension}`;
     await this._storageService.uploadFile(imageBuffer, originalKey, contentType);
 
+    // Generate watermarked image
     const watermarkedUrl = await this._watermarkService.generateWatermark(imageBuffer, originalKey);
+
+    // Perform moderation check on the original image buffer
+    const moderationResult = await this._moderationService.checkImage(imageBuffer, data.title, data.hashtags);
+    let status: "approved" | "pending" | "rejected" = "pending";
+    let rejectionReason: string | undefined;
+    if (moderationResult === "SAFE") {
+      status = "approved";
+    } else if (moderationResult === "UNSAFE") {
+      status = "rejected";
+      rejectionReason = "Image content violates community guidelines.";
+    } else {
+      status = "rejected";
+      rejectionReason = "Moderation service currently unavailable (possible billing/propagation delay). Please try again in 5-10 minutes.";
+    }
 
     const newWallpaper: WallpaperEntity = {
       creatorId: data.creatorId!,
@@ -51,21 +68,10 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
       watermarkedUrl,
       price: data.price,
       hashtags: (data.hashtags || []).map(tag => tag.trim()).filter(tag => tag.length > 0),
-      status: "pending",
+      status,
+      rejectionReason,
     };
     const created = await this._wallpaperRepo.add(newWallpaper);
-
-    // Notify Admin
-    const adminId = await this._userRepo.findAdminId();
-    if (adminId) {
-      await this._sendNotificationUseCase.sendNotification({
-        recipientId: adminId,
-        type: NotificationType.ACCOUNT,
-        title: "New Wallpaper Uploaded",
-        message: `Creator ${creator.fullName} has uploaded a new wallpaper: ${data.title}. Needs approval.`,
-        isRead: false
-      });
-    }
 
     return WallpaperMapper.toDto(created);
   }

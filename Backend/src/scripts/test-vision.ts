@@ -1,0 +1,24 @@
+import vision from "@google-cloud/vision";
+import * as dotenv from "dotenv";
+import * as path from "path";
+
+// Load env from the root directory
+dotenv.config();
+
+const client = new vision.ImageAnnotatorClient();
+
+async function test() {
+  console.log("Testing real image URL with Google Cloud Vision...");
+  
+  const imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Fronalpstock_big.jpg/800px-Fronalpstock_big.jpg";
+  
+  try {
+    const [result] = await client.safeSearchDetection(imageUrl);
+    console.log("Safe Search Result:");
+    console.log(result.safeSearchAnnotation);
+  } catch (error: any) {
+    console.error("Vision API Error:", error.message);
+  }
+}
+
+test();

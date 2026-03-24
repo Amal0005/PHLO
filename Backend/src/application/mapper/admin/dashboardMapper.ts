@@ -65,7 +65,6 @@ export class DashboardMapper {
     totalPackages: number;
     totalWallpapers: number;
     totalComplaints: number;
-    pendingWallpapers: number;
     pendingCreators: number;
     revenueData: TimeFrameData[];
     userGrowthData: TimeFrameData[];

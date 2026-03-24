@@ -13,6 +13,7 @@ import { S3Media } from "./s3Media";
 import ConfirmModal from "./ConfirmModal";
 import { removeUser } from "@/store/slices/auth/authSlice";
 import NotificationBell from "./NotificationBell";
+import { toast } from "react-toastify";
 
 export default function CreatorNavbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -55,6 +56,7 @@ export default function CreatorNavbar() {
 
     const handleLogout = async () => {
         await CreatorAuthService.logout();
+        toast.success("Logout successful");
         dispatch(removeUser());
         dispatch(clearCreator());
         navigate(ROUTES.CREATOR.LOGIN, { replace: true });

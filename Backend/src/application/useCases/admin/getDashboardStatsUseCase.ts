@@ -196,7 +196,6 @@ export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {
       totalWallpapers: wallpapers.length,
       totalRevenue: wallet?.balance || 0,
       totalComplaints: totalComplaintsCount,
-      pendingWallpapers: wallpapers.filter(w => w.status === "pending").length,
       pendingCreators: creators.filter(c => c.status === "pending").length,
       revenueData,
       userGrowthData,

@@ -18,6 +18,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.965.0",
     "@aws-sdk/s3-request-presigner": "^3.965.0",
+    "@google-cloud/vision": "^5.3.5",
     "@types/multer": "^2.1.0",
     "@types/pdfkit": "^0.17.5",
     "@types/sharp": "^0.31.1",

@@ -149,7 +149,7 @@ export class DashboardReportGenerator implements IDashboardReportGenerator {
         doc.fontSize(10).font("Helvetica-Bold").text("GLOBAL HEALTH", rightColX, currentY);
         let healthY = currentY + 20;
         const healthMetrics = [
-            { label: "PENDING WALLPAPERS", value: stats.pendingWallpapers },
+            { label: "TOTAL WALLPAPERS", value: stats.totalWallpapers },
             { label: "ACTIVE PACKAGES", value: stats.totalPackages },
             { label: "TOTAL COMPLAINTS", value: stats.totalComplaints }
         ];

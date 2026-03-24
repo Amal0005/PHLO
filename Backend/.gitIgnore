@@ -20,3 +20,16 @@ yarn-error.log*
 
 # Coverage
 coverage/
+
+# Google Cloud Keys
+phlo-483705-7df390b1c765.json
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
