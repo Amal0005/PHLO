@@ -31,10 +31,11 @@ async function debugVision() {
     });
 
     fs.appendFileSync(logFile, `Result received: ${JSON.stringify(result.safeSearchAnnotation)}\n`);
-  } catch (err: any) {
-    fs.appendFileSync(logFile, `CATCHED ERROR: ${err.message}\n`);
-    if (err.stack) {
-      fs.appendFileSync(logFile, `STACK: ${err.stack}\n`);
+  } catch (err: unknown) {
+    const error = err as Error;
+    fs.appendFileSync(logFile, `CATCHED ERROR: ${error.message}\n`);
+    if (error.stack) {
+      fs.appendFileSync(logFile, `STACK: ${error.stack}\n`);
     }
   }
 }

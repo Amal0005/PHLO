@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   Users,
   Camera,
@@ -94,10 +94,11 @@ const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#10b981', '#6366f1'
 
 const AnimatedNumber = ({ value, prefix = "" }: { value: number; prefix?: string }) => {
   const [displayValue, setDisplayValue] = useState(0);
+  const displayValueRef = useRef(displayValue);
 
   useEffect(() => {
     const duration = 1500;
-    const start = displayValue;
+    const start = displayValueRef.current;
     const end = value;
     const startTime = performance.now();
 
@@ -108,13 +109,15 @@ const AnimatedNumber = ({ value, prefix = "" }: { value: number; prefix?: string
 
       const current = Math.floor(start + (end - start) * easeOutExpo(progress));
       setDisplayValue(current);
+      displayValueRef.current = current;
 
       if (progress < 1) {
         requestAnimationFrame(animate);
       }
     };
 
-    requestAnimationFrame(animate);
+    const animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
   }, [value]);
 
   return <span>{prefix}{displayValue.toLocaleString()}</span>;
@@ -151,10 +154,10 @@ export default function AdminDashboard() {
   const [timeframe, setTimeframe] = useState<"weekly" | "monthly" | "yearly">("monthly");
   const [showTimeframeDropdown, setShowTimeframeDropdown] = useState(false);
 
-  const fetchStats = useCallback(async (isInitial = false, currentTf = timeframe) => {
+  const fetchStats = useCallback(async (isInitial = false, tfToUse: "weekly" | "monthly" | "yearly") => {
     if (!isInitial) setRefreshing(true);
     try {
-      const data = await getDashboardStats(currentTf);
+      const data = await getDashboardStats(tfToUse);
       if (data.success) {
         setStats(data.result);
       }
@@ -164,15 +167,17 @@ export default function AdminDashboard() {
       if (isInitial) setLoading(false);
       setRefreshing(false);
     }
-  }, [timeframe]);
+  }, []);
+
+  const skipInitialStats = useRef(false);
 
   useEffect(() => {
-    fetchStats(true);
-  }, [])
-
-  // Refresh when timeframe changes
-  useEffect(() => {
-    fetchStats(false, timeframe);
+    if (!skipInitialStats.current) {
+      fetchStats(true, timeframe);
+      skipInitialStats.current = true;
+    } else {
+      fetchStats(false, timeframe);
+    }
   }, [timeframe, fetchStats]);
 
   const handleShowProfile = async (email: string) => {
@@ -197,7 +202,7 @@ export default function AdminDashboard() {
       await approveCreator(id);
       toast.success("Creator approved successfully");
       setSelectedCreator(null);
-      fetchStats();
+      fetchStats(false, timeframe);
     } catch (error) {
       console.error("Approve error:", error);
       toast.error("Failed to approve creator");
@@ -306,7 +311,7 @@ export default function AdminDashboard() {
                       <button
                         key={tf}
                         onClick={() => {
-                          setTimeframe(tf as any);
+                          setTimeframe(tf as "weekly" | "monthly" | "yearly");
                           setShowTimeframeDropdown(false);
                         }}
                         className={`w-full px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-colors ${timeframe === tf ? 'text-blue-500 bg-blue-500/5' : 'text-gray-400'}`}
@@ -332,7 +337,7 @@ export default function AdminDashboard() {
             <motion.button
               whileHover={{ scale: 1.02, backgroundColor: "#fff" }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => fetchStats()}
+               onClick={() => fetchStats(false, timeframe)}
               disabled={refreshing}
               className="flex items-center gap-4 px-10 py-5 bg-white text-black rounded-full text-xs font-black shadow-[0_10px_40px_rgba(255,255,255,0.1)] disabled:opacity-50 transition-all uppercase tracking-widest"
             >

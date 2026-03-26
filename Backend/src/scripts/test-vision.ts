@@ -1,6 +1,5 @@
 import vision from "@google-cloud/vision";
 import * as dotenv from "dotenv";
-import * as path from "path";
 
 // Load env from the root directory
 dotenv.config();
@@ -16,8 +15,8 @@ async function test() {
     const [result] = await client.safeSearchDetection(imageUrl);
     console.log("Safe Search Result:");
     console.log(result.safeSearchAnnotation);
-  } catch (error: any) {
-    console.error("Vision API Error:", error.message);
+  } catch (error: unknown) {
+    console.error("Vision API Error:", (error as Error).message);
   }
 }
 

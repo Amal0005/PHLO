@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, LogOut, ChevronDown } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LogoWhite from "../../assets/images/Logo_white.png";

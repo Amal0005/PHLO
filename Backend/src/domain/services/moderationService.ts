@@ -4,7 +4,7 @@ import { IModerationService } from "@/domain/interface/service/IModerationServic
 export class ModerationService implements IModerationService {
   private client = new vision.ImageAnnotatorClient();
 
-  async checkImage(imageBuffer: Buffer, title?: string, hashtags?: string[]): Promise<"SAFE" | "UNSAFE" | "UNCERTAIN"> {
+  async checkImage(imageBuffer: Buffer): Promise<"SAFE" | "UNSAFE" | "UNCERTAIN"> {
     try {
       console.log("Moderating image via Google Cloud Vision content detection");
       
@@ -37,9 +37,9 @@ export class ModerationService implements IModerationService {
       }
 
       return "SAFE";
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Google Cloud Vision Error:", error);
-      if (error.code === 7) {
+      if ((error as { code?: number }).code === 7) {
         console.error("HINT: This usually means billing is not enabled or propagation is still in progress.");
       }
       return "UNCERTAIN";

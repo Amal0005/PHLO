@@ -211,9 +211,9 @@ const PackageDetailPage: React.FC = () => {
                 ))}
               </div>
 
-              <div className="flex flex-col p-8 sm:p-12 lg:p-16 relative z-10">
+              <div className="flex flex-col p-6 sm:p-10 lg:p-12 relative z-10">
 
-                <div className="mb-5">
+                <div className="mb-3">
                   <span className="inline-block px-3 py-1 rounded-full text-[8px] font-bold tracking-[0.35em] uppercase"
                     style={{
                       background: "rgba(255,255,255,0.07)",
@@ -224,31 +224,31 @@ const PackageDetailPage: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex flex-col gap-4 mb-8">
+                <div className="flex flex-col gap-4 mb-5">
                   <h1
                     className="font-[950] uppercase text-[#E2B354] leading-[0.9]"
-                    style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", letterSpacing: "-0.04em" }}
+                    style={{ fontSize: "clamp(2rem, 4.5vw, 3.2rem)", letterSpacing: "-0.04em" }}
                   >
                     {packageData.title}
                   </h1>
                   <div className="flex items-baseline gap-4">
                     <span className="text-[10px] text-white/20 uppercase tracking-[0.4em] font-black italic">Starting from</span>
                     <div className="inline-flex flex-col">
-                      <span className="text-4xl font-[950] text-white tracking-tighter">₹ {packageData.price.toLocaleString()}</span>
+                      <span className="text-3xl font-[950] text-white tracking-tighter">₹ {packageData.price.toLocaleString()}</span>
                       <div className="h-0.5 w-[75%] bg-[#E2B354] mt-2 rounded-full shadow-[0_0_15px_#E2B354]" />
                     </div>
                   </div>
                 </div>
 
                 {typeof packageData.creatorId === "object" && (
-                  <div className="flex items-center gap-4 mb-8 pb-6"
+                  <div className="flex items-center gap-4 mb-5 pb-4"
                     style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0"
+                    <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
                       style={{ border: "1.5px solid rgba(255,255,255,0.13)" }}>
                       {packageData.creatorId.profilePhoto ? (
                         <S3Media s3Key={packageData.creatorId.profilePhoto} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-white font-black text-sm">
+                        <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-white font-black text-[10px]">
                           {packageData.creatorId.fullName.charAt(0)}
                         </div>
                       )}
@@ -273,8 +273,8 @@ const PackageDetailPage: React.FC = () => {
                   </div>
                 )}
 
-                <div className="mb-10 max-w-[480px]">
-                  <p className="text-[10px] font-black tracking-[0.4em] uppercase mb-4 text-[#E2B354]/60">
+                <div className="mb-6 max-w-[480px]">
+                  <p className="text-[10px] font-black tracking-[0.4em] uppercase mb-2 text-[#E2B354]/60">
                     Overview
                   </p>
                   <p className="text-[13px] leading-[1.8] text-white/50 font-medium break-words whitespace-pre-line text-justify">
@@ -282,7 +282,7 @@ const PackageDetailPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mb-6 items-stretch">
+                <div className="grid grid-cols-2 gap-3 mb-4 items-stretch">
                   <div className="relative flex flex-col justify-center">
                     <CustomCalendar
                       selectedDate={selectedDate ? new Date(selectedDate) : undefined}
@@ -314,10 +314,9 @@ const PackageDetailPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl p-4 flex flex-col justify-center h-[54px]"
-                    style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="flex flex-col justify-center px-1">
                     <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.22)" }}>
-                      Established
+                      Published
                     </p>
                     <p className="text-[12px] font-bold uppercase tracking-wider text-white">
                       {new Date(packageData.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
@@ -326,42 +325,40 @@ const PackageDetailPage: React.FC = () => {
                 </div>
 
                 <div className="mt-4 mb-2">
-                  {/* Label + Open Map Button */}
-                  <div className="flex items-center justify-between mb-2 ml-1">
-                    <p className="text-[8px] font-bold tracking-[0.3em] uppercase" style={{ color: "rgba(255,255,255,0.2)" }}>
-                      Event Location
-                    </p>
+                  <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-2 ml-1" style={{ color: "rgba(255,255,255,0.2)" }}>
+                    Event Location
+                  </p>
+                  <div className="flex items-stretch gap-3">
+                    <div className="w-full max-w-[320px] relative">
+                      <LocationSearchBar
+                        ref={locationBarRef}
+                        onChange={(location: { placeName?: string; latitude?: number; longitude?: number }) => {
+                          setSelectedLocation(location.placeName || "");
+                          if (location.latitude && location.longitude) {
+                            setViewState(prev => ({
+                              ...prev,
+                              latitude: location.latitude || prev.latitude,
+                              longitude: location.longitude || prev.longitude,
+                              zoom: 13,
+                            }));
+
+                            setMarkerLoc({ lat: location.latitude || 0, lng: location.longitude || 0 });
+                          }
+                        }}
+                      />
+                    </div>
                     <button
                       onClick={() => setShowMap(true)}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[8px] font-bold tracking-widest uppercase transition-all hover:opacity-80"
+                      className="px-6 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black tracking-[0.2em] uppercase transition-all hover:bg-[#E2B354]/10 hover:border-[#E2B354]/40 hover:text-[#E2B354] active:scale-95 flex-shrink-0"
                       style={{
-                        background: selectedLocation ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
+                        background: "rgba(255,255,255,0.06)",
                         border: "1px solid rgba(255,255,255,0.12)",
-                        color: selectedLocation ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.4)",
+                        color: "rgba(255,255,255,0.5)",
                       }}
                     >
-                      <MapPin className="w-2.5 h-2.5" />
-                      {selectedLocation ? "Change on map" : "Pick on map"}
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span>{selectedLocation ? "Map" : "Map"}</span>
                     </button>
-                  </div>
-
-                  <div className="relative">
-                    <LocationSearchBar
-                      ref={locationBarRef}
-                      onChange={(location: { placeName?: string; latitude?: number; longitude?: number }) => {
-                        setSelectedLocation(location.placeName || "");
-                        if (location.latitude && location.longitude) {
-                          setViewState(prev => ({
-                            ...prev,
-                            latitude: location.latitude || prev.latitude,
-                            longitude: location.longitude || prev.longitude,
-                            zoom: 13,
-                          }));
-
-                          setMarkerLoc({ lat: location.latitude || 0, lng: location.longitude || 0 });
-                        }
-                      }}
-                    />
                   </div>
 
                   {selectedLocation && (
@@ -380,11 +377,11 @@ const PackageDetailPage: React.FC = () => {
 
 
                   {/* Booking Action */}
-                  <div className="pt-10 mt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                  <div className="pt-6 mt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                     <button
                       onClick={handleBooking}
                       disabled={checkingAvailability || isDateAvailable === false}
-                      className="w-full h-20 rounded-2xl border-2 border-[#E2B354]/30 bg-transparent text-[#E2B354] font-[950] text-[13px] uppercase tracking-[0.6em] hover:bg-[#E2B354] hover:text-black transition-all active:scale-[0.99] disabled:opacity-30 flex items-center justify-center shadow-2xl shadow-[#E2B354]/10"
+                      className="w-full h-16 rounded-2xl border-2 border-[#E2B354]/30 bg-transparent text-[#E2B354] font-[950] text-[13px] uppercase tracking-[0.6em] hover:bg-[#E2B354] hover:text-black transition-all active:scale-[0.99] disabled:opacity-30 flex items-center justify-center shadow-2xl shadow-[#E2B354]/10"
                     >
                       {checkingAvailability ? 'Checking...' : isDateAvailable === false ? 'Unavailable' : 'Confirm & Pay'}
                     </button>

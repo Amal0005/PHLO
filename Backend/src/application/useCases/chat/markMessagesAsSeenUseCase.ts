@@ -1,6 +1,5 @@
 import { IMarkMessagesAsSeenUseCase } from "@/domain/interface/chat/IMarkMessagesAsSeenUseCase";
 import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
-import { SocketIOHandler } from "@/framework/socket/socketIOHandler";
 
 export class MarkMessagesAsSeenUseCase implements IMarkMessagesAsSeenUseCase {
     constructor(private _chatRepo: IChatRepository) {}

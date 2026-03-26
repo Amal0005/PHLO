@@ -54,8 +54,8 @@ const ChatPage = () => {
         if (!conversationId) return;
 
         const receiverId = conv.participants
-            ?.map((p: any) => (p?._id || p?.id || p)?.toString())
-            .find((id?: string) => id !== currentUserId.toString());
+            ?.map((p) => ((p as unknown as { _id?: string })?._id || (p as unknown as { id?: string })?.id || p)?.toString())
+            .find((id?: string) => id !== currentUserId?.toString());
 
         try {
             await api.patch('/chat/mark-seen', { conversationId, recipientId: receiverId });

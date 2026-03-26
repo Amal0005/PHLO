@@ -48,7 +48,7 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
     const watermarkedUrl = await this._watermarkService.generateWatermark(imageBuffer, originalKey);
 
     // Perform moderation check on the original image buffer
-    const moderationResult = await this._moderationService.checkImage(imageBuffer, data.title, data.hashtags);
+    const moderationResult = await this._moderationService.checkImage(imageBuffer);
     let status: "approved" | "pending" | "rejected" = "pending";
     let rejectionReason: string | undefined;
     if (moderationResult === "SAFE") {

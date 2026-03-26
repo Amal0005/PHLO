@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { X, Upload, Image as ImageIcon, Hash, Plus, AlertTriangle } from "lucide-react";
 import { CreatorWallpaperService } from "@/services/creator/creatorWallpaperService";
-import { S3Service } from "@/services/s3Service";
 import { toast } from "react-toastify";
 import { MESSAGES } from "@/constants/messages";
 import { AxiosError } from "axios";

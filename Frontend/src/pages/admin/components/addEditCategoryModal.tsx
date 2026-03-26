@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Layers, Sparkles, AlertCircle } from "lucide-react";
+import { X, Layers, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Category, CategoryForm } from "@/interface/admin/categoryInterface";
 import { toast } from "react-toastify";

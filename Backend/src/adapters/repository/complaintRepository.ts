@@ -12,7 +12,7 @@ export class ComplaintRepository implements IComplaintRepository {
   }
 
   async findAll(page: number, limit: number, search?: string, status?: string): Promise<{ complaints: ComplaintEntity[]; total: number }> {
-    const query: any = {};
+    const query: Record<string, unknown> = {};
     if (status && status !== "all") {
       query.status = status;
     }
@@ -31,9 +31,10 @@ export class ComplaintRepository implements IComplaintRepository {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .lean(),
-      ComplaintModel.countDocuments(query)
-    ]);
+        .lean()
+        .exec(),
+      ComplaintModel.countDocuments(query).exec()
+    ]) as unknown as [Record<string, unknown>[], number];
     return {
       complaints: ComplaintMapper.toEntityList(complaints as unknown as Record<string, unknown>[]),
       total

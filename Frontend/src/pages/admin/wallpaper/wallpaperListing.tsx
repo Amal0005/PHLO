@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Eye, Download, X } from "lucide-react";
+import { Eye, X } from "lucide-react";
 import { AdminWallpaperService } from "@/services/admin/adminWallpaperService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 import Pagination from "@/components/reusable/pagination";

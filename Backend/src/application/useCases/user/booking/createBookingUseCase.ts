@@ -46,7 +46,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     if (existing) {
       const existingId = typeof existing.userId === 'string' 
         ? existing.userId 
-        : (existing.userId as any)._id?.toString();
+        : (existing.userId as unknown as Record<string, unknown>)._id?.toString();
 
       if (existingId === userId) {
         throw new AppError("You already have an active booking session or confirmed booking for this package on this date. Please check your profile.", StatusCode.CONFLICT);

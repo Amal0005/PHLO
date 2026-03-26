@@ -29,12 +29,11 @@ export class WallpaperController {
           .json({ success: false, message: "Image is required" });
       }
 
-      // Convert body fields (hashtags might be sent as JSON string if using FormData)
       let hashtags = req.body.hashtags;
       if (typeof hashtags === "string") {
         try {
           hashtags = JSON.parse(hashtags);
-        } catch (e) {
+        } catch {
           hashtags = hashtags.split(",").map((s: string) => s.trim());
         }
       }

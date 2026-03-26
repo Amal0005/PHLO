@@ -1,3 +1,3 @@
 export interface IModerationService {
-  checkImage(imageBuffer: Buffer, title?: string, hashtags?: string[]): Promise<"SAFE" | "UNSAFE" | "UNCERTAIN">;
+  checkImage(imageBuffer: Buffer): Promise<"SAFE" | "UNSAFE" | "UNCERTAIN">;
 }

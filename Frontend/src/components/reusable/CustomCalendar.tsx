@@ -190,22 +190,22 @@ export const CustomCalendar: React.FC<CustomCalendarProps> = ({
                             transition={{ duration: 0.2, ease: "easeOut" }}
                             className="absolute bottom-full left-0 right-0 z-50 mb-2 bg-[#121212] border border-white/10 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-xl"
                             style={{
-                                background: "rgba(18, 18, 18, 0.85)",
+                                background: "rgba(0, 0, 0, 0.85)",
                                 backdropFilter: "blur(32px) saturate(1.8)",
-                                boxShadow: "0 -20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)"
+                                boxShadow: "0 -20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05)"
                             }}
                         >
                             {renderHeader()}
                             <div className="relative pt-2 overflow-hidden">
                                 {/* Logo Watermark */}
                                 <div
-                                    className="absolute inset-0 pointer-events-none opacity-[0.03] flex items-center justify-center p-8"
+                                    className="absolute inset-0 pointer-events-none opacity-[0.25] flex items-center justify-center p-8"
                                     style={{
                                         backgroundImage: `url("/Logo_white.png")`,
                                         backgroundPosition: "center",
                                         backgroundRepeat: "no-repeat",
                                         backgroundSize: "contain",
-                                        filter: "grayscale(1) brightness(2)"
+                                        filter: "grayscale(1) brightness(2.5)"
                                     }}
                                 />
                                 {renderDays()}
