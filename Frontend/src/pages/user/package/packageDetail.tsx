@@ -8,14 +8,14 @@ import {
 import { format } from "date-fns";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { UserPackage } from "@/interface/user/userPackageInterface";
-import { S3Media } from "@/compoents/reusable/s3Media";
-import UserNavbar from "@/compoents/reusable/userNavbar";
+import { S3Media } from "@/components/reusable/s3Media";
+import UserNavbar from "@/components/reusable/userNavbar";
 import { BookingService } from "@/services/user/bookingService";
 import { toast } from "react-toastify";
 import LocationSearchBar from "@/pages/creator/package/components/locationSearchBar";
 import type { LocationSearchBarHandle } from "@/pages/creator/package/components/locationSearchBar";
 import ReviewList from "./components/ReviewList";
-import { CustomCalendar } from "@/compoents/reusable/CustomCalendar";
+import { CustomCalendar } from "@/components/reusable/CustomCalendar";
 import Map, { Marker } from 'react-map-gl/mapbox';
 
 
@@ -684,3 +684,4 @@ const PackageDetailPage: React.FC = () => {
 };
 
 export default PackageDetailPage;
+

@@ -4,7 +4,7 @@ import { WalletService, WalletData, WalletTransaction } from "@/services/walletS
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import CreatorNavbar from "@/components/reusable/creatorNavbar";
 
 const CreatorWalletPage: React.FC = () => {
     const [data, setData] = useState<WalletData | null>(null);
@@ -215,3 +215,4 @@ const TransactionItem: React.FC<{ tx: WalletTransaction }> = ({ tx }) => {
 };
 
 export default CreatorWalletPage;
+

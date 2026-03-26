@@ -11,12 +11,12 @@ export const AdminWallpaperService = {
     return res.data;
   },
 
-  approveWallpaper: async (wallpaperId: string): Promise<void> => {
-    await api.patch(`${FRONTEND_ROUTES.ADMIN.WALLPAPERS}/${wallpaperId}/approve`);
+  blockWallpaper: async (wallpaperId: string): Promise<void> => {
+    await api.patch(`${FRONTEND_ROUTES.ADMIN.WALLPAPERS}/${wallpaperId}/block`);
   },
 
-  rejectWallpaper: async (wallpaperId: string, reason: string): Promise<void> => {
-    await api.patch(`${FRONTEND_ROUTES.ADMIN.WALLPAPERS}/${wallpaperId}/reject`, { reason });
+  unblockWallpaper: async (wallpaperId: string): Promise<void> => {
+    await api.patch(`${FRONTEND_ROUTES.ADMIN.WALLPAPERS}/${wallpaperId}/unblock`);
   },
 };
 

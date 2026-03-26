@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { useState, useEffect } from "react";
 import { Package, Image as ImageIcon, Eye, Plus, Calendar } from "lucide-react";
 import { AddPackageModal } from "./package/components/addPackageModal";
@@ -8,9 +8,9 @@ import { AddWallpaperModal } from "./wallpaper/components/addWallpaperModal";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
-import ConfirmModal from "@/compoents/reusable/ConfirmModal";
-import OptionModal from "@/compoents/reusable/OptionModal";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { ManageLeaveModal } from "./bookings/components/ManageLeaveModal";
+import OptionModal from "@/compoents/reusable/OptionModal";
 
 export default function CreatorDashboard() {
   const creator = useSelector((state: RootState) => state.creator.creator);
@@ -264,3 +264,4 @@ export default function CreatorDashboard() {
   </div>
   );
 }
+

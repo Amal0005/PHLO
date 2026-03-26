@@ -3,17 +3,17 @@ import { ArrowLeft, Image as ImageIcon, Trash2, Plus, X, Download } from "lucide
 
 import { useNavigate } from "react-router-dom";
 import { CreatorWallpaperService } from "@/services/creator/creatorWallpaperService";
-import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { ROUTES } from "@/constants/routes";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import { S3Media } from "@/components/reusable/s3Media";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
-import Pagination from "@/compoents/reusable/pagination";
-import ConfirmModal from "@/compoents/reusable/ConfirmModal";
+import Pagination from "@/components/reusable/pagination";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { AddWallpaperModal } from "./components/addWallpaperModal";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
-import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
+import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import { useDebounce } from "@/hooks/useDebounce";
 
 
@@ -350,3 +350,4 @@ const ViewWallpapersPage: React.FC = () => {
 };
 
 export default ViewWallpapersPage;
+

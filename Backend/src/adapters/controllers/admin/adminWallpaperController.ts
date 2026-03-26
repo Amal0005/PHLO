@@ -1,4 +1,6 @@
 import { IGetAllWallpapersUseCase } from "@/domain/interface/admin/wallpaper/IGetAllWallpapersUseCase";
+import { IBlockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IBlockWallpaperUseCase";
+import { IUnblockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IUnblockWallpaperUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
 import { WallpaperStatus } from "@/constants/wallpaperStatus";
@@ -7,6 +9,8 @@ import { Request, Response } from "express";
 export class AdminWallpaperController {
   constructor(
     private _getAllWallpapersUseCase: IGetAllWallpapersUseCase,
+    private _blockWallpaperUseCase: IBlockWallpaperUseCase,
+    private _unblockWallpaperUseCase: IUnblockWallpaperUseCase
   ) {}
   async getWallpaper(req: Request, res: Response) {
     try {
@@ -32,5 +36,29 @@ export class AdminWallpaperController {
       });
     }
   }
+  async blockWallpaper(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      await this._blockWallpaperUseCase.blockWallpaper(id);
+      return res.status(StatusCode.OK).json({ success: true, message: "Wallpaper blocked successfully" });
+    } catch (error) {
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
 
+  async unblockWallpaper(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      await this._unblockWallpaperUseCase.unblockWallpaper(id);
+      return res.status(StatusCode.OK).json({ success: true, message: "Wallpaper unblocked successfully" });
+    } catch (error) {
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
 }

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import LogoWhite from "../../../assets/images/Logo_white.png";
 import { registerUserSchema } from "../../../validation/registerUserSchema";
-import GoogleLoginButton from "@/compoents/reusable/googleButton";
+import GoogleLoginButton from "@/components/reusable/googleButton";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/user/userSlice";
 import { ROUTES } from "@/constants/routes";
@@ -393,3 +393,4 @@ export default function Register() {
     </div>
   );
 }
+

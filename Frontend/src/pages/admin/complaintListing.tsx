@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { AdminComplaintService } from "@/services/admin/adminComplaintService";
 import { Complaint } from "@/interface/admin/AdminComplaintInterface";
-import DataTable, { Column } from "@/compoents/reusable/dataTable";
-import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
+import DataTable, { Column } from "@/components/reusable/dataTable";
+import { FilterSearch, FilterSelect } from "@/components/reusable/FilterComponents";
 import { ComplaintDetailModal } from "@/pages/admin/components/ComplaintDetailModal";
-import Pagination from "@/compoents/reusable/pagination";
+import Pagination from "@/components/reusable/pagination";
 import { useDebounce } from "@/hooks/useDebounce";
 
 export default function ComplaintListingPage() {
@@ -196,3 +196,4 @@ export default function ComplaintListingPage() {
     </div>
   );
 }
+

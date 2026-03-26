@@ -3,12 +3,12 @@ import { Plus, Edit2, Trash2 } from "lucide-react";
 
 import { Subscription, SubscriptionForm } from "@/interface/admin/subscriptionInterface";
 import { toast } from "react-toastify";
-import ConfirmModal from "@/compoents/reusable/ConfirmModal";
-import DataTable, { Column } from "@/compoents/reusable/dataTable";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
+import DataTable, { Column } from "@/components/reusable/dataTable";
 import AddEditSubscriptionModal from "./components/addEditSubscriptionModal";
 import { AdminSubscriptionService } from "@/services/admin/adminSubscriptionService";
-import Pagination from "@/compoents/reusable/pagination";
-import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
+import Pagination from "@/components/reusable/pagination";
+import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import { useDebounce } from "@/hooks/useDebounce";
 
 
@@ -191,3 +191,4 @@ export default function SubscriptionListingPage() {
     </div>
   );
 }
+

@@ -18,10 +18,10 @@ import { BookingService } from "@/services/user/bookingService";
 import { UserComplaintService } from "@/services/user/userComplaintService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
 import { Complaint } from "@/interface/user/userComplaintInterface";
-import { S3Media } from "@/compoents/reusable/s3Media";
-import UserNavbar from "@/compoents/reusable/userNavbar";
+import { S3Media } from "@/components/reusable/s3Media";
+import UserNavbar from "@/components/reusable/userNavbar";
 import { toast } from "react-toastify";
-import ConfirmModal from "@/compoents/reusable/ConfirmModal";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { ROUTES } from "@/constants/routes";
 import AddReviewForm from "./components/AddReviewForm";
 import ComplaintForm from "./components/ComplaintForm";
@@ -451,3 +451,4 @@ const BookingDetailPage: React.FC = () => {
 };
 
 export default BookingDetailPage;
+

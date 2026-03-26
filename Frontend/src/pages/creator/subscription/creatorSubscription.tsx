@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { toast } from "react-toastify";
 import { CreatorSubscriptionService } from "@/services/creator/creatorSubscriptionService";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
@@ -187,3 +187,4 @@ export default function CreatorSubscription() {
     </div>
   );
 }
+

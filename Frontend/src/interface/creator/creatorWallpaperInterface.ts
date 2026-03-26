@@ -6,7 +6,7 @@ export interface WallpaperData {
   watermarkedUrl?: string;
   price: number;
   hashtags: string[];
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "blocked";
   rejectionReason?: string;
   downloadCount?: number;
   isPurchased?: boolean;

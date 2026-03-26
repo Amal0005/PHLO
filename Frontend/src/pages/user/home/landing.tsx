@@ -11,7 +11,7 @@ import {
   Mail, ArrowRight,
 } from "lucide-react";
 import LogoWhite from "../../../assets/images/Logo_white.png";
-import UserNavbar from "@/compoents/reusable/userNavbar";
+import UserNavbar from "@/components/reusable/userNavbar";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { UserPackage } from "@/interface/user/userPackageInterface";
 import { useState, useEffect } from "react";
@@ -479,3 +479,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

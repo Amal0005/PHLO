@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Package, Calendar, Clock, ChevronRight, ArrowUpRight } from "lucide-react";
 import { BookingService } from "@/services/user/bookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
-import { S3Media } from "@/compoents/reusable/s3Media";
-import UserNavbar from "@/compoents/reusable/userNavbar";
+import { S3Media } from "@/components/reusable/s3Media";
+import UserNavbar from "@/components/reusable/userNavbar";
 import { ROUTES } from "@/constants/routes";
 
 const BookingsPage: React.FC = () => {
@@ -186,3 +186,4 @@ const BookingsPage: React.FC = () => {
 };
 
 export default BookingsPage;
+

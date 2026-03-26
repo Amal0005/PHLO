@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent } from "react";
 import { X, Camera, User, Link as LinkIcon } from "lucide-react";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import { S3Media } from "@/components/reusable/s3Media";
 import { EditCreatorProfilePayload } from "@/interface/creator/creatorProfileInterface";
 
 interface EditCreatorProfileModalProps {
@@ -170,3 +170,4 @@ export const EditCreatorProfileModal = ({
         </div>
     );
 };
+

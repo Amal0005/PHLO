@@ -7,9 +7,9 @@ import LogoWhite from "../../../assets/images/Logo_white.png";
 import { loginUserSchema } from "../../../validation/loginUserSchema";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/slices/user/userSlice";
-import GoogleLoginButton from "../../../compoents/reusable/googleButton";
+import GoogleLoginButton from "../../../components/reusable/googleButton";
 import { AppDispatch } from "@/store/store";
-import InputError from "@/compoents/reusable/inputErrors";
+import InputError from "@/components/reusable/inputErrors";
 import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
@@ -293,3 +293,4 @@ export default function Login() {
     </div>
   );
 }
+

@@ -3,11 +3,11 @@ import { useEffect, useState, useCallback } from "react";
 import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserService";
 import { User } from "@/interface/admin/userInterface";
 import { toast } from "react-toastify";
-import ConfirmModal from "../../compoents/reusable/ConfirmModal";
+import ConfirmModal from "../../components/reusable/ConfirmModal";
 import { UserX, UserCheck } from "lucide-react";
-import Pagination from "@/compoents/reusable/pagination";
-import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
-import DataTable, { Column } from "@/compoents/reusable/dataTable";
+import Pagination from "@/components/reusable/pagination";
+import { FilterSearch, FilterSelect } from "@/components/reusable/FilterComponents";
+import DataTable, { Column } from "@/components/reusable/dataTable";
 import { useDebounce } from "@/hooks/useDebounce";
 
 
@@ -212,4 +212,5 @@ export default function UserListingPage() {
     </>
   );
 }
+
 

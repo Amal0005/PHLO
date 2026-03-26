@@ -3,7 +3,7 @@ import { Star, MessageSquare, Send, Trash2 } from "lucide-react";
 import { ReviewService } from "@/services/user/reviewService";
 import { toast } from "react-toastify";
 import { Review } from "@/interface/user/reviewInterface";
-import ConfirmModal from "@/compoents/reusable/ConfirmModal";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 
 interface AddReviewFormProps {
     packageId: string;
@@ -244,3 +244,4 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
 };
 
 export default AddReviewForm;
+

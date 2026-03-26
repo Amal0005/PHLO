@@ -24,7 +24,7 @@ import {
 } from "@/validation/registerCreatorValidation";
 import { ROUTES } from "@/constants/routes";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
-import OtpVerificationModal from "@/compoents/reusable/OtpVerificationModal";
+import OtpVerificationModal from "@/components/reusable/OtpVerificationModal";
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof AxiosError) {
@@ -791,3 +791,4 @@ export default function CreatorSignup() {
     </div>
   );
 }
+

@@ -4,7 +4,7 @@ import { Review } from "@/interface/user/reviewInterface";
 import { BookingService } from "@/services/user/bookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
 import { toast } from "react-toastify";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import { S3Media } from "@/components/reusable/s3Media";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { motion, AnimatePresence } from "framer-motion";
@@ -287,3 +287,4 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ packageId }) => {
 };
 
 export default ReviewSection;
+

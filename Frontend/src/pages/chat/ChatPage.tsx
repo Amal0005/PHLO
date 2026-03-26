@@ -4,16 +4,16 @@ import { useSearchParams } from 'react-router-dom';
 import { RootState } from '../../store/store';
 import api from '@/axios/axiosConfig';
 import { socketService } from '../../services/socketService';
-import ConversationList from '../../compoents/chat/conversationList';
-import ChatWindow from '../../compoents/chat/chatWindow';
-import MessageInput from '../../compoents/chat/messageInput';
+import ConversationList from '../../components/chat/conversationList';
+import ChatWindow from '../../components/chat/chatWindow';
 import { ConversationEntity, MessageEntity } from "@/interface/chat/chatInterface";
-import Navbar from "@/compoents/reusable/userNavbar";
-import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
-import { S3Media } from '@/compoents/reusable/s3Media';
+import Navbar from "@/components/reusable/userNavbar";
+import CreatorNavbar from "@/components/reusable/creatorNavbar";
+import { S3Media } from '@/components/reusable/s3Media';
 import { useNotifications } from '@/hooks/useNotifications';
 import { S3Service } from '@/services/s3Service';
 import { toast } from 'react-toastify';
+import MessageInput from '@/components/chat/messageInput';
 
 const ChatPage = () => {
     const { markChatAsRead } = useNotifications();
@@ -289,7 +289,7 @@ const ChatPage = () => {
                             {/* Message Input */}
                             <div className="px-6 py-6 mt-auto">
                                 <div className="max-w-5xl mx-auto w-full">
-                                    <MessageInput 
+                                    <MessageInput
                                         onSendMessage={handleSendMessage} 
                                         onImageSelect={handleImageSelect}
                                     />
@@ -322,3 +322,4 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
+

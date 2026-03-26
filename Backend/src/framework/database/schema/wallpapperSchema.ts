@@ -10,7 +10,7 @@ export const wallpaperSchema = new Schema(
     hashtags: [{ type: String }],
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected", "blocked"],
       default: "pending",
     },
     rejectionReason: { type: String, default: null },

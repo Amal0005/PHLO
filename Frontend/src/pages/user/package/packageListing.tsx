@@ -5,10 +5,10 @@ import { Package as PackageIcon, MapPin, X, Heart } from "lucide-react";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { WishlistService } from "@/services/user/wishlistService";
 import { UserPackage, PackageFilters } from "@/interface/user/userPackageInterface";
-import { S3Media } from "@/compoents/reusable/s3Media";
-import UserNavbar from "@/compoents/reusable/userNavbar";
-import Pagination from "@/compoents/reusable/pagination";
-import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
+import { S3Media } from "@/components/reusable/s3Media";
+import UserNavbar from "@/components/reusable/userNavbar";
+import Pagination from "@/components/reusable/pagination";
+import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -366,3 +366,4 @@ const PackageListing: React.FC = () => {
 };
 
 export default PackageListing;
+

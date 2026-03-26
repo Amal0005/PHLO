@@ -93,6 +93,12 @@ export class AdminRoutes {
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.WALLPAPERS, (req: Request, res: Response) => {
       adminWallpaperController.getWallpaper(req, res)
     })
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.BLOCK_WALLPAPER, (req: Request, res: Response) => {
+      adminWallpaperController.blockWallpaper(req, res)
+    })
+    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.UNBLOCK_WALLPAPER, (req: Request, res: Response) => {
+      adminWallpaperController.unblockWallpaper(req, res)
+    })
 
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.WALLET, (req: Request, res: Response) => {
       adminWalletController.getWallet(req, res)

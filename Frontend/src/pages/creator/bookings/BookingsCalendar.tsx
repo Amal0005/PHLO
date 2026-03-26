@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { CreatorBookingService } from "@/services/creator/creatorBookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
 import {
@@ -363,3 +363,4 @@ const BookingsCalendar: React.FC = () => {
 };
 
 export default BookingsCalendar;
+

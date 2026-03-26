@@ -6,11 +6,11 @@ import { UserWallpaperService } from "@/services/user/userWallpaperService";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 import { UserPackage } from "@/interface/user/userPackageInterface";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import { S3Media } from "@/components/reusable/s3Media";
 import { S3Service } from "@/services/s3Service";
-import UserNavbar from "@/compoents/reusable/userNavbar";
-import Pagination from "@/compoents/reusable/pagination";
-import ConfirmModal from "@/compoents/reusable/ConfirmModal";
+import UserNavbar from "@/components/reusable/userNavbar";
+import Pagination from "@/components/reusable/pagination";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
 import { MESSAGES } from "@/constants/messages";
@@ -486,3 +486,4 @@ const WishlistPage: React.FC = () => {
 };
 
 export default WishlistPage;
+

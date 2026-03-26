@@ -8,12 +8,12 @@ import { AppDispatch } from "@/store/store";
 import { updateUserProfile } from "@/store/slices/user/userSlice";
 import { ROUTES } from "@/constants/routes";
 import { changePasswordSchema, editProfileSchema } from "@/validation/userProfileSchema";
-import Navbar from "@/compoents/reusable/userNavbar";
+import Navbar from "@/components/reusable/userNavbar";
 import { UserProfileService } from "@/services/user/userProfileServices";
 import { EditUserProfile } from "./components/editUserProfile";
 import { EditUserPassword } from "./components/editUserPassword";
 import { ViewProfileImage } from "./components/viewProfileImage";
-import OtpVerificationModal from "@/compoents/reusable/OtpVerificationModal";
+import OtpVerificationModal from "@/components/reusable/OtpVerificationModal";
 import { MESSAGES } from "@/constants/messages";
 
 import { User } from "@/interface/admin/userInterface";
@@ -531,3 +531,4 @@ export default function UserProfile() {
     </div>
   );
 }
+

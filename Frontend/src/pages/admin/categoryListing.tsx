@@ -4,11 +4,11 @@ import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Category, CategoryForm } from "@/interface/admin/categoryInterface";
 import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
 import { toast } from "react-toastify";
-import ConfirmModal from "@/compoents/reusable/ConfirmModal";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import AddEditCategoryModal from "./components/addEditCategoryModal";
-import Pagination from "@/compoents/reusable/pagination";
-import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
-import DataTable, { Column } from "@/compoents/reusable/dataTable";
+import Pagination from "@/components/reusable/pagination";
+import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
+import DataTable, { Column } from "@/components/reusable/dataTable";
 import { useDebounce } from "@/hooks/useDebounce";
 
 
@@ -201,3 +201,4 @@ export default function CategoryListingPage() {
     </div>
   );
 }
+

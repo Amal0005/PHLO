@@ -4,7 +4,7 @@ import { ICategoryRepository } from "@/domain/interface/repository/ICategoryRepo
 import { MESSAGES } from "@/constants/commonMessages";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/constants/statusCodes";
-import { IEditCategoryUseCase } from "@/domain/interface/admin/category/IEditCategoryUseCase";
+import { IEditCategoryUseCase } from "@/domain/interface/admin/IEditCategoryUseCase";
 
 export class EditCategoryUseCase implements IEditCategoryUseCase {
     constructor(

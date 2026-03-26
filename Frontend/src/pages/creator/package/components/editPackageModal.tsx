@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { S3Service } from "@/services/s3Service";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import { S3Media } from "@/components/reusable/s3Media";
 import LocationSearchBar from "./locationSearchBar";
 import { AxiosError } from "axios";
 
@@ -400,3 +400,4 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
     </div>
   );
 };
+

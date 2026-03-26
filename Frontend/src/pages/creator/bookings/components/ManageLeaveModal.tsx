@@ -4,7 +4,7 @@ import { creatorLeaveService } from "@/services/creator/leaveService";
 import { X, Loader2, AlertCircle } from "lucide-react";
 import { startOfDay } from "date-fns";
 
-import { CustomCalendar } from "@/compoents/reusable/CustomCalendar";
+import { CustomCalendar } from "@/components/reusable/CustomCalendar";
 import { format } from "date-fns";
 
 interface ManageLeaveModalProps {
@@ -115,3 +115,4 @@ export const ManageLeaveModal: React.FC<ManageLeaveModalProps> = ({
         </div>
     );
 };
+

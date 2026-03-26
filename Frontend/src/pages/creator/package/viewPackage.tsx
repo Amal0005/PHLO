@@ -3,18 +3,18 @@ import { ArrowLeft, Package as PackageIcon, Edit, Trash2, Plus, MapPin } from "l
 
 import { useNavigate } from "react-router-dom";
 import { CreatorPackageService } from "@/services/creator/creatorPackageService";
-import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { ROUTES } from "@/constants/routes";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import { S3Media } from "@/components/reusable/s3Media";
 import { EditPackageModal } from "./components/editPackageModal";
 import { PackageData } from "@/interface/creator/creatorPackageInterface";
 import { toast } from "react-toastify";
 import { AddPackageModal } from "./components/addPackageModal";
 import { AxiosError } from "axios";
-import Pagination from "@/compoents/reusable/pagination";
+import Pagination from "@/components/reusable/pagination";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
-import ConfirmModal from "@/compoents/reusable/ConfirmModal";
-import { FilterSearch, FilterSelect, FilterButton } from "@/compoents/reusable/FilterComponents";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
+import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import { useDebounce } from "@/hooks/useDebounce";
 
 
@@ -308,3 +308,4 @@ const ViewPackagesPage: React.FC = () => {
 };
 
 export default ViewPackagesPage;
+

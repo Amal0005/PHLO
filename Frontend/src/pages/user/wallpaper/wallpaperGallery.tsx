@@ -4,11 +4,11 @@ import { Image as ImageIcon, Download, X, Bookmark } from "lucide-react";
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
 import { WishlistService } from "@/services/user/wishlistService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
-import Pagination from "@/compoents/reusable/pagination";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import Pagination from "@/components/reusable/pagination";
+import { S3Media } from "@/components/reusable/s3Media";
 import { S3Service } from "@/services/s3Service";
-import UserNavbar from "@/compoents/reusable/userNavbar";
-import { FilterSearch } from "@/compoents/reusable/FilterComponents";
+import UserNavbar from "@/components/reusable/userNavbar";
+import { FilterSearch } from "@/components/reusable/FilterComponents";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -484,3 +484,4 @@ const WallpaperGallery: React.FC = () => {
 };
 
 export default WallpaperGallery;
+

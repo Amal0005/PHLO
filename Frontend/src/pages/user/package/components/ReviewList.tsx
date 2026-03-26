@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Star, MessageSquare, Trash2, User as UserIcon } from "lucide-react";
 import { ReviewService } from "@/services/user/reviewService";
 import { Review } from "@/interface/user/reviewInterface";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import { S3Media } from "@/components/reusable/s3Media";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { motion } from "framer-motion";
@@ -147,3 +147,4 @@ const ReviewList: React.FC<ReviewListProps> = ({ packageId }) => {
 };
 
 export default ReviewList;
+

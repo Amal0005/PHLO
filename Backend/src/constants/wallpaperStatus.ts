@@ -1,1 +1,1 @@
-export type WallpaperStatus = "pending" | "approved" | "rejected";
+export type WallpaperStatus = "pending" | "approved" | "rejected" | "blocked";

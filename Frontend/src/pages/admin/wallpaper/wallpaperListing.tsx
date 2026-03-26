@@ -2,21 +2,21 @@ import { useEffect, useState, useCallback } from "react";
 import { Eye, Download, X } from "lucide-react";
 import { AdminWallpaperService } from "@/services/admin/adminWallpaperService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
-import { toast } from "react-toastify";
-import Pagination from "@/compoents/reusable/pagination";
-import DataTable, { Column } from "@/compoents/reusable/dataTable";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import Pagination from "@/components/reusable/pagination";
+import DataTable, { Column } from "@/components/reusable/dataTable";
+import { S3Media } from "@/components/reusable/s3Media";
 
-import { FilterSearch, FilterSelect } from "@/compoents/reusable/FilterComponents";
+import { FilterSearch, FilterSelect } from "@/components/reusable/FilterComponents";
 import { useDebounce } from "@/hooks/useDebounce";
 
 
-type StatusFilter = "all" | "pending" | "approved" | "rejected";
+type StatusFilter = "all" | "approved" | "rejected" | "blocked";
 
 const STATUS_TABS: { label: string; value: StatusFilter }[] = [
   { label: "All", value: "all" },
   { label: "Approved", value: "approved" },
   { label: "Rejected", value: "rejected" },
+  { label: "Blocked", value: "blocked" },
 ];
 
 export default function WallpaperListingPage() {
@@ -70,9 +70,9 @@ export default function WallpaperListingPage() {
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
-      pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
       approved: "bg-green-500/10 text-green-400 border-green-500/20",
       rejected: "bg-red-500/10 text-red-400 border-red-500/20",
+      blocked: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",
     };
     return (
       <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${styles[status] || ""}`}>
@@ -121,6 +121,8 @@ export default function WallpaperListingPage() {
               ? "bg-green-500/5 text-green-400 border-green-500/10"
               : wp.status === "rejected"
               ? "bg-red-500/5 text-red-400 border-red-500/10"
+              : wp.status === "blocked"
+              ? "bg-zinc-500/5 text-zinc-400 border-zinc-500/10"
               : "bg-yellow-500/5 text-yellow-400 border-yellow-500/10"
               }`}
           >
@@ -134,9 +136,6 @@ export default function WallpaperListingPage() {
       key: "price",
       render: (wp) => (
         <div className="flex items-center gap-2">
-           <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5">
-              <span className="text-[10px] text-gray-400">₹</span>
-           </div>
            <span className={`text-xs font-black italic uppercase ${wp.price > 0 ? 'text-green-400' : 'text-gray-600'}`}>
             {wp.price > 0 ? `₹${wp.price}` : 'FREE'}
           </span>
@@ -148,9 +147,6 @@ export default function WallpaperListingPage() {
       key: "createdAt",
       render: (wp) => (
         <div className="flex items-center gap-2 text-gray-400">
-           <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5">
-              <span className="text-xs">📅</span>
-           </div>
            <span className="text-xs font-medium">
             {wp.createdAt ? new Date(wp.createdAt).toLocaleDateString() : "-"}
           </span>
@@ -169,27 +165,50 @@ export default function WallpaperListingPage() {
            >
               <Eye size={18} />
            </button>
-           {wp.status === "rejected" && wp.rejectionReason && (
+            {wp.status === "approved" && (
               <button 
-                title={wp.rejectionReason}
-                className="w-11 h-11 flex items-center justify-center text-red-400/60 bg-red-500/5 rounded-2xl border border-red-500/10"
+                onClick={(e) => { e.stopPropagation(); handleBlock(wp._id); }}
+                className="px-4 py-2 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all font-bold text-[10px] uppercase tracking-wider italic"
               >
-                 <X size={18} />
+                Block
               </button>
-           )}
+            )}
+            {wp.status === "blocked" && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); handleUnblock(wp._id); }}
+                className="px-4 py-2 rounded-xl bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-all font-bold text-[10px] uppercase tracking-wider italic"
+              >
+                Unblock
+              </button>
+            )}
         </div>
       ),
     },
   ];
 
-  // Approve/Reject from preview modal
-  const handlePreviewApprove = () => {
-    setPreviewWallpaper(null);
-  };
+  const handleBlock = async (id: string) => {
+    if (!window.confirm("Are you sure you want to block this wallpaper?")) return;
+     try {
+       await AdminWallpaperService.blockWallpaper(id);
+       loadWallpapers();
+       setPreviewWallpaper(null); // Close preview if open
+     } catch (err) {
+       console.error("Block failed:", err);
+     }
+   };
 
-  const handlePreviewReject = () => {
-    setPreviewWallpaper(null);
-  };
+   const handleUnblock = async (id: string) => {
+    if (!window.confirm("Are you sure you want to unblock this wallpaper?")) return;
+     try {
+       await AdminWallpaperService.unblockWallpaper(id);
+       loadWallpapers();
+       setPreviewWallpaper(null);
+     } catch (err) {
+       console.error("Unblock failed:", err);
+     }
+   };
+
+
 
   if (error) return <p className="p-6 text-red-400">{error}</p>;
 
@@ -262,7 +281,7 @@ export default function WallpaperListingPage() {
                   <h3 className="text-white text-lg font-bold">{previewWallpaper.title}</h3>
                   <div className="flex items-center gap-3 mt-1">
                     <p className="text-gray-400 text-sm">
-                      By {typeof previewWallpaper.creatorId === "object" ? previewWallpaper.creatorId.fullName : previewWallpaper.creatorId}
+                      By {typeof previewWallpaper.creatorId === "object" ? (previewWallpaper.creatorId as { fullName: string }).fullName : previewWallpaper.creatorId}
                       {previewWallpaper.createdAt && (
                         <span className="text-gray-600 ml-2">• {new Date(previewWallpaper.createdAt).toLocaleDateString()}</span>
                       )}
@@ -291,13 +310,32 @@ export default function WallpaperListingPage() {
                 </div>
               )}
 
-
-            </div>
+              <div className="flex gap-4 pt-4 border-t border-white/5">
+                {previewWallpaper.status === "approved" && (
+                  <button 
+                    onClick={() => handleBlock(previewWallpaper._id)}
+                    className="flex-1 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 font-black uppercase italic tracking-wider rounded-xl transition-all text-xs"
+                  >
+                    Block Wallpaper
+                  </button>
+                )}
+                {previewWallpaper.status === "blocked" && (
+                  <button 
+                    onClick={() => handleUnblock(previewWallpaper._id)}
+                    className="flex-1 py-3 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/20 font-black uppercase italic tracking-wider rounded-xl transition-all text-xs"
+                  >
+                    Unblock Wallpaper
+                  </button>
+                )}
+              </div>
           </div>
         </div>
-      )}
+      </div>
+    )}
 
 
     </div>
   );
 }
+
+

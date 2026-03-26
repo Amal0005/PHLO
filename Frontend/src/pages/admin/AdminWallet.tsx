@@ -4,7 +4,7 @@ import { Wallet } from "../../interface/admin/walletInterface";
 import { WalletTransaction } from "../../interface/admin/walletTransactionInterface";
 import { ArrowUpRight, ArrowDownLeft, Wallet as WalletIcon, Clock, Filter, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Pagination from "@/compoents/reusable/pagination";
+import Pagination from "@/components/reusable/pagination";
 import { useDebounce } from "@/hooks/useDebounce";
 
 export default function AdminWallet() {
@@ -322,3 +322,4 @@ export default function AdminWallet() {
         </motion.div>
     );
 }
+

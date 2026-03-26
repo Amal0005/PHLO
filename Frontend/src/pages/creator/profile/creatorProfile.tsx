@@ -1,11 +1,11 @@
 import { useState, useEffect, ChangeEvent, FormEvent, useCallback } from "react";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import { CreatorProfileResponse, EditCreatorProfilePayload } from "@/interface/creator/creatorProfileInterface";
-import CreatorNavbar from "@/compoents/reusable/creatorNavbar";
+import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { Edit, Mail, Phone, MapPin, Briefcase, User, Link as LinkIcon } from "lucide-react";
 import { toast } from "react-toastify";
 import { S3Service } from "@/services/s3Service";
-import { S3Media } from "@/compoents/reusable/s3Media";
+import { S3Media } from "@/components/reusable/s3Media";
 import { EditCreatorProfileModal } from "./components/EditCreatorProfileModal";
 import { z } from "zod";
 import { creatorProfileSchema } from "@/validation/creatorProfileSchema";
@@ -281,3 +281,4 @@ export default function CreatorProfile() {
     </div>
   );
 }
+
