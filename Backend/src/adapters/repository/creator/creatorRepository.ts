@@ -59,9 +59,22 @@ export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorMod
   }
 
   async activateUpcomingSubscription(creatorId: string): Promise<void> {
+    const creator = await this.model.findById(creatorId);
+    if (!creator || !creator.upcomingSubscription) {
+      return;
+    }
+
     await this.model.updateOne(
       { _id: creatorId },
-      [{ $set: { subscription: "$upcomingSubscription", upcomingSubscription: "$$REMOVE" } }]
+      {
+        $set: {
+          subscription: {
+            ...creator.toObject().upcomingSubscription,
+            status: "active",
+          },
+        },
+        $unset: { upcomingSubscription: "" },
+      }
     );
   }
 
