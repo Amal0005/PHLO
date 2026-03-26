@@ -46,4 +46,7 @@ export const bookingSchema = new Schema(
   },
   { timestamps: true }
 );
-bookingSchema.index({ packageId: 1, bookingDate: 1 });
+bookingSchema.index(
+  { packageId: 1, bookingDate: 1 },
+  { unique: true, partialFilterExpression: { status: { $ne: BookingStatus.CANCELLED } } }
+);

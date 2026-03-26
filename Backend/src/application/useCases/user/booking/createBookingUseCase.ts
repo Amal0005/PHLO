@@ -16,7 +16,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private _packageRepo: IPackageRepository,
     private _leaveRepo: ILeaveRepository,
     private _stripeService: IStripeService
-  ) {}
+  ) { }
   async createBooking(
     userId: string,
     data: CreateBookingRequestDTO
@@ -42,8 +42,17 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
       throw new AppError("Creator is unavailable on this date", StatusCode.CONFLICT);
     }
 
-    const isAvailable = await this._bookingRepo.checkAvailability(data.packageId, bookingDate)
-    if (!isAvailable) throw new AppError("Date already booked", StatusCode.CONFLICT)
+    const existing = await this._bookingRepo.findExistingBooking(data.packageId, bookingDate);
+    if (existing) {
+      const existingId = typeof existing.userId === 'string' 
+        ? existing.userId 
+        : (existing.userId as any)._id?.toString();
+
+      if (existingId === userId) {
+        throw new AppError("You already have an active booking session or confirmed booking for this package on this date. Please check your profile.", StatusCode.CONFLICT);
+      }
+      throw new AppError("This date is already booked by another user.", StatusCode.CONFLICT);
+    }
 
     const booking = await this._bookingRepo.create({
       userId,

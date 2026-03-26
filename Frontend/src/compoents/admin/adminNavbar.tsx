@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LogoWhite from "../../assets/images/Logo_white.png";
@@ -45,45 +45,51 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
     .toUpperCase();
 
   return (
-    <nav className="bg-zinc-900/90 backdrop-blur-xl border-b border-white/10 fixed top-0 left-0 right-0 z-40">
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav className="bg-zinc-950/20 backdrop-blur-2xl fixed top-0 left-0 right-0 z-40">
+      <div className="px-6 lg:px-10">
+        <div className="flex items-center justify-between h-20">
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <button
               onClick={onMenuToggle}
-              className="lg:hidden text-white hover:bg-white/10 p-2 rounded-lg"
+              className="lg:hidden text-white hover:bg-white/10 p-2.5 rounded-2xl transition-all"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-6 h-6" />
             </button>
 
-            <div className="flex items-center gap-3">
-              <img src={LogoWhite} alt="Logo" className="h-8 sm:h-10" />
-              <div className="hidden sm:block border-l border-white/20 pl-3">
-                <h1 className="text-white font-semibold text-lg">
+            <div className="flex items-center gap-6">
+              <img src={LogoWhite} alt="Logo" className="h-10 opacity-90 group hover:opacity-100 transition-opacity" />
+              <div className="hidden sm:block border-l border-white/10 pl-6 space-y-0.5">
+                <h1 className="text-white font-black text-sm tracking-[0.3em] uppercase italic italic">
                   Admin Portal
                 </h1>
-                <p className="text-gray-400 text-xs">
+                <p className="text-gray-500 text-[10px] font-medium tracking-[0.1em] uppercase">
                   Management Dashboard
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <NotificationBell />
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex items-center gap-4">
+               <NotificationBell />
+            </div>
+            
             {admin && (
-              <div className="hidden sm:flex items-center gap-2 bg-zinc-800/50 rounded-lg px-3 py-2 border border-zinc-700">
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                  <span className="text-white text-sm font-semibold">
-                    {initials}
-                  </span>
+              <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-1.5 px-4 border border-white/5 hover:border-white/10 transition-all group cursor-pointer">
+                <div className="relative">
+                   <div className="absolute -inset-0.5 bg-gradient-to-r from-white/20 to-white/5 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                   <div className="relative w-9 h-9 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center">
+                     <span className="text-white text-xs font-black italic">
+                       {initials}
+                     </span>
+                   </div>
                 </div>
-                <div className="hidden md:block">
-                  <p className="text-white text-sm font-medium">
+                <div className="hidden lg:block">
+                  <p className="text-white text-[11px] font-black italic uppercase tracking-wider">
                     {admin.name}
                   </p>
-                  <p className="text-gray-400 text-xs">
+                  <p className="text-gray-500 text-[9px] font-medium">
                     {admin.email}
                   </p>
                 </div>
@@ -92,7 +98,7 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
 
             <button
               onClick={() => setShowLogoutModal(true)}
-              className="text-gray-400 hover:text-white hover:bg-white/10 p-2 rounded-lg"
+              className="w-11 h-11 flex items-center justify-center text-gray-500 hover:text-red-400 bg-white/5 hover:bg-red-500/10 rounded-2xl border border-white/5 transition-all"
               title="Logout"
             >
               <LogOut className="w-5 h-5" />
@@ -109,6 +115,7 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
         message="Are you sure you want to exit the admin portal?"
         confirmLabel="Logout"
         variant="danger"
+        position="top"
         icon={<LogOut size={28} />}
       />
     </nav>

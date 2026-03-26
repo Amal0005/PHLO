@@ -9,7 +9,7 @@ export class CheckAvailabilityUseCase implements ICheckAvailabilityUseCase {
         private _bookingRepository: IBookingRepository,
         private _leaveRepository: ILeaveRepository,
         private _packageRepository: IPackageRepository
-    ) {}
+    ) { }
 
     async checkAvailability(packageId: string, dateString: Date): Promise<boolean> {
         const packageData = await this._packageRepository.findById(packageId);

@@ -45,12 +45,16 @@ export class BookingRepository
       .exec();
     return updated ? this.mapToEntity(updated) : null;
   }
-  async checkAvailability(packageId: string, date: Date): Promise<boolean> {
+  async findExistingBooking(packageId: string, date: Date): Promise<BookingEntity | null> {
     const existing = await this.model.findOne({
       packageId,
       bookingDate: date,
       status: { $ne: BookingStatus.CANCELLED },
     });
+    return existing ? this.mapToEntity(existing) : null;
+  }
+  async checkAvailability(packageId: string, date: Date): Promise<boolean> {
+    const existing = await this.findExistingBooking(packageId, date);
     return !existing;
   }
   async findByCreatorId(creatorId: string): Promise<BookingEntity[]> {
@@ -85,12 +89,12 @@ export class BookingRepository
 
     let packageData = doc.packageId as unknown;
     if (isPackagePopulated) {
-        const pkg = doc.packageId as unknown as { toObject: () => Record<string, unknown>, category: { name: string } | string };
-        if (pkg.category && typeof pkg.category === 'object' && 'name' in pkg.category) {
-            packageData = { ...pkg.toObject(), category: String(pkg.category.name) };
-        } else if (typeof (pkg as { toObject?: () => void }).toObject === 'function') {
-            packageData = pkg.toObject();
-        }
+      const pkg = doc.packageId as unknown as { toObject: () => Record<string, unknown>, category: { name: string } | string };
+      if (pkg.category && typeof pkg.category === 'object' && 'name' in pkg.category) {
+        packageData = { ...pkg.toObject(), category: String(pkg.category.name) };
+      } else if (typeof (pkg as { toObject?: () => void }).toObject === 'function') {
+        packageData = pkg.toObject();
+      }
     }
 
     return {

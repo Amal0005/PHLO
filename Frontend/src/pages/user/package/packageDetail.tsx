@@ -83,7 +83,7 @@ const PackageDetailPage: React.FC = () => {
       const response = await BookingService.createBooking(packageId!, baseUrl, selectedDate, selectedLocation);
       if (response.url) window.location.href = response.url;
     } catch (error: unknown) {
-      const err = error instanceof Error ? error.message : "Failed to initiate booking. Please try again.";
+      const err = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || (error as Error).message || "Failed to initiate booking. Please try again.";
       toast.error(err);
     }
   };
@@ -379,20 +379,20 @@ const PackageDetailPage: React.FC = () => {
                   {/* Date & Location Capture */}
 
 
-                {/* Booking Action */}
-                <div className="pt-10 mt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                  <button
-                    onClick={handleBooking}
-                    disabled={checkingAvailability || isDateAvailable === false}
-                    className="w-full h-20 rounded-2xl border-2 border-[#E2B354]/30 bg-transparent text-[#E2B354] font-[950] text-[13px] uppercase tracking-[0.6em] hover:bg-[#E2B354] hover:text-black transition-all active:scale-[0.99] disabled:opacity-30 flex items-center justify-center shadow-2xl shadow-[#E2B354]/10"
-                  >
-                    {checkingAvailability ? 'Checking...' : isDateAvailable === false ? 'Unavailable' : 'Confirm & Pay'}
-                  </button>
-                </div>
+                  {/* Booking Action */}
+                  <div className="pt-10 mt-6" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                    <button
+                      onClick={handleBooking}
+                      disabled={checkingAvailability || isDateAvailable === false}
+                      className="w-full h-20 rounded-2xl border-2 border-[#E2B354]/30 bg-transparent text-[#E2B354] font-[950] text-[13px] uppercase tracking-[0.6em] hover:bg-[#E2B354] hover:text-black transition-all active:scale-[0.99] disabled:opacity-30 flex items-center justify-center shadow-2xl shadow-[#E2B354]/10"
+                    >
+                      {checkingAvailability ? 'Checking...' : isDateAvailable === false ? 'Unavailable' : 'Confirm & Pay'}
+                    </button>
+                  </div>
 
+                </div>
               </div>
             </div>
-          </div>
 
             {/* Mobile Strip Only */}
             {totalImages > 1 && (
@@ -432,7 +432,7 @@ const PackageDetailPage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {packageData.images?.map((img, index) => (
-                  <button 
+                  <button
                     key={index}
                     onClick={() => setSelectedImageModal(index)}
                     className={`group relative aspect-[16/10] rounded-[48px] overflow-hidden border-2 transition-all duration-700 hover:scale-[1.03] shadow-2xl ${selectedImage === index ? 'border-[#E2B354] ring-8 ring-[#E2B354]/10' : 'border-white/5 opacity-80 hover:opacity-100'}`}
@@ -476,8 +476,8 @@ const PackageDetailPage: React.FC = () => {
                 <span className="text-[#E2B354] text-[8px] font-black uppercase tracking-[0.4em]">Cinematic View</span>
                 <span className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Image {selectedImageModal + 1} of {totalImages}</span>
               </div>
-              <button 
-                onClick={() => setSelectedImageModal(null)} 
+              <button
+                onClick={() => setSelectedImageModal(null)}
                 className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-black transition-all"
               >
                 <X className="w-5 h-5" />
@@ -487,13 +487,13 @@ const PackageDetailPage: React.FC = () => {
             {/* Main Image View */}
             <div className="flex-1 flex items-center justify-center p-4 lg:p-24">
               <div className="relative w-full h-full flex items-center justify-center group">
-                <S3Media 
-                  s3Key={packageData.images[selectedImageModal]} 
+                <S3Media
+                  s3Key={packageData.images[selectedImageModal]}
                   className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_50px_100px_rgba(0,0,0,0.9)]"
                 />
-                
+
                 {/* Navigation Arrows */}
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedImageModal(prev => (prev! > 0 ? prev! - 1 : totalImages - 1));
@@ -503,7 +503,7 @@ const PackageDetailPage: React.FC = () => {
                   <ArrowLeft className="w-6 h-6" />
                 </button>
 
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedImageModal(prev => (prev! < totalImages - 1 ? prev! + 1 : 0));
@@ -518,7 +518,7 @@ const PackageDetailPage: React.FC = () => {
             {/* Bottom Preview Strip */}
             <div className="h-32 bg-black/40 border-t border-white/5 flex items-center justify-center gap-3 px-8">
               {packageData.images.map((img, idx) => (
-                <button 
+                <button
                   key={idx}
                   onClick={() => setSelectedImageModal(idx)}
                   className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300 ${selectedImageModal === idx ? 'border-[#E2B354] scale-110 shadow-lg shadow-[#E2B354]/20' : 'border-transparent opacity-30 hover:opacity-60'}`}
@@ -671,7 +671,7 @@ const PackageDetailPage: React.FC = () => {
         </div>
       )}
       {/* Floating Gallery Button - Bottom Right */}
-      <button 
+      <button
         onClick={() => galleryRef.current?.scrollIntoView({ behavior: 'smooth' })}
         className="fixed bottom-10 right-10 z-[60] w-24 h-24 rounded-full bg-black/40 backdrop-blur-3xl border border-white/10 flex flex-col items-center justify-center gap-1.5 hover:bg-[#E2B354] hover:text-black transition-all shadow-[0_30px_100px_rgba(0,0,0,0.8)] group active:scale-95"
       >

@@ -83,100 +83,100 @@ export default function WallpaperListingPage() {
 
   const columns: Column<WallpaperData>[] = [
     {
-      header: "Preview",
-      key: "preview",
+      header: "Wallpaper",
+      key: "wallpaper",
       render: (wp) => (
-        <div
-          onClick={() => setPreviewWallpaper(wp)}
-          className="w-16 h-12 rounded-lg overflow-hidden border border-white/10 cursor-pointer hover:border-white/30 hover:scale-105 transition-all relative group"
-        >
-          <S3Media s3Key={wp.watermarkedUrl || wp.imageUrl} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <Eye size={14} className="text-white" />
+        <div className="flex items-center gap-5">
+           <div className="relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-white/20 to-white/5 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+            <div 
+              onClick={() => setPreviewWallpaper(wp)}
+              className="relative w-16 h-12 rounded-2xl bg-zinc-800 border border-white/10 flex items-center justify-center overflow-hidden cursor-pointer active:scale-95 transition-all"
+            >
+               <S3Media s3Key={wp.imageUrl || wp.watermarkedUrl || ""} className="w-full h-full object-cover" />
+               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                 <Eye size={14} className="text-white" />
+               </div>
+            </div>
+          </div>
+          <div>
+            <p className="text-white font-black text-sm tracking-tight uppercase italic italic">
+              {wp.title}
+            </p>
+            <p className="text-gray-500 text-[10px] font-medium tracking-wider uppercase">
+              By {typeof wp.creatorId === "object" ? (wp.creatorId as { fullName: string }).fullName : wp.creatorId}
+            </p>
           </div>
         </div>
       ),
     },
     {
-      header: "Title",
-      key: "title",
-      render: (wp) => <span className="text-white font-medium text-sm">{wp.title}</span>,
-    },
-    {
-      header: "Creator",
-      key: "creator",
+      header: "Status",
+      key: "status",
       render: (wp) => (
-        <span className="text-gray-400 text-sm">
-          {typeof wp.creatorId === "object" ? (wp.creatorId as { fullName: string }).fullName : wp.creatorId}
-        </span>
+        <div className="flex items-center">
+          <span
+            className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase italic tracking-[0.1em] border ${
+              wp.status === "approved"
+              ? "bg-green-500/5 text-green-400 border-green-500/10"
+              : wp.status === "rejected"
+              ? "bg-red-500/5 text-red-400 border-red-500/10"
+              : "bg-yellow-500/5 text-yellow-400 border-yellow-500/10"
+              }`}
+          >
+            {wp.status}
+          </span>
+        </div>
       ),
     },
     {
       header: "Price",
       key: "price",
       render: (wp) => (
-        <span className={`text-sm font-bold ${wp.price > 0 ? 'text-green-400' : 'text-gray-500'}`}>
-          {wp.price > 0 ? `₹${wp.price}` : 'FREE'}
-        </span>
-      ),
-    },
-    {
-      header: "Hashtags",
-      key: "hashtags",
-      render: (wp) => (
-        <div className="flex flex-wrap gap-1">
-          {wp.hashtags && wp.hashtags.length > 0 ? (
-            <>
-              {wp.hashtags.slice(0, 2).map((tag, i) => (
-                <span key={i} className="text-xs text-blue-400/80 bg-blue-500/10 px-2 py-0.5 rounded-full">
-                  #{tag}
-                </span>
-              ))}
-              {wp.hashtags.length > 2 && (
-                <span className="text-xs text-gray-500">+{wp.hashtags.length - 2}</span>
-              )}
-            </>
-          ) : (
-            <span className="text-xs text-gray-600">—</span>
-          )}
+        <div className="flex items-center gap-2">
+           <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5">
+              <span className="text-[10px] text-gray-400">₹</span>
+           </div>
+           <span className={`text-xs font-black italic uppercase ${wp.price > 0 ? 'text-green-400' : 'text-gray-600'}`}>
+            {wp.price > 0 ? `₹${wp.price}` : 'FREE'}
+          </span>
         </div>
       ),
     },
     {
-      header: "Downloads",
-      key: "downloadCount",
-      render: (wp) => (
-        <span className="text-gray-300 text-sm font-medium flex items-center gap-1">
-          <Download size={14} className="text-gray-500" />
-          {wp.downloadCount ?? 0}
-        </span>
-      ),
-    },
-    {
-      header: "Status",
-      key: "status",
-      render: (wp) => getStatusBadge(wp.status),
-    },
-    {
-      header: "Submitted",
+      header: "Joined",
       key: "createdAt",
       render: (wp) => (
-        <span className="text-gray-400 text-sm">
-          {wp.createdAt ? new Date(wp.createdAt).toLocaleDateString() : "-"}
-        </span>
+        <div className="flex items-center gap-2 text-gray-400">
+           <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5">
+              <span className="text-xs">📅</span>
+           </div>
+           <span className="text-xs font-medium">
+            {wp.createdAt ? new Date(wp.createdAt).toLocaleDateString() : "-"}
+          </span>
+        </div>
       ),
     },
     {
-      header: "Rejection Reason",
+      header: "Actions",
       key: "actions",
       align: "right",
       render: (wp) => (
-        <div className="flex justify-end gap-2">
-          {wp.status === "rejected" && wp.rejectionReason && (
-            <span className="text-gray-500 text-xs italic max-w-[200px] truncate" title={wp.rejectionReason}>
-              {wp.rejectionReason}
-            </span>
-          )}
+        <div className="flex justify-end gap-3">
+           <button
+             onClick={() => setPreviewWallpaper(wp)}
+             className="w-11 h-11 flex items-center justify-center text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 rounded-2xl border border-white/5 transition-all"
+           >
+              <Eye size={18} />
+           </button>
+           {wp.status === "rejected" && wp.rejectionReason && (
+              <button 
+                title={wp.rejectionReason}
+                className="w-11 h-11 flex items-center justify-center text-red-400/60 bg-red-500/5 rounded-2xl border border-red-500/10"
+              >
+                 <X size={18} />
+              </button>
+           )}
         </div>
       ),
     },
