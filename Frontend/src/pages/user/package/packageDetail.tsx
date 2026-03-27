@@ -17,6 +17,7 @@ import type { LocationSearchBarHandle } from "@/pages/creator/package/components
 import ReviewList from "./components/ReviewList";
 import { CustomCalendar } from "@/components/reusable/CustomCalendar";
 import Map, { Marker } from 'react-map-gl/mapbox';
+import CancellationPolicyModal from "./components/CancellationPolicyModal";
 
 
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -38,6 +39,7 @@ const PackageDetailPage: React.FC = () => {
   const galleryRef = React.useRef<HTMLDivElement>(null);
   const [showMap, setShowMap] = useState(false);
   const [selectedImageModal, setSelectedImageModal] = useState<number | null>(null);
+  const [showPolicyModal, setShowPolicyModal] = useState(false);
 
   const [viewState, setViewState] = useState({
     latitude: 20.5937,
@@ -78,7 +80,12 @@ const PackageDetailPage: React.FC = () => {
       return;
     }
 
+    setShowPolicyModal(true);
+  };
+
+  const confirmBooking = async () => {
     try {
+      setShowPolicyModal(false);
       const baseUrl = window.location.origin;
       const response = await BookingService.createBooking(packageId!, baseUrl, selectedDate, selectedLocation);
       if (response.url) window.location.href = response.url;
@@ -309,7 +316,7 @@ const PackageDetailPage: React.FC = () => {
                       {!checkingAvailability && selectedDate && isDateAvailable === false && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 backdrop-blur-xl">
                           <AlertCircle className="w-3 h-3 text-rose-400" />
-                        </div>
+                        </div> 
                       )}
                     </div>
                   </div>
@@ -676,6 +683,11 @@ const PackageDetailPage: React.FC = () => {
         <ImageIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
         <span className="text-[9px] font-black uppercase tracking-widest">Gallery</span>
       </button>
+      <CancellationPolicyModal
+        isOpen={showPolicyModal}
+        onClose={() => setShowPolicyModal(false)}
+        onConfirm={confirmBooking}
+      />
     </>
   );
 };

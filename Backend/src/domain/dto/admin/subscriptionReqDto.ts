@@ -1,4 +1,4 @@
-export interface SubscriptionDTO {
+export interface SubscriptionReqDTO {
   id: string;
   subscriptionId?: string;
   name: string;
@@ -9,4 +9,3 @@ export interface SubscriptionDTO {
   createdAt?: Date;
   updatedAt?: Date;
 }
-

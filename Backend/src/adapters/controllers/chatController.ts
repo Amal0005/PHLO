@@ -31,6 +31,15 @@ export class ChatController {
         const { conversationId, message, receiverId, type = "text" } = req.body;
         const senderId = req.user?.userId as string;
         const result = await this._sendMessageUseCase.sendMessage({ conversationId, senderId, message, recipientId: receiverId, type });
+        
+        // Broadcast via socket to receiver and sender (to sync multiple tabs)
+        if (receiverId) {
+            SocketIOHandler.emitToUser(receiverId, "receive-message", result);
+        }
+        if (senderId) {
+            SocketIOHandler.emitToUser(senderId, "receive-message", result);
+        }
+
         return res.status(StatusCode.OK).json({ success: true, message: result })
     }
 

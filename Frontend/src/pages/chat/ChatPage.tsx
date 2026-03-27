@@ -95,17 +95,8 @@ const ChatPage = () => {
             type
         };
 
-        const socket = socketService.getSocket();
-        if (socket?.connected) {
-            socket.emit("send-message", {
-                ...payload,
-                conversationId,
-                senderId: currentUserId,
-                createdAt: new Date()
-            });
-        } else {
-            console.warn("Socket not connected, real-time message might not be sent");
-        }
+        // Socket emit removed here, backend now handles broadcasting after saving to DB
+
 
         try {
             const res = await api.post('/chat/message', {

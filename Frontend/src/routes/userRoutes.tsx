@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Register from "@/pages/user/auth/register";
 import Login from "@/pages/user/auth/login";
 import ForgotPassword from "@/pages/user/auth/forgotPassword";
@@ -18,6 +18,13 @@ import WallpaperGallery from "@/pages/user/wallpaper/wallpaperGallery";
 import WishlistPage from "@/pages/user/wishlist/wishlistPage";
 import ChatPage from "@/pages/chat/ChatPage";
 import UserWalletPage from "@/pages/user/wallet/UserWalletPage";
+import NotFoundPage from "@/pages/error/NotFoundPage";
+
+const ConditionalNotFound = () => {
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/admin') || pathname.startsWith('/creator')) return null;
+  return <NotFoundPage />;
+};
 
 export function UserRoutes() {
   return (
@@ -52,6 +59,8 @@ export function UserRoutes() {
         <Route path={ROUTES.USER.CHAT} element={<ChatPage />} />
         <Route path={ROUTES.USER.WALLET} element={<UserWalletPage />} />
       </Route>
+
+      <Route path="*" element={<ConditionalNotFound />} />
     </Routes>
   );
 }

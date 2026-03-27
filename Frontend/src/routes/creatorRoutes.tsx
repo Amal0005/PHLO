@@ -14,6 +14,14 @@ import ViewWallpapersPage from "@/pages/creator/wallpaper/viewWallpapers";
 import BookingsCalendar from "@/pages/creator/bookings/BookingsCalendar";
 import ChatPage from "@/pages/chat/ChatPage";
 import CreatorWalletPage from "@/pages/creator/wallet/CreatorWalletPage";
+import { useLocation } from "react-router-dom";
+import NotFoundPage from "@/pages/error/NotFoundPage";
+
+const ConditionalNotFound = () => {
+  const { pathname } = useLocation();
+  if (!pathname.startsWith("/creator")) return null;
+  return <NotFoundPage />;
+};
 
 export function CreatorRoutes() {
   return (
@@ -41,6 +49,8 @@ export function CreatorRoutes() {
         <Route path={ROUTES.CREATOR.WALLET} element={<CreatorWalletPage />} />
 
       </Route>
+
+      <Route path="*" element={<ConditionalNotFound />} />
     </Routes>
   );
 }

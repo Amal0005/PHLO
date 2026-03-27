@@ -1,4 +1,5 @@
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
+import { PackageRequestDto } from "@/domain/dto/package/packageRequestDto";
 import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageEntity } from "@/domain/entities/packageEntity";
 import { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
@@ -10,7 +11,7 @@ export class AddPackageUseCase implements IAddPackageUseCase {
     private _packageRepo: IPackageRepository,
     private _creatorRepo: ICreatorRepository,
   ) {}
-  async addPackage(data: Partial<PackageEntity>): Promise<PackageResponseDto> {
+  async addPackage(data: Partial<PackageRequestDto>): Promise<PackageResponseDto> {
     if (
       !data.title ||
       !data.description ||

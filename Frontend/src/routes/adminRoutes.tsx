@@ -11,6 +11,14 @@ import SubscriptionListingPage from "@/pages/admin/subscriptionListing";
 import WallpaperListingPage from "@/pages/admin/wallpaper/wallpaperListing";
 import ComplaintListingPage from "@/pages/admin/complaintListing";
 import AdminWallet from "@/pages/admin/AdminWallet";
+import { useLocation } from "react-router-dom";
+import NotFoundPage from "@/pages/error/NotFoundPage";
+
+const ConditionalNotFound = () => {
+  const { pathname } = useLocation();
+  if (!pathname.startsWith("/admin")) return null;
+  return <NotFoundPage />;
+};
 
 export function AdminRoutes() {
   return (
@@ -38,6 +46,8 @@ export function AdminRoutes() {
           <Route path={ROUTES.ADMIN.COMPLAINTS} element={<ComplaintListingPage />} />
         </Route>
       </Route>
+
+      <Route path="*" element={<ConditionalNotFound />} />
     </Routes>
   );
 }

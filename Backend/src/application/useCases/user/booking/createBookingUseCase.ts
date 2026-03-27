@@ -16,7 +16,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private _packageRepo: IPackageRepository,
     private _leaveRepo: ILeaveRepository,
     private _stripeService: IStripeService
-  ) { }
+  ) {}
   async createBooking(
     userId: string,
     data: CreateBookingRequestDTO

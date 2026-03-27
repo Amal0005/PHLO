@@ -31,9 +31,6 @@ export class SocketIOHandler {
   private setupListeners() {
     this.io.on("connection", (socket: Socket) => {
       socket.on("join", (userId: string) => socket.join(userId));
-      socket.on("send-message", (data: SendMessageData) => {
-        this.io.to(data.receiverId).emit("receive-message", data);
-      });
     });
   }
 }
