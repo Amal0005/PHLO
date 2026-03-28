@@ -146,7 +146,7 @@ export class UserRoutes {
         userProfileController.verifyEmailChangeOtp(req, res),
     );
     this.userRouter.post(
-      "/bookings/create",
+      BACKEND_ROUTES.USER.BOOKINGS_CREATE,
       authMiddleware,
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
@@ -158,7 +158,7 @@ export class UserRoutes {
     );
 
     this.userRouter.get(
-      "/bookings",
+      BACKEND_ROUTES.USER.BOOKINGS_LIST,
       authMiddleware,
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>

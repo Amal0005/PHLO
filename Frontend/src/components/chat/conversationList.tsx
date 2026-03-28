@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ConversationEntity } from "@/interface/chat/chatInterface";
 import { S3Media } from '../reusable/s3Media';
 import { Search } from 'lucide-react';
+import { ROUTES } from '@/constants/routes';
 
 interface Props {
     conversations: ConversationEntity[];
@@ -13,7 +14,7 @@ const ConversationList: React.FC<Props> = ({ conversations, onSelect, selectedId
     const [searchTerm, setSearchTerm] = useState('');
 
     const filteredConversations = conversations.filter(conv => {
-        const name = window.location.pathname.includes('/creator')
+        const name = window.location.pathname.startsWith(ROUTES.CREATOR.ROOT)
             ? conv.participantDetails?.userName
             : conv.participantDetails?.creatorName;
         return name?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -55,7 +56,7 @@ const ConversationList: React.FC<Props> = ({ conversations, onSelect, selectedId
                             >
                                 <div className="flex items-start gap-3.5">
                                     <div className="w-10 h-10 rounded-full bg-zinc-800 border border-zinc-700/50 overflow-hidden flex-shrink-0 relative group-hover:scale-105 transition-transform duration-300">
-                                        {window.location.pathname.includes('/creator') ? (
+                                        {window.location.pathname.startsWith(ROUTES.CREATOR.ROOT) ? (
                                             conv.participantDetails?.userImage ? (
                                                 <S3Media s3Key={conv.participantDetails.userImage} className="w-full h-full object-cover" />
                                             ) : (
@@ -77,7 +78,7 @@ const ConversationList: React.FC<Props> = ({ conversations, onSelect, selectedId
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-start">
                                             <span className={`text-[12px] font-black uppercase tracking-wider truncate transition-colors ${isSelected ? 'text-white' : 'text-zinc-200 group-hover:text-white'}`}>
-                                                {window.location.pathname.includes('/creator')
+                                                {window.location.pathname.startsWith(ROUTES.CREATOR.ROOT)
                                                     ? conv.participantDetails?.userName
                                                     : conv.participantDetails?.creatorName}
                                             </span>

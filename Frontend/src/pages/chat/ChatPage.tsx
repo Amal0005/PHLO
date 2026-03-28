@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 import { RootState } from '../../store/store';
-import api from '@/axios/axiosConfig';
+import { chatService } from '../../services/chatService';
 import { socketService } from '../../services/socketService';
 import ConversationList from '../../components/chat/conversationList';
 import ChatWindow from '../../components/chat/chatWindow';
@@ -14,6 +14,7 @@ import { useNotifications } from '@/hooks/useNotifications';
 import { S3Service } from '@/services/s3Service';
 import { toast } from 'react-toastify';
 import MessageInput from '@/components/chat/messageInput';
+import { ROUTES } from '@/constants/routes';
 
 const ChatPage = () => {
     const { markChatAsRead } = useNotifications();
@@ -32,8 +33,8 @@ const ChatPage = () => {
 
     const fetchConversations = useCallback(async () => {
         try {
-            const res = await api.get('/chat/conversations');
-            setConversations(res.data.conversation || []);
+            const conversations = await chatService.fetchConversations();
+            setConversations(conversations);
         } catch (err: unknown) {
             console.error("Failed to fetch conversations", err);
         }
@@ -41,8 +42,8 @@ const ChatPage = () => {
 
     const fetchMessages = useCallback(async (convId: string) => {
         try {
-            const res = await api.get(`/chat/messages/${convId}`);
-            setMessages(res.data.message || []);
+            const messages = await chatService.fetchMessages(convId);
+            setMessages(messages);
         } catch (err: unknown) {
             console.error("Failed to fetch messages", err);
         }
@@ -58,7 +59,7 @@ const ChatPage = () => {
             .find((id?: string) => id !== currentUserId?.toString());
 
         try {
-            await api.patch('/chat/mark-seen', { conversationId, recipientId: receiverId });
+            await chatService.markSeen(conversationId, receiverId);
         } catch (err) {
             console.error("Failed to mark messages as seen", err);
         }
@@ -99,15 +100,12 @@ const ChatPage = () => {
 
 
         try {
-            const res = await api.post('/chat/message', {
-                ...payload,
-                conversationId
-            });
+            const message = await chatService.sendMessage(conversationId, payload);
 
             setMessages((prev: MessageEntity[]) => {
-                const exists = prev.some(m => (m.id || (m as unknown as { _id?: string })._id)?.toString() === (res.data.message.id || (res.data.message as unknown as { _id?: string })._id)?.toString());
+                const exists = prev.some(m => (m.id || (m as unknown as { _id?: string })._id)?.toString() === (message.id || (message as unknown as { _id?: string })._id)?.toString());
                 if (exists) return prev;
-                return [...prev, res.data.message];
+                return [...prev, message];
             });
             fetchConversations();
         } catch (err: unknown) {
@@ -183,9 +181,9 @@ const ChatPage = () => {
                         return;
                     }
 
-                    const res = await api.get(`/chat/ensure-conversation/${bookingIdParam}`);
-                    if (res.data.success && res.data.conversation) {
-                        const newConv = res.data.conversation;
+                    const data = await chatService.ensureConversation(bookingIdParam);
+                    if (data.success && data.conversation) {
+                        const newConv = data.conversation;
                         const mappedConv = {
                             ...newConv,
                             id: newConv.id || (newConv as unknown as { _id?: string })._id
@@ -239,29 +237,29 @@ const ChatPage = () => {
                                     </button>
 
                                     <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 overflow-hidden flex items-center justify-center ring-2 ring-white/5">
-                                        {window.location.pathname.includes('/creator') ? (
-                                            selectedChat.participantDetails?.userImage ? (
+                                        {window.location.pathname.startsWith(ROUTES.CREATOR.ROOT) ? (
+                                            selectedChat?.participantDetails?.userImage ? (
                                                 <S3Media s3Key={selectedChat.participantDetails.userImage} className="w-full h-full object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-zinc-950">
-                                                    <span className="text-zinc-600 font-black uppercase text-[12px]">{selectedChat.participantDetails?.userName?.slice(0, 2) || 'US'}</span>
+                                                    <span className="text-zinc-600 font-black uppercase text-[12px]">{selectedChat?.participantDetails?.userName?.slice(0, 2) || 'US'}</span>
                                                 </div>
                                             )
                                         ) : (
-                                            selectedChat.participantDetails?.creatorImage ? (
+                                            selectedChat?.participantDetails?.creatorImage ? (
                                                 <S3Media s3Key={selectedChat.participantDetails.creatorImage} className="w-full h-full object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center bg-zinc-950">
-                                                    <span className="text-zinc-600 font-black uppercase text-[12px]">{selectedChat.participantDetails?.creatorName?.slice(0, 2) || 'CR'}</span>
+                                                    <span className="text-zinc-600 font-black uppercase text-[12px]">{selectedChat?.participantDetails?.creatorName?.slice(0, 2) || 'CR'}</span>
                                                 </div>
                                             )
                                         )}
                                     </div>
                                     <div className="flex flex-col">
                                         <h2 className="text-sm font-black text-white uppercase tracking-[0.2em] truncate">
-                                            {window.location.pathname.includes('/creator')
-                                                ? (selectedChat.participantDetails?.userName || "Client")
-                                                : (selectedChat.participantDetails?.creatorName || "Creator")}
+                                            {window.location.pathname.startsWith(ROUTES.CREATOR.ROOT)
+                                                ? (selectedChat?.participantDetails?.userName || "Client")
+                                                : (selectedChat?.participantDetails?.creatorName || "Creator")}
                                         </h2>
                                     </div>
                                 </div>
@@ -272,8 +270,8 @@ const ChatPage = () => {
                                 <ChatWindow 
                                     messages={messages} 
                                     currentUserId={currentUserId!} 
-                                    recipientName={window.location.pathname.includes('/creator') ? selectedChat.participantDetails?.userName : selectedChat.participantDetails?.creatorName}
-                                    recipientImage={window.location.pathname.includes('/creator') ? selectedChat.participantDetails?.userImage : selectedChat.participantDetails?.creatorImage}
+                                    recipientName={window.location.pathname.startsWith(ROUTES.CREATOR.ROOT) ? selectedChat.participantDetails?.userName : selectedChat.participantDetails?.creatorName}
+                                    recipientImage={window.location.pathname.startsWith(ROUTES.CREATOR.ROOT) ? selectedChat.participantDetails?.userImage : selectedChat.participantDetails?.creatorImage}
                                 />
                             </div>
 

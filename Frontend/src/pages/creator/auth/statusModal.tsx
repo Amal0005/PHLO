@@ -1,5 +1,6 @@
 import { X, AlertCircle, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 interface StatusModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -63,7 +64,7 @@ export default function StatusModal({
             <button
               onClick={() => {
                 onClose();
-                navigate("/creator/register");
+                navigate(ROUTES.CREATOR.REGISTER);
               }}
               className="w-full bg-white hover:bg-gray-200 text-black py-3 rounded-lg font-bold transition-all"
             >

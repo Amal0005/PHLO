@@ -12,6 +12,7 @@ import {
 import api from "../axios/axiosConfig";
 import { socketService } from "../services/socketService";
 import { NotificationEntity, NotificationType } from "../interface/notification/notificationInterface";
+import { ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -115,13 +116,13 @@ export const useNotifications = () => {
                             navigate(isCreator ? '/creator/bookings' : '/bookings');
                         } else if (notification.type === NotificationType.ACCOUNT) {
                             if (isAdmin) {
-                                if (notification.title.includes("Creator")) navigate('/admin/creators');
-                                else if (notification.title.includes("Wallpaper")) navigate('/admin/wallpapers');
+                                if (notification.title.includes("Creator")) navigate(ROUTES.ADMIN.CREATORS);
+                                else if (notification.title.includes("Wallpaper")) navigate(ROUTES.ADMIN.WALLPAPERS);
                             } else {
                                 navigate(isCreator ? '/creator/profile' : '/profile');
                             }
                         } else if (notification.type === NotificationType.WALLET) {
-                            if (isAdmin) navigate('/admin/wallet');
+                            if (isAdmin) navigate(ROUTES.ADMIN.WALLET);
                         }
                     }
                 });

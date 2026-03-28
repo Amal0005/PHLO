@@ -40,7 +40,7 @@ import { fetchAdminCreators, approveCreator } from "@/services/admin/adminCreato
 import { Creator } from "@/interface/admin/creatorInterface";
 import { CreatorDetailModal } from "./components/CreatorDetailModal";
 import { toast } from "react-toastify";
-import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
+import { ROUTES } from "@/constants/routes";
 
 interface RecentBooking {
   id: string;
@@ -609,7 +609,7 @@ export default function AdminDashboard() {
             </div>
             <div className="px-10 py-8 text-center border-t border-white/5 bg-white/[0.01]">
               <button 
-                onClick={() => navigate(FRONTEND_ROUTES.ADMIN.CREATORS)}
+                onClick={() => navigate(ROUTES.ADMIN.CREATORS)}
                 className="text-[10px] font-black text-gray-600 hover:text-white uppercase tracking-[0.4em] transition-all flex items-center gap-3 mx-auto italic"
               >
                 EXPLORE FULL DIRECTORY <ArrowUpRight className="w-4 h-4" />

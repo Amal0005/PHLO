@@ -68,11 +68,16 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
     setLoading(true);
     try {
       // Save wallpaper with the file directly (backend handles S3 upload)
-      await CreatorWallpaperService.addWallpaper({
+      const response = await CreatorWallpaperService.addWallpaper({
         title: title.trim(),
         price,
         hashtags,
       }, file);
+
+      if (response.data.status === "rejected") {
+        toast.error(response.data.rejectionReason || MESSAGES.WALLPAPER.SUBMIT_FAILED);
+        return;
+      }
 
       toast.success(MESSAGES.WALLPAPER.SUBMITTED_SUCCESS);
       resetForm();

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Home, ArrowLeft, Disc } from 'lucide-react';
+import { ROUTES } from '@/constants/routes';
 
 const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const NotFoundPage: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-10">
             <button
-               onClick={() => navigate("/")}
+               onClick={() => navigate(ROUTES.USER.ROOT)}
                className="group flex items-center gap-4 px-10 py-5 bg-white text-black rounded-3xl text-xs font-black uppercase tracking-[0.3em] hover:bg-[#E2B354] transition-all duration-500 shadow-[0_20px_50px_rgba(255,255,255,0.05)] active:scale-95 italic"
             >
               <Home className="w-4 h-4 group-hover:rotate-12 transition-transform" />

@@ -443,7 +443,7 @@ export default function UserProfile() {
                   )}
 
                   <button
-                    onClick={() => navigate("/bookings")}
+                    onClick={() => navigate(ROUTES.USER.BOOKINGS)}
                     className="flex items-center gap-5 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:text-zinc-400 transition-all group w-fit"
                   >
                     My Bookings

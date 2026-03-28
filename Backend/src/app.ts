@@ -47,10 +47,10 @@ export class App {
   private setMiddlewares(): void {
     this.app.use(loggerMiddleware)
     this.app.use(
-      "/webhook",
+      BACKEND_ROUTES.WEBHOOK,
       express.raw({ type: "application/json" })
     );
-    this.app.post("/webhook", (req, res) =>
+    this.app.post(BACKEND_ROUTES.WEBHOOK, (req, res) =>
       paymentController.handleWebhook(req, res)
     );
     this.app.use(express.json());
@@ -66,7 +66,7 @@ export class App {
     );
     this.app.use(cookieParser());
     this.app.use(
-      "/public",
+      BACKEND_ROUTES.PUBLIC,
       express.static(path.join(process.cwd(), "public"))
     );
 

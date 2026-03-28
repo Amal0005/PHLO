@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 const NotificationsList: React.FC = () => {
     const { notifications, markAsRead } = useNotifications();
@@ -37,17 +38,17 @@ const NotificationsList: React.FC = () => {
         const isCreator = window.location.pathname.startsWith('/creator');
 
         if (notification.type === NotificationType.CHAT) {
-            navigate(isCreator ? '/creator/chat' : '/chat');
+            navigate(isCreator ? ROUTES.CREATOR.CHAT : ROUTES.USER.CHAT);
         } else if (notification.type === NotificationType.BOOKING) {
-            navigate(isCreator ? '/creator/bookings' : '/bookings');
+            navigate(isCreator ? ROUTES.CREATOR.BOOKINGS : ROUTES.USER.BOOKINGS);
         } else if (notification.type === NotificationType.REPORT) {
-            const isAdmin = window.location.pathname.startsWith('/admin');
+            const isAdmin = window.location.pathname.startsWith(ROUTES.ADMIN.ROOT);
             if (isAdmin) {
-                navigate('/admin/complaints');
+                navigate(ROUTES.ADMIN.COMPLAINTS);
             } else {
                 const bookingId = notification.metadata?.bookingId;
                 if (bookingId) {
-                    navigate(`/bookings/${bookingId}`);
+                    navigate(`${ROUTES.USER.BOOKINGS}/${String(bookingId)}`);
                 }
             }
         }

@@ -1,5 +1,7 @@
 export const BACKEND_ROUTES = {
   BASE: "/api",
+  WEBHOOK: "/webhook",
+  PUBLIC: "/public",
   USER: {
     REGISTER: "/register",
     VERIFY_OTP: "/verify-otp",
@@ -24,6 +26,8 @@ export const BACKEND_ROUTES = {
     WISHLIST_TOGGLE: "/wishlist/toggle",
     WISHLIST_IDS: "/wishlist/ids",
     CHECK_AVAILABILITY: "/bookings/check-availability",
+    BOOKINGS_CREATE: "/bookings/create",
+    BOOKINGS_LIST: "/bookings",
     BOOKING_STATUS: "/bookings/status/:sessionId",
     CANCEL_BOOKING: "/bookings/cancel/:sessionId",
     DOWNLOAD_INVOICE: "/bookings/:sessionId/invoice",
@@ -99,8 +103,19 @@ export const BACKEND_ROUTES = {
   },
   CHAT: {
     BASE: "/chat",
+    CONVERSATIONS: "/conversations",
+    MESSAGES: "/messages/:conversationId",
+    SEND_MESSAGE: "/message",
+    ENSURE_CONVERSATION: "/ensure-conversation/:bookingId",
+    MARK_SEEN: "/mark-seen",
   },
   NOTIFICATION: {
     BASE: "/notifications",
+    GET_ALL: "/",
+    UNREAD_COUNT: "/unread-count",
+    DETAIL: "/:notificationId",
+    MARK_READ: "/mark-read/:notificationId",
+    MARK_ALL_READ: "/mark-all-read",
+    MARK_CHAT_READ: "/mark-chat-read/:conversationId",
   },
 };

@@ -3,6 +3,7 @@ import { Bell, MessageSquare, BookOpen, Wallet, Settings, ShieldAlert, Circle, C
 import { useNotifications } from "../../hooks/useNotifications";
 import { NotificationType, NotificationEntity } from "../../interface/notification/notificationInterface";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 import { formatDistanceToNow } from "date-fns";
 
 const NotificationBell: React.FC = () => {
@@ -43,34 +44,34 @@ const NotificationBell: React.FC = () => {
         }
         setIsOpen(false);
 
-        const isAdmin = window.location.pathname.startsWith('/admin');
-        const isCreator = window.location.pathname.startsWith('/creator');
+        const isAdmin = window.location.pathname.startsWith(ROUTES.ADMIN.ROOT);
+        const isCreator = window.location.pathname.startsWith(ROUTES.CREATOR.ROOT);
 
         if (notification.type === NotificationType.CHAT) {
-            navigate(isCreator ? '/creator/chat' : '/chat');
+            navigate(isCreator ? ROUTES.CREATOR.CHAT : ROUTES.USER.CHAT);
         } else if (notification.type === NotificationType.ACCOUNT) {
             if (isAdmin) {
                 if (notification.title.includes("Creator")) {
-                    navigate('/admin/creators');
+                    navigate(ROUTES.ADMIN.CREATORS);
                 } else if (notification.title.includes("Wallpaper")) {
-                    navigate('/admin/wallpapers');
+                    navigate(ROUTES.ADMIN.WALLPAPERS);
                 }
             } else {
-                navigate(isCreator ? '/creator/profile' : '/profile');
+                navigate(isCreator ? ROUTES.CREATOR.PROFILE : ROUTES.USER.PROFILE);
             }
         } else if (notification.type === NotificationType.BOOKING) {
-            navigate(isCreator ? '/creator/bookings' : '/bookings');
+            navigate(isCreator ? ROUTES.CREATOR.BOOKINGS : ROUTES.USER.BOOKINGS);
         } else if (notification.type === NotificationType.WALLET) {
             if (isAdmin) {
-                navigate('/admin/wallet');
+                navigate(ROUTES.ADMIN.WALLET);
             }
         } else if (notification.type === NotificationType.REPORT) {
             if (isAdmin) {
-                navigate('/admin/complaints');
+                navigate(ROUTES.ADMIN.COMPLAINTS);
             } else {
                 const bookingId = notification.metadata?.bookingId;
                 if (bookingId) {
-                    navigate(`/bookings/${bookingId}`);
+                    navigate(`${ROUTES.USER.BOOKINGS}/${String(bookingId)}`);
                 }
             }
         }

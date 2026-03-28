@@ -74,4 +74,11 @@ export const FRONTEND_ROUTES = {
         VIEW_URL: "/upload/view-url",
         PRESIGN: "/upload/presign",
     },
+    CHAT: {
+        CONVERSATIONS: "/chat/conversations",
+        MESSAGES: "/chat/messages/:id",
+        MARK_SEEN: "/chat/mark-seen",
+        SEND_MESSAGE: "/chat/message",
+        ENSURE_CONVERSATION: "/chat/ensure-conversation/:id",
+    }
 };
