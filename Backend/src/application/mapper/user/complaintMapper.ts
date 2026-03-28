@@ -57,7 +57,7 @@ export class ComplaintMapper {
       description: entity.description,
       status: entity.status,
       adminComment: entity.adminComment,
-      createdAt: entity.createdAt!,
+      createdAt: entity.createdAt || new Date(),
     };
   }
 }

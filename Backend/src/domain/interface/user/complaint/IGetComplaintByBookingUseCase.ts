@@ -1,5 +1,5 @@
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
+import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 
 export interface IGetComplaintByBookingUseCase {
-    getComplaint(bookingId: string): Promise<ComplaintEntity | null>;
+    getComplaint(bookingId: string): Promise<ComplaintResponseDTO | null>;
 }

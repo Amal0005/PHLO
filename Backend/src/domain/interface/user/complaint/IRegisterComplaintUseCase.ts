@@ -1,6 +1,6 @@
 import { ComplaintRequestDTO } from "@/domain/dto/complaint/complaintRequestDto";
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
+import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 
 export interface IRegisterComplaintUseCase {
-  registerComplaint(userId: string, dto: ComplaintRequestDTO): Promise<ComplaintEntity>;
+  registerComplaint(userId: string, dto: ComplaintRequestDTO): Promise<ComplaintResponseDTO>;
 }

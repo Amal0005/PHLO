@@ -1,5 +1,5 @@
-import { ConversationEntity } from "@/domain/entities/conversationEntity";
+import { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
 
 export interface IGetConversationUseCase {
-  getConversation(userId: string): Promise<ConversationEntity[]>;
+  getConversation(userId: string): Promise<ConversationResponseDTO[]>;
 }

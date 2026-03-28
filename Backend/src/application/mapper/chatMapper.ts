@@ -1,5 +1,7 @@
 import { ConversationEntity } from "@/domain/entities/conversationEntity";
 import { MessageEntity } from "@/domain/entities/messageEntity";
+import { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
+import { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
 
 export class ChatMapper {
   static toConversationEntity(
@@ -26,6 +28,19 @@ export class ChatMapper {
     };
   }
 
+  static toConversationDTO(entity: ConversationEntity): ConversationResponseDTO {
+    return {
+      id: entity.id!,
+      bookingId: entity.bookingId,
+      participants: entity.participants,
+      lastMessage: entity.lastMessage,
+      lastMessageAt: entity.lastMessageAt,
+      createdAt: entity.createdAt || new Date(),
+      participantDetails: entity.participantDetails,
+      packageName: entity.packageName,
+    };
+  }
+
   static toMessageEntity(doc: { _id?: { toString(): string }; id?: string; conversationId: { toString(): string }; senderId: { toString(): string }; message: string; type?: "text" | "image"; seen?: boolean; createdAt: Date }): MessageEntity {
     return {
       id: doc._id?.toString() || doc.id,
@@ -35,6 +50,18 @@ export class ChatMapper {
       type: doc.type || "text",
       seen: doc.seen || false,
       createdAt: doc.createdAt,
+    };
+  }
+
+  static toMessageDTO(entity: MessageEntity): MessageResponseDTO {
+    return {
+      id: entity.id!,
+      conversationId: entity.conversationId,
+      senderId: entity.senderId,
+      message: entity.message,
+      type: entity.type as "text" | "image",
+      seen: entity.seen,
+      createdAt: entity.createdAt || new Date()
     };
   }
 }

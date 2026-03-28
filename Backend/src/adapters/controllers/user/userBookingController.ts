@@ -22,7 +22,7 @@ export class UserBookingController {
         private _retryPaymentUseCase: IRetryPaymentUseCase
     ) {}
 
-    async CreateBooking(req: AuthRequest, res: Response) {
+    async createBooking(req: AuthRequest, res: Response) {
         try {
             const userId = req.user?.userId;
             if (!userId) {
@@ -59,7 +59,7 @@ export class UserBookingController {
         }
     }
 
-    async ListBookings(req: AuthRequest, res: Response) {
+    async listBookings(req: AuthRequest, res: Response) {
         try {
             const userId = req.user?.userId;
             if (!userId) {
@@ -74,7 +74,7 @@ export class UserBookingController {
         }
     }
 
-    async GetBookingDetail(req: AuthRequest, res: Response) {
+    async getBookingDetail(req: AuthRequest, res: Response) {
         try {
             const { sessionId } = req.params;
             const booking = await this._getBookingDetailUseCase.getBookingDetail(sessionId);
@@ -89,7 +89,7 @@ export class UserBookingController {
         }
     }
 
-    async CancelBooking(req: AuthRequest, res: Response) {
+    async cancelBooking(req: AuthRequest, res: Response) {
         try {
             const userId = req.user?.userId;
             const { sessionId } = req.params;
@@ -109,7 +109,7 @@ export class UserBookingController {
         }
     }
 
-    async DownloadInvoice(req: AuthRequest, res: Response) {
+    async downloadInvoice(req: AuthRequest, res: Response) {
         try {
             const { sessionId } = req.params;
             const pdfBuffer = await this._downloadInvoiceUseCase.downloadInvoice(sessionId);
@@ -123,7 +123,7 @@ export class UserBookingController {
         }
     }
 
-    async RetryPayment(req: AuthRequest, res: Response) {
+    async retryPayment(req: AuthRequest, res: Response) {
         try {
             const { sessionId } = req.params;
             const { baseUrl } = req.body;

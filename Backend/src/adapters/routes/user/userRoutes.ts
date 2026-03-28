@@ -150,7 +150,7 @@ export class UserRoutes {
       authMiddleware,
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        userBookingController.CreateBooking(req, res),
+        userBookingController.createBooking(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.CHECK_AVAILABILITY,
@@ -162,35 +162,35 @@ export class UserRoutes {
       authMiddleware,
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        userBookingController.ListBookings(req, res),
+        userBookingController.listBookings(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.BOOKING_STATUS,
       authMiddleware,
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        userBookingController.GetBookingDetail(req, res),
+        userBookingController.getBookingDetail(req, res),
     );
     this.userRouter.post(
       BACKEND_ROUTES.USER.CANCEL_BOOKING,
       authMiddleware,
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        userBookingController.CancelBooking(req, res),
+        userBookingController.cancelBooking(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.DOWNLOAD_INVOICE,
       authMiddleware,
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        userBookingController.DownloadInvoice(req, res),
+        userBookingController.downloadInvoice(req, res),
     );
     this.userRouter.post(
       BACKEND_ROUTES.USER.RETRY_PAYMENT,
       authMiddleware,
       authorizeRoles("user"),
       (req: AuthRequest, res: Response) =>
-        userBookingController.RetryPayment(req, res),
+        userBookingController.retryPayment(req, res),
     );
     this.userRouter.get(
       BACKEND_ROUTES.USER.WALLPAPERS,

@@ -3,13 +3,13 @@ import { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
 import { IAddSubscriptionUseCase } from "@/domain/interface/admin/subscription/IAddSubscriptionUseCase";
 import { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
 import { MESSAGES } from "@/constants/commonMessages";
-import { SubscriptionReqDTO } from "@/domain/dto/admin/subscriptionReqDto";
+import { SubscriptionRequestDto } from "@/domain/dto/subscription/subscriptionRequestDto";
 
 export class AddSubscriptionUseCase implements IAddSubscriptionUseCase {
     constructor(
         private _subscriptionRepo: ISubscriptionRepository
     ) {}
-    async addSubscription(data: Partial<SubscriptionReqDTO>): Promise<SubscriptionDTO> {
+    async addSubscription(data: Partial<SubscriptionRequestDto>): Promise<SubscriptionDTO> {
         if (!data.name) throw new Error(MESSAGES.ADMIN.SUBSCRIPTION_NAME_REQUIRED);
         const existing = await this._subscriptionRepo.findByName(data.name);
         if (existing) throw new Error(MESSAGES.ADMIN.SUBSCRIPTION_ALREADY_EXISTS);

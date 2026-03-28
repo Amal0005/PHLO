@@ -1,7 +1,8 @@
 import { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
 import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import { Wallet, WalletOwnerType } from "@/domain/entities/walletEntity";
-import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
+import { WalletOwnerType } from "@/domain/entities/walletEntity";
+import { WalletResponseDTO } from "@/domain/dto/wallet/walletResponseDto";
+import { WalletMapper } from "../../mapper/walletMapper";
 
 export class GetWalletUseCase implements IGetWalletUseCase {
     constructor(private _walletRepo: IWalletRepository){}
@@ -13,9 +14,9 @@ export class GetWalletUseCase implements IGetWalletUseCase {
         source?: string,
         page?: number,
         limit?: number
-    ): Promise<{ wallet: Wallet; transactions: WalletTransaction[]; totalTransactions: number }> {
+    ): Promise<WalletResponseDTO> {
         const wallet = await this._walletRepo.getWallet(ownerId, ownerType);
         const { transactions, total } = await this._walletRepo.getTransactions(wallet.id!, search, source, page, limit);
-        return { wallet, transactions, totalTransactions: total };
+        return WalletMapper.toWalletDto(wallet, transactions, total);
     }
 }

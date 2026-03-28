@@ -7,7 +7,6 @@ import { AppError } from "@/domain/errors/appError";
 import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IAdminCreatorListingUseCase";
 import { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
 
-
 interface RejectRequestBody {
   reason: string;
 }
@@ -26,12 +25,17 @@ export class AdminCreatorController {
 
   async getCreators(req: Request, res: Response): Promise<Response> {
     try {
-      const page = Number(req.query.page) || 1
-      const limit = Number(req.query.limit) || 10
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
       const search = req.query.search as string;
       const status = req.query.status as string;
 
-      const data = await this._adminCreatorListingUseCase.getAllCreators(page, limit, search, status);
+      const data = await this._adminCreatorListingUseCase.getAllCreators(
+        page,
+        limit,
+        search,
+        status,
+      );
       return res.status(StatusCode.OK).json({
         success: true,
         ...data,
@@ -39,9 +43,10 @@ export class AdminCreatorController {
     } catch (error) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: error instanceof Error
-          ? error.message
-          : MESSAGES.ERROR.INTERNAL_SERVER_ERROR,
+        message:
+          error instanceof Error
+            ? error.message
+            : MESSAGES.ERROR.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -63,10 +68,14 @@ export class AdminCreatorController {
         message: MESSAGES.ADMIN.CREATOR_APPROVED,
       });
     } catch (error) {
-      const statusCode = error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
+      const statusCode =
+        error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
       return res.status(statusCode).json({
         success: false,
-        message: error instanceof Error ? error.message : MESSAGES.ADMIN.CREATOR_APPROVE_ERROR,
+        message:
+          error instanceof Error
+            ? error.message
+            : MESSAGES.ADMIN.CREATOR_APPROVE_ERROR,
       });
     }
   }
@@ -97,10 +106,14 @@ export class AdminCreatorController {
         message: MESSAGES.ADMIN.CREATOR_REJECTED,
       });
     } catch (error) {
-      const statusCode = error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
+      const statusCode =
+        error instanceof AppError ? error.statusCode : StatusCode.BAD_REQUEST;
       return res.status(statusCode).json({
         success: false,
-        message: error instanceof Error ? error.message : MESSAGES.ADMIN.CREATOR_REJECT_ERROR,
+        message:
+          error instanceof Error
+            ? error.message
+            : MESSAGES.ADMIN.CREATOR_REJECT_ERROR,
       });
     }
   }
@@ -111,13 +124,18 @@ export class AdminCreatorController {
       await this._toggleCreatorStatusUseCase.toggleStatus(creatorId, status);
       return res
         .status(StatusCode.OK)
-        .json({ success: true, message: MESSAGES.CREATOR.STATUS_CHANGED(status) });
+        .json({
+          success: true,
+          message: MESSAGES.CREATOR.STATUS_CHANGED(status),
+        });
     } catch (error) {
       return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: error instanceof Error ? error.message : MESSAGES.ERROR.INTERNAL_SERVER_ERROR
+        message:
+          error instanceof Error
+            ? error.message
+            : MESSAGES.ERROR.INTERNAL_SERVER_ERROR,
       });
     }
   }
 }
-

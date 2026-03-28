@@ -9,8 +9,8 @@ export class CategoryMapper {
             name: entity.name,
             description: entity.description,
             image: entity.image,
-            createdAt: entity.createdAt!,
-            updatedAt: entity.updatedAt!,
+            createdAt: entity.createdAt || new Date(),
+            updatedAt: entity.updatedAt || new Date(),
         };
     }
 }

@@ -1,20 +1,22 @@
-import { ConversationEntity } from "@/domain/entities/conversationEntity";
 import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/constants/statusCodes";
 import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
+import { ChatMapper } from "../../mapper/chatMapper";
+import { ICreateConversationUseCase } from "@/domain/interface/chat/ICreateConversationUseCase";
 
-export class CreateConversationUseCase {
+export class CreateConversationUseCase implements ICreateConversationUseCase {
     constructor(
         private _chatRepo: IChatRepository,
         private _bookingRepo: IBookingRepository,
         private _packageRepo: IPackageRepository
     ) {}
 
-    async createConversation(bookingId: string): Promise<ConversationEntity> {
+    async createConversation(bookingId: string): Promise<ConversationResponseDTO> {
         const existing = await this._chatRepo.getConversationByBooking(bookingId);
-        if (existing) return existing;
+        if (existing) return ChatMapper.toConversationDTO(existing);
 
         const booking = await this._bookingRepo.findById(bookingId);
         if (!booking) throw new AppError("Booking not found", StatusCode.NOT_FOUND);
@@ -23,7 +25,7 @@ export class CreateConversationUseCase {
             ? booking.packageId
             : (booking.packageId as unknown as { _id?: { toString(): string } })._id?.toString() || booking.packageId?.toString();
 
-        const pkg = await this._packageRepo.findById(packageId);
+        const pkg = await this._packageRepo.findById(packageId!);
         if (!pkg) throw new AppError("Package not found", StatusCode.NOT_FOUND);
 
         const creatorId = typeof pkg.creatorId === "string"
@@ -44,6 +46,6 @@ export class CreateConversationUseCase {
         const newConversation = await this._chatRepo.getConversationByBooking(bookingId);
         if (!newConversation) throw new AppError("Failed to create conversation", StatusCode.INTERNAL_SERVER_ERROR);
 
-        return newConversation;
+        return ChatMapper.toConversationDTO(newConversation);
     }
 }

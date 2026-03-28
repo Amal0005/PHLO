@@ -1,5 +1,5 @@
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
+import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 
 export interface IRejectComplaintUseCase {
-  rejectComplaint(complaintId: string, adminComment: string): Promise<ComplaintEntity | null>;
+  rejectComplaint(complaintId: string, adminComment: string): Promise<ComplaintResponseDTO | null>;
 }

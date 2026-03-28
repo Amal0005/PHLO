@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IAdminLoginUseCase } from "../../../domain/interface/admin/IAdminLoginUseCase";
 import { AppError } from "@/domain/errors/appError";
+import { IAdminLoginUseCase } from "@/domain/interface/admin/IAdminLoginUseCase";
 
 interface LoginRequestBody {
   email: string;

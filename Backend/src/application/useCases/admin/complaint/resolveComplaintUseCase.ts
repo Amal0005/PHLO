@@ -3,9 +3,10 @@ import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendN
 import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
 import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 import { IResolveComplaintUseCase } from "@/domain/interface/admin/complaint/IResolveComplaintUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
+import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
+import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
 
 export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
   constructor(
@@ -15,7 +16,7 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
     private sendNotificationUseCase: ISendNotificationUseCase
   ) {}
 
-  async resolveComplaint(complaintId: string, action: "resolve" | "dismiss", adminComment: string): Promise<ComplaintEntity | null> {
+  async resolveComplaint(complaintId: string, action: "resolve" | "dismiss", adminComment: string): Promise<ComplaintResponseDTO | null> {
     const complaint = await this.complaintRepository.findById(complaintId);
     if (!complaint) throw new Error(MESSAGES.COMPLAINT.NOT_FOUND);
     if (complaint.status !== "pending") throw new Error(MESSAGES.COMPLAINT.ALREADY_PROCESSED);
@@ -121,6 +122,6 @@ export class ResolveComplaintUseCase implements IResolveComplaintUseCase {
       console.error("Failed to send notification:", error);
     }
 
-    return updatedComplaint;
+    return updatedComplaint ? ComplaintMapper.toDto(updatedComplaint) : null;
   }
 }

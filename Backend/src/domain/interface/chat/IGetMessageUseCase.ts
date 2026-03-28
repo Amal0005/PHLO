@@ -1,5 +1,5 @@
-import { MessageEntity } from "@/domain/entities/messageEntity";
+import { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
 
 export interface IGetMessagesUseCase {
-  getMessage(conversationId: string): Promise<MessageEntity[]>;
+  getMessage(conversationId: string): Promise<MessageResponseDTO[]>;
 }

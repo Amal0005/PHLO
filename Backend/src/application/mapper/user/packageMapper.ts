@@ -24,8 +24,8 @@ export class PackageMapper {
       category: entity.category,
       images: entity.images,
       locations: entity.locations,
-      createdAt: entity.createdAt!,
-      updatedAt: entity.updatedAt!,
+      createdAt: entity.createdAt || new Date(),
+      updatedAt: entity.updatedAt || new Date(),
       distance: (entity as unknown as { distance?: number }).distance,
     };
   }

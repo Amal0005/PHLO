@@ -136,7 +136,7 @@ export class CreatorRoutes {
     this.creatorRouter.get(
       BACKEND_ROUTES.CREATOR.BOOKINGS,
       (req: Request, res: Response) => {
-        creatorBookingController.ListCreatorBookings(req, res);
+        creatorBookingController.listCreatorBookings(req, res);
       },
     );
     this.creatorRouter.get(

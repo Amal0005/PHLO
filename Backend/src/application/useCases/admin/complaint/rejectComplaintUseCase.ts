@@ -3,9 +3,10 @@ import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendN
 import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
 import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
 import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 import { IRejectComplaintUseCase } from "@/domain/interface/admin/complaint/IRejectComplaintUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
+import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
+import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
 
 export class RejectComplaintUseCase implements IRejectComplaintUseCase {
   constructor(
@@ -18,7 +19,7 @@ export class RejectComplaintUseCase implements IRejectComplaintUseCase {
   async rejectComplaint(
     complaintId: string,
     adminComment: string,
-  ): Promise<ComplaintEntity | null> {
+  ): Promise<ComplaintResponseDTO | null> {
     const complaint = await this.complaintRepository.findById(complaintId);
     if (!complaint) throw new Error(MESSAGES.COMPLAINT.NOT_FOUND);
     if (complaint.status !== "pending")
@@ -78,8 +79,8 @@ export class RejectComplaintUseCase implements IRejectComplaintUseCase {
         typeof complaint.userId === "string"
           ? complaint.userId
           : (
-              complaint.userId as unknown as { _id?: { toString(): string } }
-            )._id?.toString();
+            complaint.userId as unknown as { _id?: { toString(): string } }
+          )._id?.toString();
       if (userId) {
         await this.sendNotificationUseCase.sendNotification({
           recipientId: userId,
@@ -104,8 +105,8 @@ export class RejectComplaintUseCase implements IRejectComplaintUseCase {
         typeof creatorId === "string"
           ? creatorId
           : (
-              creatorId as unknown as { _id?: { toString(): string } }
-            )._id?.toString();
+            creatorId as unknown as { _id?: { toString(): string } }
+          )._id?.toString();
       if (creatorIdStr) {
         await this.sendNotificationUseCase.sendNotification({
           recipientId: creatorIdStr,
@@ -129,6 +130,6 @@ export class RejectComplaintUseCase implements IRejectComplaintUseCase {
       console.error("Failed to send notification:", error);
     }
 
-    return updatedComplaint;
+    return updatedComplaint ? ComplaintMapper.toDto(updatedComplaint) : null;
   }
 }

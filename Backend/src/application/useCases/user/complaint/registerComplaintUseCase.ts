@@ -1,5 +1,4 @@
 import { ComplaintRequestDTO } from "@/domain/dto/complaint/complaintRequestDto";
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
@@ -7,6 +6,9 @@ import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRe
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { IRegisterComplaintUseCase } from "@/domain/interface/user/complaint/IRegisterComplaintUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
+import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
+import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
+import { ComplaintEntity } from "@/domain/entities/complaintEntity";
 
 export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
   constructor(
@@ -16,7 +18,7 @@ export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
     private sendNotificationUseCase: ISendNotificationUseCase
   ) {}
 
-  async registerComplaint(userId: string, dto: ComplaintRequestDTO): Promise<ComplaintEntity> {
+  async registerComplaint(userId: string, dto: ComplaintRequestDTO): Promise<ComplaintResponseDTO> {
     const booking = await this.bookingRepository.findById(dto.bookingId);
     if (!booking) {
       throw new Error(MESSAGES.BOOKING.NOT_FOUND);
@@ -60,6 +62,6 @@ export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
       console.error("Failed to send notification to admin:", error);
     }
 
-    return createdComplaint;
+    return ComplaintMapper.toDto(createdComplaint);
   }
 }

@@ -18,8 +18,8 @@ export class CreatorMapper {
       rejectionReason: entity.rejectionReason,
       specialties: entity.specialties || [],
       isSubscribed: !!(entity.subscription && entity.subscription.status === "active" && new Date(entity.subscription.endDate) > new Date()),
-      createdAt: entity.createdAt!,
-      updatedAt: entity.updatedAt!,
+      createdAt: entity.createdAt || new Date(),
+      updatedAt: entity.updatedAt || new Date(),
       subscription: entity.subscription ? {
         planId: entity.subscription.planId.toString(),
         planName: entity.subscription.planName,

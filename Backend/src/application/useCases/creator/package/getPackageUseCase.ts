@@ -1,6 +1,6 @@
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
 import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
-import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IgetPackageUseCase";
+import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
 import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { PaginatedResult } from "@/domain/types/paginationTypes";
 

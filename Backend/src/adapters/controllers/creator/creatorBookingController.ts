@@ -9,7 +9,7 @@ export class CreatorBookingController {
         private _listCreatorBookingsUseCase: IListCreatorBookingsUseCase
     ) {}
 
-    async ListCreatorBookings(req: AuthRequest, res: Response) {
+    async listCreatorBookings(req: AuthRequest, res: Response) {
         try {
             const creatorId = req.user?.userId;
             if (!creatorId) {

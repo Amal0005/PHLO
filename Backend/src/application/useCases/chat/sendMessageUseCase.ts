@@ -1,10 +1,11 @@
-import { MessageEntity } from "@/domain/entities/messageEntity";
 import { ISendMessageUseCase } from "@/domain/interface/chat/ISendMessageUseCase";
 import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
+import { ChatMapper } from "../../mapper/chatMapper";
 
 export class SendMessageUseCase implements ISendMessageUseCase {
     constructor(
@@ -14,7 +15,7 @@ export class SendMessageUseCase implements ISendMessageUseCase {
         private _creatorRepo: ICreatorRepository
     ) {}
 
-    async sendMessage(data: { conversationId: string; senderId: string; message: string; recipientId: string; type?: "text" | "image" }): Promise<MessageEntity> {
+    async sendMessage(data: { conversationId: string; senderId: string; message: string; recipientId: string; type?: "text" | "image" }): Promise<MessageResponseDTO> {
         const messageType = data.type || "text";
         const message = await this._chatRepo.saveMessage({
             conversationId: data.conversationId,
@@ -43,6 +44,6 @@ export class SendMessageUseCase implements ISendMessageUseCase {
             isRead: false
         });
 
-        return message;
+        return ChatMapper.toMessageDTO(message);
     }
 }
