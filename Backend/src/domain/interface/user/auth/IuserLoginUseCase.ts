@@ -8,4 +8,3 @@ export interface IUserLoginUseCase {
     refreshToken: string;
   }>;
 }
-

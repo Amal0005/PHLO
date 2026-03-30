@@ -316,7 +316,7 @@ const PackageDetailPage: React.FC = () => {
                       {!checkingAvailability && selectedDate && isDateAvailable === false && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 backdrop-blur-xl">
                           <AlertCircle className="w-3 h-3 text-rose-400" />
-                        </div> 
+                        </div>
                       )}
                     </div>
                   </div>

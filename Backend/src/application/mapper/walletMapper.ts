@@ -26,11 +26,13 @@ export class WalletMapper {
   static toWalletDto(wallet: Wallet, transactions: WalletTransaction[], totalTransactions: number): WalletResponseDTO {
     const walletData = wallet as unknown as { _id?: { toString(): string } };
     return {
-      id: wallet.id || walletData._id?.toString() || "",
-      ownerId: wallet.ownerId,
-      ownerType: wallet.ownerType,
-      balance: wallet.balance,
-      lastUpdated: wallet.lastUpdated,
+      wallet: {
+        id: wallet.id || walletData._id?.toString() || "",
+        ownerId: wallet.ownerId,
+        ownerType: wallet.ownerType,
+        balance: wallet.balance,
+        lastUpdated: wallet.lastUpdated,
+      },
       transactions: this.toTransactionDtoList(transactions),
       totalTransactions,
     };

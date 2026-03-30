@@ -9,6 +9,7 @@ import { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBo
 import { BookingStatus } from "@/constants/bookingStatus";
 import { StatusCode } from "@/constants/statusCodes";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import { PaymentMapper } from "@/application/mapper/user/paymentMapper";
 
 export class CreateBookingUseCase implements ICreateBookingUseCase {
   constructor(
@@ -16,7 +17,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private _packageRepo: IPackageRepository,
     private _leaveRepo: ILeaveRepository,
     private _stripeService: IStripeService
-  ) {}
+  ) { }
   async createBooking(
     userId: string,
     data: CreateBookingRequestDTO
@@ -44,8 +45,8 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
 
     const existing = await this._bookingRepo.findExistingBooking(data.packageId, bookingDate);
     if (existing) {
-      const existingId = typeof existing.userId === 'string' 
-        ? existing.userId 
+      const existingId = typeof existing.userId === 'string'
+        ? existing.userId
         : (existing.userId as unknown as Record<string, unknown>)._id?.toString();
 
       if (existingId === userId) {
@@ -63,15 +64,8 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
       location: data.location,
     });
 
-    const session = await this._stripeService.createCheckoutSession({
-      bookingId: booking.id!,
-      creatorId: creatorId,
-      packageName: pkg.title,
-      amount: pkg.price,
-      successUrl: `${data.baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${data.baseUrl}/payment-cancel?booking_id=${booking.id}`,
-      type: "booking",
-    });
+    const sessionDto = PaymentMapper.toCreateSessionDto(booking, pkg, creatorId, data.baseUrl);
+    const session = await this._stripeService.createCheckoutSession(sessionDto);
 
     await this._bookingRepo.update(booking.id!, {
       stripeSessionId: session.id,

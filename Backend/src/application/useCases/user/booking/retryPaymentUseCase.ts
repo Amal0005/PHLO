@@ -7,6 +7,7 @@ import { IRetryPaymentUseCase } from "@/domain/interface/user/booking/IRetryPaym
 import { BookingStatus } from "@/constants/bookingStatus";
 import { StatusCode } from "@/constants/statusCodes";
 import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import { PaymentMapper } from "@/application/mapper/user/paymentMapper";
 
 export class RetryPaymentUseCase implements IRetryPaymentUseCase {
     constructor(
@@ -35,16 +36,8 @@ export class RetryPaymentUseCase implements IRetryPaymentUseCase {
             ? pkg.creatorId
             : (pkg.creatorId as CreatorEntity)._id?.toString() || "";
 
-        const session = await this._stripeService.createCheckoutSession({
-            bookingId: booking.id!,
-            creatorId: creatorId,
-            packageName: pkg.title,
-            amount: pkg.price,
-            successUrl: `${baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-            cancelUrl: `${baseUrl}/payment-cancel?booking_id=${booking.id}`,
-            type: "booking",
-            userId: typeof booking.userId === 'string' ? booking.userId : (booking.userId as unknown as { _id?: { toString(): string } })._id?.toString() || "",
-        });
+        const sessionDto = PaymentMapper.toCreateSessionDto(booking, pkg, creatorId, baseUrl);
+        const session = await this._stripeService.createCheckoutSession(sessionDto);
 
         // Update booking with the NEW stripeSessionId
         await this._bookingRepo.update(booking.id!, {

@@ -3,6 +3,7 @@ import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRe
 import { IStripeService } from "@/domain/interface/service/IStripeService";
 import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
 import { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
+import { PaymentMapper } from "@/application/mapper/user/paymentMapper";
 
 export class BuyWallpaperUseCase implements IBuyWallpaperUseCase {
   constructor(
@@ -34,15 +35,9 @@ export class BuyWallpaperUseCase implements IBuyWallpaperUseCase {
       throw new Error("This wallpaper is free. You can download it directly.");
     }
 
-    return await this._stripeService.createCheckoutSession({
-      wallpaperId: wallpaper._id,
-      userId: userId,
-      creatorId: wallpaper.creatorId.toString(),
-      packageName: `Wallpaper: ${wallpaper.title}`,
-      amount: wallpaper.price,
-      successUrl,
-      cancelUrl,
-      type: "wallpaper",
-    });
+    const sessionDto = PaymentMapper.toWallpaperCreateSessionDto(wallpaper, userId, successUrl, cancelUrl);
+    const session = await this._stripeService.createCheckoutSession(sessionDto);
+
+    return session;
   }
 }
