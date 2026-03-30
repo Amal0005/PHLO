@@ -1,5 +1,5 @@
-import { User } from "./userEntities";
-import { PackageEntity } from "./packageEntity";
+import type { User } from "@/domain/entities/userEntities";
+import type { PackageEntity } from "@/domain/entities/packageEntity";
 
 export interface ReviewEntity {
     id?: string,

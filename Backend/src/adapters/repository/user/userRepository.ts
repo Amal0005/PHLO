@@ -1,11 +1,12 @@
-import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { User } from "../../../domain/entities/userEntities";
-import { UserModel, IUserModel } from "../../../framework/database/model/userModel";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { User } from "@/domain/entities/userEntities";
+import type { IUserModel } from "@/framework/database/model/userModel";
+import { UserModel } from "@/framework/database/model/userModel";
 import { paginateMongo } from "@/utils/pagination";
-import { BaseRepository } from "../baseRepository";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { Filter } from "mongodb";
-import mongoose from "mongoose";
+import { BaseRepository } from "@/adapters/repository/baseRepository";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { Filter } from "mongodb";
+import type mongoose from "mongoose";
 
 export class UserRepository extends BaseRepository<User, IUserModel> implements IUserRepository {
   constructor() {

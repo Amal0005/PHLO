@@ -2,14 +2,14 @@ import { useState } from "react";
 import { Menu, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import LogoWhite from "../../assets/images/Logo_white.png";
+import LogoWhite from "@/assets/images/Logo_white.png";
 import type { RootState } from "@/store/store";
 import { clearAdmin } from "@/store/slices/admin/adminSlice";
 import { ROUTES } from "@/constants/routes";
 import { AdminAuthService } from "@/services/admin/adminAuthService";
-import ConfirmModal from "../reusable/ConfirmModal";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { removeUser } from "@/store/slices/auth/authSlice";
-import NotificationBell from "../reusable/NotificationBell";
+import NotificationBell from "@/components/reusable/NotificationBell";
 
 
 interface AdminNavbarProps {
@@ -72,18 +72,18 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
 
           <div className="flex items-center gap-6">
             <div className="hidden md:flex items-center gap-4">
-               <NotificationBell />
+              <NotificationBell />
             </div>
-            
+
             {admin && (
               <div className="flex items-center gap-4 bg-white/5 rounded-2xl p-1.5 px-4 border border-white/5 hover:border-white/10 transition-all group cursor-pointer">
                 <div className="relative">
-                   <div className="absolute -inset-0.5 bg-gradient-to-r from-white/20 to-white/5 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-                   <div className="relative w-9 h-9 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center">
-                     <span className="text-white text-xs font-black italic">
-                       {initials}
-                     </span>
-                   </div>
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-white/20 to-white/5 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                  <div className="relative w-9 h-9 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center">
+                    <span className="text-white text-xs font-black italic">
+                      {initials}
+                    </span>
+                  </div>
                 </div>
                 <div className="hidden lg:block">
                   <p className="text-white text-[11px] font-black italic uppercase tracking-wider">
@@ -112,10 +112,9 @@ export default function AdminNavbar({ onMenuToggle }: AdminNavbarProps) {
         onClose={() => setShowLogoutModal(false)}
         onConfirm={handleLogout}
         title="Admin Logout"
-        message="Are you sure you want to exit the admin portal?"
+        message="Are you sure you want to logout? You will need to sign in again to access the admin portal."
         confirmLabel="Logout"
         variant="danger"
-        position="top"
         icon={<LogOut size={28} />}
       />
     </nav>

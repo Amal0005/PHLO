@@ -9,7 +9,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { S3Service } from "@/services/s3Service";
 import { S3Media } from "@/components/reusable/s3Media";
-import LocationSearchBar from "./locationSearchBar";
+import LocationSearchBar from "@/pages/creator/package/components/locationSearchBar";
 import { AxiosError } from "axios";
 
 interface EditPackageModalProps {

@@ -1,6 +1,6 @@
-import { CategoryEntity } from "@/domain/entities/categoryEntity";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { IBaseRepository } from "./IBaseRepository";
+import type { CategoryEntity } from "@/domain/entities/categoryEntity";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
 
 export interface CategoryFilterOptions {
   search?: string;

@@ -1,15 +1,18 @@
-import { PackageEntity } from "@/domain/entities/packageEntity";
-import {
+import type { PackageEntity } from "@/domain/entities/packageEntity";
+import type {
   IPackageRepository,
   PackageFilters
 } from "@/domain/interface/repository/IPackageRepository";
-import {
-  PackageModel,
+import type {
   IPackageModel
 } from "@/framework/database/model/packageModel";
-import { BaseRepository } from "../baseRepository";
-import { SortOrder, Document, Types, PipelineStage } from "mongoose";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import {
+  PackageModel
+} from "@/framework/database/model/packageModel";
+import { BaseRepository } from "@/adapters/repository/baseRepository";
+import type { SortOrder, Document, PipelineStage } from "mongoose";
+import { Types } from "mongoose";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class PackageRepository
   extends BaseRepository<PackageEntity, IPackageModel>

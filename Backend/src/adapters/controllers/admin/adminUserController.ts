@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IToggleUserStatusUseCase } from "../../../domain/interface/admin/IToggleUserStatusUseCase";
-import { IAdminUserListingUseCase } from "@/domain/interface/admin/IAdminUserListingUseCase";
+import type { IToggleUserStatusUseCase } from "@/domain/interface/admin/IToggleUserStatusUseCase";
+import type { IAdminUserListingUseCase } from "@/domain/interface/admin/IAdminUserListingUseCase";
 
 export class AdminUserController {
   constructor(

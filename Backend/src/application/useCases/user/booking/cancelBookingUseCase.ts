@@ -1,16 +1,16 @@
 import { BookingMapper } from "@/application/mapper/user/bookingMapper";
-import { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
+import type { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
 import { AppError } from "@/domain/errors/appError";
-import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBookingUseCase";
+import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBookingUseCase";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { StatusCode } from "@/constants/statusCodes";
 
-import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
-import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 
-import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
 
 export class CancelBookingUseCase implements ICancelBookingUseCase {
   constructor(

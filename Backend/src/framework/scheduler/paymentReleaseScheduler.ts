@@ -1,11 +1,11 @@
 import cron from "node-cron";
-import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
-import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { logger } from "@/utils/logger";
 import { NotificationType } from "@/domain/entities/notificationEntity";
-import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 
 export class PaymentReleaseScheduler {
     constructor(

@@ -1,6 +1,6 @@
-import { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
-import { IAddLeaveUseCase } from "@/domain/interface/creator/leave/IAddLeaveUseCase";
-import { AddLeaveRequestDto, LeaveResponseDto } from "@/domain/dto/creator/leaveDto";
+import type { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
+import type { IAddLeaveUseCase } from "@/domain/interface/creator/leave/IAddLeaveUseCase";
+import type { AddLeaveRequestDto, LeaveResponseDto } from "@/domain/dto/creator/leaveDto";
 import { LeaveMapper } from "@/application/mapper/creator/creatorLeaveMapper";
 
 export class AddLeaveUseCase implements IAddLeaveUseCase {

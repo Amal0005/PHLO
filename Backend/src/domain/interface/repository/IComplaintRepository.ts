@@ -1,4 +1,4 @@
-import { ComplaintEntity } from "../../entities/complaintEntity";
+import type { ComplaintEntity } from "@/domain/entities/complaintEntity";
 
 export interface IComplaintRepository {
   create(complaint: ComplaintEntity): Promise<ComplaintEntity>;

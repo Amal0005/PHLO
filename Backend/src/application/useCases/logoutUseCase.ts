@@ -1,5 +1,5 @@
-import { ILogoutUseCase } from "@/domain/interface/ILogoutUseCase";
-import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
+import type { ILogoutUseCase } from "@/domain/interface/ILogoutUseCase";
+import type { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
 
 
 export class LogoutUseCase implements ILogoutUseCase {

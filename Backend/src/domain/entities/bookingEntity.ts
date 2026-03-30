@@ -1,6 +1,6 @@
-import { BookingStatus } from "@/constants/bookingStatus";
-import { PackageEntity } from "./packageEntity";
-import { User } from "./userEntities";
+import type { BookingStatus } from "@/constants/bookingStatus";
+import type { PackageEntity } from "@/domain/entities/packageEntity";
+import type { User } from "@/domain/entities/userEntities";
 
 export interface BookingEntity {
   id?: string;

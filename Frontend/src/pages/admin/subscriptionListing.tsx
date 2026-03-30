@@ -5,7 +5,7 @@ import { Subscription, SubscriptionForm } from "@/interface/admin/subscriptionIn
 import { toast } from "react-toastify";
 import ConfirmModal from "@/components/reusable/ConfirmModal";
 import DataTable, { Column } from "@/components/reusable/dataTable";
-import AddEditSubscriptionModal from "./components/addEditSubscriptionModal";
+import AddEditSubscriptionModal from "@/pages/admin/components/addEditSubscriptionModal";
 import { AdminSubscriptionService } from "@/services/admin/adminSubscriptionService";
 import Pagination from "@/components/reusable/pagination";
 import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";

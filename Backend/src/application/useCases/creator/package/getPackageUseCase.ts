@@ -1,8 +1,8 @@
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
-import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
-import { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
-import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
+import type { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
+import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetPackagesUseCase implements IgetPackagesUseCase {
   constructor(

@@ -8,7 +8,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import LocationSearchBar from "./locationSearchBar";
+import LocationSearchBar from "@/pages/creator/package/components/locationSearchBar";
 import { S3Service } from "@/services/s3Service";
 
 interface AddPackageModalProps {

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { notificationController } from "../../framework/depInjection/notificationInjections";
+import { notificationController } from "@/framework/depInjection/notificationInjections";
 import { authMiddleware } from "@/framework/depInjection/user/userInjections";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 const notificationRouter = Router();

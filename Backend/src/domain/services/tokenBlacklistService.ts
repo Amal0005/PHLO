@@ -1,5 +1,5 @@
-import { IRedisService } from "@/domain/interface/service/IRedisServices";
-import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
+import type { IRedisService } from "@/domain/interface/service/IRedisServices";
+import type { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
 
 
 export class TokenBlacklistService implements ITokenBlacklistService {

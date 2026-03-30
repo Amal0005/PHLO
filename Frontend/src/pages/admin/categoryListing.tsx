@@ -5,7 +5,7 @@ import { Category, CategoryForm } from "@/interface/admin/categoryInterface";
 import { AdminCategoryService } from "@/services/admin/adminCategoryServices";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/components/reusable/ConfirmModal";
-import AddEditCategoryModal from "./components/addEditCategoryModal";
+import AddEditCategoryModal from "@/pages/admin/components/addEditCategoryModal";
 import Pagination from "@/components/reusable/pagination";
 import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import DataTable, { Column } from "@/components/reusable/dataTable";

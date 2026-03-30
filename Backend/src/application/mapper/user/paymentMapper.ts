@@ -1,8 +1,8 @@
-import { CreateCheckoutSessionDTO } from "@/domain/dto/payment/createCheckoutSessionDto";
-import { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
-import { User } from "@/domain/entities/userEntities";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import Stripe from "stripe";
+import type { CreateCheckoutSessionDTO } from "@/domain/dto/payment/createCheckoutSessionDto";
+import type { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
+import type { User } from "@/domain/entities/userEntities";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type Stripe from "stripe";
 
 export class PaymentMapper {
     static toCreateSessionDto(

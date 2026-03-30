@@ -1,5 +1,5 @@
-import { Model, SortOrder } from "mongoose";
-import { Filter } from "mongodb";
+import type { Model, SortOrder } from "mongoose";
+import type { Filter } from "mongodb";
 
 export interface PaginationQuery {
   page?: number;

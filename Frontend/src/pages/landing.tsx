@@ -8,9 +8,9 @@ import {
   CheckCircle,
   Award
 } from 'lucide-react';
-import logoWhite from "../assets/images/Logo_white.png";
+import logoWhite from "@/assets/images/Logo_white.png";
 import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '../constants/routes';
+import { ROUTES } from "@/constants/routes";
 
 const heroImages = [
   'https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=1920&q=80',

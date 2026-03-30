@@ -1,7 +1,7 @@
 import { BookingMapper } from "@/application/mapper/user/bookingMapper";
-import { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
-import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
+import type { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
+import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
 
 export class ListBookingUseCase implements IListBookingsUseCase{
     constructor(

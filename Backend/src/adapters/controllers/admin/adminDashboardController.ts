@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { IDashboardStatsUseCase } from "@/domain/interface/admin/IDashboardStatsUseCase";
-import { IGenerateDashboardReportUseCase } from "@/domain/interface/admin/IGenerateDashboardReportUseCase";
+import type { Request, Response } from "express";
+import type { IDashboardStatsUseCase } from "@/domain/interface/admin/IDashboardStatsUseCase";
+import type { IGenerateDashboardReportUseCase } from "@/domain/interface/admin/IGenerateDashboardReportUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 
 export class AdminDashboardController {

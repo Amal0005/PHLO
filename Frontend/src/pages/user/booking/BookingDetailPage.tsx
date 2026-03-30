@@ -23,9 +23,9 @@ import UserNavbar from "@/components/reusable/userNavbar";
 import { toast } from "react-toastify";
 import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { ROUTES } from "@/constants/routes";
-import AddReviewForm from "./components/AddReviewForm";
-import ComplaintForm from "./components/ComplaintForm";
-import ComplaintStatusModal from "./components/ComplaintStatusModal";
+import AddReviewForm from "@/pages/user/booking/components/AddReviewForm";
+import ComplaintForm from "@/pages/user/booking/components/ComplaintForm";
+import ComplaintStatusModal from "@/pages/user/booking/components/ComplaintStatusModal";
 
 const BookingDetailPage: React.FC = () => {
     const { sessionId } = useParams<{ sessionId: string }>();

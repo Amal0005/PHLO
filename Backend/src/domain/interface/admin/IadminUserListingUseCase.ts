@@ -1,5 +1,5 @@
-import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export interface IAdminUserListingUseCase {
   getAllUsers(

@@ -1,8 +1,8 @@
 import { SubscriptionDtoMapper } from "@/application/mapper/admin/subscriptionMapper";
-import { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
-import { SubscriptionRequestDto } from "@/domain/dto/subscription/subscriptionRequestDto";
-import { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
-import { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
+import type { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
+import type { SubscriptionRequestDto } from "@/domain/dto/subscription/subscriptionRequestDto";
+import type { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
+import type { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
 
 export class EditSubscriptionUseCase implements IEditSubscriptionUseCase {
     constructor(

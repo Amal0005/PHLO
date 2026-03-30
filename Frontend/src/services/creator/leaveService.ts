@@ -1,5 +1,5 @@
 import api from "@/axios/axiosConfig";
-import { ICreatorLeaveService, LeaveResponse } from "../../interface/creator/creatorLeaveInterface";
+import { ICreatorLeaveService, LeaveResponse } from "@/interface/creator/creatorLeaveInterface";
 import { format } from "date-fns";
 
 export const creatorLeaveService: ICreatorLeaveService = {

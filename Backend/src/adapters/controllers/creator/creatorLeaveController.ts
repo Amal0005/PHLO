@@ -1,8 +1,8 @@
-import { Response } from "express";
-import { IAddLeaveUseCase } from "@/domain/interface/creator/leave/IAddLeaveUseCase";
-import { IRemoveLeaveUseCase } from "@/domain/interface/creator/leave/IRemoveLeaveUseCase";
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { IGetLeavesUseCase } from "@/domain/interface/creator/leave/IGetLeaveUseCase";
+import type { Response } from "express";
+import type { IAddLeaveUseCase } from "@/domain/interface/creator/leave/IAddLeaveUseCase";
+import type { IRemoveLeaveUseCase } from "@/domain/interface/creator/leave/IRemoveLeaveUseCase";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { IGetLeavesUseCase } from "@/domain/interface/creator/leave/IGetLeaveUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 
 export class CreatorLeaveController {

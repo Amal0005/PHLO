@@ -1,7 +1,7 @@
-import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { WallpaperStatus } from "@/constants/wallpaperStatus";
-import { IBaseRepository } from "./IBaseRepository";
+import type { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { WallpaperStatus } from "@/constants/wallpaperStatus";
+import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
 
 export interface IWallpaperRepository extends IBaseRepository<WallpaperEntity> {
     add(data: WallpaperEntity): Promise<WallpaperEntity>

@@ -1,6 +1,7 @@
-import { model, Document, Types } from "mongoose";
-import { conversationSchema } from "../schema/conversationSchema";
-import { ConversationEntity } from "@/domain/entities/conversationEntity";
+import type { Document, Types } from "mongoose";
+import { model } from "mongoose";
+import { conversationSchema } from "@/framework/database/schema/conversationSchema";
+import type { ConversationEntity } from "@/domain/entities/conversationEntity";
 
 export interface ConversationDocument extends Document, Omit<ConversationEntity, 'id'> {
     _id: Types.ObjectId;

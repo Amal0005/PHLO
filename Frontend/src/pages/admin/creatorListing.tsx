@@ -9,8 +9,8 @@ import {
 } from "@/services/admin/adminCreatorService";
 import { Creator } from "@/interface/admin/creatorInterface";
 import { toast } from "react-toastify";
-import { CreatorDetailModal } from "./components/CreatorDetailModal";
-import ConfirmModal from "../../components/reusable/ConfirmModal";
+import { CreatorDetailModal } from "@/pages/admin/components/CreatorDetailModal";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import Pagination from "@/components/reusable/pagination";
 import { UserX, UserCheck } from "lucide-react";
 import { FilterSearch, FilterSelect } from "@/components/reusable/FilterComponents";

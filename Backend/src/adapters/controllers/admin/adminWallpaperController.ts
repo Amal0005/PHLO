@@ -1,10 +1,10 @@
-import { IGetAllWallpapersUseCase } from "@/domain/interface/admin/wallpaper/IGetAllWallpapersUseCase";
-import { IBlockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IBlockWallpaperUseCase";
-import { IUnblockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IUnblockWallpaperUseCase";
+import type { IGetAllWallpapersUseCase } from "@/domain/interface/admin/wallpaper/IGetAllWallpapersUseCase";
+import type { IBlockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IBlockWallpaperUseCase";
+import type { IUnblockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IUnblockWallpaperUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
-import { WallpaperStatus } from "@/constants/wallpaperStatus";
-import { Request, Response } from "express";
+import type { WallpaperStatus } from "@/constants/wallpaperStatus";
+import type { Request, Response } from "express";
 
 export class AdminWallpaperController {
   constructor(

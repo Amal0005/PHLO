@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { fetchAdminUsers, toggleUserStatus } from "@/services/admin/adminUserService";
 import { User } from "@/interface/admin/userInterface";
 import { toast } from "react-toastify";
-import ConfirmModal from "../../components/reusable/ConfirmModal";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { UserX, UserCheck } from "lucide-react";
 import Pagination from "@/components/reusable/pagination";
 import { FilterSearch, FilterSelect } from "@/components/reusable/FilterComponents";

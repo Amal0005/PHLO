@@ -1,5 +1,5 @@
-import redis from "../../../framework/redis/redisClient";
-import { IRedisService } from "../../interface/service/IRedisServices";
+import redis from "@/framework/redis/redisClient";
+import type { IRedisService } from "@/domain/interface/service/IRedisServices";
 
 export class RedisService implements IRedisService {
   async setValue(key: string, value: string, expiresInSeconds?: number): Promise<void> {

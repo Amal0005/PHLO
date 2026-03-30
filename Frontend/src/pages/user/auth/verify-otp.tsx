@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 import { Mail, Shield, ArrowLeft, Image, Calendar } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import LogoWhite from "../../../assets/images/Logo_white.png";
+import LogoWhite from "@/assets/images/Logo_white.png";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
 import { MESSAGES } from "@/constants/messages";

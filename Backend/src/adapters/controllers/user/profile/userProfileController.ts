@@ -1,13 +1,13 @@
-import { Response } from "express";
+import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
-import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
-import { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
-import { ICheckEmailUseCase } from "@/domain/interface/user/profile/ICheckEmailUseCase";
-import { IVerifyEmailChangeOtpUseCase } from "@/domain/interface/user/profile/IVerifyEmailChangeOtpUseCase";
+import type { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
+import type { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
+import type { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
+import type { ICheckEmailUseCase } from "@/domain/interface/user/profile/ICheckEmailUseCase";
+import type { IVerifyEmailChangeOtpUseCase } from "@/domain/interface/user/profile/IVerifyEmailChangeOtpUseCase";
 
 export class UserProfileController {
     constructor(

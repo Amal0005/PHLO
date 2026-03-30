@@ -1,4 +1,4 @@
-import Stripe from "stripe";
+import type Stripe from "stripe";
 
 export interface IBookingWebhookUseCase {
   handleWebhook(payload: string | Buffer, signature: string): Promise<void>;

@@ -1,6 +1,16 @@
-import { Router, Request, Response } from "express";
-import { validate } from "../../../adapters/middlewares/zodValidator";
-import { registerUserSchema } from "../../../adapters/validation/userSchemas";
+import type { Request, Response } from "express";
+import { Router } from "express";
+import { validate } from "@/adapters/middlewares/zodValidator";
+import {
+  registerUserSchema,
+  verifyOtpSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  reviewSchema,
+  complaintSchema,
+  loginUserSchema,
+  changePasswordSchema,
+} from "@/adapters/validation/userSchemas";
 import {
   loginController,
   logoutController,
@@ -20,12 +30,11 @@ import {
   userWallpaperController,
   wishlistController,
   reviewController,
-} from "../../../framework/depInjection/user/userInjections";
+} from "@/framework/depInjection/user/userInjections";
 
-import { loginUserSchema } from "../../validation/loginUserSchema";
-import {
+import type {
   AuthRequest,
-} from "../../middlewares/jwtAuthMiddleware";
+} from "@/adapters/middlewares/jwtAuthMiddleware";
 
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
@@ -48,6 +57,7 @@ export class UserRoutes {
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.VERIFY_OTP,
+      validate(verifyOtpSchema),
       (req: Request, res: Response) => registerController.verifyOtp(req, res),
     );
 
@@ -67,18 +77,21 @@ export class UserRoutes {
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.FORGOT_PASSWORD,
+      validate(forgotPasswordSchema),
       (req: Request, res: Response) =>
         userAuthController.forgotPassword(req, res),
     );
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.VERIFY_FORGOT_OTP,
+      validate(verifyOtpSchema),
       (req: Request, res: Response) =>
         userAuthController.verifyForgotOtp(req, res),
     );
 
     this.userRouter.post(
       BACKEND_ROUTES.USER.RESET_PASSWORD,
+      validate(resetPasswordSchema),
       (req: Request, res: Response) =>
         userAuthController.resetPassword(req, res),
     );
@@ -111,6 +124,7 @@ export class UserRoutes {
       BACKEND_ROUTES.USER.CHANGE_PASSWORD,
       authMiddleware,
       authorizeRoles("user"),
+      validate(changePasswordSchema),
       (req: Request, res: Response) =>
         changePasswordController.changePassword(req, res),
     );
@@ -232,6 +246,7 @@ export class UserRoutes {
       BACKEND_ROUTES.USER.REVIEW,
       authMiddleware,
       authorizeRoles("user"),
+      validate(reviewSchema),
       (req: AuthRequest, res: Response) =>
         reviewController.addReview(req, res),
     )
@@ -258,6 +273,7 @@ export class UserRoutes {
       BACKEND_ROUTES.USER.UPDATE_REVIEW,
       authMiddleware,
       authorizeRoles("user"),
+      validate(reviewSchema),
       (req: AuthRequest, res: Response) =>
         reviewController.updateReview(req, res),
     )
@@ -272,6 +288,7 @@ export class UserRoutes {
       BACKEND_ROUTES.USER.COMPLAINTS,
       authMiddleware,
       authorizeRoles("user"),
+      validate(complaintSchema),
       (req: AuthRequest, res: Response) => complaintController.register(req, res)
     );
     this.userRouter.get(

@@ -1,5 +1,5 @@
-import { ISubscriptionRepository } from "../../../domain/interface/repository/ISubscriptionRepositories";
-import { IDeleteSubscriptionUseCase } from "../../../domain/interface/admin/subscription/IDeleteSubscriptionUseCase";
+import type { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
+import type { IDeleteSubscriptionUseCase } from "@/domain/interface/admin/subscription/IDeleteSubscriptionUseCase";
 
 export class DeleteSubscriptionUseCase implements IDeleteSubscriptionUseCase {
     constructor(

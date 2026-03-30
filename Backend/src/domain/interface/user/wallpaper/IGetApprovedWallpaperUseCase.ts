@@ -1,5 +1,5 @@
-import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export interface IGetApprovedWallpapersUseCase {
   getApprovedWallpapers(

@@ -1,5 +1,5 @@
-import { NotificationRepository } from "../../adapters/repository/notificationRepository";
-import { NotificationController } from "../../adapters/controllers/notificationController";
+import { NotificationRepository } from "@/adapters/repository/notificationRepository";
+import { NotificationController } from "@/adapters/controllers/notificationController";
 import { SendNotificationUseCase } from "@/application/useCases/notification/sendNotificationUseCase";
 import { GetNotificationsUseCase } from "@/application/useCases/notification/getNotificationsUseCase";
 import { MarkNotificationReadUseCase } from "@/application/useCases/notification/markNotificationReadUseCase";

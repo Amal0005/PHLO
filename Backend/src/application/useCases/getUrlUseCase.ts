@@ -1,5 +1,5 @@
-import { IGetPresignedUrlUseCase } from "@/domain/interface/creator/IGetUrl";
-import { IStorageService } from "@/domain/interface/service/IS3Services";
+import type { IGetPresignedUrlUseCase } from "@/domain/interface/creator/IGetUrl";
+import type { IStorageService } from "@/domain/interface/service/IS3Services";
 
 
 export class GetPresignedUploadUrlUseCase implements IGetPresignedUrlUseCase{

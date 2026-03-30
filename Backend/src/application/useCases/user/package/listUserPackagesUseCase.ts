@@ -1,8 +1,8 @@
-import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
+import type { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
-import { IPackageRepository, PackageFilters } from "@/domain/interface/repository/IPackageRepository";
-import { IListUserPackagesUseCase } from "@/domain/interface/user/packages/IListUserPackagesUseCase";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { IPackageRepository, PackageFilters } from "@/domain/interface/repository/IPackageRepository";
+import type { IListUserPackagesUseCase } from "@/domain/interface/user/packages/IListUserPackagesUseCase";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class ListUserPackagesUseCase implements IListUserPackagesUseCase {
   constructor(

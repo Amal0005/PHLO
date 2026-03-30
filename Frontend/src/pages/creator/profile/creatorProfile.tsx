@@ -6,7 +6,7 @@ import { Edit, Mail, Phone, MapPin, Briefcase, User, Link as LinkIcon } from "lu
 import { toast } from "react-toastify";
 import { S3Service } from "@/services/s3Service";
 import { S3Media } from "@/components/reusable/s3Media";
-import { EditCreatorProfileModal } from "./components/EditCreatorProfileModal";
+import { EditCreatorProfileModal } from "@/pages/creator/profile/components/EditCreatorProfileModal";
 import { z } from "zod";
 import { creatorProfileSchema } from "@/validation/creatorProfileSchema";
 import { AxiosError } from "axios";

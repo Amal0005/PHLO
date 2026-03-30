@@ -1,5 +1,5 @@
-import { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
-import { Model, Document, UpdateQuery, QueryFilter } from "mongoose";
+import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
+import type { Model, Document, UpdateQuery, QueryFilter } from "mongoose";
 
 export abstract class BaseRepository<T, M extends Document>
   implements IBaseRepository<T> {

@@ -1,6 +1,6 @@
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { IBaseRepository } from "./IBaseRepository";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
 
 export interface ICreatorRepository extends IBaseRepository<CreatorEntity> {
   createCreator(data: CreatorEntity,): Promise<CreatorEntity>

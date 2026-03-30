@@ -1,5 +1,6 @@
-import { Server, Socket } from "socket.io";
-import http from "http";
+import type { Socket } from "socket.io";
+import { Server } from "socket.io";
+import type http from "http";
 
 interface SendMessageData {
   conversationId: string;

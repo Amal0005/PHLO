@@ -1,11 +1,11 @@
-import { IGetConversationUseCase } from "@/domain/interface/chat/IGetConversationUseCase";
-import { IGetMessagesUseCase } from "@/domain/interface/chat/IGetMessageUseCase";
-import { ISendMessageUseCase } from "@/domain/interface/chat/ISendMessageUseCase";
-import { CreateConversationUseCase } from "@/application/useCases/chat/createConversationUseCase";
-import { IMarkMessagesAsSeenUseCase } from "@/domain/interface/chat/IMarkMessagesAsSeenUseCase";
+import type { IGetConversationUseCase } from "@/domain/interface/chat/IGetConversationUseCase";
+import type { IGetMessagesUseCase } from "@/domain/interface/chat/IGetMessageUseCase";
+import type { ISendMessageUseCase } from "@/domain/interface/chat/ISendMessageUseCase";
+import type { CreateConversationUseCase } from "@/application/useCases/chat/createConversationUseCase";
+import type { IMarkMessagesAsSeenUseCase } from "@/domain/interface/chat/IMarkMessagesAsSeenUseCase";
 import { SocketIOHandler } from "@/framework/socket/socketIOHandler";
-import { Response } from "express";
-import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
+import type { Response } from "express";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { StatusCode } from "@/constants/statusCodes";
 
 export class ChatController {

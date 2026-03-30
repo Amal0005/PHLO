@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
-import { AdminRoutes } from "./routes/adminRoutes";
-import { UserRoutes } from "./routes/userRoutes";
-import { CreatorRoutes } from "./routes/creatorRoutes";
+import { AdminRoutes } from "@/routes/adminRoutes";
+import { UserRoutes } from "@/routes/userRoutes";
+import { CreatorRoutes } from "@/routes/creatorRoutes";
 import { ToastContainer } from "react-toastify";
 
 

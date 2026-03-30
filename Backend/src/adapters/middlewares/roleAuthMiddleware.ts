@@ -1,6 +1,6 @@
-import { Response, NextFunction } from "express";
+import type { Response, NextFunction } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import { AuthRequest } from "./jwtAuthMiddleware";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export const authorizeRoles = (...allowedRoles: string[]) => {

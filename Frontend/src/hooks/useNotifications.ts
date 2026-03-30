@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { RootState } from "@/store/store";
 import {
     addNotification,
     setNotifications,
@@ -8,10 +8,10 @@ import {
     markRead,
     markAllAsRead,
     markChatRead
-} from "../store/slices/notification/notificationSlice";
-import api from "../axios/axiosConfig";
-import { socketService } from "../services/socketService";
-import { NotificationEntity, NotificationType } from "../interface/notification/notificationInterface";
+} from "@/store/slices/notification/notificationSlice";
+import api from "@/axios/axiosConfig";
+import { socketService } from "@/services/socketService";
+import { NotificationEntity, NotificationType } from "@/interface/notification/notificationInterface";
 import { ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";

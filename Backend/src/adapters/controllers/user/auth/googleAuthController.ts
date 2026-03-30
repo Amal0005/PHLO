@@ -1,9 +1,11 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IGoogleLoginUseCase } from "../../../../domain/interface/user/auth/IGoogleLoginUseCase";
+import { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
 export class GoogleAuthController {
-  constructor(private _googleLoginUseCase: IGoogleLoginUseCase) {}
+  constructor(
+    private _googleLoginUseCase: IGoogleLoginUseCase
+  ) {}
 
   async googleLogin(req: Request, res: Response) {
     try {

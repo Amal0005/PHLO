@@ -1,4 +1,5 @@
-import { Router, Request, Response } from "express";
+import type { Request, Response } from "express";
+import { Router } from "express";
 import {
   adminLoginController,
   adminUserController,
@@ -8,10 +9,17 @@ import {
   adminWallpaperController,
   adminWalletController,
   adminDashboardController,
-} from "../../../framework/depInjection/admin/adminInjections";
+} from "@/framework/depInjection/admin/adminInjections";
 
-import { authorizeRoles } from "../../middlewares/roleAuthMiddleware";
-import { authMiddleware, logoutController, tokenController } from "../../../framework/depInjection/user/userInjections";
+import {
+  adminLoginSchema,
+  categorySchema,
+  subscriptionSchema,
+  walletCreditSchema,
+} from "@/adapters/validation/adminSchemas";
+import { validate } from "@/adapters/middlewares/zodValidator";
+import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
+import { authMiddleware, logoutController, tokenController } from "@/framework/depInjection/user/userInjections";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 import { complaintController } from "@/framework/depInjection/complaintInjection";
 
@@ -25,6 +33,7 @@ export class AdminRoutes {
   private setRoutes(): void {
     this.adminRouter.post(
       BACKEND_ROUTES.ADMIN.LOGIN,
+      validate(adminLoginSchema),
       (req: Request, res: Response) =>
         adminLoginController.login(req, res)
     );
@@ -66,27 +75,39 @@ export class AdminRoutes {
     this.adminRouter.patch(BACKEND_ROUTES.ADMIN.CREATOR_STATUS, (req: Request, res: Response) => {
       adminCreatorController.changeCreatorStatus(req, res)
     })
-    this.adminRouter.post(BACKEND_ROUTES.ADMIN.CATEGORY, (req: Request, res: Response) => {
-      categoryController.addCategory(req, res)
-    })
+    this.adminRouter.post(
+      BACKEND_ROUTES.ADMIN.CATEGORY,
+      validate(categorySchema),
+      (req: Request, res: Response) => {
+        categoryController.addCategory(req, res)
+      })
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.CATEGORY, (req: Request, res: Response) => {
       categoryController.getCategory(req, res)
     })
     this.adminRouter.delete(BACKEND_ROUTES.ADMIN.CATEGORY_DETAIL, (req: Request, res: Response) => {
       categoryController.deleteCategory(req, res)
     })
-    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.CATEGORY_DETAIL, (req: Request, res: Response) => {
-      categoryController.editCategory(req, res);
-    });
-    this.adminRouter.post(BACKEND_ROUTES.ADMIN.SUBSCRIPTION, (req: Request, res: Response) => {
-      subscriptionController.addSubscription(req, res)
-    })
+    this.adminRouter.patch(
+      BACKEND_ROUTES.ADMIN.CATEGORY_DETAIL,
+      validate(categorySchema),
+      (req: Request, res: Response) => {
+        categoryController.editCategory(req, res);
+      });
+    this.adminRouter.post(
+      BACKEND_ROUTES.ADMIN.SUBSCRIPTION,
+      validate(subscriptionSchema),
+      (req: Request, res: Response) => {
+        subscriptionController.addSubscription(req, res)
+      })
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.SUBSCRIPTION, (req: Request, res: Response) => {
       subscriptionController.getSubscriptions(req, res)
     })
-    this.adminRouter.patch(BACKEND_ROUTES.ADMIN.SUBSCRIPTION_DETAIL, (req: Request, res: Response) => {
-      subscriptionController.editSubscription(req, res)
-    })
+    this.adminRouter.patch(
+      BACKEND_ROUTES.ADMIN.SUBSCRIPTION_DETAIL,
+      validate(subscriptionSchema),
+      (req: Request, res: Response) => {
+        subscriptionController.editSubscription(req, res)
+      })
     this.adminRouter.delete(BACKEND_ROUTES.ADMIN.SUBSCRIPTION_DETAIL, (req: Request, res: Response) => {
       subscriptionController.deleteSubscription(req, res)
     })
@@ -103,9 +124,12 @@ export class AdminRoutes {
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.WALLET, (req: Request, res: Response) => {
       adminWalletController.getWallet(req, res)
     })
-    this.adminRouter.post(BACKEND_ROUTES.ADMIN.WALLET_CREDIT, (req: Request, res: Response) => {
-      adminWalletController.creditWallet(req, res)
-    })
+    this.adminRouter.post(
+      BACKEND_ROUTES.ADMIN.WALLET_CREDIT,
+      validate(walletCreditSchema),
+      (req: Request, res: Response) => {
+        adminWalletController.creditWallet(req, res)
+      })
     this.adminRouter.get(BACKEND_ROUTES.ADMIN.COMPLAINTS, (req: Request, res: Response) => complaintController.getAll(req, res));
     this.adminRouter.patch(BACKEND_ROUTES.ADMIN.RESOLVE_COMPLAINT, (req: Request, res: Response) => complaintController.resolve(req, res));
     this.adminRouter.patch(BACKEND_ROUTES.ADMIN.REJECT_COMPLAINT, (req: Request, res: Response) => complaintController.reject(req, res));

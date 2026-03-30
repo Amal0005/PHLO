@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { IComplaintModel } from "../model/complaintModel";
+import type { IComplaintModel } from "@/framework/database/model/complaintModel";
 
 export const ComplaintSchema = new Schema<IComplaintModel>(
   {

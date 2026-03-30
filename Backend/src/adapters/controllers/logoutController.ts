@@ -1,7 +1,7 @@
-import { Response } from "express";
+import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import { ILogoutUseCase } from "../../domain/interface/ILogoutUseCase";
-import { AuthRequest } from "../middlewares/jwtAuthMiddleware";
+import type { ILogoutUseCase } from "@/domain/interface/ILogoutUseCase";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class LogoutController {

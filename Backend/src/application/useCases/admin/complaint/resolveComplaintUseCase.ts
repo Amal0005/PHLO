@@ -1,11 +1,11 @@
 import { NotificationType } from "@/domain/entities/notificationEntity";
-import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
-import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
-import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import { IResolveComplaintUseCase } from "@/domain/interface/admin/complaint/IResolveComplaintUseCase";
+import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { IResolveComplaintUseCase } from "@/domain/interface/admin/complaint/IResolveComplaintUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
-import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
+import type { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
 
 export class ResolveComplaintUseCase implements IResolveComplaintUseCase {

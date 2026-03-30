@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { creatorStep1Schema, creatorStep2Schema, creatorStep3Schema, creatorStep4Schema } from "./registerCreatorValidationSchema";
+import { creatorStep1Schema, creatorStep2Schema, creatorStep3Schema, creatorStep4Schema } from "@/validation/registerCreatorValidationSchema";
 
 
 export async function validateStep1(

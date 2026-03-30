@@ -1,4 +1,4 @@
-import { UserResponseDto } from "../../dto/user/userResponseDto";
+import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 
 export interface IAdminLoginUseCase {
   login(

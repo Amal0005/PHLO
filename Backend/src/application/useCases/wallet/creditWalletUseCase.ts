@@ -1,7 +1,7 @@
-import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
-import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import { WalletOwnerType } from "@/domain/entities/walletEntity";
-import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
+import type { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
+import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { WalletOwnerType } from "@/domain/entities/walletEntity";
+import type { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 
 export class CreditWalletUseCase implements ICreditWalletUseCase {
     constructor(private _walletRepo: IWalletRepository){}

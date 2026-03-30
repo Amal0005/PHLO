@@ -1,7 +1,7 @@
-import { ConversationEntity } from "@/domain/entities/conversationEntity";
-import { MessageEntity } from "@/domain/entities/messageEntity";
-import { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
-import { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
+import type { ConversationEntity } from "@/domain/entities/conversationEntity";
+import type { MessageEntity } from "@/domain/entities/messageEntity";
+import type { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
+import type { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
 
 export class ChatMapper {
   static toConversationEntity(

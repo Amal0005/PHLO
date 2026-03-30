@@ -1,7 +1,7 @@
-import { IGetConversationUseCase } from "@/domain/interface/chat/IGetConversationUseCase";
-import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
-import { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
-import { ChatMapper } from "../../mapper/chatMapper";
+import type { IGetConversationUseCase } from "@/domain/interface/chat/IGetConversationUseCase";
+import type { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import type { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
+import { ChatMapper } from "@/application/mapper/chatMapper";
 
 export class GetConversationUseCase implements IGetConversationUseCase{
     constructor(

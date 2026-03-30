@@ -1,5 +1,5 @@
-import { WishlistEntity } from "@/domain/entities/wishlistEntity";
-import { WishlistResponseDto } from "@/domain/dto/user/wishlistResponseDto";
+import type { WishlistEntity } from "@/domain/entities/wishlistEntity";
+import type { WishlistResponseDto } from "@/domain/dto/user/wishlistResponseDto";
 
 export class WishlistMapper {
     static toDto(entity: WishlistEntity): WishlistResponseDto {

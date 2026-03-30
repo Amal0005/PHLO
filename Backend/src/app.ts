@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { connectDB } from "@/framework/database/connectDB/connectDB";
-import express, { Express } from "express";
+import express, { type Express } from "express";
 import http from "http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -15,13 +15,13 @@ import { AdminRoutes } from "@/adapters/routes/admin/adminRoutes";
 import chatRouter from "@/adapters/routes/chatRoutes";
 import notificationRouter from "@/adapters/routes/notificationRoutes";
 import { SocketIOHandler } from "@/framework/socket/socketIOHandler";
-import { loggerMiddleware } from "./adapters/middlewares/loggerMiddleware";
+import { loggerMiddleware } from "@/adapters/middlewares/loggerMiddleware";
 import path from "path";
 
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
-import { errorHandler } from "./adapters/middlewares/errorHandler";
-import { logger } from "./utils/logger";
-import { paymentController } from "./framework/depInjection/user/userInjections";
+import { errorHandler } from "@/adapters/middlewares/errorHandler";
+import { logger } from "@/utils/logger";
+import { paymentController } from "@/framework/depInjection/user/userInjections";
 import { paymentReleaseScheduler, subscriptionScheduler } from "@/framework/depInjection/schedulerInjections";
 
 

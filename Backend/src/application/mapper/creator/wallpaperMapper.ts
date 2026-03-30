@@ -1,6 +1,6 @@
-import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
-import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
+import type { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class WallpaperMapper {
     static toDto(entity: WallpaperEntity & { isPurchased?: boolean }): WallpaperResponseDto {

@@ -1,4 +1,5 @@
-import { Router, Request, Response } from "express";
+import type { Request, Response } from "express";
+import { Router } from "express";
 import { viewController } from "@/framework/depInjection/s3Injections";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 

@@ -1,5 +1,5 @@
-import { ZodType } from "zod";
-import { NextFunction, Request, Response } from "express"
+import type { ZodType } from "zod";
+import type { NextFunction, Request, Response } from "express"
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
 export const validate =

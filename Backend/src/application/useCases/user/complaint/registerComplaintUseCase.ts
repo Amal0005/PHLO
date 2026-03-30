@@ -1,14 +1,14 @@
-import { ComplaintRequestDTO } from "@/domain/dto/complaint/complaintRequestDto";
+import type { ComplaintRequestDTO } from "@/domain/dto/complaint/complaintRequestDto";
 import { NotificationType } from "@/domain/entities/notificationEntity";
-import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
-import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { IRegisterComplaintUseCase } from "@/domain/interface/user/complaint/IRegisterComplaintUseCase";
+import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IRegisterComplaintUseCase } from "@/domain/interface/user/complaint/IRegisterComplaintUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
-import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
+import type { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
+import type { ComplaintEntity } from "@/domain/entities/complaintEntity";
 
 export class RegisterComplaintUseCase implements IRegisterComplaintUseCase {
   constructor(

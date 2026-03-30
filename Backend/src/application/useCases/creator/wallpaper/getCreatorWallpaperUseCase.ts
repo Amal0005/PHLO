@@ -1,9 +1,9 @@
 import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
-import { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
-import { IGetCreatorWallpapersUseCase } from "@/domain/interface/creator/walpapper/IGetCreatorWallpaperUseCase";
-import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { WallpaperStatus } from "@/constants/wallpaperStatus";
+import type { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
+import type { IGetCreatorWallpapersUseCase } from "@/domain/interface/creator/walpapper/IGetCreatorWallpaperUseCase";
+import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { WallpaperStatus } from "@/constants/wallpaperStatus";
 
 export class GetCreatorWallpaperUseCase implements IGetCreatorWallpapersUseCase {
     constructor(

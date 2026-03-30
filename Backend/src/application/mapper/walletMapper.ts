@@ -1,7 +1,7 @@
-import { Wallet } from "@/domain/entities/walletEntity";
-import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
-import { WalletResponseDTO } from "@/domain/dto/wallet/walletResponseDto";
-import { WalletTransactionResponseDTO } from "@/domain/dto/wallet/walletTransactionResponseDto";
+import type { Wallet } from "@/domain/entities/walletEntity";
+import type { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
+import type { WalletResponseDTO } from "@/domain/dto/wallet/walletResponseDto";
+import type { WalletTransactionResponseDTO } from "@/domain/dto/wallet/walletTransactionResponseDto";
 
 export class WalletMapper {
   static toTransactionDto(entity: WalletTransaction): WalletTransactionResponseDTO {

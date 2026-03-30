@@ -1,6 +1,6 @@
-import { IBaseRepository } from "./IBaseRepository";
-import { BookingEntity } from "@/domain/entities/bookingEntity";
-import { BookingStatus } from "@/constants/bookingStatus";
+import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
+import type { BookingEntity } from "@/domain/entities/bookingEntity";
+import type { BookingStatus } from "@/constants/bookingStatus";
 
 export interface IBookingRepository extends IBaseRepository<BookingEntity> {
 

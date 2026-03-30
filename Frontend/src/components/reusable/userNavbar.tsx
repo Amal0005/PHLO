@@ -10,9 +10,9 @@ import { clearUser } from "@/store/slices/user/userSlice";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
 import { S3Service } from "@/services/s3Service";
-import ConfirmModal from "./ConfirmModal";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { removeUser } from "@/store/slices/auth/authSlice";
-import NotificationBell from "./NotificationBell";
+import NotificationBell from "@/components/reusable/NotificationBell";
 
 interface NavbarProps {
   scrollToSection?: (id: string) => void;

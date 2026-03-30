@@ -1,8 +1,8 @@
-import { reviewRequestDTO } from "@/domain/dto/user/review/reviewRequestDto";
+import type { reviewRequestDTO } from "@/domain/dto/user/review/reviewRequestDto";
 import { AppError } from "@/domain/errors/appError";
-import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import { IReviewRepository } from "@/domain/interface/repository/IReviewRepository";
-import { IAddReviewUseCase } from "@/domain/interface/user/review/IAddReviewUseCase";
+import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { IReviewRepository } from "@/domain/interface/repository/IReviewRepository";
+import type { IAddReviewUseCase } from "@/domain/interface/user/review/IAddReviewUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 
 export class AddReviewUseCase implements IAddReviewUseCase {

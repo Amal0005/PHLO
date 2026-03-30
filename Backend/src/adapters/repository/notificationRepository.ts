@@ -1,6 +1,7 @@
-import { NotificationEntity } from "@/domain/entities/notificationEntity";
-import { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
-import { NotificationDocument, NotificationModel } from "@/framework/database/model/notificationModel";
+import type { NotificationEntity } from "@/domain/entities/notificationEntity";
+import type { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
+import type { NotificationDocument} from "@/framework/database/model/notificationModel";
+import { NotificationModel } from "@/framework/database/model/notificationModel";
 
 export class NotificationRepository implements INotificationRepository {
   async save(notification: NotificationEntity): Promise<NotificationEntity> {

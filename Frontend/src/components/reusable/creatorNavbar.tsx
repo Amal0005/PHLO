@@ -9,10 +9,10 @@ import type { AppDispatch } from "@/store/store";
 import { clearCreator } from "@/store/slices/creator/creatorSlice";
 import { ROUTES } from "@/constants/routes";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
-import { S3Media } from "./s3Media";
-import ConfirmModal from "./ConfirmModal";
+import { S3Media } from "@/components/reusable/s3Media";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { removeUser } from "@/store/slices/auth/authSlice";
-import NotificationBell from "./NotificationBell";
+import NotificationBell from "@/components/reusable/NotificationBell";
 import { toast } from "react-toastify";
 
 export default function CreatorNavbar() {

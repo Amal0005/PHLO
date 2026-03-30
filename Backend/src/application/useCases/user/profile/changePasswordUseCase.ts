@@ -1,6 +1,6 @@
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { IPasswordService } from "@/domain/interface/service/IPasswordService";
-import { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
+import type { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
 
 export class ChangePasswordUseCase implements IChangePasswordUseCase {
     constructor(

@@ -1,4 +1,4 @@
-import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 
 export interface IEditUserProfileUseCase {
   editProfile(userId: string, data: {

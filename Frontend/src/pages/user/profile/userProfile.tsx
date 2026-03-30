@@ -10,9 +10,9 @@ import { ROUTES } from "@/constants/routes";
 import { changePasswordSchema, editProfileSchema } from "@/validation/userProfileSchema";
 import Navbar from "@/components/reusable/userNavbar";
 import { UserProfileService } from "@/services/user/userProfileServices";
-import { EditUserProfile } from "./components/editUserProfile";
-import { EditUserPassword } from "./components/editUserPassword";
-import { ViewProfileImage } from "./components/viewProfileImage";
+import { EditUserProfile } from "@/pages/user/profile/components/editUserProfile";
+import { EditUserPassword } from "@/pages/user/profile/components/editUserPassword";
+import { ViewProfileImage } from "@/pages/user/profile/components/viewProfileImage";
 import OtpVerificationModal from "@/components/reusable/OtpVerificationModal";
 import { MESSAGES } from "@/constants/messages";
 

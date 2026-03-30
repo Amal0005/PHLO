@@ -1,6 +1,6 @@
-import { IRecordDownloadUseCase } from "@/domain/interface/creator/walpapper/IRecordDownloadUseCase";
-import { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
-import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import type { IRecordDownloadUseCase } from "@/domain/interface/creator/walpapper/IRecordDownloadUseCase";
+import type { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
+import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 
 export class RecordDownloadUseCase implements IRecordDownloadUseCase {
     constructor(

@@ -1,4 +1,5 @@
-import { Router, Request, Response } from "express";
+import type { Request, Response } from "express";
+import { Router } from "express";
 import {
   creatorLoginController,
   creatorRegisterController,
@@ -12,12 +13,18 @@ import {
   leaveController,
   creatorWalletController,
 } from "@/framework/depInjection/creator/creatorInjections";
-import { registerCreatorSchema } from "@/adapters/validation/creatorSchemas";
+import {
+  registerCreatorSchema,
+  loginCreatorSchema,
+  verifyCreatorOtpSchema,
+  forgotCreatorPasswordSchema,
+  resetCreatorPasswordSchema,
+  addPackageSchema,
+  editPackageSchema,
+} from "@/adapters/validation/creatorSchemas";
 import { validate } from "@/adapters/middlewares/zodValidator";
 import { authorizeRoles } from "@/adapters/middlewares/roleAuthMiddleware";
 import { authMiddleware, logoutController, tokenController } from "@/framework/depInjection/user/userInjections";
-import { editPackageSchema } from "@/adapters/validation/packageEditSchema";
-import { addPackageSchema } from "@/adapters/validation/packageAddSchema";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 import multer from "multer";
 
@@ -41,6 +48,7 @@ export class CreatorRoutes {
 
     this.creatorRouter.post(
       BACKEND_ROUTES.CREATOR.LOGIN,
+      validate(loginCreatorSchema),
       (req: Request, res: Response) => creatorLoginController.login(req, res),
     );
     this.creatorRouter.post(BACKEND_ROUTES.CREATOR.REFRESH_TOKEN, (req, res) =>
@@ -49,18 +57,21 @@ export class CreatorRoutes {
 
     this.creatorRouter.post(
       BACKEND_ROUTES.CREATOR.FORGOT_PASSWORD,
+      validate(forgotCreatorPasswordSchema),
       (req: Request, res: Response) =>
         creatorAuthController.forgotPassword(req, res),
     );
 
     this.creatorRouter.post(
       BACKEND_ROUTES.CREATOR.VERIFY_FORGOT_OTP,
+      validate(verifyCreatorOtpSchema),
       (req: Request, res: Response) =>
         creatorAuthController.verifyForgotOtp(req, res),
     );
 
     this.creatorRouter.post(
       BACKEND_ROUTES.CREATOR.RESET_PASSWORD,
+      validate(resetCreatorPasswordSchema),
       (req: Request, res: Response) =>
         creatorAuthController.resetPassword(req, res),
     );
@@ -72,6 +83,7 @@ export class CreatorRoutes {
 
     this.creatorRouter.post(
       BACKEND_ROUTES.CREATOR.VERIFY_OTP,
+      validate(verifyCreatorOtpSchema),
       (req: Request, res: Response) =>
         creatorRegisterController.verifyOtp(req, res),
     );

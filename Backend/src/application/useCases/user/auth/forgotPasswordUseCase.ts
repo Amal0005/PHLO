@@ -1,9 +1,9 @@
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { IMailService } from "../../../../domain/interface/service/IMailServices";
-import { IOTPService } from "../../../../domain/interface/service/IOtpServices";
-import { IForgotPasswordUseCase } from "../../../../domain/interface/user/auth/IForgotPasswordUseCase";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IMailService } from "@/domain/interface/service/IMailServices";
+import type { IOTPService } from "@/domain/interface/service/IOtpServices";
+import type { IForgotPasswordUseCase } from "@/domain/interface/user/auth/IForgotPasswordUseCase";
 
-import { renderTemplate } from "../../../../utils/renderTemplates";
+import { renderTemplate } from "@/utils/renderTemplates";
 
 export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
   constructor(

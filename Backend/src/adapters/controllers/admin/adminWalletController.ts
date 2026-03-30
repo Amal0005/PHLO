@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
-import { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
-import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
+import type { Request, Response } from "express";
+import type { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
+import type { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 import { logger } from "@/utils/logger";
-import { MESSAGES } from "@/constants/commonMessages";import { WalletOwnerType } from "@/domain/entities/walletEntity";
+import { MESSAGES } from "@/constants/commonMessages";import type { WalletOwnerType } from "@/domain/entities/walletEntity";
 
 export class AdminWalletController {
   constructor(

@@ -1,15 +1,15 @@
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { AppError } from "@/domain/errors/appError";
-import { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBookingUseCase";
-import { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
-import { ICheckAvailabilityUseCase } from "@/domain/interface/user/booking/ICheckAvailabilityUseCase";
-import { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBookingUseCase";
-import { IGetBookingDetailUseCase } from "@/domain/interface/user/booking/IGetBookingDetailUseCase";
-import { IRetryPaymentUseCase } from "@/domain/interface/user/booking/IRetryPaymentUseCase";
-import { IDownloadInvoiceUseCase } from "@/domain/interface/user/booking/IDownloadInvoiceUseCase";
+import type { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBookingUseCase";
+import type { IListBookingsUseCase } from "@/domain/interface/user/booking/IListbookingUseCase";
+import type { ICheckAvailabilityUseCase } from "@/domain/interface/user/booking/ICheckAvailabilityUseCase";
+import type { ICancelBookingUseCase } from "@/domain/interface/user/booking/ICancelBookingUseCase";
+import type { IGetBookingDetailUseCase } from "@/domain/interface/user/booking/IGetBookingDetailUseCase";
+import type { IRetryPaymentUseCase } from "@/domain/interface/user/booking/IRetryPaymentUseCase";
+import type { IDownloadInvoiceUseCase } from "@/domain/interface/user/booking/IDownloadInvoiceUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
-import { Response } from "express";
+import type { Response } from "express";
 
 export class UserBookingController {
     constructor(

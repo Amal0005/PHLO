@@ -3,10 +3,10 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store, persistor } from "@/store/store";
-import App from "./App";
+import App from "@/App";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { PersistGate } from "redux-persist/integration/react";
-import { setUpInterceptors } from "./axios/axiosInterceptors";
+import { setUpInterceptors } from "@/axios/axiosInterceptors";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-geocoder/lib/mapbox-gl-geocoder.css";

@@ -1,7 +1,7 @@
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
-import { User } from "@/domain/entities/userEntities";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
+import type { ComplaintEntity } from "@/domain/entities/complaintEntity";
+import type { User } from "@/domain/entities/userEntities";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 
 export class ComplaintMapper {
   static toEntity(data: Record<string, unknown>): ComplaintEntity {

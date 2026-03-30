@@ -1,8 +1,8 @@
 import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
-import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
-import { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IAdminCreatorListingUseCase";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
+import type { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IAdminCreatorListingUseCase";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class AdminCreatorListingUseCase implements IAdminCreatorListingUseCase {
   constructor(

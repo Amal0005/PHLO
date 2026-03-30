@@ -1,5 +1,5 @@
-import { IWishlistRepository } from "@/domain/interface/repository/IWishlistRepository";
-import { WishlistEntity } from "@/domain/entities/wishlistEntity";
+import type { IWishlistRepository } from "@/domain/interface/repository/IWishlistRepository";
+import type { WishlistEntity } from "@/domain/entities/wishlistEntity";
 import { WishlistModel } from "@/framework/database/model/wishlistModel";
 
 export class WishlistRepository implements IWishlistRepository {

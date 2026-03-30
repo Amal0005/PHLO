@@ -14,10 +14,10 @@ import { BookingService } from "@/services/user/bookingService";
 import { toast } from "react-toastify";
 import LocationSearchBar from "@/pages/creator/package/components/locationSearchBar";
 import type { LocationSearchBarHandle } from "@/pages/creator/package/components/locationSearchBar";
-import ReviewList from "./components/ReviewList";
+import ReviewList from "@/pages/user/package/components/ReviewList";
 import { CustomCalendar } from "@/components/reusable/CustomCalendar";
 import Map, { Marker } from 'react-map-gl/mapbox';
-import CancellationPolicyModal from "./components/CancellationPolicyModal";
+import CancellationPolicyModal from "@/pages/user/package/components/CancellationPolicyModal";
 
 
 import 'mapbox-gl/dist/mapbox-gl.css';

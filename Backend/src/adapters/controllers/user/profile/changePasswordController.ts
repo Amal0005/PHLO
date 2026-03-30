@@ -1,8 +1,8 @@
-import { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
-import { Response } from "express";
+import type { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
+import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class ChangePasswordController {
     constructor(private _changePasswordUseCase: IChangePasswordUseCase) {}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ConversationEntity } from "@/interface/chat/chatInterface";
-import { S3Media } from '../reusable/s3Media';
+import { S3Media } from "@/components/reusable/s3Media";
 import { Search } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 

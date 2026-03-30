@@ -38,7 +38,7 @@ import { getDashboardStats, downloadDashboardReport } from "@/services/admin/adm
 import { format } from "date-fns";
 import { fetchAdminCreators, approveCreator } from "@/services/admin/adminCreatorService";
 import { Creator } from "@/interface/admin/creatorInterface";
-import { CreatorDetailModal } from "./components/CreatorDetailModal";
+import { CreatorDetailModal } from "@/pages/admin/components/CreatorDetailModal";
 import { toast } from "react-toastify";
 import { ROUTES } from "@/constants/routes";
 

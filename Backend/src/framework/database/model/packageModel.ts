@@ -1,6 +1,7 @@
-import { model, Document, Types } from "mongoose";
-import { PackageEntity } from "@/domain/entities/packageEntity";
-import { packageSchema } from "../schema/packageSchema";
+import type { Document, Types } from "mongoose";
+import { model } from "mongoose";
+import type { PackageEntity } from "@/domain/entities/packageEntity";
+import { packageSchema } from "@/framework/database/schema/packageSchema";
 
 export interface IPackageModel extends Omit<PackageEntity, "_id">, Document {
     _id: Types.ObjectId;

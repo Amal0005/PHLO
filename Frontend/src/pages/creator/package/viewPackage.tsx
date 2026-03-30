@@ -6,10 +6,10 @@ import { CreatorPackageService } from "@/services/creator/creatorPackageService"
 import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { ROUTES } from "@/constants/routes";
 import { S3Media } from "@/components/reusable/s3Media";
-import { EditPackageModal } from "./components/editPackageModal";
+import { EditPackageModal } from "@/pages/creator/package/components/editPackageModal";
 import { PackageData } from "@/interface/creator/creatorPackageInterface";
 import { toast } from "react-toastify";
-import { AddPackageModal } from "./components/addPackageModal";
+import { AddPackageModal } from "@/pages/creator/package/components/addPackageModal";
 import { AxiosError } from "axios";
 import Pagination from "@/components/reusable/pagination";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";

@@ -1,9 +1,9 @@
-import { IAdminLoginUseCase } from "@/domain/interface/admin/IAdminLoginUseCase";
-import { UserResponseDto } from "../../../domain/dto/user/userResponseDto";
-import { IJwtServices } from "../../../domain/interface/service/IJwtServices";
-import { IPasswordService } from "../../../domain/interface/service/IPasswordService";
+import type { IAdminLoginUseCase } from "@/domain/interface/admin/IAdminLoginUseCase";
+import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import type { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
 
 export class AdminLoginUseCase implements IAdminLoginUseCase {
   constructor(

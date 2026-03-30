@@ -1,11 +1,11 @@
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { IAddWallpaperUseCase } from "@/domain/interface/creator/walpapper/IAddWallpaperUseCase";
-import { IDeleteWallpaperUseCase } from "@/domain/interface/creator/walpapper/IDeleteWallpaperUseCase";
-import { IGetCreatorWallpapersUseCase } from "@/domain/interface/creator/walpapper/IGetCreatorWallpaperUseCase";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { IAddWallpaperUseCase } from "@/domain/interface/creator/walpapper/IAddWallpaperUseCase";
+import type { IDeleteWallpaperUseCase } from "@/domain/interface/creator/walpapper/IDeleteWallpaperUseCase";
+import type { IGetCreatorWallpapersUseCase } from "@/domain/interface/creator/walpapper/IGetCreatorWallpaperUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
-import { WallpaperStatus } from "@/constants/wallpaperStatus";
-import { Response } from "express";
+import type { WallpaperStatus } from "@/constants/wallpaperStatus";
+import type { Response } from "express";
 
 export class WallpaperController {
   constructor(

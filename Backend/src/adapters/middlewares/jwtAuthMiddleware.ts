@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import { AuthPayload } from "@/domain/dto/user/authPayload";
-import { IJwtServices } from "@/domain/interface/service/IJwtServices";
-import { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
+import type { AuthPayload } from "@/domain/dto/user/authPayload";
+import type { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import type { ITokenBlacklistService } from "@/domain/interface/service/ITokenBlacklistService";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 export interface AuthRequest extends Request {
   user?: AuthPayload;

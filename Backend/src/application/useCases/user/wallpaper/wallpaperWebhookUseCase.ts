@@ -1,16 +1,16 @@
-import { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWallpaperWebhookUseCase";
-import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
+import type { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWallpaperWebhookUseCase";
+import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
 import { logger } from "@/utils/logger";
-import Stripe from "stripe";
+import type Stripe from "stripe";
 
-import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 
-import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
+import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
 
 export class WallpaperWebhookUseCase implements IWallpaperWebhookUseCase {
     constructor(

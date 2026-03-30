@@ -1,8 +1,8 @@
-import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
-import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
-import { ICheckAvailabilityUseCase } from "@/domain/interface/user/booking/ICheckAvailabilityUseCase";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
+import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { ICheckAvailabilityUseCase } from "@/domain/interface/user/booking/ICheckAvailabilityUseCase";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class CheckAvailabilityUseCase implements ICheckAvailabilityUseCase {
     constructor(

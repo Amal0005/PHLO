@@ -1,5 +1,5 @@
-import { WalletOwnerType } from "@/domain/entities/walletEntity";
-import { WalletTransactionResponseDTO } from "./walletTransactionResponseDto";
+import type { WalletOwnerType } from "@/domain/entities/walletEntity";
+import type { WalletTransactionResponseDTO } from "@/domain/dto/wallet/walletTransactionResponseDto";
 
 export interface WalletResponseDTO {
   wallet: {

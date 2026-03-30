@@ -1,10 +1,11 @@
-import { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
-import { BaseRepository } from "../baseRepository";
-import { ISubscriptionModel, SubscriptionModel } from "@/framework/database/model/subscriptionModel";
-import { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
+import { BaseRepository } from "@/adapters/repository/baseRepository";
+import type { ISubscriptionModel} from "@/framework/database/model/subscriptionModel";
+import { SubscriptionModel } from "@/framework/database/model/subscriptionModel";
+import type { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 import { paginateMongo } from "@/utils/pagination";
-import { Filter } from "mongodb";
+import type { Filter } from "mongodb";
 
 export class SubscriptionRepository extends BaseRepository<SubscriptionEntity, ISubscriptionModel> implements ISubscriptionRepository {
   constructor() {

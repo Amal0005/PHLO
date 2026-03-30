@@ -1,12 +1,12 @@
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { IAddReviewUseCase } from "@/domain/interface/user/review/IAddReviewUseCase";
-import { IDeleteReviewUseCase } from "@/domain/interface/user/review/IDeleteReviewUseCase";
-import { IEditReviewUseCase } from "@/domain/interface/user/review/IEditReviewUseCase";
-import { IGetReviewByBookingUseCase } from "@/domain/interface/user/review/IGetReviewByBookingUseCase";
-import { IGetReviewUseCase } from "@/domain/interface/user/review/IGetReviewUseCase";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { IAddReviewUseCase } from "@/domain/interface/user/review/IAddReviewUseCase";
+import type { IDeleteReviewUseCase } from "@/domain/interface/user/review/IDeleteReviewUseCase";
+import type { IEditReviewUseCase } from "@/domain/interface/user/review/IEditReviewUseCase";
+import type { IGetReviewByBookingUseCase } from "@/domain/interface/user/review/IGetReviewByBookingUseCase";
+import type { IGetReviewUseCase } from "@/domain/interface/user/review/IGetReviewUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 
 export class ReviewController {
     constructor(

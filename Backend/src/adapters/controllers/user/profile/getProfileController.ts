@@ -1,9 +1,9 @@
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
-import { Response } from "express";
+import type { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
+import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class GetProfileController {
   constructor(private _getUserProfileUsecase: IGetUserProfileUseCase) {}

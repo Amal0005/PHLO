@@ -1,7 +1,7 @@
 import Stripe from "stripe";
-import { IStripeService } from "../interface/service/IStripeService";
-import { CreateCheckoutSessionDTO } from "../dto/payment/createCheckoutSessionDto";
-import { CheckoutSessionResponseDTO } from "../dto/payment/checkoutSessionResponseDto";
+import type { IStripeService } from "@/domain/interface/service/IStripeService";
+import type { CreateCheckoutSessionDTO } from "@/domain/dto/payment/createCheckoutSessionDto";
+import type { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
 
 export class StripeService implements IStripeService {
   private stripe: Stripe;

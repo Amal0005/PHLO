@@ -1,13 +1,14 @@
-import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import type {
+  IWallpaperModel} from "@/framework/database/model/wallpapperModel";
 import {
-  IWallpaperModel,
   WallpaperModel,
 } from "@/framework/database/model/wallpapperModel";
-import { BaseRepository } from "../baseRepository";
-import { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
-import { QueryFilter, UpdateQuery } from "mongoose";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { WallpaperStatus } from "@/constants/wallpaperStatus";
+import { BaseRepository } from "@/adapters/repository/baseRepository";
+import type { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
+import type { QueryFilter, UpdateQuery } from "mongoose";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { WallpaperStatus } from "@/constants/wallpaperStatus";
 
 export class WallpaperRepository
   extends BaseRepository<WallpaperEntity, IWallpaperModel>

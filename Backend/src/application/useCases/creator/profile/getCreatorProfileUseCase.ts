@@ -1,7 +1,7 @@
 import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
-import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
-import { IGetCreatorProfileUseCase } from "@/domain/interface/creator/profile/IGetCreatorProfileUseCase";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
+import type { IGetCreatorProfileUseCase } from "@/domain/interface/creator/profile/IGetCreatorProfileUseCase";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
 
 export class GetCreatorProfileUseCase implements IGetCreatorProfileUseCase {
     constructor(

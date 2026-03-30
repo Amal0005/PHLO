@@ -1,6 +1,6 @@
-import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { CategoryFilterOptions } from "../repository/ICategoryRepository";
-import { CategoryResponseDto } from "@/domain/dto/admin/categoryResponseDto";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { CategoryFilterOptions } from "@/domain/interface/repository/ICategoryRepository";
+import type { CategoryResponseDto } from "@/domain/dto/admin/categoryResponseDto";
 
 export interface IAdminCategoryListingUseCase {
     getAllCategories(

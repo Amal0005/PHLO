@@ -1,9 +1,9 @@
-import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { IOTPService } from "@/domain/interface/service/IOtpServices";
-import { IPendingUserService } from "@/domain/interface/service/IPendingUserService";
-import { IVerifyRegisterOtpUseCase } from "@/domain/interface/user/auth/IVerifyRegisterOtpUseCase";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IOTPService } from "@/domain/interface/service/IOtpServices";
+import type { IPendingUserService } from "@/domain/interface/service/IPendingUserService";
+import type { IVerifyRegisterOtpUseCase } from "@/domain/interface/user/auth/IVerifyRegisterOtpUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {

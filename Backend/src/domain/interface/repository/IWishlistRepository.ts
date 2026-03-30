@@ -1,4 +1,4 @@
-import { WishlistEntity } from "@/domain/entities/wishlistEntity";
+import type { WishlistEntity } from "@/domain/entities/wishlistEntity";
 
 export interface IWishlistRepository {
   toggle(userId: string, itemId: string, itemType: "wallpaper" | "package"): Promise<boolean>;

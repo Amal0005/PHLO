@@ -1,5 +1,5 @@
 import { store } from "@/store/store";
-import api from "./axiosConfig";
+import api from "@/axios/axiosConfig";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { removeUser, setToken } from "@/store/slices/auth/authSlice";

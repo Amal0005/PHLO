@@ -1,5 +1,5 @@
-import { User } from "./userEntities";
-import { CreatorEntity } from "./creatorEntities";
+import type { User } from "@/domain/entities/userEntities";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export interface ComplaintEntity {
   _id?: string;

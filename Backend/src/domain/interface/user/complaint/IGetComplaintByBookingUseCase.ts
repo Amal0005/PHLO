@@ -1,4 +1,4 @@
-import { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
+import type { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 
 export interface IGetComplaintByBookingUseCase {
     getComplaint(bookingId: string): Promise<ComplaintResponseDTO | null>;

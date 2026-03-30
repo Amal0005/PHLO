@@ -1,18 +1,18 @@
-import { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
-import { IStripeService } from "@/domain/interface/service/IStripeService";
-import { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
-import { IMailService } from "@/domain/interface/service/IMailServices";
+import type { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
+import type { IStripeService } from "@/domain/interface/service/IStripeService";
+import type { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
+import type { IMailService } from "@/domain/interface/service/IMailServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 import { logger } from "@/utils/logger";
 import path from "node:path";
-import Stripe from "stripe";
-import { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type Stripe from "stripe";
+import type { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
-import { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 
 export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWebhookUseCase {

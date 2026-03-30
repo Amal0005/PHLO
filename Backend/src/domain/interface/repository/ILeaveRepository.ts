@@ -1,5 +1,5 @@
-import { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
-import { LeaveEntity } from "../../entities/leaveEntity";
+import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
+import type { LeaveEntity } from "@/domain/entities/leaveEntity";
 
 export interface ILeaveRepository extends IBaseRepository<LeaveEntity> {
   addLeave(leaveData: LeaveEntity): Promise<LeaveEntity>;

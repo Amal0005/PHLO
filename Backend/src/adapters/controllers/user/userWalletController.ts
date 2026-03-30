@@ -1,9 +1,9 @@
-import { Response } from "express";
-import { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
+import type { Response } from "express";
+import type { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 import { logger } from "@/utils/logger";
 import { MESSAGES } from "@/constants/commonMessages";
-import { AuthRequest } from "../../middlewares/jwtAuthMiddleware";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class UserWalletController {
   constructor(

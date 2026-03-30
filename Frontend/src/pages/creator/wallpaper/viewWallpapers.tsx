@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 import Pagination from "@/components/reusable/pagination";
 import ConfirmModal from "@/components/reusable/ConfirmModal";
-import { AddWallpaperModal } from "./components/addWallpaperModal";
+import { AddWallpaperModal } from "@/pages/creator/wallpaper/components/addWallpaperModal";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import { useDebounce } from "@/hooks/useDebounce";

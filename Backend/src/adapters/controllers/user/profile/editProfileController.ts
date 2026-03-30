@@ -1,7 +1,7 @@
-import { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
-import { Response } from "express";
+import type { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
+import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class EditProfileController {

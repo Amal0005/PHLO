@@ -1,6 +1,6 @@
 import api from "@/axios/axiosConfig";
 import { CreatorProfileResponse, EditCreatorProfilePayload } from "@/interface/creator/creatorProfileInterface";
-import { S3Service } from "../s3Service";
+import { S3Service } from "@/services/s3Service";
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 
 export const CreatorProfileServices = {

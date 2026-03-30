@@ -1,5 +1,5 @@
-import { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
-import { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
+import type { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
+import type { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
 
 export class SubscriptionDtoMapper {
 

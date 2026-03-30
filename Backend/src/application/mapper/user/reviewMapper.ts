@@ -1,7 +1,7 @@
-import { ReviewEntity } from "@/domain/entities/reviewEntity";
-import { User } from "@/domain/entities/userEntities";
-import { ReviewResponseDTO } from "@/domain/dto/user/review/reviewResponseDto";
-import { PackageEntity } from "@/domain/entities/packageEntity";
+import type { ReviewEntity } from "@/domain/entities/reviewEntity";
+import type { User } from "@/domain/entities/userEntities";
+import type { ReviewResponseDTO } from "@/domain/dto/user/review/reviewResponseDto";
+import type { PackageEntity } from "@/domain/entities/packageEntity";
 
 export class ReviewMapper {
     static toDto(entity: ReviewEntity): ReviewResponseDTO {

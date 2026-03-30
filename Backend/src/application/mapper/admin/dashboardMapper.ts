@@ -1,8 +1,8 @@
-import { User } from "@/domain/entities/userEntities";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { BookingEntity } from "@/domain/entities/bookingEntity";
-import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
-import { 
+import type { User } from "@/domain/entities/userEntities";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { BookingEntity } from "@/domain/entities/bookingEntity";
+import type { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
+import type { 
   RecentBooking, 
   RecentUser, 
   RecentCreator, 

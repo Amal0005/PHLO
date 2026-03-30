@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { RootState } from '../../store/store';
-import { chatService } from '../../services/chatService';
-import { socketService } from '../../services/socketService';
-import ConversationList from '../../components/chat/conversationList';
-import ChatWindow from '../../components/chat/chatWindow';
+import { RootState } from "@/store/store";
+import { chatService } from "@/services/chatService";
+import { socketService } from "@/services/socketService";
+import ConversationList from "@/components/chat/conversationList";
+import ChatWindow from "@/components/chat/chatWindow";
 import { ConversationEntity, MessageEntity } from "@/interface/chat/chatInterface";
 import Navbar from "@/components/reusable/userNavbar";
 import CreatorNavbar from "@/components/reusable/creatorNavbar";

@@ -1,8 +1,8 @@
-import { UserResponseDto } from "@/domain/dto/user/userResponseDto";
+import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { IAdminUserListingUseCase } from "../../../domain/interface/admin/IAdminUserListingUseCase";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IAdminUserListingUseCase } from "@/domain/interface/admin/IAdminUserListingUseCase";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class AdminUserListingUseCase implements IAdminUserListingUseCase {
     constructor(

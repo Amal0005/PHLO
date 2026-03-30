@@ -1,9 +1,9 @@
-import { ComplaintEntity } from "@/domain/entities/complaintEntity";
-import { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+import type { ComplaintEntity } from "@/domain/entities/complaintEntity";
+import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
 import { ComplaintModel } from "@/framework/database/model/complaintModel";
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
-import { User } from "@/domain/entities/userEntities";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { User } from "@/domain/entities/userEntities";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class ComplaintRepository implements IComplaintRepository {
   async create(complaint: ComplaintEntity): Promise<ComplaintEntity> {

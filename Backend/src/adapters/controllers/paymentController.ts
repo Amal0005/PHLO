@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import { IHandleStripeWebhookUseCase } from "@/domain/interface/payment/IHandleStripeWebhookUseCase";
+import type { IHandleStripeWebhookUseCase } from "@/domain/interface/payment/IHandleStripeWebhookUseCase";
 
 export class PaymentController {
   constructor(

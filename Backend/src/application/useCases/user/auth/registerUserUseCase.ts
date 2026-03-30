@@ -1,12 +1,12 @@
-import { IRedisService } from "@/domain/interface/service/IRedisServices";
-import { IUserRegisterUseCase } from "@/domain/interface/user/auth/IUserRegisterUseCase";
-import { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import { IPasswordService } from "@/domain/interface/service/IPasswordService";
-import { IOTPService } from "@/domain/interface/service/IOtpServices";
-import { IMailService } from "@/domain/interface/service/IMailServices";
+import type { IRedisService } from "@/domain/interface/service/IRedisServices";
+import type { IUserRegisterUseCase } from "@/domain/interface/user/auth/IUserRegisterUseCase";
+import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
+import type { IOTPService } from "@/domain/interface/service/IOtpServices";
+import type { IMailService } from "@/domain/interface/service/IMailServices";
 import { renderTemplate } from "@/utils/renderTemplates";
-import { RegisterDto } from "@/domain/dto/user/registerDto";
+import type { RegisterDto } from "@/domain/dto/user/registerDto";
 
 export class userRegisterUseCase implements IUserRegisterUseCase {
   constructor(

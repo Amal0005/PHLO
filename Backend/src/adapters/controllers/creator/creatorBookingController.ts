@@ -1,8 +1,8 @@
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { IListCreatorBookingsUseCase } from "@/domain/interface/creator/bookings/IListCreatorBookingsUseCase";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { IListCreatorBookingsUseCase } from "@/domain/interface/creator/bookings/IListCreatorBookingsUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
-import { Response } from "express";
+import type { Response } from "express";
 
 export class CreatorBookingController {
     constructor(

@@ -1,5 +1,5 @@
-import { ConversationEntity } from "@/domain/entities/conversationEntity";
-import { MessageEntity } from "@/domain/entities/messageEntity";
+import type { ConversationEntity } from "@/domain/entities/conversationEntity";
+import type { MessageEntity } from "@/domain/entities/messageEntity";
 
 export interface IChatRepository {
   createConversation(data: Partial<ConversationEntity>): Promise<ConversationEntity>;

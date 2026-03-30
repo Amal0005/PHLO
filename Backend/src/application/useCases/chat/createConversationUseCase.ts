@@ -1,11 +1,11 @@
-import { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/constants/statusCodes";
-import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
-import { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
-import { ChatMapper } from "../../mapper/chatMapper";
-import { ICreateConversationUseCase } from "@/domain/interface/chat/ICreateConversationUseCase";
+import type { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import type { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
+import { ChatMapper } from "@/application/mapper/chatMapper";
+import type { ICreateConversationUseCase } from "@/domain/interface/chat/ICreateConversationUseCase";
 
 export class CreateConversationUseCase implements ICreateConversationUseCase {
     constructor(

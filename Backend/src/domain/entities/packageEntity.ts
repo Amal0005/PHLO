@@ -1,4 +1,4 @@
-import { CreatorEntity } from "./creatorEntities";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export interface PackageEntity {
   _id?: string;

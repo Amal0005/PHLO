@@ -1,8 +1,8 @@
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
-import { IGetCreatorProfileUseCase } from "@/domain/interface/creator/profile/IGetCreatorProfileUseCase";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
+import type { IGetCreatorProfileUseCase } from "@/domain/interface/creator/profile/IGetCreatorProfileUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
-import { Response } from "express";
+import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 
 export class CreatorProfileController {

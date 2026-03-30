@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import { IRefreshTokenUseCase } from "@/domain/interface/user/auth/IRefreshTokenUseCase";
+import type { IRefreshTokenUseCase } from "@/domain/interface/user/auth/IRefreshTokenUseCase";
 
 export class TokenController {
   constructor(private _refreshTokenUseCase: IRefreshTokenUseCase) {}

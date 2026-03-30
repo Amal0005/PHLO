@@ -3,7 +3,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { Shield, CameraOff, Camera } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import LogoWhite from "../../assets/images/Logo_white.png";
+import LogoWhite from "@/assets/images/Logo_white.png";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/store/store";
 import { loginUserSchema } from "@/validation/loginUserSchema";

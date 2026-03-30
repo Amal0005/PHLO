@@ -6,17 +6,16 @@
     "outDir": "./dist",
     "moduleResolution": "node",
 
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["src/*"]
     },
+
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true
   },
-  "exclude": [
-    "eslint.config.ts"
-  ]
+  "exclude": ["eslint.config.ts"]
 }

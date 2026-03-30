@@ -1,7 +1,7 @@
-import { IGetMessagesUseCase } from "@/domain/interface/chat/IGetMessageUseCase";
-import { IChatRepository } from "@/domain/interface/repository/IChatRepository";
-import { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
-import { ChatMapper } from "../../mapper/chatMapper";
+import type { IGetMessagesUseCase } from "@/domain/interface/chat/IGetMessageUseCase";
+import type { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import type { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
+import { ChatMapper } from "@/application/mapper/chatMapper";
 
 export class GetMessageUseCase implements IGetMessagesUseCase{
     constructor(

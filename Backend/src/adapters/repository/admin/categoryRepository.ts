@@ -1,10 +1,12 @@
-import { CategoryEntity } from "@/domain/entities/categoryEntity";
-import { CategoryModel, ICategoryModel } from "@/framework/database/model/categoryModel";
-import mongoose, { SortOrder } from "mongoose";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { CategoryEntity } from "@/domain/entities/categoryEntity";
+import type { ICategoryModel } from "@/framework/database/model/categoryModel";
+import { CategoryModel } from "@/framework/database/model/categoryModel";
+import type { SortOrder } from "mongoose";
+import type mongoose from "mongoose";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 import { paginateMongo } from "@/utils/pagination";
-import { BaseRepository } from "../baseRepository";
-import { CategoryFilterOptions, ICategoryRepository } from "@/domain/interface/repository/ICategoryRepository";
+import { BaseRepository } from "@/adapters/repository/baseRepository";
+import type { CategoryFilterOptions, ICategoryRepository } from "@/domain/interface/repository/ICategoryRepository";
 
 export class CategoryRepository extends BaseRepository<CategoryEntity, ICategoryModel> implements ICategoryRepository {
   constructor() {

@@ -1,4 +1,4 @@
-import { WallpaperStatus } from "@/constants/wallpaperStatus";
+import type { WallpaperStatus } from "@/constants/wallpaperStatus";
 
 export interface WallpaperResponseDto {
     _id: string;

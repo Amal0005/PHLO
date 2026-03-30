@@ -1,4 +1,4 @@
-import { TransactionType, TransactionSource } from "@/domain/entities/walletTransactionEntity";
+import type { TransactionType, TransactionSource } from "@/domain/entities/walletTransactionEntity";
 
 export interface WalletTransactionResponseDTO {
   id: string;

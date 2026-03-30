@@ -7,7 +7,7 @@ import { GetMessageUseCase } from "@/application/useCases/chat/getMessageUseCase
 import { SendMessageUseCase } from "@/application/useCases/chat/sendMessageUseCase";
 import { CreateConversationUseCase } from "@/application/useCases/chat/createConversationUseCase";
 import { MarkMessagesAsSeenUseCase } from "@/application/useCases/chat/markMessagesAsSeenUseCase";
-import { sendNotificationUseCase } from "./notificationInjections";
+import { sendNotificationUseCase } from "@/framework/depInjection/notificationInjections";
 import { UserRepository } from "@/adapters/repository/user/userRepository";
 import { CreatorRepository } from "@/adapters/repository/creator/creatorRepository";
 

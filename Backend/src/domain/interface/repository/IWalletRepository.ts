@@ -1,5 +1,5 @@
-import { Wallet, WalletOwnerType } from "../../entities/walletEntity";
-import { WalletTransaction } from "../../entities/walletTransactionEntity";
+import type { Wallet, WalletOwnerType } from "@/domain/entities/walletEntity";
+import type { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 
 export interface IWalletRepository {
     getWallet(ownerId: string, ownerType: WalletOwnerType): Promise<Wallet>;

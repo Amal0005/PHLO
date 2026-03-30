@@ -1,4 +1,4 @@
-import { PaginatedResponse } from "./pagination";
+import { PaginatedResponse } from "@/interface/admin/pagination";
 
 export interface Complaint {
   id: string;

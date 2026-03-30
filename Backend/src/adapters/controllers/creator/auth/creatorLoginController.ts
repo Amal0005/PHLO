@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { AuthError } from "@/domain/errors/authError";
-import { ICreatorLoginUseCase } from "@/domain/interface/creator/auth/ICreatorLoginUseCase";
+import type { ICreatorLoginUseCase } from "@/domain/interface/creator/auth/ICreatorLoginUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class CreatorLoginController {

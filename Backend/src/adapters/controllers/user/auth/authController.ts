@@ -1,7 +1,7 @@
-import { IForgotPasswordUseCase } from "@/domain/interface/user/auth/IForgotPasswordUseCase";
-import { IVerifyForgotOtpUseCase } from "@/domain/interface/user/auth/IVerifyForgotOtpUseCase";
-import { IResetPasswordUseCase } from "@/domain/interface/user/auth/IResetPasswordUseCase";
-import { Request, Response } from "express";
+import type { IForgotPasswordUseCase } from "@/domain/interface/user/auth/IForgotPasswordUseCase";
+import type { IVerifyForgotOtpUseCase } from "@/domain/interface/user/auth/IVerifyForgotOtpUseCase";
+import type { IResetPasswordUseCase } from "@/domain/interface/user/auth/IResetPasswordUseCase";
+import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
 

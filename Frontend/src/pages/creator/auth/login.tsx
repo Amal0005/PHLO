@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
 import { setCreator } from "@/store/slices/creator/creatorSlice";
 import { toast } from "react-toastify";
-import StatusModal from "./statusModal";
+import StatusModal from "@/pages/creator/auth/statusModal";
 import { CreatorAuthService } from "@/services/creator/creatorAuthService";
 import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { ROUTES } from "@/constants/routes";

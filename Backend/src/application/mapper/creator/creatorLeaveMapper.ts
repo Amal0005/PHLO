@@ -1,5 +1,5 @@
-import { LeaveResponseDto } from "@/domain/dto/creator/leaveDto";
-import { LeaveEntity } from "@/domain/entities/leaveEntity";
+import type { LeaveResponseDto } from "@/domain/dto/creator/leaveDto";
+import type { LeaveEntity } from "@/domain/entities/leaveEntity";
 
 export class LeaveMapper {
   static toResponseDto(entity: LeaveEntity): LeaveResponseDto {

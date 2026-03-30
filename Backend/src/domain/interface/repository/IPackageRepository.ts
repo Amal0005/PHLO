@@ -1,6 +1,6 @@
-import { PackageEntity } from "@/domain/entities/packageEntity";
-import { IBaseRepository } from "./IBaseRepository";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { PackageEntity } from "@/domain/entities/packageEntity";
+import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export interface PackageFilters {
   category?: string;

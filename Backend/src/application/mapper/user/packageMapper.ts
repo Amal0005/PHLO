@@ -1,6 +1,6 @@
-import { PackageEntity } from "@/domain/entities/packageEntity";
-import { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { PackageEntity } from "@/domain/entities/packageEntity";
+import type { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class PackageMapper {
   static toDto(entity: PackageEntity): PackageResponseDto {

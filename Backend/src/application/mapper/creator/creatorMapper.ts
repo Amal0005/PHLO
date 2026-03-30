@@ -1,5 +1,5 @@
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
 
 export class CreatorMapper {
   static toDto(entity: CreatorEntity): CreatorResponseDto {

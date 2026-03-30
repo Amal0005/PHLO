@@ -1,4 +1,4 @@
-import { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
+import type { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
 import { WallpaperDownloadModel } from "@/framework/database/model/wallpaperDownloadModel";
 import { WallpaperModel } from "@/framework/database/model/wallpapperModel";
 

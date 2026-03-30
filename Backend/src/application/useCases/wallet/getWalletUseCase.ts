@@ -1,8 +1,8 @@
-import { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
-import { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import { WalletOwnerType } from "@/domain/entities/walletEntity";
-import { WalletResponseDTO } from "@/domain/dto/wallet/walletResponseDto";
-import { WalletMapper } from "../../mapper/walletMapper";
+import type { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
+import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { WalletOwnerType } from "@/domain/entities/walletEntity";
+import type { WalletResponseDTO } from "@/domain/dto/wallet/walletResponseDto";
+import { WalletMapper } from "@/application/mapper/walletMapper";
 
 export class GetWalletUseCase implements IGetWalletUseCase {
     constructor(private _walletRepo: IWalletRepository){}

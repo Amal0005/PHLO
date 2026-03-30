@@ -1,6 +1,6 @@
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
-import { IGetCreatorImagesUseCase, CreatorImagesDto } from "@/domain/interface/creator/IGetCreatorImagesUseCase";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
+import type { IGetCreatorImagesUseCase, CreatorImagesDto } from "@/domain/interface/creator/IGetCreatorImagesUseCase";
 
 export class GetCreatorImagesUseCase implements IGetCreatorImagesUseCase {
     constructor(

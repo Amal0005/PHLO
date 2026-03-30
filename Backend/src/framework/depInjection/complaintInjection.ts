@@ -8,7 +8,7 @@ import { ResolveComplaintUseCase } from "@/application/useCases/admin/complaint/
 import { RegisterComplaintUseCase } from "@/application/useCases/user/complaint/registerComplaintUseCase";
 import { GetComplaintByBookingUseCase } from "@/application/useCases/user/complaint/getComplaintByBookingUseCase";
 import { UserRepository } from "@/adapters/repository/user/userRepository";
-import { sendNotificationUseCase } from "./notificationInjections";
+import { sendNotificationUseCase } from "@/framework/depInjection/notificationInjections";
 
 
 const complaintRepo = new ComplaintRepository();

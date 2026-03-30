@@ -1,7 +1,7 @@
-import { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
-import { BookingEntity } from "@/domain/entities/bookingEntity";
-import { PackageEntity } from "@/domain/entities/packageEntity";
-import { User } from "@/domain/entities/userEntities";
+import type { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
+import type { BookingEntity } from "@/domain/entities/bookingEntity";
+import type { PackageEntity } from "@/domain/entities/packageEntity";
+import type { User } from "@/domain/entities/userEntities";
 
 export class BookingMapper {
   static toDto(booking: BookingEntity): BookingResponseDTO {

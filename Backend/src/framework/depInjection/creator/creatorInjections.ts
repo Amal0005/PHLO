@@ -26,10 +26,10 @@ import { GetPackagesUseCase } from "@/application/useCases/creator/package/getPa
 import { EditPackageUseCase } from "@/application/useCases/creator/package/editPackageUseCase";
 import { DeletePackageUseCase } from "@/application/useCases/creator/package/deletePackageUseCase";
 import { CategoryRepository } from "@/adapters/repository/admin/categoryRepository";
-import { AdminCategoryListingUseCase } from "@/application/useCases/admin/adminCategoryListingUseCase";
-import { AddCategoryUseCase } from "@/application/useCases/admin/addCategoryUseCase";
-import { EditCategoryUseCase } from "@/application/useCases/admin/editCategoryUseCase";
-import { DeleteCategoryUseCase } from "@/application/useCases/admin/deleteCategoryUseCase";
+import { AdminCategoryListingUseCase } from "@/application/useCases/admin/category/adminCategoryListingUseCase";
+import { AddCategoryUseCase } from "@/application/useCases/admin/category/addCategoryUseCase";
+import { EditCategoryUseCase } from "@/application/useCases/admin/category/editCategoryUseCase";
+import { DeleteCategoryUseCase } from "@/application/useCases/admin/category/deleteCategoryUseCase";
 import { CategoryController } from "@/adapters/controllers/admin/categoryController";
 import { BuySubscriptionUseCase } from "@/application/useCases/creator/subscription/buySubscriptionUseCase";
 import { ListCreatorBookingsUseCase } from "@/application/useCases/creator/bookings/listCreatorBookingsUseCase";
@@ -40,7 +40,7 @@ import { CreatorSubscriptionWebhookUseCase } from "@/application/useCases/creato
 import { SubscriptionRepository } from "@/adapters/repository/admin/subscriptionRepository";
 import { StripeService } from "@/domain/services/stripeService";
 import { CreatorSubscriptionController } from "@/adapters/controllers/creatorSubscriptionController";
-import { GetSubscriptionUseCase } from "@/application/useCases/admin/getSubscriptionUseCase";
+import { GetSubscriptionUseCase } from "@/application/useCases/admin/subscription/getSubscriptionUseCase";
 import { AddWallpaperUseCase } from "@/application/useCases/creator/wallpaper/addWallpaperUseCase";
 import { WallpaperRepository } from "@/adapters/repository/creator/wallpaperRepository";
 import { WallpaperController } from "@/adapters/controllers/creator/wallpaperController";

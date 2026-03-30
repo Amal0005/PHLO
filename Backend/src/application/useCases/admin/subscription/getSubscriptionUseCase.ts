@@ -1,8 +1,8 @@
 import { SubscriptionDtoMapper } from "@/application/mapper/admin/subscriptionMapper";
-import { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
-import { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
-import { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { SubscriptionDTO } from "@/domain/dto/admin/subscriptionDto";
+import type { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
+import type { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetSubscriptionUseCase implements IGetSubscriptionUseCase {
   constructor(

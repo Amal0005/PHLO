@@ -1,5 +1,5 @@
-import { WallpaperStatus } from "@/constants/wallpaperStatus";
-import { CreatorEntity } from "./creatorEntities";
+import type { WallpaperStatus } from "@/constants/wallpaperStatus";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export interface WallpaperEntity {
   _id?: string;

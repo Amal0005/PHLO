@@ -1,6 +1,9 @@
 import { uploadController } from "@/framework/depInjection/s3Injections";
-import { Router, Request, Response } from "express";
+import type { Request, Response } from "express";
+import { Router } from "express";
 import { BACKEND_ROUTES } from "@/constants/backendRoutes";
+import { validate } from "@/adapters/middlewares/zodValidator";
+import { presignUrlSchema } from "@/adapters/validation/commonSchemas";
 
 export class UploadRoutes {
   public uploadRouter: Router;
@@ -11,8 +14,11 @@ export class UploadRoutes {
   }
 
   private setRoutes(): void {
-    this.uploadRouter.post(BACKEND_ROUTES.UPLOAD.PRESIGN, (req: Request, res: Response) =>
-      uploadController.getPresignedUrl(req, res)
+    this.uploadRouter.post(
+      BACKEND_ROUTES.UPLOAD.PRESIGN,
+      validate(presignUrlSchema),
+      (req: Request, res: Response) =>
+        uploadController.getPresignedUrl(req, res)
     );
 
     this.uploadRouter.get(BACKEND_ROUTES.UPLOAD.VIEW_URL, (req: Request, res: Response) =>

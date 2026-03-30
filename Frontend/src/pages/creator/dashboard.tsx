@@ -3,13 +3,13 @@ import { RootState } from "@/store/store";
 import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { useState, useEffect } from "react";
 import { Package, Image as ImageIcon, Eye, Plus, Calendar } from "lucide-react";
-import { AddPackageModal } from "./package/components/addPackageModal";
-import { AddWallpaperModal } from "./wallpaper/components/addWallpaperModal";
+import { AddPackageModal } from "@/pages/creator/package/components/addPackageModal";
+import { AddWallpaperModal } from "@/pages/creator/wallpaper/components/addWallpaperModal";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import ConfirmModal from "@/components/reusable/ConfirmModal";
-import { ManageLeaveModal } from "./bookings/components/ManageLeaveModal";
+import { ManageLeaveModal } from "@/pages/creator/bookings/components/ManageLeaveModal";
 import OptionModal from "@/compoents/reusable/OptionModal";
 
 export default function CreatorDashboard() {

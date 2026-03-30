@@ -1,10 +1,11 @@
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
-import { CreatorModel, ICreatorModel } from "@/framework/database/model/creatorModel";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { ICreatorModel } from "@/framework/database/model/creatorModel";
+import { CreatorModel } from "@/framework/database/model/creatorModel";
 import { paginateMongo } from "@/utils/pagination";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import { BaseRepository } from "../baseRepository";
-import { Filter } from "mongodb";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import { BaseRepository } from "@/adapters/repository/baseRepository";
+import type { Filter } from "mongodb";
 
 
 export class CreatorRepository extends BaseRepository<CreatorEntity, ICreatorModel> implements ICreatorRepository {

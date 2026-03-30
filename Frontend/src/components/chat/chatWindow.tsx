@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MessageEntity } from "@/interface/chat/chatInterface";
-import { S3Media } from '../reusable/s3Media';
+import { S3Media } from "@/components/reusable/s3Media";
 import { format, isToday, isYesterday } from 'date-fns';
 import { X } from 'lucide-react';
 

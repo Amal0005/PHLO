@@ -1,10 +1,10 @@
-import { IToggleWishlistUseCase } from "@/domain/interface/user/wishlist/IToggleWishlistUseCase";
-import { IGetWishlistUseCase } from "@/domain/interface/user/wishlist/IGetWishlistUseCase";
-import { IGetWishlistIdsUseCase } from "@/domain/interface/user/wishlist/IGetWishlistIdsUseCase";
+import type { IToggleWishlistUseCase } from "@/domain/interface/user/wishlist/IToggleWishlistUseCase";
+import type { IGetWishlistUseCase } from "@/domain/interface/user/wishlist/IGetWishlistUseCase";
+import type { IGetWishlistIdsUseCase } from "@/domain/interface/user/wishlist/IGetWishlistIdsUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
-import { Response } from "express";
-import { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
+import type { Response } from "express";
+import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 
 export class WishlistController {
     constructor(

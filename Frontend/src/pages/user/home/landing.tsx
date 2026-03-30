@@ -10,7 +10,7 @@ import {
   Facebook,
   Mail, ArrowRight,
 } from "lucide-react";
-import LogoWhite from "../../../assets/images/Logo_white.png";
+import LogoWhite from "@/assets/images/Logo_white.png";
 import UserNavbar from "@/components/reusable/userNavbar";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { UserPackage } from "@/interface/user/userPackageInterface";

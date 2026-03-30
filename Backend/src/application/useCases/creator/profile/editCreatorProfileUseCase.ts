@@ -1,8 +1,8 @@
 import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
-import { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
-import { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
-import { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
+import type { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
+import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class EditCreatorProfileUseCase implements IeditCreatorProfileUseCase {
     constructor(

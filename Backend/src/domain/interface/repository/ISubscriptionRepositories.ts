@@ -1,6 +1,6 @@
-import { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
-import { IBaseRepository } from "./IBaseRepository";
-import { PaginatedResult } from "@/domain/types/paginationTypes";
+import type { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
+import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
+import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export interface ISubscriptionRepository extends IBaseRepository<SubscriptionEntity> {
     findSubscriptions(page?: number, limit?: number, isActive?: boolean, search?: string): Promise<PaginatedResult<SubscriptionEntity>>

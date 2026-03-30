@@ -1,5 +1,5 @@
-import { WalletOwnerType } from "@/domain/entities/walletEntity";
-import { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
+import type { WalletOwnerType } from "@/domain/entities/walletEntity";
+import type { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 
 export interface ICreditWalletUseCase {
     creditWallet(

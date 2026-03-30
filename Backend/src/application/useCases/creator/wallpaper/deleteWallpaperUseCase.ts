@@ -1,6 +1,6 @@
-import { CreatorEntity } from "@/domain/entities/creatorEntities";
-import { IDeleteWallpaperUseCase } from "@/domain/interface/creator/walpapper/IDeleteWallpaperUseCase";
-import { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import type { CreatorEntity } from "@/domain/entities/creatorEntities";
+import type { IDeleteWallpaperUseCase } from "@/domain/interface/creator/walpapper/IDeleteWallpaperUseCase";
+import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class DeleteWallpaperUseCase implements IDeleteWallpaperUseCase {
