@@ -26,6 +26,7 @@ import { ROUTES } from "@/constants/routes";
 import AddReviewForm from "@/pages/user/booking/components/AddReviewForm";
 import ComplaintForm from "@/pages/user/booking/components/ComplaintForm";
 import ComplaintStatusModal from "@/pages/user/booking/components/ComplaintStatusModal";
+import LogoLoading from "@/components/reusable/LogoLoading";
 
 const BookingDetailPage: React.FC = () => {
     const { sessionId } = useParams<{ sessionId: string }>();
@@ -42,6 +43,7 @@ const BookingDetailPage: React.FC = () => {
     useEffect(() => {
         const fetchBookingDetail = async () => {
             if (!sessionId) return;
+            const startTime = Date.now();
             try {
                 setLoading(true);
                 const response = await BookingService.getBookingDetail(sessionId);
@@ -58,7 +60,12 @@ const BookingDetailPage: React.FC = () => {
                 console.error("Failed to fetch booking detail:", error);
                 toast.error("An error occurred while fetching booking details");
             } finally {
-                setLoading(false);
+                // Ensure the unique PHLO animation is seen for at least 1.2s for better UX/Branding
+                const elapsedTime = Date.now() - startTime;
+                const minTime = 1200;
+                setTimeout(() => {
+                    setLoading(false);
+                }, Math.max(0, minTime - elapsedTime));
             }
         };
 
@@ -114,7 +121,7 @@ const BookingDetailPage: React.FC = () => {
                 return {
                     label: isDatePassed ? "Completed" : "Confirmed",
                     icon: <CheckCircle2 className="w-4 h-4" />,
-                    style: isDatePassed 
+                    style: isDatePassed
                         ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
                         : "bg-blue-500/10 text-blue-500 border-blue-500/20",
                     bgGlow: isDatePassed ? "bg-emerald-500/5" : "bg-blue-500/5"
@@ -144,14 +151,7 @@ const BookingDetailPage: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-black text-white flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-zinc-800 border-t-white rounded-full animate-spin" />
-                    <p className="text-zinc-500 font-bold uppercase tracking-widest text-xs">PHLO</p>
-                </div>
-            </div>
-        );
+        return <LogoLoading fullScreen={true} />;
     }
 
     if (!booking) return null;
@@ -357,15 +357,15 @@ const BookingDetailPage: React.FC = () => {
 
                         {/* Complaint Status Section */}
                         {complaint && (
-                            <div 
+                            <div
                                 onClick={() => setIsStatusModalOpen(true)}
                                 className="bg-zinc-900/40 border border-zinc-800 rounded-[2rem] p-8 space-y-6 cursor-pointer hover:bg-zinc-900/60 transition-all hover:border-zinc-700 group/status"
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className={`p-2 rounded-xl transition-colors ${complaint.status === 'pending' ? 'bg-amber-500/10 text-amber-500 group-hover/status:bg-amber-500/20' :
-                                                complaint.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-500 group-hover/status:bg-emerald-500/20' :
-                                                    'bg-rose-500/10 text-rose-500 group-hover/status:bg-rose-500/20'
+                                            complaint.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-500 group-hover/status:bg-emerald-500/20' :
+                                                'bg-rose-500/10 text-rose-500 group-hover/status:bg-rose-500/20'
                                             }`}>
                                             <ShieldAlert className="w-5 h-5" />
                                         </div>
@@ -375,8 +375,8 @@ const BookingDetailPage: React.FC = () => {
                                         </div>
                                     </div>
                                     <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full border transition-colors ${complaint.status === 'pending' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20 group-hover/status:border-amber-500/40' :
-                                            complaint.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 group-hover/status:border-emerald-500/40' :
-                                                'bg-rose-500/10 text-rose-500 border-rose-500/20 group-hover/status:border-rose-500/40'
+                                        complaint.status === 'resolved' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 group-hover/status:border-emerald-500/40' :
+                                            'bg-rose-500/10 text-rose-500 border-rose-500/20 group-hover/status:border-rose-500/40'
                                         }`}>
                                         {complaint.status}
                                     </span>

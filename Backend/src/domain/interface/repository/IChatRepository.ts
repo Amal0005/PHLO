@@ -5,7 +5,7 @@ export interface IChatRepository {
   createConversation(data: Partial<ConversationEntity>): Promise<ConversationEntity>;
   getConversationByBooking(bookingId: string): Promise<ConversationEntity | null>;
   getConversationsByUserId(userId: string): Promise<ConversationEntity[]>;
-  getMessagesByConversationId(conversationId: string): Promise<MessageEntity[]>;
+  getMessagesByConversationId(conversationId: string, page?: number, limit?: number): Promise<MessageEntity[]>;
   saveMessage(data: Partial<MessageEntity>): Promise<MessageEntity>;
   updateConversationLastMessage(conversationId: string, message: string): Promise<void>;
   markMessagesAsSeen(conversationId: string, userId: string): Promise<void>;

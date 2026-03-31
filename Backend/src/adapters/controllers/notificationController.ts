@@ -19,7 +19,13 @@ export class NotificationController {
     ) {}
     async getNotification(req: AuthRequest, res: Response) {
         const userId = req.user?.userId as string
-        const notifications = await this._getNotificationUseCase.getNotification(userId)
+        const { page, limit } = req.query;
+        const skip = page && limit ? (Number(page) - 1) * Number(limit) : undefined;
+        const notifications = await this._getNotificationUseCase.getNotification(
+            userId,
+            skip,
+            limit ? Number(limit) : undefined
+        )
         return res.status(StatusCode.OK).json({ success: true, notifications });
     }
     async getNotificationDetails(req: AuthRequest, res: Response) {

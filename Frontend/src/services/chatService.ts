@@ -8,8 +8,8 @@ export const chatService = {
     return res.data.conversation || [];
   },
 
-  fetchMessages: async (convId: string): Promise<MessageEntity[]> => {
-    const res = await api.get(FRONTEND_ROUTES.CHAT.MESSAGES.replace(':id', convId));
+  fetchMessages: async (convId: string, page = 1, limit = 20): Promise<MessageEntity[]> => {
+    const res = await api.get(`${FRONTEND_ROUTES.CHAT.MESSAGES.replace(':id', convId)}?page=${page}&limit=${limit}`);
     return res.data.message || [];
   },
 

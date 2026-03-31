@@ -126,18 +126,18 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
                         <div className="flex gap-2">
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-2xl transition-all active:scale-90"
+                                className="p-2 sm:p-3 bg-white/5 hover:bg-white/10 text-white rounded-xl sm:rounded-2xl transition-all active:scale-90"
                                 title="Edit Review"
                             >
-                                <Send className="w-3.5 h-3.5 -rotate-45" />
+                                <Send className="w-3 sm:w-3.5 h-3 sm:h-3.5 -rotate-45" />
                             </button>
                             <button
                                 onClick={() => setIsDeleteModalOpen(true)}
                                 disabled={submitting}
-                                className="p-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-2xl transition-all active:scale-90 disabled:opacity-50"
+                                className="p-2 sm:p-3 bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white rounded-xl sm:rounded-2xl transition-all active:scale-90 disabled:opacity-50"
                                 title="Delete Review"
                             >
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                             </button>
                         </div>
                     </div>
@@ -176,7 +176,7 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
     }
 
     return (
-        <div className="p-8 rounded-[2.5rem] bg-zinc-900/30 border border-zinc-800 backdrop-blur-xl relative overflow-hidden group transition-all duration-500">
+        <div className="p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-zinc-900/30 border border-zinc-800 backdrop-blur-xl relative overflow-hidden group transition-all duration-500">
             <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/[0.02] rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex justify-between items-center mb-8">
@@ -197,18 +197,18 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
             <form onSubmit={handleSubmitReview} className="relative z-10 space-y-8">
                 <div>
                     <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-4 ml-1">Overall Rating</p>
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
                         {[1, 2, 3, 4, 5].map((s) => (
                             <button
                                 key={s}
                                 type="button"
-                                onMouseEnter={() => setHoverRating(s)}
-                                onMouseLeave={() => setHoverRating(0)}
+                                onMouseEnter={() => !('ontouchstart' in window) && setHoverRating(s)}
+                                onMouseLeave={() => !('ontouchstart' in window) && setHoverRating(0)}
                                 onClick={() => setRating(s)}
-                                className="transition-transform active:scale-90"
+                                className="relative z-30 p-2 sm:p-2.5 transition-transform active:scale-95 touch-manipulation cursor-pointer"
                             >
                                 <Star
-                                    className={`w-10 h-10 transition-all duration-300 ${s <= (hoverRating || rating)
+                                    className={`w-9 h-9 sm:w-11 sm:h-11 transition-all duration-300 pointer-events-none ${s <= (hoverRating || rating)
                                         ? "text-yellow-500 fill-yellow-500 scale-110 drop-shadow-[0_0_15px_rgba(234,179,8,0.2)]"
                                         : "text-zinc-800"
                                         }`}

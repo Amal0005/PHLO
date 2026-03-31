@@ -18,6 +18,7 @@ import ReviewList from "@/pages/user/package/components/ReviewList";
 import { CustomCalendar } from "@/components/reusable/CustomCalendar";
 import Map, { Marker } from 'react-map-gl/mapbox';
 import CancellationPolicyModal from "@/pages/user/package/components/CancellationPolicyModal";
+import LogoLoading from "@/components/reusable/LogoLoading";
 
 
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -51,6 +52,7 @@ const PackageDetailPage: React.FC = () => {
 
   useEffect(() => {
     const fetchPackageDetail = async () => {
+      const startTime = Date.now();
       try {
         setLoading(true);
         const response = await UserPackageService.getPackageById(packageId!);
@@ -58,7 +60,11 @@ const PackageDetailPage: React.FC = () => {
       } catch (error: unknown) {
         console.error("Failed to fetch package details", error);
       } finally {
-        setLoading(false);
+        const elapsedTime = Date.now() - startTime;
+        const minTime = 1200; // Snappy branding delay
+        setTimeout(() => {
+          setLoading(false);
+        }, Math.max(0, minTime - elapsedTime));
       }
     };
     if (packageId) fetchPackageDetail();
@@ -115,16 +121,7 @@ const PackageDetailPage: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="h-screen bg-[#080808] flex items-center justify-center">
-        <div className="flex items-center gap-2">
-          {[0, 150, 300].map((d, i) => (
-            <div key={i} className="w-1 bg-white animate-pulse rounded-full"
-              style={{ height: i === 1 ? 40 : 24, animationDelay: `${d}ms` }} />
-          ))}
-        </div>
-      </div>
-    );
+    return <LogoLoading fullScreen={true} />;
   }
 
   if (!packageData) {

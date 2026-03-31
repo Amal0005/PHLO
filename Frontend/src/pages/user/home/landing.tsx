@@ -20,6 +20,9 @@ import { ROUTES } from "@/constants/routes";
 import { S3Service } from "@/services/s3Service";
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
+import LogoLoading from "@/components/reusable/LogoLoading";
+import { S3Media } from "@/components/reusable/s3Media";
+import logo from "@/assets/images/Logo_white.png";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -200,9 +203,9 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {loading ? (
-              [1, 2, 3].map((i) => (
-                <div key={i} className="bg-zinc-900/50 animate-pulse rounded-2xl p-8 h-96" />
-              ))
+              <div className="col-span-full">
+                <LogoLoading />
+              </div>
             ) : packages.length > 0 ? (
               packages.map((pkg) => (
                 <div
@@ -262,7 +265,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {wallpaperLoading ? (
               [1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-[3/4] bg-zinc-900/50 animate-pulse rounded-2xl" />
+                <div key={i} className="aspect-[3/4] bg-zinc-950 flex items-center justify-center animate-pulse rounded-2xl border border-white/5 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent w-full h-full phlo-image-shimmer" />
+                  <img src={logo} alt="PHLO" className="w-14 h-auto opacity-10 grayscale brightness-200" />
+                </div>
               ))
             ) : wallpapers.length > 0 ? (
               wallpapers.map((wallpaper) => (
@@ -271,8 +277,8 @@ export default function LandingPage() {
                   className="group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
                   onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
                 >
-                  <img
-                    src={wallpaper.imageUrl}
+                  <S3Media
+                    s3Key={wallpaper.imageUrl}
                     alt={wallpaper.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />

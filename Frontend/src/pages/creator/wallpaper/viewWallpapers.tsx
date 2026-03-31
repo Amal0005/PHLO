@@ -15,6 +15,8 @@ import { AddWallpaperModal } from "@/pages/creator/wallpaper/components/addWallp
 import { CreatorProfileServices } from "@/services/creator/creatorProfileService";
 import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import { useDebounce } from "@/hooks/useDebounce";
+import LogoLoading from "@/components/reusable/LogoLoading";
+import logo from "@/assets/images/Logo_white.png";
 
 
 const ViewWallpapersPage: React.FC = () => {
@@ -187,8 +189,13 @@ const ViewWallpapersPage: React.FC = () => {
 
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-[50vh]">
-            <div className="w-12 h-12 border-4 border-white/10 border-t-white rounded-full animate-spin" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-52 bg-zinc-950 flex items-center justify-center animate-pulse rounded-3xl border border-white/5 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent w-full h-full phlo-image-shimmer" />
+                <img src={logo} alt="PHLO" className="w-14 h-auto opacity-10 grayscale brightness-200" />
+              </div>
+            ))}
           </div>
         ) : wallpapers.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[50vh] text-center">

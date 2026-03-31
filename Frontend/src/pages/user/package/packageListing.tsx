@@ -11,6 +11,7 @@ import Pagination from "@/components/reusable/pagination";
 import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/useDebounce";
+import LogoLoading from "@/components/reusable/LogoLoading";
 
 
 
@@ -58,6 +59,7 @@ const PackageListing: React.FC = () => {
   }, [searchQuery, selectedCategory, sortBy, locationFilter]);
 
   const fetchPackages = useCallback(async () => {
+    const startTime = Date.now();
     try {
       setLoading(true);
       const filters: PackageFilters = {
@@ -76,7 +78,6 @@ const PackageListing: React.FC = () => {
       if (locationFilter) {
         filters.lat = locationFilter.lat;
         filters.lng = locationFilter.lng;
-        // filters.radiusInKm = 50;
       }
 
       const response = await UserPackageService.listPackages(filters);
@@ -84,15 +85,15 @@ const PackageListing: React.FC = () => {
         setPackages(response.data || []);
         setTotalPackages(response.total || 0);
         setTotalPages(response.totalPages || 1);
-
-        setPackages(response.data || []);
-        setTotalPackages(response.total || 0);
-        setTotalPages(response.totalPages || 1);
       }
     } catch (error) {
       console.error("Failed to fetch packages", error);
     } finally {
-      setLoading(false);
+      const elapsedTime = Date.now() - startTime;
+      const minTime = 1200;
+      setTimeout(() => {
+        setLoading(false);
+      }, Math.max(0, minTime - elapsedTime));
     }
   }, [sortBy, debouncedSearch, selectedCategory, priceRange.min, priceRange.max, locationFilter, page]);
 
@@ -282,9 +283,7 @@ const PackageListing: React.FC = () => {
 
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-[50vh]">
-            <div className="w-12 h-12 border-4 border-white/10 border-t-white rounded-full animate-spin" />
-          </div>
+          <LogoLoading />
         ) : packages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[50vh] text-center">
             <PackageIcon size={48} className="text-gray-600 mb-4" />

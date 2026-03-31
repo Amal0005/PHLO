@@ -18,6 +18,13 @@ const notificationSlice = createSlice({
         setNotifications: (state, action: PayloadAction<NotificationEntity[]>) => {
             state.notifications = action.payload;
         },
+        appendNotifications: (state, action: PayloadAction<NotificationEntity[]>) => {
+            // Append and filter duplicates
+            const newNotifs = action.payload.filter(
+                (newN) => !state.notifications.some((existingN) => existingN.id === newN.id)
+            );
+            state.notifications = [...state.notifications, ...newNotifs];
+        },
         addNotification: (state, action: PayloadAction<NotificationEntity>) => {
             // Add to start of list
             state.notifications.unshift(action.payload);
@@ -58,6 +65,7 @@ const notificationSlice = createSlice({
 
 export const {
     setNotifications,
+    appendNotifications,
     addNotification,
     setUnreadCount,
     markRead,

@@ -3,12 +3,12 @@ import type { IChatRepository } from "@/domain/interface/repository/IChatReposit
 import type { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
 import { ChatMapper } from "@/application/mapper/chatMapper";
 
-export class GetMessageUseCase implements IGetMessagesUseCase{
-    constructor(
-    private _chatRepo:IChatRepository
-    ){}
-  async getMessage(conversationId: string): Promise<MessageResponseDTO[]> {
-      const messages = await this._chatRepo.getMessagesByConversationId(conversationId);
-      return messages.map(msg => ChatMapper.toMessageDTO(msg));
+export class GetMessageUseCase implements IGetMessagesUseCase {
+  constructor(
+    private _chatRepo: IChatRepository
+  ) {}
+  async getMessage(conversationId: string, page?: number, limit?: number): Promise<MessageResponseDTO[]> {
+    const messages = await this._chatRepo.getMessagesByConversationId(conversationId, page, limit);
+    return messages.map(msg => ChatMapper.toMessageDTO(msg));
   }
 }

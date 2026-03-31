@@ -10,8 +10,18 @@ interface Props {
 const MessageInput: React.FC<Props> = ({ onSendMessage, onImageSelect }) => {
     const [text, setText] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const pickerRef = useRef<HTMLDivElement>(null);
+
+    // Auto-resize textarea
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = '0px';
+            const scrollHeight = textareaRef.current.scrollHeight;
+            textareaRef.current.style.height = Math.min(scrollHeight, 120) + 'px';
+        }
+    }, [text]);
 
     // Close picker when clicking outside
     useEffect(() => {
@@ -31,7 +41,6 @@ const MessageInput: React.FC<Props> = ({ onSendMessage, onImageSelect }) => {
 
     const onEmojiClick = (emojiData: EmojiClickData) => {
         setText(prev => prev + emojiData.emoji);
-        // Do not close picker automatically to allow multiple emojis
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -43,15 +52,22 @@ const MessageInput: React.FC<Props> = ({ onSendMessage, onImageSelect }) => {
         }
     };
 
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit(e);
+        }
+    };
+
     return (
-        <form onSubmit={handleSubmit} className="flex items-center gap-3 w-full group relative">
+        <form onSubmit={handleSubmit} className="flex items-end gap-3 w-full group relative">
             {/* Emoji Picker Container */}
             {showEmojiPicker && (
-                <div 
+                <div
                     ref={pickerRef}
-                    className="absolute bottom-full right-0 mb-4 z-[9999] shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-300"
+                    className="absolute bottom-[calc(100%+1rem)] right-0 z-[9999] shadow-2xl animate-in fade-in slide-in-from-bottom-2 duration-300"
                 >
-                    <EmojiPicker 
+                    <EmojiPicker
                         theme={Theme.DARK}
                         onEmojiClick={onEmojiClick}
                         autoFocusSearch={false}
@@ -64,19 +80,21 @@ const MessageInput: React.FC<Props> = ({ onSendMessage, onImageSelect }) => {
             )}
 
             <div className="relative flex-1">
-                <input
-                    type="text"
+                <textarea
+                    ref={textareaRef}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    placeholder="Type a message..."
-                    className="w-full bg-[#1A1A1A] text-zinc-200 text-[13px] font-medium tracking-wide py-4 pl-6 pr-14 rounded-[1.2rem] border border-white/5 focus:outline-none focus:border-white/10 transition-all placeholder:text-zinc-600 shadow-inner"
+                    onKeyDown={handleKeyPress}
+                    placeholder="COMPOSE MESSAGE..."
+                    rows={1}
+                    className="w-full bg-zinc-900/50 backdrop-blur-xl text-zinc-200 text-[11px] font-black tracking-widest py-5 pl-8 pr-24 rounded-[2rem] border border-white/5 focus:outline-none focus:border-white/10 focus:bg-zinc-900/80 transition-all placeholder:text-zinc-700 shadow-2xl resize-none min-h-[64px] custom-scrollbar overflow-hidden uppercase"
                 />
-                
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3 text-zinc-500">
+
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-4 text-zinc-600">
                     <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="hover:text-zinc-200 transition-colors"
+                        className="p-1 hover:text-zinc-200 transition-all hover:scale-110 active:scale-90"
                     >
                         <ImageIcon size={18} />
                     </button>
@@ -86,15 +104,15 @@ const MessageInput: React.FC<Props> = ({ onSendMessage, onImageSelect }) => {
                         onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) onImageSelect(file);
-                            e.target.value = ''; // Reset to allow re-selection
+                            e.target.value = '';
                         }}
                         accept="image/*"
                         className="hidden"
                     />
-                    <button 
-                        type="button" 
+                    <button
+                        type="button"
                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                        className={`hover:text-zinc-200 transition-colors ${showEmojiPicker ? 'text-zinc-100 scale-110' : ''}`}
+                        className={`p-1 hover:text-zinc-200 transition-all hover:scale-110 active:scale-90 ${showEmojiPicker ? 'text-zinc-100 scale-125' : ''}`}
                     >
                         <Smile size={18} />
                     </button>
@@ -104,10 +122,9 @@ const MessageInput: React.FC<Props> = ({ onSendMessage, onImageSelect }) => {
             <button
                 type="submit"
                 disabled={!text.trim()}
-                className="flex items-center gap-2 bg-[#2A2A2A] hover:bg-[#333333] disabled:opacity-30 disabled:grayscale transition-all py-3.5 px-6 rounded-full border border-white/10 text-white shadow-xl group/btn active:scale-95"
+                className="flex items-center justify-center bg-white hover:bg-zinc-200 disabled:bg-zinc-800 disabled:opacity-20 transition-all rounded-full border border-white/10 text-black shadow-[0_10px_30px_rgba(255,255,255,0.1)] group/btn active:scale-90 h-[64px] w-[64px] flex-shrink-0"
             >
-                <span className="text-[12px] font-black uppercase tracking-widest">Send</span>
-                <Sparkles size={16} className="text-white group-hover/btn:rotate-12 transition-transform" />
+                <Sparkles size={20} className="group-hover/btn:rotate-12 transition-transform" />
             </button>
         </form>
     );

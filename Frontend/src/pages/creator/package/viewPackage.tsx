@@ -16,6 +16,7 @@ import { CreatorProfileServices } from "@/services/creator/creatorProfileService
 import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
 import { useDebounce } from "@/hooks/useDebounce";
+import LogoLoading from "@/components/reusable/LogoLoading";
 
 
 interface PackageWithId extends Omit<PackageData, 'category'> {
@@ -190,9 +191,7 @@ const ViewPackagesPage: React.FC = () => {
 
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-[50vh]">
-            <div className="w-12 h-12 border-4 border-white/10 border-t-white rounded-full animate-spin" />
-          </div>
+          <LogoLoading />
         ) : packages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[50vh] text-center">
             <PackageIcon size={48} className="text-gray-600 mb-4" />

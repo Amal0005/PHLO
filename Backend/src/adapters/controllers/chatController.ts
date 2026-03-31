@@ -24,14 +24,17 @@ export class ChatController {
     }
     async getMessage(req: AuthRequest, res: Response) {
         const conversationId = req.params.conversationId as string;
-        const message = await this._getMessageUseCase.getMessage(conversationId);
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 20;
+
+        const message = await this._getMessageUseCase.getMessage(conversationId, page, limit);
         return res.status(StatusCode.OK).json({ success: true, message })
     }
     async sendMessage(req: AuthRequest, res: Response) {
         const { conversationId, message, receiverId, type = "text" } = req.body;
         const senderId = req.user?.userId as string;
         const result = await this._sendMessageUseCase.sendMessage({ conversationId, senderId, message, recipientId: receiverId, type });
-        
+
         // Broadcast via socket to receiver and sender (to sync multiple tabs)
         if (receiverId) {
             SocketIOHandler.emitToUser(receiverId, "receive-message", result);

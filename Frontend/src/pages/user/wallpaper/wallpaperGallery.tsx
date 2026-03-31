@@ -4,13 +4,13 @@ import { Image as ImageIcon, Download, X, Bookmark } from "lucide-react";
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
 import { WishlistService } from "@/services/user/wishlistService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
-import Pagination from "@/components/reusable/pagination";
 import { S3Media } from "@/components/reusable/s3Media";
 import { S3Service } from "@/services/s3Service";
 import UserNavbar from "@/components/reusable/userNavbar";
 import { FilterSearch } from "@/components/reusable/FilterComponents";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/useDebounce";
+import logo from "@/assets/images/Logo_white.png";
 
 
 
@@ -25,40 +25,68 @@ const WallpaperGallery: React.FC = () => {
   const MIN_PRICE = 0;
   const MAX_PRICE = 1000;
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [selectedWallpaper, setSelectedWallpaper] = useState<WallpaperData | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [purchasedId, setPurchasedId] = useState<string | null>(null);
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
   const limit = 12;
 
+  // Reset feed when filters change
   useEffect(() => {
     setPage(1);
+    setWallpapers([]);
+    setHasMore(true);
   }, [debouncedSearch, debouncedPrice, selectedTag]);
 
-  const fetchWallpapers = useCallback(async () => {
+  const fetchWallpapers = useCallback(async (isFirstLoad = false) => {
     try {
-      setLoading(true);
-      const response = await UserWallpaperService.getApprovedWallpapers(page, limit, {
+      if (isFirstLoad) setLoading(true);
+      else setIsLoadingMore(true);
+
+      const currentPage = isFirstLoad ? 1 : page;
+
+      const response = await UserWallpaperService.getApprovedWallpapers(currentPage, limit, {
         search: debouncedSearch || undefined,
         hashtag: selectedTag || undefined,
         minPrice: debouncedPrice[0] > MIN_PRICE ? debouncedPrice[0] : undefined,
         maxPrice: debouncedPrice[1] < MAX_PRICE ? debouncedPrice[1] : undefined,
       });
+
       if (response?.success) {
-        setWallpapers(response.data || []);
-        setTotalPages(response.totalPages || 1);
+        const newWallpapers = response.data || [];
+        setWallpapers(prev => (currentPage === 1 ? newWallpapers : [...prev, ...newWallpapers]));
+        setHasMore(newWallpapers.length === limit);
       }
     } catch (error) {
       console.error("Failed to fetch wallpapers", error);
     } finally {
       setLoading(false);
+      setIsLoadingMore(false);
     }
   }, [page, debouncedSearch, selectedTag, debouncedPrice]);
 
   useEffect(() => {
-    fetchWallpapers();
-  }, [fetchWallpapers]);
+    fetchWallpapers(page === 1);
+  }, [page, debouncedSearch, selectedTag, debouncedPrice]);
+
+  // Infinite Scroll Listener
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 500 &&
+        !isLoadingMore &&
+        !loading &&
+        hasMore
+      ) {
+        setPage(prev => prev + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLoadingMore, loading, hasMore]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -271,8 +299,13 @@ const WallpaperGallery: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-[50vh]">
-            <div className="w-12 h-12 border-4 border-white/10 border-t-white rounded-full animate-spin" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="aspect-[3/4] bg-zinc-950 flex items-center justify-center animate-pulse rounded-2xl border border-white/5 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent w-full h-full phlo-image-shimmer" />
+                <img src={logo} alt="PHLO" className="w-14 h-auto opacity-10 grayscale brightness-200" />
+              </div>
+            ))}
           </div>
         ) : wallpapers.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[50vh] text-center">
@@ -349,14 +382,23 @@ const WallpaperGallery: React.FC = () => {
               ))}
             </div>
 
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              onPageChange={(newPage) => {
-                setPage(newPage);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }}
-            />
+            {/* Loading Indicator for Infinite Scroll */}
+            {isLoadingMore && (
+              <div className="mt-12 mb-20 flex flex-col items-center gap-4">
+                <div className="flex gap-2">
+                  <div className="w-2 h-2 rounded-full bg-white/20 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 rounded-full bg-white/20 animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Discovering more...</span>
+              </div>
+            )}
+            {!hasMore && wallpapers.length > 0 && (
+              <div className="mt-12 mb-20 flex flex-col items-center">
+                <div className="h-[1px] w-12 bg-white/10 mb-4" />
+                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-zinc-700">End of the collection</span>
+              </div>
+            )}
           </>
         )}
 
@@ -440,9 +482,9 @@ const WallpaperGallery: React.FC = () => {
         {showSuccessModal && (
           <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-6">
             <div className="max-w-md w-full bg-zinc-900 border border-white/10 p-10 rounded-[3rem] text-center shadow-2xl shadow-green-500/10 relative overflow-hidden">
-               {/* Decorative glows */}
-               <div className="absolute -top-20 -left-20 w-40 h-40 bg-green-500/10 rounded-full blur-[60px]" />
-               <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-500/10 rounded-full blur-[60px]" />
+              {/* Decorative glows */}
+              <div className="absolute -top-20 -left-20 w-40 h-40 bg-green-500/10 rounded-full blur-[60px]" />
+              <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-blue-500/10 rounded-full blur-[60px]" />
 
               <div className="flex justify-center mb-6">
                 <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20 relative">
@@ -479,6 +521,16 @@ const WallpaperGallery: React.FC = () => {
           </div>
         )}
       </main>
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        @keyframes phlo-image-shimmer {
+          0% { transform: translateX(-150%) skewX(-20deg); }
+          100% { transform: translateX(250%) skewX(-20deg); }
+        }
+        .phlo-image-shimmer {
+          animation: phlo-image-shimmer 2.5s infinite ease-in-out;
+        }
+      `}} />
     </div>
   );
 };

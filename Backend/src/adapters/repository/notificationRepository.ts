@@ -1,6 +1,6 @@
 import type { NotificationEntity } from "@/domain/entities/notificationEntity";
 import type { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
-import type { NotificationDocument} from "@/framework/database/model/notificationModel";
+import type { NotificationDocument } from "@/framework/database/model/notificationModel";
 import { NotificationModel } from "@/framework/database/model/notificationModel";
 
 export class NotificationRepository implements INotificationRepository {
@@ -13,10 +13,13 @@ export class NotificationRepository implements INotificationRepository {
   async findById(id: string): Promise<NotificationEntity | null> {
     const doc = await NotificationModel.findById(id).lean() as NotificationDocument | null;
     return doc ? this.mapToEntity(doc) : null;
-
   }
-  async findByRecipient(recipientId: string): Promise<NotificationEntity[]> {
-    const docs = await NotificationModel.find({ recipientId }).sort({ createdAt: -1 });
+
+  async findByRecipient(recipientId: string, skip?: number, limit?: number): Promise<NotificationEntity[]> {
+    const query = NotificationModel.find({ recipientId }).sort({ createdAt: -1 });
+    if (skip !== undefined) query.skip(skip);
+    if (limit !== undefined) query.limit(limit);
+    const docs = await query;
     return docs.map(doc => this.mapToEntity(doc));
   }
 
@@ -29,11 +32,11 @@ export class NotificationRepository implements INotificationRepository {
   }
 
   async markChatAsRead(recipientId: string, conversationId: string): Promise<void> {
-    await NotificationModel.updateMany({ 
-      recipientId, 
-      type: "CHAT", 
+    await NotificationModel.updateMany({
+      recipientId,
+      type: "CHAT",
       "metadata.conversationId": conversationId,
-      isRead: false 
+      isRead: false
     }, { isRead: true });
   }
 

@@ -15,15 +15,23 @@ export default function App() {
       </BrowserRouter>
       <ToastContainer
         position="top-center"
-        autoClose={2000}
+        autoClose={1500}
         hideProgressBar
-        newestOnTop={false}
+        newestOnTop
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
+        theme="dark"
+        toastStyle={{
+          borderRadius: '20px',
+          background: 'rgba(10, 10, 10, 0.8)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+          padding: '12px 24px',
+        }}
       />
     </>
   );

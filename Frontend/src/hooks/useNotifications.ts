@@ -4,6 +4,7 @@ import { RootState } from "@/store/store";
 import {
     addNotification,
     setNotifications,
+    appendNotifications,
     setUnreadCount,
     markRead,
     markAllAsRead,
@@ -12,7 +13,6 @@ import {
 import api from "@/axios/axiosConfig";
 import { socketService } from "@/services/socketService";
 import { NotificationEntity, NotificationType } from "@/interface/notification/notificationInterface";
-import { ROUTES } from "@/constants/routes";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -29,7 +29,7 @@ export const useNotifications = () => {
         if (!currentUserId) return;
         try {
             const [notifRes, countRes] = await Promise.all([
-                api.get("/notifications"),
+                api.get("/notifications?page=1&limit=15"),
                 api.get("/notifications/unread-count")
             ]);
 
@@ -43,6 +43,23 @@ export const useNotifications = () => {
             console.error("Error fetching notifications:", error);
         }
     }, [currentUserId, dispatch]);
+
+    const fetchMore = async (page: number) => {
+        if (!currentUserId) return;
+        try {
+            const res = await api.get(`/notifications?page=${page}&limit=15`);
+            if (res.data.success) {
+                if (res.data.notifications.length > 0) {
+                    dispatch(appendNotifications(res.data.notifications));
+                    return true;
+                }
+                return false;
+            }
+        } catch (error) {
+            console.error("Error fetching more notifications:", error);
+        }
+        return false;
+    };
 
     const markAsRead = async (notificationId: string) => {
         try {
@@ -102,28 +119,24 @@ export const useNotifications = () => {
 
                 // Show toast
                 toast.info(`${notification.title}: ${notification.message}`, {
-                    position: "bottom-right",
-                    autoClose: 4000,
-                    className: "bg-zinc-900 text-white rounded-2xl border border-white/10 shadow-2xl",
-                    progressClassName: "bg-blue-500",
+                    position: "top-center",
+                    autoClose: 2000,
+                    className: "bg-black/80 backdrop-blur-3xl text-white rounded-[2rem] border border-white/10 shadow-2xl cursor-pointer",
                     onClick: () => {
-                        const isAdmin = window.location.pathname.startsWith('/admin');
                         const isCreator = window.location.pathname.startsWith('/creator');
 
                         if (notification.type === NotificationType.CHAT) {
-                            navigate(isCreator ? '/creator/chat' : '/chat');
+                            const conversationId = notification.metadata?.conversationId;
+                            const bookingId = notification.metadata?.bookingId;
+                            let chatPath = isCreator ? '/creator/chat' : '/chat';
+                            if (conversationId) chatPath += `?conversationId=${conversationId}`;
+                            else if (bookingId) chatPath += `?bookingId=${bookingId}`;
+                            navigate(chatPath);
                         } else if (notification.type === NotificationType.BOOKING) {
                             navigate(isCreator ? '/creator/bookings' : '/bookings');
-                        } else if (notification.type === NotificationType.ACCOUNT) {
-                            if (isAdmin) {
-                                if (notification.title.includes("Creator")) navigate(ROUTES.ADMIN.CREATORS);
-                                else if (notification.title.includes("Wallpaper")) navigate(ROUTES.ADMIN.WALLPAPERS);
-                            } else {
-                                navigate(isCreator ? '/creator/profile' : '/profile');
-                            }
-                        } else if (notification.type === NotificationType.WALLET) {
-                            if (isAdmin) navigate(ROUTES.ADMIN.WALLET);
                         }
+                        // Mark as read when clicking the toast too
+                        markAsRead(notification.id);
                     }
                 });
             };
@@ -142,6 +155,7 @@ export const useNotifications = () => {
         markAsRead,
         markAllAsRead: markAllNotificationsAsRead,
         markChatAsRead,
-        refresh: fetchNotifications
+        refresh: fetchNotifications,
+        fetchMore
     };
 };

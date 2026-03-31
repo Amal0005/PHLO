@@ -71,9 +71,17 @@ export class ChatRepository implements IChatRepository {
     return conversations;
   }
 
-  async getMessagesByConversationId(conversationId: string): Promise<MessageEntity[]> {
-    const docs = await MessageModel.find({ conversationId }).sort({ createdAt: 1 }).lean();
-    return docs.map((d) => ChatMapper.toMessageEntity(d));
+  async getMessagesByConversationId(conversationId: string, page: number = 1, limit: number = 20): Promise<MessageEntity[]> {
+    const skip = (page - 1) * limit;
+    const docs = await MessageModel.find({ conversationId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    // Sort back to ascending for the UI
+    const reversedDocs = docs.reverse();
+    return reversedDocs.map((d) => ChatMapper.toMessageEntity(d));
   }
 
 
