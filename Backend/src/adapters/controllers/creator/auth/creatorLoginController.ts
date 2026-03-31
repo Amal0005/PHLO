@@ -10,7 +10,7 @@ export class CreatorLoginController {
   ) {}
   async login(req: Request, res: Response) {
     try {
-      const { email, password } = req.body.Creator as {
+      const { email, password } = req.body as {
         email: string,
         password: string
       }

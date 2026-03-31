@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Bell, MessageSquare, BookOpen, Wallet, Settings, ShieldAlert, Circle, Check } from "lucide-react";
+import { Bell, MessageSquare, BookOpen, Wallet, Settings, ShieldAlert, Check } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { NotificationType, NotificationEntity } from "@/interface/notification/notificationInterface";
 import { useNavigate } from "react-router-dom";

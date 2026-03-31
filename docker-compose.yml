@@ -1,15 +1,4 @@
 services:
-  mongodb:
-    image: mongo:latest
-    volumes:
-      - mongodb_data:/data/db
-    ports:
-      - "27017:27017" # Kept for easy local DB access
-    healthcheck:
-      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   redis:
     image: redis:alpine
@@ -24,13 +13,10 @@ services:
     env_file:
       - ./Backend/.env
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/phlo
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - NODE_ENV=production
     depends_on:
-      mongodb:
-        condition: service_healthy
       redis:
         condition: service_started
 
@@ -44,5 +30,3 @@ services:
     depends_on:
       - backend
 
-volumes:
-  mongodb_data:

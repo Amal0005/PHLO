@@ -3,8 +3,8 @@ import { CreatorLoginPayload, CreatorLoginResponse, CreatorRegisterPayload } fro
 import { FRONTEND_ROUTES } from "@/constants/frontendRoutes";
 
 export const CreatorAuthService = {
-  login: async (Creator: CreatorLoginPayload): Promise<CreatorLoginResponse> => {
-    const res = await api.post(FRONTEND_ROUTES.CREATOR.LOGIN, { Creator });
+  login: async (payload: CreatorLoginPayload): Promise<CreatorLoginResponse> => {
+    const res = await api.post(FRONTEND_ROUTES.CREATOR.LOGIN, payload);
     return res.data.data;
   },
 

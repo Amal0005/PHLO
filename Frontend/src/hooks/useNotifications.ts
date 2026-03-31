@@ -44,7 +44,7 @@ export const useNotifications = () => {
         }
     }, [currentUserId, dispatch]);
 
-    const fetchMore = async (page: number) => {
+    const fetchMore = useCallback(async (page: number) => {
         if (!currentUserId) return;
         try {
             const res = await api.get(`/notifications?page=${page}&limit=15`);
@@ -59,9 +59,9 @@ export const useNotifications = () => {
             console.error("Error fetching more notifications:", error);
         }
         return false;
-    };
+    }, [currentUserId, dispatch]);
 
-    const markAsRead = async (notificationId: string) => {
+    const markAsRead = useCallback(async (notificationId: string) => {
         try {
             const res = await api.patch(`/notifications/mark-read/${notificationId}`);
             if (res.data.success) {
@@ -70,9 +70,9 @@ export const useNotifications = () => {
         } catch (error) {
             console.error("Error marking notification as read:", error);
         }
-    };
+    }, [dispatch]);
 
-    const markAllNotificationsAsRead = async () => {
+    const markAllNotificationsAsRead = useCallback(async () => {
         try {
             const res = await api.patch("/notifications/mark-all-read");
             if (res.data.success) {
@@ -81,9 +81,9 @@ export const useNotifications = () => {
         } catch (error) {
             console.error("Error marking all notifications as read:", error);
         }
-    };
+    }, [dispatch]);
 
-    const markChatAsRead = async (conversationId: string) => {
+    const markChatAsRead = useCallback(async (conversationId: string) => {
         try {
             const res = await api.patch(`/notifications/mark-chat-read/${conversationId}`);
             if (res.data.success) {
@@ -92,7 +92,7 @@ export const useNotifications = () => {
         } catch (error) {
             console.error("Error marking chat notifications as read:", error);
         }
-    };
+    }, [dispatch]);
 
     useEffect(() => {
         if (!currentUserId) return;
@@ -147,7 +147,7 @@ export const useNotifications = () => {
                 socket.off("notification", handleNotification);
             };
         }
-    }, [currentUserId, fetchNotifications, dispatch, navigate]);
+    }, [currentUserId, fetchNotifications, dispatch, navigate, markAsRead]);
 
     return {
         notifications,

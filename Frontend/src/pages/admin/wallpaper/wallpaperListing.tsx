@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
-import { Eye, X } from "lucide-react";
+import { Eye, X, AlertTriangle, ShieldCheck } from "lucide-react";
+import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { AdminWallpaperService } from "@/services/admin/adminWallpaperService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 import Pagination from "@/components/reusable/pagination";
@@ -31,6 +32,19 @@ export default function WallpaperListingPage() {
   const limit = 10;
 
   const [previewWallpaper, setPreviewWallpaper] = useState<WallpaperData | null>(null);
+
+  // Confirm Modal State
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    mode: 'block' | 'unblock' | null;
+    targetId: string | null;
+  }>({
+    isOpen: false,
+    mode: null,
+    targetId: null,
+  });
+
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     setPage(1);
@@ -87,16 +101,16 @@ export default function WallpaperListingPage() {
       key: "wallpaper",
       render: (wp) => (
         <div className="flex items-center gap-5">
-           <div className="relative group">
+          <div className="relative group">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-white/20 to-white/5 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-            <div 
+            <div
               onClick={() => setPreviewWallpaper(wp)}
               className="relative w-16 h-12 rounded-2xl bg-zinc-800 border border-white/10 flex items-center justify-center overflow-hidden cursor-pointer active:scale-95 transition-all"
             >
-               <S3Media s3Key={wp.imageUrl || wp.watermarkedUrl || ""} className="w-full h-full object-cover" />
-               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                 <Eye size={14} className="text-white" />
-               </div>
+              <S3Media s3Key={wp.imageUrl || wp.watermarkedUrl || ""} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Eye size={14} className="text-white" />
+              </div>
             </div>
           </div>
           <div>
@@ -116,14 +130,13 @@ export default function WallpaperListingPage() {
       render: (wp) => (
         <div className="flex items-center">
           <span
-            className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase italic tracking-[0.1em] border ${
-              wp.status === "approved"
-              ? "bg-green-500/5 text-green-400 border-green-500/10"
-              : wp.status === "rejected"
-              ? "bg-red-500/5 text-red-400 border-red-500/10"
-              : wp.status === "blocked"
-              ? "bg-zinc-500/5 text-zinc-400 border-zinc-500/10"
-              : "bg-yellow-500/5 text-yellow-400 border-yellow-500/10"
+            className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase italic tracking-[0.1em] border ${wp.status === "approved"
+                ? "bg-green-500/5 text-green-400 border-green-500/10"
+                : wp.status === "rejected"
+                  ? "bg-red-500/5 text-red-400 border-red-500/10"
+                  : wp.status === "blocked"
+                    ? "bg-zinc-500/5 text-zinc-400 border-zinc-500/10"
+                    : "bg-yellow-500/5 text-yellow-400 border-yellow-500/10"
               }`}
           >
             {wp.status}
@@ -136,7 +149,7 @@ export default function WallpaperListingPage() {
       key: "price",
       render: (wp) => (
         <div className="flex items-center gap-2">
-           <span className={`text-xs font-black italic uppercase ${wp.price > 0 ? 'text-green-400' : 'text-gray-600'}`}>
+          <span className={`text-xs font-black italic uppercase ${wp.price > 0 ? 'text-green-400' : 'text-gray-600'}`}>
             {wp.price > 0 ? `₹${wp.price}` : 'FREE'}
           </span>
         </div>
@@ -147,7 +160,7 @@ export default function WallpaperListingPage() {
       key: "createdAt",
       render: (wp) => (
         <div className="flex items-center gap-2 text-gray-400">
-           <span className="text-xs font-medium">
+          <span className="text-xs font-medium">
             {wp.createdAt ? new Date(wp.createdAt).toLocaleDateString() : "-"}
           </span>
         </div>
@@ -159,54 +172,68 @@ export default function WallpaperListingPage() {
       align: "right",
       render: (wp) => (
         <div className="flex justify-end gap-3">
-           <button
-             onClick={() => setPreviewWallpaper(wp)}
-             className="w-11 h-11 flex items-center justify-center text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 rounded-2xl border border-white/5 transition-all"
-           >
-              <Eye size={18} />
-           </button>
-            {wp.status === "approved" && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); handleBlock(wp._id); }}
-                className="px-4 py-2 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all font-bold text-[10px] uppercase tracking-wider italic"
-              >
-                Block
-              </button>
-            )}
-            {wp.status === "blocked" && (
-              <button 
-                onClick={(e) => { e.stopPropagation(); handleUnblock(wp._id); }}
-                className="px-4 py-2 rounded-xl bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-all font-bold text-[10px] uppercase tracking-wider italic"
-              >
-                Unblock
-              </button>
-            )}
+          <button
+            onClick={() => setPreviewWallpaper(wp)}
+            className="w-11 h-11 flex items-center justify-center text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 rounded-2xl border border-white/5 transition-all"
+          >
+            <Eye size={18} />
+          </button>
+          {wp.status === "approved" && (
+            <button
+              onClick={(e) => { e.stopPropagation(); handleBlock(wp._id); }}
+              className="px-4 py-2 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all font-bold text-[10px] uppercase tracking-wider italic"
+            >
+              Block
+            </button>
+          )}
+          {wp.status === "blocked" && (
+            <button
+              onClick={(e) => { e.stopPropagation(); handleUnblock(wp._id); }}
+              className="px-4 py-2 rounded-xl bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-all font-bold text-[10px] uppercase tracking-wider italic"
+            >
+              Unblock
+            </button>
+          )}
         </div>
       ),
     },
   ];
 
-  const handleBlock = async (id: string) => {
-    if (!window.confirm("Are you sure you want to block this wallpaper?")) return;
-     try {
-       await AdminWallpaperService.blockWallpaper(id);
-       loadWallpapers();
-       setPreviewWallpaper(null); // Close preview if open
-     } catch (err) {
-       console.error("Block failed:", err);
-     }
-   };
+  const handleBlock = (id: string) => {
+    setConfirmModal({
+      isOpen: true,
+      mode: 'block',
+      targetId: id
+    });
+  };
 
-   const handleUnblock = async (id: string) => {
-    if (!window.confirm("Are you sure you want to unblock this wallpaper?")) return;
-     try {
-       await AdminWallpaperService.unblockWallpaper(id);
-       loadWallpapers();
-       setPreviewWallpaper(null);
-     } catch (err) {
-       console.error("Unblock failed:", err);
-     }
-   };
+  const handleUnblock = (id: string) => {
+    setConfirmModal({
+      isOpen: true,
+      mode: 'unblock',
+      targetId: id
+    });
+  };
+
+  const executeAction = async () => {
+    if (!confirmModal.targetId || !confirmModal.mode) return;
+
+    setIsProcessing(true);
+    try {
+      if (confirmModal.mode === 'block') {
+        await AdminWallpaperService.blockWallpaper(confirmModal.targetId);
+      } else {
+        await AdminWallpaperService.unblockWallpaper(confirmModal.targetId);
+      }
+      await loadWallpapers();
+      setPreviewWallpaper(null);
+      setConfirmModal({ isOpen: false, mode: null, targetId: null });
+    } catch (err) {
+      console.error(`${confirmModal.mode} failed:`, err);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
 
 
@@ -312,7 +339,7 @@ export default function WallpaperListingPage() {
 
               <div className="flex gap-4 pt-4 border-t border-white/5">
                 {previewWallpaper.status === "approved" && (
-                  <button 
+                  <button
                     onClick={() => handleBlock(previewWallpaper._id)}
                     className="flex-1 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 font-black uppercase italic tracking-wider rounded-xl transition-all text-xs"
                   >
@@ -320,7 +347,7 @@ export default function WallpaperListingPage() {
                   </button>
                 )}
                 {previewWallpaper.status === "blocked" && (
-                  <button 
+                  <button
                     onClick={() => handleUnblock(previewWallpaper._id)}
                     className="flex-1 py-3 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/20 font-black uppercase italic tracking-wider rounded-xl transition-all text-xs"
                   >
@@ -328,11 +355,28 @@ export default function WallpaperListingPage() {
                   </button>
                 )}
               </div>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
 
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+        onConfirm={executeAction}
+        loading={isProcessing}
+        title={confirmModal.mode === 'block' ? "Restricted Content" : "Authorize Content"}
+        message={
+          confirmModal.mode === 'block'
+            ? "Are you sure you want to block this wallpaper? It will no longer be visible to users in the explore gallery."
+            : "Are you sure you want to unblock this wallpaper? It will immediately become visible to all active users."
+        }
+        confirmLabel={confirmModal.mode === 'block' ? "Confirm Block" : "Authorize"}
+        cancelLabel="Abort"
+        variant={confirmModal.mode === 'block' ? 'danger' : 'info'}
+        icon={confirmModal.mode === 'block' ? <AlertTriangle size={28} /> : <ShieldCheck size={28} />}
+      />
 
     </div>
   );

@@ -14,6 +14,7 @@ import ConfirmModal from "@/components/reusable/ConfirmModal";
 import { removeUser } from "@/store/slices/auth/authSlice";
 import NotificationBell from "@/components/reusable/NotificationBell";
 
+
 interface NavbarProps {
   scrollToSection?: (id: string) => void;
 }
@@ -87,12 +88,6 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
     navigate(ROUTES.USER.LOGIN, { replace: true });
   };
 
-  const handleMenuClick = (sectionId: string) => {
-    if (scrollToSection) {
-      scrollToSection(sectionId);
-    }
-    setMobileMenuOpen(false);
-  };
 
 
   return (
@@ -102,25 +97,27 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
         : "bg-transparent"
         }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <img
-            src={LogoWhite}
-            alt="Logo"
-            className="h-10 lg:h-19 object-contain"
-          />
+          <div className="cursor-pointer" onClick={() => navigate(ROUTES.USER.HOME)}>
+            <img
+              src={LogoWhite}
+              alt="Logo"
+              className="h-10 lg:h-19 object-contain"
+            />
+          </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             <button
-              onClick={() => navigate(ROUTES.USER.PACKAGES)}
+              onClick={() => scrollToSection ? scrollToSection("packages") : navigate(ROUTES.USER.PACKAGES)}
               className="text-gray-300 hover:text-white transition-colors"
             >
               Packages
             </button>
             <button
-              onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
+              onClick={() => scrollToSection ? scrollToSection("wallpapers") : navigate(ROUTES.USER.WALLPAPERS)}
               className="text-gray-300 hover:text-white transition-colors"
             >
               Wallpapers
@@ -279,7 +276,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
           {/* Visual Navigation Cards */}
           <div className="grid grid-cols-2 gap-4 menu-item-animate" style={{ animationDelay: '200ms' }}>
             <button
-              onClick={() => { navigate(ROUTES.USER.PACKAGES); setMobileMenuOpen(false); }}
+              onClick={() => { scrollToSection ? scrollToSection("packages") : navigate(ROUTES.USER.PACKAGES); setMobileMenuOpen(false); }}
               className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left"
             >
               <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:rotate-6 transition-all">
@@ -291,7 +288,7 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
               </div>
             </button>
             <button
-              onClick={() => { navigate(ROUTES.USER.WALLPAPERS); setMobileMenuOpen(false); }}
+              onClick={() => { scrollToSection ? scrollToSection("wallpapers") : navigate(ROUTES.USER.WALLPAPERS); setMobileMenuOpen(false); }}
               className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left"
             >
               <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:-rotate-6 transition-all">

@@ -35,7 +35,7 @@ const ChatWindow: React.FC<Props> = ({ messages, currentUserId, recipientName, r
             const newScrollHeight = containerRef.current.scrollHeight;
             containerRef.current.scrollTop = newScrollHeight - prevScrollHeight;
         }
-    }, [messages, isLoading]);
+    }, [messages, isLoading, prevScrollHeight]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -61,7 +61,7 @@ const ChatWindow: React.FC<Props> = ({ messages, currentUserId, recipientName, r
         if (isNearBottom) {
             scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [messages.length]);
+    }, [messages.length, prevScrollHeight]);
 
     const renderDateHeader = (date: Date, prevDate?: Date) => {
         if (!prevDate || format(date, 'yyyy-MM-dd') !== format(prevDate, 'yyyy-MM-dd')) {

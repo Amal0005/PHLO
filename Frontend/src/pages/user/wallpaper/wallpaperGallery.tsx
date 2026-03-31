@@ -69,7 +69,7 @@ const WallpaperGallery: React.FC = () => {
 
   useEffect(() => {
     fetchWallpapers(page === 1);
-  }, [page, debouncedSearch, selectedTag, debouncedPrice]);
+  }, [page, debouncedSearch, selectedTag, debouncedPrice, fetchWallpapers]);
 
   // Infinite Scroll Listener
   useEffect(() => {
