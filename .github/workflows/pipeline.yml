@@ -135,6 +135,7 @@ jobs:
           source: "docker-compose.yml,Backend/nginx/nginx.conf"
           target: "~/phlo-app"
 
+
       - name: Execute Remote Deploy
         uses: appleboy/ssh-action@v1.0.0
         env:
@@ -145,13 +146,18 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_IMAGE_NAME: ${{ env.DOCKER_IMAGE_NAME }}
           DOCKER_FRONTEND_IMAGE_NAME: ${{ env.DOCKER_FRONTEND_IMAGE_NAME }}
+          GCP_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          envs: MONGO_URI,REDIS_PASSWORD,STRIPE_SECRET_KEY,JWT_SECRET,DOCKERHUB_USERNAME,DOCKER_IMAGE_NAME,DOCKER_FRONTEND_IMAGE_NAME
+          envs: MONGO_URI,REDIS_PASSWORD,STRIPE_SECRET_KEY,JWT_SECRET,DOCKERHUB_USERNAME,DOCKER_IMAGE_NAME,DOCKER_FRONTEND_IMAGE_NAME,GCP_KEY
           script: |
             cd ~/phlo-app
+            
+            # Ensure Backend directory exists for the key
+            mkdir -p Backend
+            echo "$GCP_KEY" > Backend/phlo-483705-7df390b1c765.json
             
             # Recreate .env for the Docker container
             echo "PORT=5000" > .env
@@ -165,6 +171,7 @@ jobs:
             echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}" >> .env
             echo "DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}" >> .env
             echo "DOCKER_FRONTEND_IMAGE_NAME=${DOCKER_FRONTEND_IMAGE_NAME}" >> .env
+            echo "GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/phlo-483705-7df390b1c765.json" >> .env
             
             # Update and Restart
             sudo docker compose pull

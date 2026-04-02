@@ -32,6 +32,8 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
     networks:
       - phlo_network
+    volumes:
+      - ./Backend/phlo-483705-7df390b1c765.json:/usr/src/app/phlo-483705-7df390b1c765.json
     depends_on:
       redis:
         condition: service_healthy
