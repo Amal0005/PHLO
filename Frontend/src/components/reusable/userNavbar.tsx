@@ -15,11 +15,7 @@ import { removeUser } from "@/store/slices/auth/authSlice";
 import NotificationBell from "@/components/reusable/NotificationBell";
 
 
-interface NavbarProps {
-  scrollToSection?: (id: string) => void;
-}
-
-export default function Navbar({ scrollToSection }: NavbarProps) {
+export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -100,25 +96,25 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <div className="cursor-pointer" onClick={() => navigate(ROUTES.USER.HOME)}>
+          <button onClick={() => navigate(ROUTES.USER.HOME)} className="cursor-pointer">
             <img
               src={LogoWhite}
               alt="Logo"
               className="h-10 lg:h-19 object-contain"
             />
-          </div>
+          </button>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             <button
-              onClick={() => scrollToSection ? scrollToSection("packages") : navigate(ROUTES.USER.PACKAGES)}
-              className="text-gray-300 hover:text-white transition-colors"
+              onClick={() => navigate(ROUTES.USER.PACKAGES)}
+              className="text-gray-300 hover:text-white transition-colors cursor-pointer"
             >
               Packages
             </button>
             <button
-              onClick={() => scrollToSection ? scrollToSection("wallpapers") : navigate(ROUTES.USER.WALLPAPERS)}
-              className="text-gray-300 hover:text-white transition-colors"
+              onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
+              className="text-gray-300 hover:text-white transition-colors cursor-pointer"
             >
               Wallpapers
             </button>
@@ -276,8 +272,8 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
           {/* Visual Navigation Cards */}
           <div className="grid grid-cols-2 gap-4 menu-item-animate" style={{ animationDelay: '200ms' }}>
             <button
-              onClick={() => { scrollToSection ? scrollToSection("packages") : navigate(ROUTES.USER.PACKAGES); setMobileMenuOpen(false); }}
-              className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left"
+              onClick={() => { navigate(ROUTES.USER.PACKAGES); setMobileMenuOpen(false); }}
+              className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left w-full"
             >
               <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:rotate-6 transition-all">
                 <BookOpen size={20} />
@@ -288,8 +284,8 @@ export default function Navbar({ scrollToSection }: NavbarProps) {
               </div>
             </button>
             <button
-              onClick={() => { scrollToSection ? scrollToSection("wallpapers") : navigate(ROUTES.USER.WALLPAPERS); setMobileMenuOpen(false); }}
-              className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left"
+              onClick={() => { navigate(ROUTES.USER.WALLPAPERS); setMobileMenuOpen(false); }}
+              className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left w-full"
             >
               <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:-rotate-6 transition-all">
                 <ImageIcon size={20} />

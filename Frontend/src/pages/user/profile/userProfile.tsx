@@ -290,10 +290,7 @@ export default function UserProfile() {
       .slice(0, 2);
   };
 
-  // Dummy scrollToSection for navbar
-  const scrollToSection = (id: string) => {
-    console.log("Scroll to:", id);
-  };
+
 
   if (isLoading) {
     return (
@@ -309,7 +306,7 @@ export default function UserProfile() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-black relative overflow-hidden">
       {/* Navbar */}
-      <Navbar scrollToSection={scrollToSection} />
+      <Navbar />
 
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
