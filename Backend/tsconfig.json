@@ -6,9 +6,9 @@
     "outDir": "./dist",
     "moduleResolution": "node",
 
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["*"]
     },
 
     "esModuleInterop": true,
@@ -17,5 +17,6 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "exclude": ["eslint.config.ts"]
+  "include": ["src"],
+  "exclude": ["eslint.config.ts", "dist", "node_modules"]
 }
