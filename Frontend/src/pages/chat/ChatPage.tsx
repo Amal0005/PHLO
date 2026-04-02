@@ -250,7 +250,7 @@ const ChatPage = () => {
             {/* Background Atmospheric Glows */}
             <div className="absolute top-1/4 -right-20 w-[600px] h-[600px] bg-cyan-900/10 rounded-full blur-[150px] animate-pulse pointer-events-none" />
             <div className="absolute bottom-1/4 -left-20 w-[600px] h-[600px] bg-white/5 rounded-full blur-[150px] animate-pulse pointer-events-none" style={{ animationDelay: '2s' }} />
-            {userState ? <Navbar scrollToSection={() => { }} /> : <CreatorNavbar />}
+            {userState ? <Navbar /> : <CreatorNavbar />}
 
             <div className="flex-1 mt-[80px] p-4 md:p-8 flex items-stretch gap-6 overflow-hidden relative z-10">
                 {/* Floating Navigation Rail (Sidebar) */}

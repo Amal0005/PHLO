@@ -122,17 +122,6 @@ const ChatWindow: React.FC<Props> = ({ messages, currentUserId, recipientName, r
                                 <React.Fragment key={index}>
                                     {renderDateHeader(date, prevDate)}
                                     <div className={`flex ${isMine ? 'justify-end' : 'justify-start'} items-end gap-3 group animate-in fade-in slide-in-from-bottom-2 duration-500`}>
-                                        {!isMine && (
-                                            <div className="w-9 h-9 rounded-full border border-zinc-800 overflow-hidden flex-shrink-0 mb-1 shadow-lg">
-                                                {recipientImage ? (
-                                                    <S3Media s3Key={recipientImage} className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-zinc-950">
-                                                        <span className="text-zinc-700 font-black uppercase text-[10px]">{recipientName?.slice(0, 2) || 'CR'}</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
                                         <div className={`max-w-[80%] md:max-w-[65%] space-y-1.5 min-w-0`}>
                                             <div
                                                 className={`px-6 py-4 shadow-2xl transition-all duration-300 relative overflow-hidden backdrop-blur-md ${isMine

@@ -1,0 +1,173 @@
+# PHLO Continuous Integration & Deployment Pipeline
+# Automated workflow for Backend, Frontend, and Dockerized Infrastructure
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+env:
+  NODE_VERSION: '20'
+  DOCKER_IMAGE_NAME: phlo-backend
+  DOCKER_FRONTEND_IMAGE_NAME: phlo-frontend
+
+jobs:
+  # ============================================
+  # Backend CI: Quality & Build
+  # ============================================
+  backend-ci:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: Backend/package-lock.json
+
+      - name: Install & Lint
+        working-directory: ./Backend
+        run: |
+          npm ci
+          npm run lint --if-present
+
+      - name: Build TypeScript
+        working-directory: ./Backend
+        run: npm run build
+
+      - name: Upload Backend Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: Backend/dist
+          retention-days: 7
+
+  # ============================================
+  # Frontend CI: Quality & Build (Local context)
+  # ============================================
+  frontend-ci:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Install & Build
+        working-directory: ./Frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Upload Frontend Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: Frontend/dist
+          retention-days: 7
+
+  # ============================================
+  # Docker: Build and Push Backend Image
+  # ============================================
+  docker-push:
+    name: Docker Build & Push
+    needs: [backend-ci, frontend-ci]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and Push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Frontend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_FRONTEND_IMAGE_NAME }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ============================================
+  # Deployment: AWS EC2 (Mirroring Friend's Setup)
+  # ============================================
+  deploy:
+    name: Deploy to Production
+    needs: docker-push
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy Configs to Server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USER }}
+          key: ${{ secrets.AWS_EC2_SSH_KEY }}
+          source: "docker-compose.yml,Backend/nginx/nginx.conf"
+          target: "~/phlo-app"
+
+      - name: Execute Remote Deploy
+        uses: appleboy/ssh-action@v1.0.0
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_IMAGE_NAME: ${{ env.DOCKER_IMAGE_NAME }}
+          DOCKER_FRONTEND_IMAGE_NAME: ${{ env.DOCKER_FRONTEND_IMAGE_NAME }}
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USER }}
+          key: ${{ secrets.AWS_EC2_SSH_KEY }}
+          envs: MONGO_URI,REDIS_PASSWORD,STRIPE_SECRET_KEY,JWT_SECRET,DOCKERHUB_USERNAME,DOCKER_IMAGE_NAME,DOCKER_FRONTEND_IMAGE_NAME
+          script: |
+            cd ~/phlo-app
+            
+            # Recreate .env for the Docker container
+            echo "PORT=5000" > .env
+            echo "NODE_ENV=production" >> .env
+            echo "MONGO_URI=${MONGO_URI}" >> .env
+            echo "REDIS_HOST=redis" >> .env
+            echo "REDIS_PORT=6379" >> .env
+            echo "REDIS_PASSWORD=${REDIS_PASSWORD}" >> .env
+            echo "STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}" >> .env
+            echo "JWT_SECRET=${JWT_SECRET}" >> .env
+            echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}" >> .env
+            echo "DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}" >> .env
+            echo "DOCKER_FRONTEND_IMAGE_NAME=${DOCKER_FRONTEND_IMAGE_NAME}" >> .env
+            
+            # Update and Restart
+            sudo docker compose pull
+            sudo docker compose down
+            sudo docker compose up -d
+            sudo docker image prune -f

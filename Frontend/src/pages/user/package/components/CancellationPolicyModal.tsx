@@ -28,7 +28,7 @@ const CancellationPolicyModal: React.FC<CancellationPolicyModalProps> = ({ isOpe
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-lg bg-[#0a0a0a] border border-white/10 rounded-[3rem] overflow-hidden shadow-2xl z-10"
+            className="relative w-full max-w-2xl bg-[#0a0a0a] border border-white/10 rounded-[3rem] overflow-hidden shadow-2xl z-10"
             style={{
               background: "rgba(10, 10, 10, 0.95)",
               backdropFilter: "blur(30px)",

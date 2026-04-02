@@ -177,7 +177,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ onTrigger, onClose,
                                         }}
                                         className="text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-rose-500 transition-all border-b border-transparent hover:border-rose-500/50"
                                     >
-                                        Dismiss All
+                                        Read All
                                     </button>
                                 )}
                             </div>
@@ -253,7 +253,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ onTrigger, onClose,
                                                         }}
                                                         className={`flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-full transition-all text-[9.5px] font-black uppercase tracking-widest text-white border border-white/10 ${mobileMode ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
                                                     >
-                                                        Archive <Check size={11} />
+                                                        Mark as Read <Check size={9} />
                                                     </button>
                                                 )}
                                             </div>

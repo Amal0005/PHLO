@@ -125,17 +125,12 @@ export default function LandingPage() {
     },
   ];
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+
 
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navbar */}
-      <UserNavbar scrollToSection={scrollToSection} />
+      <UserNavbar />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -167,25 +162,20 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => scrollToSection("packages")}
+              onClick={() => navigate(ROUTES.USER.PACKAGES)}
               className="px-8 py-4 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all hover:scale-105 flex items-center justify-center gap-2"
             >
               Explore Packages
               <ChevronRight size={20} />
             </button>
             <button
-              onClick={() => scrollToSection("wallpapers")}
+              onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
               className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg font-semibold hover:bg-white/20 transition-all flex items-center justify-center gap-2"
             >
               Browse Wallpapers
               <Download size={20} />
             </button>
           </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronRight className="rotate-90 text-white/50" size={32} />
         </div>
       </section>
 
@@ -430,7 +420,7 @@ export default function LandingPage() {
               <ul className="space-y-2">
                 <li>
                   <button
-                    onClick={() => scrollToSection("packages")}
+                    onClick={() => navigate(ROUTES.USER.PACKAGES)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Packages
@@ -438,7 +428,7 @@ export default function LandingPage() {
                 </li>
                 <li>
                   <button
-                    onClick={() => scrollToSection("wallpapers")}
+                    onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Wallpapers
@@ -446,7 +436,7 @@ export default function LandingPage() {
                 </li>
                 <li>
                   <button
-                    onClick={() => scrollToSection("creators")}
+                    onClick={() => navigate("/")}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Creators
