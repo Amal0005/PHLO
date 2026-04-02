@@ -1,7 +1,7 @@
 import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { IGetUserProfileUseCase } from "@/domain/interfaces/user/profile/IGetUserProfileUseCase";
 
 export class GetUserProfileUseCase implements IGetUserProfileUseCase {
     constructor(

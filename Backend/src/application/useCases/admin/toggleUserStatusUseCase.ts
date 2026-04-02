@@ -1,5 +1,5 @@
-import type { IToggleUserStatusUseCase } from "@/domain/interface/admin/IToggleUserStatusUseCase";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IToggleUserStatusUseCase } from "@/domain/interfaces/admin/IToggleUserStatusUseCase";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
 
 export class ToggleUserStatusUseCase implements IToggleUserStatusUseCase {
     constructor(

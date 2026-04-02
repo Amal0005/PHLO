@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import type { IStripeService } from "@/domain/interface/service/IStripeService";
+import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
 import type { CreateCheckoutSessionDTO } from "@/domain/dto/payment/createCheckoutSessionDto";
 import type { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
 

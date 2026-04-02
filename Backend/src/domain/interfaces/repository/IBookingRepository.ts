@@ -1,4 +1,4 @@
-import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
+import type { IBaseRepository } from "@/domain/interfaces/repository/IBaseRepository";
 import type { BookingEntity } from "@/domain/entities/bookingEntity";
 import type { BookingStatus } from "@/constants/bookingStatus";
 

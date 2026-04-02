@@ -1,5 +1,5 @@
-import type { IRefreshTokenUseCase } from "@/domain/interface/user/auth/IRefreshTokenUseCase";
-import type { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import type { IRefreshTokenUseCase } from "@/domain/interfaces/user/auth/IRefreshTokenUseCase";
+import type { IJwtServices } from "@/domain/interfaces/service/IJwtServices";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class RefreshTokenUseCase implements IRefreshTokenUseCase {

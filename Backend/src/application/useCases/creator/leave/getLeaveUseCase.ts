@@ -1,7 +1,7 @@
 import { LeaveMapper } from "@/application/mapper/creator/creatorLeaveMapper";
 import type { LeaveResponseDto } from "@/domain/dto/creator/leaveDto";
-import type { IGetLeavesUseCase } from "@/domain/interface/creator/leave/IGetLeaveUseCase";
-import type { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
+import type { IGetLeavesUseCase } from "@/domain/interfaces/creator/leave/IGetLeaveUseCase";
+import type { ILeaveRepository } from "@/domain/interfaces/repository/ILeaveRepository";
 
 export class GetLeavesUseCase implements IGetLeavesUseCase {
   constructor(

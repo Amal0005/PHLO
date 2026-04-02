@@ -1,6 +1,6 @@
 import PDFDocument from "pdfkit";
-import type { IDashboardStats } from "@/domain/interface/admin/IDashboardStatsUseCase";
-import type { IDashboardReportGenerator } from "@/domain/interface/service/IReportGenerator";
+import type { IDashboardStats } from "@/domain/interfaces/admin/IDashboardStatsUseCase";
+import type { IDashboardReportGenerator } from "@/domain/interfaces/service/IReportGenerator";
 import path from "node:path";
 import fs from "fs";
 

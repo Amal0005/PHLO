@@ -1,5 +1,5 @@
-import type { IBlockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IBlockWallpaperUseCase";
-import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import type { IBlockWallpaperUseCase } from "@/domain/interfaces/admin/wallpaper/IBlockWallpaperUseCase";
+import type { IWallpaperRepository } from "@/domain/interfaces/repository/IWallpaperRepository";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class BlockWallpaperUseCase implements IBlockWallpaperUseCase {

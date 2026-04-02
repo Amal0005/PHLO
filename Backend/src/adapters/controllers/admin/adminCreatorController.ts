@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import type { IApproveCreatorUseCase } from "@/domain/interface/admin/IApproveCreatorUseCase";
-import type { IRejectCreatorUseCase } from "@/domain/interface/admin/IRejectCreatorUseCase";
+import type { IApproveCreatorUseCase } from "@/domain/interfaces/admin/IApproveCreatorUseCase";
+import type { IRejectCreatorUseCase } from "@/domain/interfaces/admin/IRejectCreatorUseCase";
 import { AppError } from "@/domain/errors/appError";
-import type { IAdminCreatorListingUseCase } from "@/domain/interface/admin/IAdminCreatorListingUseCase";
-import type { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
+import type { IAdminCreatorListingUseCase } from "@/domain/interfaces/admin/IAdminCreatorListingUseCase";
+import type { IToggleCreatorStatusUseCase } from "@/domain/interfaces/admin/IToggleCreatorStatusUseCase";
 
 interface RejectRequestBody {
   reason: string;

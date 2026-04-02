@@ -1,16 +1,16 @@
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import type { IStripeService } from "@/domain/interface/service/IStripeService";
-import type { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
-import type { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
-import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
+import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
+import type { IBookingWebhookUseCase } from "@/domain/interfaces/user/booking/IBookingWebhookUseCase ";
+import type { ICreditWalletUseCase } from "@/domain/interfaces/wallet/ICreditWalletUseCase";
+import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { logger } from "@/utils/logger";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 import type Stripe from "stripe";
-import type { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import type { IChatRepository } from "@/domain/interfaces/repository/IChatRepository";
 
 export class BookingWebhookUseCase implements IBookingWebhookUseCase {
     constructor(

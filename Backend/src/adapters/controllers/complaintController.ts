@@ -1,8 +1,8 @@
-import type { IGetAllComplaintsUseCase } from "@/domain/interface/admin/complaint/IGetAllComplaintsUseCase";
-import type { IRejectComplaintUseCase } from "@/domain/interface/admin/complaint/IRejectComplaintUseCase";
-import type { IResolveComplaintUseCase } from "@/domain/interface/admin/complaint/IResolveComplaintUseCase";
-import type { IGetComplaintByBookingUseCase } from "@/domain/interface/user/complaint/IGetComplaintByBookingUseCase";
-import type { IRegisterComplaintUseCase } from "@/domain/interface/user/complaint/IRegisterComplaintUseCase";
+import type { IGetAllComplaintsUseCase } from "@/domain/interfaces/admin/complaint/IGetAllComplaintsUseCase";
+import type { IRejectComplaintUseCase } from "@/domain/interfaces/admin/complaint/IRejectComplaintUseCase";
+import type { IResolveComplaintUseCase } from "@/domain/interfaces/admin/complaint/IResolveComplaintUseCase";
+import type { IGetComplaintByBookingUseCase } from "@/domain/interfaces/user/complaint/IGetComplaintByBookingUseCase";
+import type { IRegisterComplaintUseCase } from "@/domain/interfaces/user/complaint/IRegisterComplaintUseCase";
 import type { Request, Response } from "express";
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { StatusCode } from "@/constants/statusCodes";

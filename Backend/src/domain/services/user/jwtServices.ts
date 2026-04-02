@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import type { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import type { IJwtServices } from "@/domain/interfaces/service/IJwtServices";
 import type { AuthPayload } from "@/domain/dto/user/authPayload";
 
 export class JwtServices implements IJwtServices {

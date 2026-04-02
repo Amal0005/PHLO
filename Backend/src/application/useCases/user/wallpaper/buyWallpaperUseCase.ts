@@ -1,8 +1,8 @@
-import type { IBuyWallpaperUseCase } from "@/domain/interface/user/wallpaper/IBuyWallpaperUseCase";
-import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
-import type { IStripeService } from "@/domain/interface/service/IStripeService";
+import type { IBuyWallpaperUseCase } from "@/domain/interfaces/user/wallpaper/IBuyWallpaperUseCase";
+import type { IWallpaperRepository } from "@/domain/interfaces/repository/IWallpaperRepository";
+import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
 import type { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
-import type { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
+import type { IWallpaperDownloadRepository } from "@/domain/interfaces/repository/IWallpaperDownloadRepository";
 import { PaymentMapper } from "@/application/mapper/user/paymentMapper";
 
 export class BuyWallpaperUseCase implements IBuyWallpaperUseCase {

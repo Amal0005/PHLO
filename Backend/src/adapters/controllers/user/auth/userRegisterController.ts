@@ -1,9 +1,9 @@
-import type { IUserRegisterUseCase } from "@/domain/interface/user/auth/IUserRegisterUseCase";
+import type { IUserRegisterUseCase } from "@/domain/interfaces/user/auth/IUserRegisterUseCase";
 import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import type { IVerifyRegisterOtpUseCase } from "@/domain/interface/user/auth/IVerifyRegisterOtpUseCase";
-import type { IResendOtpUseCase } from "@/domain/interface/user/auth/IResendOtpUseCase";
+import type { IVerifyRegisterOtpUseCase } from "@/domain/interfaces/user/auth/IVerifyRegisterOtpUseCase";
+import type { IResendOtpUseCase } from "@/domain/interfaces/user/auth/IResendOtpUseCase";
 
 export class userRegisterController {
   constructor(

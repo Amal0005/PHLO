@@ -1,7 +1,7 @@
 import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
 import type { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
-import type { IGetAllWallpapersUseCase } from "@/domain/interface/admin/wallpaper/IGetAllWallpapersUseCase";
-import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
+import type { IGetAllWallpapersUseCase } from "@/domain/interfaces/admin/wallpaper/IGetAllWallpapersUseCase";
+import type { IWallpaperRepository } from "@/domain/interfaces/repository/IWallpaperRepository";
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
 import type { WallpaperStatus } from "@/constants/wallpaperStatus";
 

@@ -1,9 +1,9 @@
 import type { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
 import { AppError } from "@/domain/errors/appError";
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
-import type { IStripeService } from "@/domain/interface/service/IStripeService";
-import type { IRetryPaymentUseCase } from "@/domain/interface/user/booking/IRetryPaymentUseCase";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
+import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
+import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
+import type { IRetryPaymentUseCase } from "@/domain/interfaces/user/booking/IRetryPaymentUseCase";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { StatusCode } from "@/constants/statusCodes";
 import type { CreatorEntity } from "@/domain/entities/creatorEntities";

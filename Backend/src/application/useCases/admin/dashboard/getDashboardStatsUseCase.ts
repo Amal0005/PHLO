@@ -6,14 +6,14 @@ import type {
   RecentCreator,
   RecentTransaction,
   TimeFrameData
-} from "@/domain/interface/admin/IDashboardStatsUseCase";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
-import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
-import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+} from "@/domain/interfaces/admin/IDashboardStatsUseCase";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
+import type { IWalletRepository } from "@/domain/interfaces/repository/IWalletRepository";
+import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
+import type { IWallpaperRepository } from "@/domain/interfaces/repository/IWallpaperRepository";
+import type { IComplaintRepository } from "@/domain/interfaces/repository/IComplaintRepository";
 import { startOfDay, subDays, startOfMonth, subMonths, format, isAfter, endOfDay } from "date-fns";
 
 export class GetDashboardStatsUseCase implements IDashboardStatsUseCase {

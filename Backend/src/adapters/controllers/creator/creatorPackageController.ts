@@ -2,10 +2,10 @@ import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
-import type { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
-import type { IDeletePackageUseCase } from "@/domain/interface/creator/package/IDeletePackageUseCase";
-import type { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPackageUseCase";
-import type { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
+import type { IAddPackageUseCase } from "@/domain/interfaces/creator/package/IAddPackageUseCase";
+import type { IDeletePackageUseCase } from "@/domain/interfaces/creator/package/IDeletePackageUseCase";
+import type { IEditPackageUseCase } from "@/domain/interfaces/creator/package/IEditPackageUseCase";
+import type { IgetPackagesUseCase } from "@/domain/interfaces/creator/package/IGetPackageUseCase";
 
 export class CreatorPackageController {
     constructor(

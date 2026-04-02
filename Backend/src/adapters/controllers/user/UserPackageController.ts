@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import type { IListUserPackagesUseCase } from "@/domain/interface/user/packages/IListUserPackagesUseCase";
-import type { IGetPackageDetailUseCase } from "@/domain/interface/user/packages/IGetPackageDetailUseCase ";
+import type { IListUserPackagesUseCase } from "@/domain/interfaces/user/packages/IListUserPackagesUseCase";
+import type { IGetPackageDetailUseCase } from "@/domain/interfaces/user/packages/IGetPackageDetailUseCase ";
 
 export class UserPackageController {
   constructor(

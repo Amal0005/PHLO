@@ -1,6 +1,6 @@
 import type { NotificationEntity } from "@/domain/entities/notificationEntity";
-import type { IGetNotificationsUseCase } from "@/domain/interface/notification/IGetNotificationsUseCase";
-import type { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
+import type { IGetNotificationsUseCase } from "@/domain/interfaces/notification/IGetNotificationsUseCase";
+import type { INotificationRepository } from "@/domain/interfaces/repository/INotificationRepository";
 
 export class GetNotificationsUseCase implements IGetNotificationsUseCase {
     constructor(

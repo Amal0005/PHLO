@@ -1,9 +1,9 @@
 import { UserMapper } from "@/application/mapper/user/userMapper";
 import type { loginDto } from "@/domain/dto/user/loginDto";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { IJwtServices } from "@/domain/interface/service/IJwtServices";
-import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
-import type { IUserLoginUseCase } from "@/domain/interface/user/auth/IUserLoginUseCase";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { IJwtServices } from "@/domain/interfaces/service/IJwtServices";
+import type { IPasswordService } from "@/domain/interfaces/service/IPasswordService";
+import type { IUserLoginUseCase } from "@/domain/interfaces/user/auth/IUserLoginUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 

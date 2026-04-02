@@ -1,7 +1,7 @@
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
 import type { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
-import type { IgetPackagesUseCase } from "@/domain/interface/creator/package/IGetPackageUseCase";
-import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { IgetPackagesUseCase } from "@/domain/interfaces/creator/package/IGetPackageUseCase";
+import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetPackagesUseCase implements IgetPackagesUseCase {

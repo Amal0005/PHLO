@@ -1,11 +1,11 @@
 import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
 import type { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
-import type { IRedisService } from "@/domain/interface/service/IRedisServices";
-import type { IOTPService } from "@/domain/interface/service/IOtpServices";
-import type { IVerifyCreatorOtpUseCase } from "@/domain/interface/creator/auth/IVerifyCreatorOtpUseCase";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { IRedisService } from "@/domain/interfaces/service/IRedisServices";
+import type { IOTPService } from "@/domain/interfaces/service/IOtpServices";
+import type { IVerifyCreatorOtpUseCase } from "@/domain/interfaces/creator/auth/IVerifyCreatorOtpUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 
 export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {

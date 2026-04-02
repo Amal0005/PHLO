@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import type { IGetPresignedUrlUseCase } from "@/domain/interface/creator/IGetUrl";
-import type { IGetPresignedViewUrlUseCase } from "@/domain/interface/creator/IGetPresignedViewUrlUseCase";
+import type { IGetPresignedUrlUseCase } from "@/domain/interfaces/creator/IGetUrl";
+import type { IGetPresignedViewUrlUseCase } from "@/domain/interfaces/creator/IGetPresignedViewUrlUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 export class UploadController {
   constructor(

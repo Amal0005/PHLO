@@ -1,5 +1,5 @@
-import type { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
-import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { IGetWalletUseCase } from "@/domain/interfaces/wallet/IGetWalletUseCase";
+import type { IWalletRepository } from "@/domain/interfaces/repository/IWalletRepository";
 import type { WalletOwnerType } from "@/domain/entities/walletEntity";
 import type { WalletResponseDTO } from "@/domain/dto/wallet/walletResponseDto";
 import { WalletMapper } from "@/application/mapper/walletMapper";

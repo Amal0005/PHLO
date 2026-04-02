@@ -6,7 +6,7 @@ import type {
 import {
   BookingModel,
 } from "@/framework/database/model/bookingModel";
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
 import type { User } from "@/domain/entities/userEntities";
 import type { PackageEntity } from "@/domain/entities/packageEntity";
 import { BookingStatus } from "@/constants/bookingStatus";

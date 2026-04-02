@@ -1,6 +1,6 @@
-import type { ICheckCreatorExistsUseCase } from "@/domain/interface/creator/register/ICheckCreatorExistsUseCase";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { ICheckCreatorExistsUseCase } from "@/domain/interfaces/creator/register/ICheckCreatorExistsUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
 
 export class CheckCreatorExistsUseCase implements ICheckCreatorExistsUseCase {
   constructor(

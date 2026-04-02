@@ -1,5 +1,5 @@
-import type { IToggleWishlistUseCase } from "@/domain/interface/user/wishlist/IToggleWishlistUseCase";
-import type { IWishlistRepository } from "@/domain/interface/repository/IWishlistRepository";
+import type { IToggleWishlistUseCase } from "@/domain/interfaces/user/wishlist/IToggleWishlistUseCase";
+import type { IWishlistRepository } from "@/domain/interfaces/repository/IWishlistRepository";
 
 export class ToggleWishlistUseCase implements IToggleWishlistUseCase {
     constructor(

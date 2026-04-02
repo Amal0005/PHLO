@@ -1,5 +1,5 @@
-import type { IGetConversationUseCase } from "@/domain/interface/chat/IGetConversationUseCase";
-import type { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import type { IGetConversationUseCase } from "@/domain/interfaces/chat/IGetConversationUseCase";
+import type { IChatRepository } from "@/domain/interfaces/repository/IChatRepository";
 import type { ConversationResponseDTO } from "@/domain/dto/chat/conversationResponseDto";
 import { ChatMapper } from "@/application/mapper/chatMapper";
 

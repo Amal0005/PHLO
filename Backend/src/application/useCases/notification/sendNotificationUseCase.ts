@@ -1,6 +1,6 @@
 import type { NotificationEntity } from "@/domain/entities/notificationEntity";
-import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
-import type { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
+import type { INotificationRepository } from "@/domain/interfaces/repository/INotificationRepository";
 import type { NotificationResponseDTO } from "@/domain/dto/notification/notificationResponseDto";
 import { NotificationMapper } from "@/application/mapper/notificationMapper";
 

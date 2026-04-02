@@ -1,11 +1,11 @@
-import type { IMailService } from "@/domain/interface/service/IMailServices";
-import type { IOTPService } from "@/domain/interface/service/IOtpServices";
-import type { IForgotPasswordUseCase } from "@/domain/interface/creator/auth/IForgotPasswordUseCase";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
+import type { IOTPService } from "@/domain/interfaces/service/IOtpServices";
+import type { IForgotPasswordUseCase } from "@/domain/interfaces/creator/auth/IForgotPasswordUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 
 
 import { renderTemplate } from "@/utils/renderTemplates";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
 
 export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     constructor(

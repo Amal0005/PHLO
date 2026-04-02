@@ -1,6 +1,6 @@
 import { AppError } from "@/domain/errors/appError";
-import type { IReviewRepository } from "@/domain/interface/repository/IReviewRepository";
-import type { IDeleteReviewUseCase } from "@/domain/interface/user/review/IDeleteReviewUseCase";
+import type { IReviewRepository } from "@/domain/interfaces/repository/IReviewRepository";
+import type { IDeleteReviewUseCase } from "@/domain/interfaces/user/review/IDeleteReviewUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 
 export class DeleteReviewUseCase implements IDeleteReviewUseCase {

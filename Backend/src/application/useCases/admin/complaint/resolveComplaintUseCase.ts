@@ -1,9 +1,9 @@
 import { NotificationType } from "@/domain/entities/notificationEntity";
-import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
-import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
-import type { IResolveComplaintUseCase } from "@/domain/interface/admin/complaint/IResolveComplaintUseCase";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
+import type { IComplaintRepository } from "@/domain/interfaces/repository/IComplaintRepository";
+import type { IWalletRepository } from "@/domain/interfaces/repository/IWalletRepository";
+import type { IResolveComplaintUseCase } from "@/domain/interfaces/admin/complaint/IResolveComplaintUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import type { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";

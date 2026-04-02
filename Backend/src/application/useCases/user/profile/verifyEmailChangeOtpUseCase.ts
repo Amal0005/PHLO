@@ -1,5 +1,5 @@
-import type { IVerifyEmailChangeOtpUseCase } from "@/domain/interface/user/profile/IVerifyEmailChangeOtpUseCase";
-import type { IOTPService } from "@/domain/interface/service/IOtpServices";
+import type { IVerifyEmailChangeOtpUseCase } from "@/domain/interfaces/user/profile/IVerifyEmailChangeOtpUseCase";
+import type { IOTPService } from "@/domain/interfaces/service/IOtpServices";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class VerifyEmailChangeOtpUseCase implements IVerifyEmailChangeOtpUseCase {

@@ -1,7 +1,7 @@
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import type { IAddWallpaperUseCase } from "@/domain/interface/creator/walpapper/IAddWallpaperUseCase";
-import type { IDeleteWallpaperUseCase } from "@/domain/interface/creator/walpapper/IDeleteWallpaperUseCase";
-import type { IGetCreatorWallpapersUseCase } from "@/domain/interface/creator/walpapper/IGetCreatorWallpaperUseCase";
+import type { IAddWallpaperUseCase } from "@/domain/interfaces/creator/walpapper/IAddWallpaperUseCase";
+import type { IDeleteWallpaperUseCase } from "@/domain/interfaces/creator/walpapper/IDeleteWallpaperUseCase";
+import type { IGetCreatorWallpapersUseCase } from "@/domain/interfaces/creator/walpapper/IGetCreatorWallpaperUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
 import type { WallpaperStatus } from "@/constants/wallpaperStatus";

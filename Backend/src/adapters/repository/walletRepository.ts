@@ -1,4 +1,4 @@
-import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { IWalletRepository } from "@/domain/interfaces/repository/IWalletRepository";
 import type { Wallet, WalletOwnerType } from "@/domain/entities/walletEntity";
 import type { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 import { WalletModel } from "@/framework/database/schema/walletSchema";

@@ -1,8 +1,8 @@
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
 import type { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import type { PackageEntity } from "@/domain/entities/packageEntity";
-import type { IEditPackageUseCase } from "@/domain/interface/creator/package/IEditPackageUseCase";
-import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { IEditPackageUseCase } from "@/domain/interfaces/creator/package/IEditPackageUseCase";
+import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
 
 export class EditPackageUseCase implements IEditPackageUseCase {
   constructor(

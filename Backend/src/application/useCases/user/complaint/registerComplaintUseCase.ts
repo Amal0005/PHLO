@@ -1,10 +1,10 @@
 import type { ComplaintRequestDTO } from "@/domain/dto/complaint/complaintRequestDto";
 import { NotificationType } from "@/domain/entities/notificationEntity";
-import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { IRegisterComplaintUseCase } from "@/domain/interface/user/complaint/IRegisterComplaintUseCase";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
+import type { IComplaintRepository } from "@/domain/interfaces/repository/IComplaintRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { IRegisterComplaintUseCase } from "@/domain/interfaces/user/complaint/IRegisterComplaintUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import type { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";

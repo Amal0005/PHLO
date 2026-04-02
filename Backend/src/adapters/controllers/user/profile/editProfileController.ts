@@ -1,4 +1,4 @@
-import type { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
+import type { IEditUserProfileUseCase } from "@/domain/interfaces/user/profile/IEditUserProfileUseCase";
 import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";

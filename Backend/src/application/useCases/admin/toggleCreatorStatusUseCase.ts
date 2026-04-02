@@ -1,5 +1,5 @@
-import type { IToggleCreatorStatusUseCase } from "@/domain/interface/admin/IToggleCreatorStatusUseCase";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { IToggleCreatorStatusUseCase } from "@/domain/interfaces/admin/IToggleCreatorStatusUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
 
 export class ToggleCreatorStatusUseCase implements IToggleCreatorStatusUseCase {
     constructor(

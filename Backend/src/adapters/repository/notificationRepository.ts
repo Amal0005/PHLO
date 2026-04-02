@@ -1,5 +1,5 @@
 import type { NotificationEntity } from "@/domain/entities/notificationEntity";
-import type { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
+import type { INotificationRepository } from "@/domain/interfaces/repository/INotificationRepository";
 import type { NotificationDocument } from "@/framework/database/model/notificationModel";
 import { NotificationModel } from "@/framework/database/model/notificationModel";
 

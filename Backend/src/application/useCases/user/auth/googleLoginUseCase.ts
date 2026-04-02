@@ -1,10 +1,10 @@
-import type { IGoogleLoginUseCase } from "@/domain/interface/user/auth/IGoogleLoginUseCase";
+import type { IGoogleLoginUseCase } from "@/domain/interfaces/user/auth/IGoogleLoginUseCase";
 import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import type { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import type { IJwtServices } from "@/domain/interfaces/service/IJwtServices";
 import { verifyGoogleIdToken } from "@/framework/google/verifyGoogleIdToken";
 import { MESSAGES } from "@/constants/commonMessages";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
 
 
 export class GoogleLoginUseCase implements IGoogleLoginUseCase {

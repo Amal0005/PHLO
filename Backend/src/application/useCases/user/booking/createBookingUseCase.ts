@@ -1,11 +1,11 @@
 import type { CreateBookingRequestDTO } from "@/domain/dto/booking/createBookingRequestDto";
 import type { CheckoutSessionResponseDTO } from "@/domain/dto/payment/checkoutSessionResponseDto";
 import { AppError } from "@/domain/errors/appError";
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import type { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
-import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
-import type { IStripeService } from "@/domain/interface/service/IStripeService";
-import type { ICreateBookingUseCase } from "@/domain/interface/user/booking/ICreateBookingUseCase";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
+import type { ILeaveRepository } from "@/domain/interfaces/repository/ILeaveRepository";
+import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
+import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
+import type { ICreateBookingUseCase } from "@/domain/interfaces/user/booking/ICreateBookingUseCase";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { StatusCode } from "@/constants/statusCodes";
 import type { CreatorEntity } from "@/domain/entities/creatorEntities";

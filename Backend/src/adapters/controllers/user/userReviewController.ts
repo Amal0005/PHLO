@@ -1,9 +1,9 @@
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import type { IAddReviewUseCase } from "@/domain/interface/user/review/IAddReviewUseCase";
-import type { IDeleteReviewUseCase } from "@/domain/interface/user/review/IDeleteReviewUseCase";
-import type { IEditReviewUseCase } from "@/domain/interface/user/review/IEditReviewUseCase";
-import type { IGetReviewByBookingUseCase } from "@/domain/interface/user/review/IGetReviewByBookingUseCase";
-import type { IGetReviewUseCase } from "@/domain/interface/user/review/IGetReviewUseCase";
+import type { IAddReviewUseCase } from "@/domain/interfaces/user/review/IAddReviewUseCase";
+import type { IDeleteReviewUseCase } from "@/domain/interfaces/user/review/IDeleteReviewUseCase";
+import type { IEditReviewUseCase } from "@/domain/interfaces/user/review/IEditReviewUseCase";
+import type { IGetReviewByBookingUseCase } from "@/domain/interfaces/user/review/IGetReviewByBookingUseCase";
+import type { IGetReviewUseCase } from "@/domain/interfaces/user/review/IGetReviewUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
 import type { Request, Response } from "express";

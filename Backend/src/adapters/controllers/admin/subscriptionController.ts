@@ -2,10 +2,10 @@ import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { AppError } from "@/domain/errors/appError";
 import { MESSAGES } from "@/constants/commonMessages";
-import type { IAddSubscriptionUseCase } from "@/domain/interface/admin/subscription/IAddSubscriptionUseCase";
-import type { IEditSubscriptionUseCase } from "@/domain/interface/admin/subscription/IEditSubscriptionUseCase";
-import type { IDeleteSubscriptionUseCase } from "@/domain/interface/admin/subscription/IDeleteSubscriptionUseCase";
-import type { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
+import type { IAddSubscriptionUseCase } from "@/domain/interfaces/admin/subscription/IAddSubscriptionUseCase";
+import type { IEditSubscriptionUseCase } from "@/domain/interfaces/admin/subscription/IEditSubscriptionUseCase";
+import type { IDeleteSubscriptionUseCase } from "@/domain/interfaces/admin/subscription/IDeleteSubscriptionUseCase";
+import type { IGetSubscriptionUseCase } from "@/domain/interfaces/admin/subscription/IGetSubscriptionUseCase";
 
 export class SubscriptionController {
     constructor(

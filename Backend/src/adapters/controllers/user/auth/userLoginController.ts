@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
 import { AppError } from "@/domain/errors/appError";
-import type { IUserLoginUseCase } from "@/domain/interface/user/auth/IUserLoginUseCase";
+import type { IUserLoginUseCase } from "@/domain/interfaces/user/auth/IUserLoginUseCase";
 
 export class userLoginController {
   constructor(

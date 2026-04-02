@@ -2,7 +2,7 @@ import type { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
 import { BaseRepository } from "@/adapters/repository/baseRepository";
 import type { ISubscriptionModel} from "@/framework/database/model/subscriptionModel";
 import { SubscriptionModel } from "@/framework/database/model/subscriptionModel";
-import type { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
+import type { ISubscriptionRepository } from "@/domain/interfaces/repository/ISubscriptionRepositories";
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
 import { paginateMongo } from "@/utils/pagination";
 import type { Filter } from "mongodb";

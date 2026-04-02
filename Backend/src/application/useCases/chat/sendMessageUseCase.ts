@@ -1,9 +1,9 @@
-import type { ISendMessageUseCase } from "@/domain/interface/chat/ISendMessageUseCase";
-import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { ISendMessageUseCase } from "@/domain/interfaces/chat/ISendMessageUseCase";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IChatRepository } from "@/domain/interfaces/repository/IChatRepository";
 import type { MessageResponseDTO } from "@/domain/dto/chat/messageResponseDto";
 import { ChatMapper } from "@/application/mapper/chatMapper";
 

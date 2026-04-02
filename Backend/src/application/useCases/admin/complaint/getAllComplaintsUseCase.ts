@@ -1,7 +1,7 @@
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
 import type { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
-import type { IGetAllComplaintsUseCase } from "@/domain/interface/admin/complaint/IGetAllComplaintsUseCase";
-import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+import type { IGetAllComplaintsUseCase } from "@/domain/interfaces/admin/complaint/IGetAllComplaintsUseCase";
+import type { IComplaintRepository } from "@/domain/interfaces/repository/IComplaintRepository";
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetAllComplaintsUseCase implements IGetAllComplaintsUseCase {

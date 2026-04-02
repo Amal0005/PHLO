@@ -2,9 +2,9 @@ import { PackageMapper } from "@/application/mapper/user/packageMapper";
 import type { PackageRequestDto } from "@/domain/dto/package/packageRequestDto";
 import type { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import type { PackageEntity } from "@/domain/entities/packageEntity";
-import type { IAddPackageUseCase } from "@/domain/interface/creator/package/IAddPackageUseCase";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { IAddPackageUseCase } from "@/domain/interfaces/creator/package/IAddPackageUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
 
 export class AddPackageUseCase implements IAddPackageUseCase {
   constructor(

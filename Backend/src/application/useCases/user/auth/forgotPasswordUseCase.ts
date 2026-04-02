@@ -1,7 +1,7 @@
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { IMailService } from "@/domain/interface/service/IMailServices";
-import type { IOTPService } from "@/domain/interface/service/IOtpServices";
-import type { IForgotPasswordUseCase } from "@/domain/interface/user/auth/IForgotPasswordUseCase";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
+import type { IOTPService } from "@/domain/interfaces/service/IOtpServices";
+import type { IForgotPasswordUseCase } from "@/domain/interfaces/user/auth/IForgotPasswordUseCase";
 
 import { renderTemplate } from "@/utils/renderTemplates";
 

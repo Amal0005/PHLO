@@ -1,6 +1,6 @@
-import type { IGetAllWallpapersUseCase } from "@/domain/interface/admin/wallpaper/IGetAllWallpapersUseCase";
-import type { IBlockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IBlockWallpaperUseCase";
-import type { IUnblockWallpaperUseCase } from "@/domain/interface/admin/wallpaper/IUnblockWallpaperUseCase";
+import type { IGetAllWallpapersUseCase } from "@/domain/interfaces/admin/wallpaper/IGetAllWallpapersUseCase";
+import type { IBlockWallpaperUseCase } from "@/domain/interfaces/admin/wallpaper/IBlockWallpaperUseCase";
+import type { IUnblockWallpaperUseCase } from "@/domain/interfaces/admin/wallpaper/IUnblockWallpaperUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
 import type { WallpaperStatus } from "@/constants/wallpaperStatus";

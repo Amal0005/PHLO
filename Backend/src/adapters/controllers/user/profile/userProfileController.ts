@@ -3,11 +3,11 @@ import { StatusCode } from "@/constants/statusCodes";
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import type { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
-import type { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
-import type { IChangePasswordUseCase } from "@/domain/interface/user/profile/IChangepasswordUseCase";
-import type { ICheckEmailUseCase } from "@/domain/interface/user/profile/ICheckEmailUseCase";
-import type { IVerifyEmailChangeOtpUseCase } from "@/domain/interface/user/profile/IVerifyEmailChangeOtpUseCase";
+import type { IGetUserProfileUseCase } from "@/domain/interfaces/user/profile/IGetUserProfileUseCase";
+import type { IEditUserProfileUseCase } from "@/domain/interfaces/user/profile/IEditUserProfileUseCase";
+import type { IChangePasswordUseCase } from "@/domain/interfaces/user/profile/IChangepasswordUseCase";
+import type { ICheckEmailUseCase } from "@/domain/interfaces/user/profile/ICheckEmailUseCase";
+import type { IVerifyEmailChangeOtpUseCase } from "@/domain/interfaces/user/profile/IVerifyEmailChangeOtpUseCase";
 
 export class UserProfileController {
     constructor(

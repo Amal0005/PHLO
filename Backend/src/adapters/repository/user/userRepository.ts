@@ -4,7 +4,7 @@ import type { IUserModel } from "@/framework/database/model/userModel";
 import { UserModel } from "@/framework/database/model/userModel";
 import { paginateMongo } from "@/utils/pagination";
 import { BaseRepository } from "@/adapters/repository/baseRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
 import type { Filter } from "mongodb";
 import type mongoose from "mongoose";
 

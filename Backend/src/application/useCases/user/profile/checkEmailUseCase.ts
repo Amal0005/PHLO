@@ -1,6 +1,6 @@
-import type { ICheckEmailUseCase } from "@/domain/interface/user/profile/ICheckEmailUseCase";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { ICheckEmailUseCase } from "@/domain/interfaces/user/profile/ICheckEmailUseCase";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class CheckEmailUseCase implements ICheckEmailUseCase {

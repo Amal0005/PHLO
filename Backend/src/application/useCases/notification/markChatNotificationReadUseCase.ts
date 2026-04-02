@@ -1,5 +1,5 @@
-import type { IMarkChatNotificationReadUseCase } from "@/domain/interface/notification/IMarkChatNotificationReadUseCase";
-import type { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
+import type { IMarkChatNotificationReadUseCase } from "@/domain/interfaces/notification/IMarkChatNotificationReadUseCase";
+import type { INotificationRepository } from "@/domain/interfaces/repository/INotificationRepository";
 
 export class MarkChatNotificationReadUseCase implements IMarkChatNotificationReadUseCase {
     constructor(

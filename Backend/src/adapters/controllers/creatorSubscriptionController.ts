@@ -1,6 +1,6 @@
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import type { IGetSubscriptionUseCase } from "@/domain/interface/admin/subscription/IGetSubscriptionUseCase";
-import type { IBuySubscriptionUseCase } from "@/domain/interface/creator/payment/IBuySubscriptionUseCase";
+import type { IGetSubscriptionUseCase } from "@/domain/interfaces/admin/subscription/IGetSubscriptionUseCase";
+import type { IBuySubscriptionUseCase } from "@/domain/interfaces/creator/payment/IBuySubscriptionUseCase";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/constants/statusCodes";
 import type { Request, Response } from "express";

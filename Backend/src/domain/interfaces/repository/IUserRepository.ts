@@ -1,6 +1,6 @@
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
 import type { User } from "@/domain/entities/userEntities";
-import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
+import type { IBaseRepository } from "@/domain/interfaces/repository/IBaseRepository";
 
 export interface IUserRepository extends IBaseRepository<User> {
   findByEmail(email: string): Promise<User | null>;

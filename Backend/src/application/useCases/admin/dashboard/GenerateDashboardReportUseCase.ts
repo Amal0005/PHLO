@@ -1,6 +1,6 @@
-import type { IDashboardStatsUseCase } from "@/domain/interface/admin/IDashboardStatsUseCase";
-import type { IDashboardReportGenerator } from "@/domain/interface/service/IReportGenerator";
-import type { IGenerateDashboardReportUseCase } from "@/domain/interface/admin/IGenerateDashboardReportUseCase";
+import type { IDashboardStatsUseCase } from "@/domain/interfaces/admin/IDashboardStatsUseCase";
+import type { IDashboardReportGenerator } from "@/domain/interfaces/service/IReportGenerator";
+import type { IGenerateDashboardReportUseCase } from "@/domain/interfaces/admin/IGenerateDashboardReportUseCase";
 
 export class GenerateDashboardReportUseCase implements IGenerateDashboardReportUseCase {
     constructor(

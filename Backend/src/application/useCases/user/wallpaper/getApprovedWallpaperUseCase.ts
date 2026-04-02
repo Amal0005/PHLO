@@ -1,8 +1,8 @@
 import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
 import type { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
-import type { IWallpaperDownloadRepository } from "@/domain/interface/repository/IWallpaperDownloadRepository";
-import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
-import type { IGetApprovedWallpapersUseCase } from "@/domain/interface/user/wallpaper/IGetApprovedWallpaperUseCase";
+import type { IWallpaperDownloadRepository } from "@/domain/interfaces/repository/IWallpaperDownloadRepository";
+import type { IWallpaperRepository } from "@/domain/interfaces/repository/IWallpaperRepository";
+import type { IGetApprovedWallpapersUseCase } from "@/domain/interfaces/user/wallpaper/IGetApprovedWallpaperUseCase";
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class GetApprovedWallpaperUseCase implements IGetApprovedWallpapersUseCase {

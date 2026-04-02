@@ -1,5 +1,5 @@
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
-import type { CategoryFilterOptions } from "@/domain/interface/repository/ICategoryRepository";
+import type { CategoryFilterOptions } from "@/domain/interfaces/repository/ICategoryRepository";
 import type { CategoryResponseDto } from "@/domain/dto/admin/categoryResponseDto";
 
 export interface IAdminCategoryListingUseCase {

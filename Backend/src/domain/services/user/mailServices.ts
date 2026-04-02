@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import type { IMailService } from "@/domain/interface/service/IMailServices";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
 
 export class MailService implements IMailService {
 private transporter: nodemailer.Transporter;

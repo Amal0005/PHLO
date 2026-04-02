@@ -1,6 +1,6 @@
-import type { IToggleWishlistUseCase } from "@/domain/interface/user/wishlist/IToggleWishlistUseCase";
-import type { IGetWishlistUseCase } from "@/domain/interface/user/wishlist/IGetWishlistUseCase";
-import type { IGetWishlistIdsUseCase } from "@/domain/interface/user/wishlist/IGetWishlistIdsUseCase";
+import type { IToggleWishlistUseCase } from "@/domain/interfaces/user/wishlist/IToggleWishlistUseCase";
+import type { IGetWishlistUseCase } from "@/domain/interfaces/user/wishlist/IGetWishlistUseCase";
+import type { IGetWishlistIdsUseCase } from "@/domain/interfaces/user/wishlist/IGetWishlistIdsUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
 import type { Response } from "express";

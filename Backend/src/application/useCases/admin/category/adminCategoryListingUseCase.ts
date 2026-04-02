@@ -1,7 +1,7 @@
 import { CategoryMapper } from "@/application/mapper/admin/categoryMapper";
 import type { CategoryResponseDto } from "@/domain/dto/admin/categoryResponseDto";
-import type { IAdminCategoryListingUseCase } from "@/domain/interface/admin/IAdminCategoryListingUseCase";
-import type { CategoryFilterOptions, ICategoryRepository } from "@/domain/interface/repository/ICategoryRepository";
+import type { IAdminCategoryListingUseCase } from "@/domain/interfaces/admin/IAdminCategoryListingUseCase";
+import type { CategoryFilterOptions, ICategoryRepository } from "@/domain/interfaces/repository/ICategoryRepository";
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export class AdminCategoryListingUseCase implements IAdminCategoryListingUseCase {

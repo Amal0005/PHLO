@@ -1,15 +1,15 @@
 import { WallpaperMapper } from "@/application/mapper/creator/wallpaperMapper";
-import type { IModerationService } from "@/domain/interface/service/IModerationService";
+import type { IModerationService } from "@/domain/interfaces/service/IModerationService";
 import type { WallpaperResponseDto } from "@/domain/dto/user/wallpaperResponseDto";
 import type { WallpaperEntity } from "@/domain/entities/wallpaperEntity";
-import type { IAddWallpaperUseCase } from "@/domain/interface/creator/walpapper/IAddWallpaperUseCase";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { IWallpaperRepository } from "@/domain/interface/repository/IWallpaperRepository";
-import type { IWatermarkService } from "@/domain/interface/service/IWatermarkService";
-import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { IAddWallpaperUseCase } from "@/domain/interfaces/creator/walpapper/IAddWallpaperUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { IWallpaperRepository } from "@/domain/interfaces/repository/IWallpaperRepository";
+import type { IWatermarkService } from "@/domain/interfaces/service/IWatermarkService";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
 
-import type { IStorageService } from "@/domain/interface/service/IS3Services";
+import type { IStorageService } from "@/domain/interfaces/service/IS3Services";
 import { MESSAGES } from "@/constants/commonMessages";
 import crypto from "crypto";
 

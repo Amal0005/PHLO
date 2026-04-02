@@ -1,5 +1,5 @@
 import type { Response } from "express";
-import type { IGetWalletUseCase } from "@/domain/interface/wallet/IGetWalletUseCase";
+import type { IGetWalletUseCase } from "@/domain/interfaces/wallet/IGetWalletUseCase";
 import { StatusCode } from "@/constants/statusCodes";
 import { logger } from "@/utils/logger";
 import { MESSAGES } from "@/constants/commonMessages";

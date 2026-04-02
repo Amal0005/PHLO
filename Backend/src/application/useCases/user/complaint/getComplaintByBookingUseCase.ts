@@ -1,5 +1,5 @@
-import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
-import type { IGetComplaintByBookingUseCase } from "@/domain/interface/user/complaint/IGetComplaintByBookingUseCase";
+import type { IComplaintRepository } from "@/domain/interfaces/repository/IComplaintRepository";
+import type { IGetComplaintByBookingUseCase } from "@/domain/interfaces/user/complaint/IGetComplaintByBookingUseCase";
 import type { ComplaintResponseDTO } from "@/domain/dto/complaint/complaintResponseDto";
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
 

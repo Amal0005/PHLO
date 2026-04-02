@@ -1,5 +1,5 @@
-import type { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
-import type { IWalletRepository } from "@/domain/interface/repository/IWalletRepository";
+import type { ICreditWalletUseCase } from "@/domain/interfaces/wallet/ICreditWalletUseCase";
+import type { IWalletRepository } from "@/domain/interfaces/repository/IWalletRepository";
 import type { WalletOwnerType } from "@/domain/entities/walletEntity";
 import type { WalletTransaction } from "@/domain/entities/walletTransactionEntity";
 

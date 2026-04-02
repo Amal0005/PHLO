@@ -1,10 +1,10 @@
-import type { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { ISubscriptionRepository } from "@/domain/interface/repository/ISubscriptionRepositories";
-import type { IStripeService } from "@/domain/interface/service/IStripeService";
-import type { ICreditWalletUseCase } from "@/domain/interface/wallet/ICreditWalletUseCase";
-import type { IMailService } from "@/domain/interface/service/IMailServices";
+import type { ICreatorSubscriptionWebhookUseCase } from "@/domain/interfaces/creator/payment/ICreatorSubscriptionWebhookUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { ISubscriptionRepository } from "@/domain/interfaces/repository/ISubscriptionRepositories";
+import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
+import type { ICreditWalletUseCase } from "@/domain/interfaces/wallet/ICreditWalletUseCase";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 import { logger } from "@/utils/logger";
 import path from "node:path";
@@ -12,7 +12,7 @@ import type Stripe from "stripe";
 import type { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
 import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
-import type { ISendNotificationUseCase } from "@/domain/interface/notification/ISendNotificationUseCase";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
 import { NotificationType } from "@/domain/entities/notificationEntity";
 
 export class CreatorSubscriptionWebhookUseCase implements ICreatorSubscriptionWebhookUseCase {

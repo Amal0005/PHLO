@@ -1,8 +1,8 @@
 import { BookingMapper } from "@/application/mapper/user/bookingMapper";
 import type { BookingResponseDTO } from "@/domain/dto/booking/bookingResponseDto";
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import type { IGetBookingDetailUseCase } from "@/domain/interface/user/booking/IGetBookingDetailUseCase";
-import type { IStripeService } from "@/domain/interface/service/IStripeService";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
+import type { IGetBookingDetailUseCase } from "@/domain/interfaces/user/booking/IGetBookingDetailUseCase";
+import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
 import { BookingStatus } from "@/constants/bookingStatus";
 
 export class GetBookingDetailUseCase implements IGetBookingDetailUseCase {

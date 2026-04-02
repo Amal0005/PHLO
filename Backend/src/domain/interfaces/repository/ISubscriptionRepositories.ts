@@ -1,5 +1,5 @@
 import type { SubscriptionEntity } from "@/domain/entities/subscriptionEntity";
-import type { IBaseRepository } from "@/domain/interface/repository/IBaseRepository";
+import type { IBaseRepository } from "@/domain/interfaces/repository/IBaseRepository";
 import type { PaginatedResult } from "@/domain/types/paginationTypes";
 
 export interface ISubscriptionRepository extends IBaseRepository<SubscriptionEntity> {

@@ -1,6 +1,6 @@
 import { WishlistMapper } from "@/application/mapper/user/wishlistMapper";
-import type { IGetWishlistUseCase } from "@/domain/interface/user/wishlist/IGetWishlistUseCase";
-import type { IWishlistRepository } from "@/domain/interface/repository/IWishlistRepository";
+import type { IGetWishlistUseCase } from "@/domain/interfaces/user/wishlist/IGetWishlistUseCase";
+import type { IWishlistRepository } from "@/domain/interfaces/repository/IWishlistRepository";
 
 export class GetWishlistUseCase implements IGetWishlistUseCase {
     constructor(

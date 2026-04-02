@@ -1,7 +1,7 @@
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
-import type { IRedisService } from "@/domain/interface/service/IRedisServices";
-import type { IResetPasswordUseCase } from "@/domain/interface/user/auth/IResetPasswordUseCase";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { IPasswordService } from "@/domain/interfaces/service/IPasswordService";
+import type { IRedisService } from "@/domain/interfaces/service/IRedisServices";
+import type { IResetPasswordUseCase } from "@/domain/interfaces/user/auth/IResetPasswordUseCase";
 
 export class ResetPasswordUseCase implements IResetPasswordUseCase {
   constructor(

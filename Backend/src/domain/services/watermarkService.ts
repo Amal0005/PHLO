@@ -1,6 +1,6 @@
 import sharp from "sharp";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import type { IWatermarkService } from "@/domain/interface/service/IWatermarkService";
+import type { IWatermarkService } from "@/domain/interfaces/service/IWatermarkService";
 
 export class WatermarkService implements IWatermarkService {
     private _s3: S3Client;

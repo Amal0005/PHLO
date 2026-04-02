@@ -1,5 +1,5 @@
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
-import type { IListCreatorBookingsUseCase } from "@/domain/interface/creator/bookings/IListCreatorBookingsUseCase";
+import type { IListCreatorBookingsUseCase } from "@/domain/interfaces/creator/bookings/IListCreatorBookingsUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
 import type { Response } from "express";

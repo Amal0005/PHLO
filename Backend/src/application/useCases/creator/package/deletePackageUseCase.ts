@@ -1,6 +1,6 @@
 import type { CreatorEntity } from "@/domain/entities/creatorEntities";
-import type { IDeletePackageUseCase } from "@/domain/interface/creator/package/IDeletePackageUseCase";
-import type { IPackageRepository } from "@/domain/interface/repository/IPackageRepository";
+import type { IDeletePackageUseCase } from "@/domain/interfaces/creator/package/IDeletePackageUseCase";
+import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
 
 export class DeletePackageUseCase implements IDeletePackageUseCase {
   constructor(private _packageRepo: IPackageRepository) {}

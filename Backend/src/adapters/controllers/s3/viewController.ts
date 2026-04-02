@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import type { IGetCreatorImagesUseCase } from "@/domain/interface/creator/IGetCreatorImagesUseCase";
+import type { IGetCreatorImagesUseCase } from "@/domain/interfaces/creator/IGetCreatorImagesUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 
 export class ViewController {

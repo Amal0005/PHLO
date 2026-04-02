@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
 import { AppError } from "@/domain/errors/appError";
-import type { IAdminLoginUseCase } from "@/domain/interface/admin/IAdminLoginUseCase";
+import type { IAdminLoginUseCase } from "@/domain/interfaces/admin/IAdminLoginUseCase";
 
 interface LoginRequestBody {
   email: string;

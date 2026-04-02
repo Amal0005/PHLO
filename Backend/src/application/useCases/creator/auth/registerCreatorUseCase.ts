@@ -1,14 +1,14 @@
 import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
 import type { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
 import type { CreatorEntity } from "@/domain/entities/creatorEntities";
-import type { IRegisterCreatorUseCase } from "@/domain/interface/creator/register/IRegisterCreatorUseCase";
-import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
-import type { IOTPService } from "@/domain/interface/service/IOtpServices";
-import type { IMailService } from "@/domain/interface/service/IMailServices";
-import type { IRedisService } from "@/domain/interface/service/IRedisServices";
+import type { IRegisterCreatorUseCase } from "@/domain/interfaces/creator/register/IRegisterCreatorUseCase";
+import type { IPasswordService } from "@/domain/interfaces/service/IPasswordService";
+import type { IOTPService } from "@/domain/interfaces/service/IOtpServices";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
+import type { IRedisService } from "@/domain/interfaces/service/IRedisServices";
 import { renderTemplate } from "@/utils/renderTemplates";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
 
 export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
   constructor(

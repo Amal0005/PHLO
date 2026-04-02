@@ -1,12 +1,12 @@
 import type { CreatorLoginResponseDto } from "@/domain/dto/creator/creatorLoginResponseDto";
-import type { IJwtServices } from "@/domain/interface/service/IJwtServices";
+import type { IJwtServices } from "@/domain/interfaces/service/IJwtServices";
 import type { AuthPayload } from "@/domain/dto/user/authPayload";
-import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
+import type { IPasswordService } from "@/domain/interfaces/service/IPasswordService";
 import { AuthError } from "@/domain/errors/authError";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
-import type { ICreatorLoginUseCase } from "@/domain/interface/creator/auth/ICreatorLoginUseCase";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { ICreatorLoginUseCase } from "@/domain/interfaces/creator/auth/ICreatorLoginUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
 
 
 export class CreatorLoginUseCase implements ICreatorLoginUseCase {

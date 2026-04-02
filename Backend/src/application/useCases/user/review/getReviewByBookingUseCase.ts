@@ -1,7 +1,7 @@
 import { ReviewMapper } from "@/application/mapper/user/reviewMapper";
 import type { ReviewResponseDTO } from "@/domain/dto/user/review/reviewResponseDto";
-import type { IReviewRepository } from "@/domain/interface/repository/IReviewRepository";
-import type { IGetReviewByBookingUseCase } from "@/domain/interface/user/review/IGetReviewByBookingUseCase";
+import type { IReviewRepository } from "@/domain/interfaces/repository/IReviewRepository";
+import type { IGetReviewByBookingUseCase } from "@/domain/interfaces/user/review/IGetReviewByBookingUseCase";
 
 export class GetReviewByBookingUseCase implements IGetReviewByBookingUseCase {
     constructor(

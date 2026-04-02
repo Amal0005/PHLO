@@ -1,9 +1,9 @@
-import type { IMailService } from "@/domain/interface/service/IMailServices";
-import type { IApproveCreatorUseCase } from "@/domain/interface/admin/IApproveCreatorUseCase";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
+import type { IApproveCreatorUseCase } from "@/domain/interfaces/admin/IApproveCreatorUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { renderTemplate } from "@/utils/renderTemplates";
 import path from "node:path";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
 
 export class ApproveCreatorUseCase implements IApproveCreatorUseCase {
   constructor(

@@ -1,6 +1,6 @@
-import type { IRecordDownloadUseCase } from "@/domain/interface/creator/walpapper/IRecordDownloadUseCase";
-import type { IGetApprovedWallpapersUseCase } from "@/domain/interface/user/wallpaper/IGetApprovedWallpaperUseCase";
-import type { IBuyWallpaperUseCase } from "@/domain/interface/user/wallpaper/IBuyWallpaperUseCase";
+import type { IRecordDownloadUseCase } from "@/domain/interfaces/creator/walpapper/IRecordDownloadUseCase";
+import type { IGetApprovedWallpapersUseCase } from "@/domain/interfaces/user/wallpaper/IGetApprovedWallpaperUseCase";
+import type { IBuyWallpaperUseCase } from "@/domain/interfaces/user/wallpaper/IBuyWallpaperUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 import { StatusCode } from "@/constants/statusCodes";
 import type { Response } from "express";

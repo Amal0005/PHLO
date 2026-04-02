@@ -1,5 +1,5 @@
-import type { IMarkMessagesAsSeenUseCase } from "@/domain/interface/chat/IMarkMessagesAsSeenUseCase";
-import type { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import type { IMarkMessagesAsSeenUseCase } from "@/domain/interfaces/chat/IMarkMessagesAsSeenUseCase";
+import type { IChatRepository } from "@/domain/interfaces/repository/IChatRepository";
 
 export class MarkMessagesAsSeenUseCase implements IMarkMessagesAsSeenUseCase {
     constructor(private _chatRepo: IChatRepository) {}

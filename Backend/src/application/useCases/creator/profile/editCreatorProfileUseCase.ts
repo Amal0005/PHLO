@@ -1,7 +1,7 @@
 import { CreatorMapper } from "@/application/mapper/creator/creatorMapper";
 import type { CreatorResponseDto } from "@/domain/dto/creator/creatorResponseDto";
-import type { IeditCreatorProfileUseCase } from "@/domain/interface/creator/profile/IEditCreatorUseCase";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { IeditCreatorProfileUseCase } from "@/domain/interfaces/creator/profile/IEditCreatorUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
 import type { CreatorEntity } from "@/domain/entities/creatorEntities";
 
 export class EditCreatorProfileUseCase implements IeditCreatorProfileUseCase {

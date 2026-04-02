@@ -1,7 +1,7 @@
 import cron from "node-cron";
-import type { ISubscriptionScheduler } from "@/domain/interface/service/ISubscriptionScheduler";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IMailService } from "@/domain/interface/service/IMailServices";
+import type { ISubscriptionScheduler } from "@/domain/interfaces/service/ISubscriptionScheduler";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 import { logger } from "@/utils/logger";
 import path from "node:path";

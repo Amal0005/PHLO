@@ -1,6 +1,6 @@
-import type { IBookingRepository } from "@/domain/interface/repository/IBookingRepository";
-import type { IPdfInvoiceGenerator } from "@/domain/interface/service/IInvoiceGenerator";
-import type { IDownloadInvoiceUseCase } from "@/domain/interface/user/booking/IDownloadInvoiceUseCase";
+import type { IBookingRepository } from "@/domain/interfaces/repository/IBookingRepository";
+import type { IPdfInvoiceGenerator } from "@/domain/interfaces/service/IInvoiceGenerator";
+import type { IDownloadInvoiceUseCase } from "@/domain/interfaces/user/booking/IDownloadInvoiceUseCase";
 
 export class DownloadInvoiceUseCase implements IDownloadInvoiceUseCase {
     constructor(

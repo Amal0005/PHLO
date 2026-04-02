@@ -1,5 +1,5 @@
-import type { IPendingUserService } from "@/domain/interface/service/IPendingUserService";
-import type { IRedisService } from "@/domain/interface/service/IRedisServices";
+import type { IPendingUserService } from "@/domain/interfaces/service/IPendingUserService";
+import type { IRedisService } from "@/domain/interfaces/service/IRedisServices";
 
 export class PendingUserService implements IPendingUserService {
     constructor(private _redisService: IRedisService) {}

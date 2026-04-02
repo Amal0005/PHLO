@@ -1,6 +1,6 @@
 import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import type { ILogoutUseCase } from "@/domain/interface/ILogoutUseCase";
+import type { ILogoutUseCase } from "@/domain/interfaces/ILogoutUseCase";
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import { MESSAGES } from "@/constants/commonMessages";
 

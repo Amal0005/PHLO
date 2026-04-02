@@ -1,6 +1,6 @@
 import PDFDocument from "pdfkit";
 import type { BookingEntity } from "@/domain/entities/bookingEntity";
-import type { IPdfInvoiceGenerator } from "@/domain/interface/service/IInvoiceGenerator";
+import type { IPdfInvoiceGenerator } from "@/domain/interfaces/service/IInvoiceGenerator";
 
 interface InvoiceBookingData {
     id?: string;

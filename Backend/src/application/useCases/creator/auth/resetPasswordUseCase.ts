@@ -1,8 +1,8 @@
-import type { IRedisService } from "@/domain/interface/service/IRedisServices";
-import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
-import type { IResetPasswordUseCase } from "@/domain/interface/creator/auth/IResetPasswordUseCase";
+import type { IRedisService } from "@/domain/interfaces/service/IRedisServices";
+import type { IPasswordService } from "@/domain/interfaces/service/IPasswordService";
+import type { IResetPasswordUseCase } from "@/domain/interfaces/creator/auth/IResetPasswordUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
 
 
 export class ResetPasswordUseCase implements IResetPasswordUseCase {

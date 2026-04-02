@@ -1,8 +1,8 @@
 import type { UserResponseDto } from "@/domain/dto/user/userResponseDto";
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { IEditUserProfileUseCase } from "@/domain/interface/user/profile/IEditUserProfileUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { IEditUserProfileUseCase } from "@/domain/interfaces/user/profile/IEditUserProfileUseCase";
 
 export class EditUserProfileUsecase implements IEditUserProfileUseCase {
   constructor(

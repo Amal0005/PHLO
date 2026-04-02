@@ -1,5 +1,5 @@
-import type { IMarkAllNotificationReadUseCase } from "@/domain/interface/notification/IMarkAllNotificationReadUseCase";
-import type { INotificationRepository } from "@/domain/interface/repository/INotificationRepository";
+import type { IMarkAllNotificationReadUseCase } from "@/domain/interfaces/notification/IMarkAllNotificationReadUseCase";
+import type { INotificationRepository } from "@/domain/interfaces/repository/INotificationRepository";
 
 export class MarkAllNotificationReadUseCase implements IMarkAllNotificationReadUseCase {
     constructor(

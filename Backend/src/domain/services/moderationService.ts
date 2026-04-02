@@ -1,5 +1,5 @@
 import vision from "@google-cloud/vision";
-import type { IModerationService } from "@/domain/interface/service/IModerationService";
+import type { IModerationService } from "@/domain/interfaces/service/IModerationService";
 
 export class ModerationService implements IModerationService {
   private client = new vision.ImageAnnotatorClient();
@@ -45,4 +45,4 @@ export class ModerationService implements IModerationService {
       return "UNCERTAIN";
     }
   }
-}
+}

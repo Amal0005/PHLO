@@ -1,5 +1,5 @@
-import type { ILeaveRepository } from "@/domain/interface/repository/ILeaveRepository";
-import type { IRemoveLeaveUseCase } from "@/domain/interface/creator/leave/IRemoveLeaveUseCase";
+import type { ILeaveRepository } from "@/domain/interfaces/repository/ILeaveRepository";
+import type { IRemoveLeaveUseCase } from "@/domain/interfaces/creator/leave/IRemoveLeaveUseCase";
 
 export class RemoveLeaveUseCase implements IRemoveLeaveUseCase {
   constructor(private leaveRepository: ILeaveRepository) {}

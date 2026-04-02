@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
-import type { ICheckCreatorExistsUseCase } from "@/domain/interface/creator/register/ICheckCreatorExistsUseCase";
-import type { IVerifyCreatorOtpUseCase } from "@/domain/interface/creator/register/IVerifyCreatorOtpUseCase";
-import type { IResendCreatorOtpUseCase } from "@/domain/interface/creator/register/IResendCreatorOtpUseCase";
-import { IRegisterCreatorUseCase } from "@/domain/interface/creator/register/IRegisterCreatorUseCase";
+import type { ICheckCreatorExistsUseCase } from "@/domain/interfaces/creator/register/ICheckCreatorExistsUseCase";
+import type { IVerifyCreatorOtpUseCase } from "@/domain/interfaces/creator/register/IVerifyCreatorOtpUseCase";
+import type { IResendCreatorOtpUseCase } from "@/domain/interfaces/creator/register/IResendCreatorOtpUseCase";
+import { IRegisterCreatorUseCase } from "@/domain/interfaces/creator/register/IRegisterCreatorUseCase";
 
 export class CreatorRegisterController {
   constructor(

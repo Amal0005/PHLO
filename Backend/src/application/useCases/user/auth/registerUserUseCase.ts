@@ -1,10 +1,10 @@
-import type { IRedisService } from "@/domain/interface/service/IRedisServices";
-import type { IUserRegisterUseCase } from "@/domain/interface/user/auth/IUserRegisterUseCase";
-import type { IUserRepository } from "@/domain/interface/repository/IUserRepository";
-import type { ICreatorRepository } from "@/domain/interface/repository/ICreatorRepository";
-import type { IPasswordService } from "@/domain/interface/service/IPasswordService";
-import type { IOTPService } from "@/domain/interface/service/IOtpServices";
-import type { IMailService } from "@/domain/interface/service/IMailServices";
+import type { IRedisService } from "@/domain/interfaces/service/IRedisServices";
+import type { IUserRegisterUseCase } from "@/domain/interfaces/user/auth/IUserRegisterUseCase";
+import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IPasswordService } from "@/domain/interfaces/service/IPasswordService";
+import type { IOTPService } from "@/domain/interfaces/service/IOtpServices";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 import type { RegisterDto } from "@/domain/dto/user/registerDto";
 

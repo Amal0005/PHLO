@@ -1,6 +1,6 @@
-import type { IMailService } from "@/domain/interface/service/IMailServices";
-import type { IOTPService } from "@/domain/interface/service/IOtpServices";
-import type { IResendOtpUseCase } from "@/domain/interface/user/auth/IResendOtpUseCase";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
+import type { IOTPService } from "@/domain/interfaces/service/IOtpServices";
+import type { IResendOtpUseCase } from "@/domain/interfaces/user/auth/IResendOtpUseCase";
 
 
 import { renderTemplate } from "@/utils/renderTemplates";

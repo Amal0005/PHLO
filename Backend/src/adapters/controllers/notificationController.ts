@@ -1,12 +1,12 @@
-import type { ICountUnreadUseCase } from "@/domain/interface/notification/ICountUnreadUseCase";
-import type { IGetNotificationDetailsUseCase } from "@/domain/interface/notification/IGetNotificationDetailUseCase";
-import type { IGetNotificationsUseCase } from "@/domain/interface/notification/IGetNotificationsUseCase";
-import type { IMarkNotificationReadUseCase } from "@/domain/interface/notification/IMarkNotificationReadUseCase";
+import type { ICountUnreadUseCase } from "@/domain/interfaces/notification/ICountUnreadUseCase";
+import type { IGetNotificationDetailsUseCase } from "@/domain/interfaces/notification/IGetNotificationDetailUseCase";
+import type { IGetNotificationsUseCase } from "@/domain/interfaces/notification/IGetNotificationsUseCase";
+import type { IMarkNotificationReadUseCase } from "@/domain/interfaces/notification/IMarkNotificationReadUseCase";
 import type { AuthRequest } from "@/adapters/middlewares/jwtAuthMiddleware";
 import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
-import type { IMarkAllNotificationReadUseCase } from "@/domain/interface/notification/IMarkAllNotificationReadUseCase";
-import type { IMarkChatNotificationReadUseCase } from "@/domain/interface/notification/IMarkChatNotificationReadUseCase";
+import type { IMarkAllNotificationReadUseCase } from "@/domain/interfaces/notification/IMarkAllNotificationReadUseCase";
+import type { IMarkChatNotificationReadUseCase } from "@/domain/interfaces/notification/IMarkChatNotificationReadUseCase";
 
 export class NotificationController {
     constructor(

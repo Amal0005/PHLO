@@ -2,15 +2,6 @@ import type { Socket } from "socket.io";
 import { Server } from "socket.io";
 import type http from "http";
 
-interface SendMessageData {
-  conversationId: string;
-  senderId: string;
-  receiverId: string;
-  message: string;
-  createdAt: Date;
-  type?: "text" | "image";
-}
-
 export class SocketIOHandler {
   private static instance: SocketIOHandler;
   private io: Server;

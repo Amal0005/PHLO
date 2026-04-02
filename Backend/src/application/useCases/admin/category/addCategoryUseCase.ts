@@ -1,7 +1,7 @@
 import { CategoryMapper } from "@/application/mapper/admin/categoryMapper";
 import type { CategoryResponseDto } from "@/domain/dto/admin/categoryResponseDto";
-import type { IAddCategoryUseCase } from "@/domain/interface/admin/IAddCategoryUseCase";
-import type { ICategoryRepository } from "@/domain/interface/repository/ICategoryRepository";
+import type { IAddCategoryUseCase } from "@/domain/interfaces/admin/IAddCategoryUseCase";
+import type { ICategoryRepository } from "@/domain/interfaces/repository/ICategoryRepository";
 import { MESSAGES } from "@/constants/commonMessages";
 import { AppError } from "@/domain/errors/appError";
 import { StatusCode } from "@/constants/statusCodes";

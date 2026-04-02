@@ -1,7 +1,7 @@
 import type { ConversationEntity } from "@/domain/entities/conversationEntity";
 import { ConversationModel } from "@/framework/database/model/conversationModel";
 import { MessageModel } from "@/framework/database/model/messageModel";
-import type { IChatRepository } from "@/domain/interface/repository/IChatRepository";
+import type { IChatRepository } from "@/domain/interfaces/repository/IChatRepository";
 import type { MessageEntity } from "@/domain/entities/messageEntity";
 import { UserModel } from "@/framework/database/model/userModel";
 import { CreatorModel } from "@/framework/database/model/creatorModel";

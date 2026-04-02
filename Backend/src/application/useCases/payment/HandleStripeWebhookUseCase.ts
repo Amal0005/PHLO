@@ -1,8 +1,8 @@
-import type { IHandleStripeWebhookUseCase } from "@/domain/interface/payment/IHandleStripeWebhookUseCase";
-import type { IStripeService } from "@/domain/interface/service/IStripeService";
-import type { IBookingWebhookUseCase } from "@/domain/interface/user/booking/IBookingWebhookUseCase ";
-import type { ICreatorSubscriptionWebhookUseCase } from "@/domain/interface/creator/payment/ICreatorSubscriptionWebhookUseCase";
-import type { IWallpaperWebhookUseCase } from "@/domain/interface/user/wallpaper/IWallpaperWebhookUseCase";
+import type { IHandleStripeWebhookUseCase } from "@/domain/interfaces/payment/IHandleStripeWebhookUseCase";
+import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
+import type { IBookingWebhookUseCase } from "@/domain/interfaces/user/booking/IBookingWebhookUseCase ";
+import type { ICreatorSubscriptionWebhookUseCase } from "@/domain/interfaces/creator/payment/ICreatorSubscriptionWebhookUseCase";
+import type { IWallpaperWebhookUseCase } from "@/domain/interfaces/user/wallpaper/IWallpaperWebhookUseCase";
 import { logger } from "@/utils/logger";
 import type Stripe from "stripe";
 

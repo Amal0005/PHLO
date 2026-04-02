@@ -1,5 +1,5 @@
 import type { ComplaintEntity } from "@/domain/entities/complaintEntity";
-import type { IComplaintRepository } from "@/domain/interface/repository/IComplaintRepository";
+import type { IComplaintRepository } from "@/domain/interfaces/repository/IComplaintRepository";
 import { ComplaintModel } from "@/framework/database/model/complaintModel";
 import { ComplaintMapper } from "@/application/mapper/user/complaintMapper";
 import type { User } from "@/domain/entities/userEntities";

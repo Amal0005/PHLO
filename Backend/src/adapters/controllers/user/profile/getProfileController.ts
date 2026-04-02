@@ -1,5 +1,5 @@
 import { UserMapper } from "@/application/mapper/user/userMapper";
-import type { IGetUserProfileUseCase } from "@/domain/interface/user/profile/IGetUserProfileUseCase";
+import type { IGetUserProfileUseCase } from "@/domain/interfaces/user/profile/IGetUserProfileUseCase";
 import type { Response } from "express";
 import { StatusCode } from "@/constants/statusCodes";
 import { MESSAGES } from "@/constants/commonMessages";
