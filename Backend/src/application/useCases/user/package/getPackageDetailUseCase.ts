@@ -1,7 +1,7 @@
 import type { PackageResponseDto } from "@/domain/dto/user/packageResponseDto";
 import { PackageMapper } from "@/application/mapper/user/packageMapper";
 import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
-import type { IGetPackageDetailUseCase } from "@/domain/interfaces/user/packages/IGetPackageDetailUseCase ";
+import type { IGetPackageDetailUseCase } from "@/domain/interfaces/user/packages/IGetPackageDetailUseCase";
 
 export class GetPackageDetailUseCase implements IGetPackageDetailUseCase {
   constructor(
