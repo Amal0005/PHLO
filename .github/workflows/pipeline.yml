@@ -18,64 +18,64 @@ jobs:
   # ============================================
   # Backend CI: Quality & Build
   # ============================================
-backend-ci:
-  name: Backend CI
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
+  backend-ci:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: '**/package-lock.json'  # Changed this line
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: Backend/package-lock.json
 
-    - name: Install & Lint
-      working-directory: ./Backend
-      run: |
-        npm ci
-        npm run lint --if-present
+      - name: Install & Lint
+        working-directory: ./Backend
+        run: |
+          npm ci
+          npm run lint --if-present
 
-    - name: Build TypeScript
-      working-directory: ./Backend
-      run: npm run build
+      - name: Build TypeScript
+        working-directory: ./Backend
+        run: npm run build
 
-    - name: Upload Backend Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: backend-dist
-        path: Backend/dist
-        retention-days: 7
+      - name: Upload Backend Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: Backend/dist
+          retention-days: 7
 
   # ============================================
   # Frontend CI: Quality & Build (Local context)
   # ============================================
-frontend-ci:
-  name: Frontend CI
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
+  frontend-ci:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: '**/package-lock.json'  # Changed this line
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
 
-    - name: Install & Build
-      working-directory: ./Frontend
-      run: |
-        npm ci
-        npm run build
+      - name: Install & Build
+        working-directory: ./Frontend
+        run: |
+          npm ci
+          npm run build
 
-    - name: Upload Frontend Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: frontend-dist
-        path: Frontend/dist
-        retention-days: 7
+      - name: Upload Frontend Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: Frontend/dist
+          retention-days: 7
 
   # ============================================
   # Docker: Build and Push Backend Image
