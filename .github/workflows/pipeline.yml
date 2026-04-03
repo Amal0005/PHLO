@@ -1,189 +1,100 @@
-name: CI/CD Pipeline
-
+name: Deploy Backend to Docker Hub
 on:
   push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main" ]
+    paths:
+      - 'Backend/**'
+      - '.github/workflows/pipeline.yml'
 
 env:
-  NODE_VERSION: '20'
-  DOCKER_IMAGE_NAME: phlo-backend
-  DOCKER_FRONTEND_IMAGE_NAME: phlo-frontend
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  AWS_EC2_HOST: ${{ secrets.AWS_EC2_HOST }}
+  AWS_EC2_USER: ${{ secrets.AWS_EC2_USER }}
 
 jobs:
-
-  backend-ci:
-    name: Backend CI
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: Backend/package-lock.json
-
-      - name: Install & Lint
-        working-directory: ./Backend
-        run: |
-          npm ci
-          npm run lint --if-present
-
-      - name: Build TypeScript
-        working-directory: ./Backend
-        run: npm run build
-
-
-  frontend-ci:
-    name: Frontend CI
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: Frontend/package-lock.json
-
-      - name: Install & Build
-        working-directory: ./Frontend
-        run: |
-          npm ci
-          npm run build
-
-
-  docker-push:
-    name: Docker Build & Push
-    needs: [backend-ci, frontend-ci]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and Push Backend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./Backend
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-
-      - name: Build and Push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./Frontend
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_FRONTEND_IMAGE_NAME }}:latest
-
-
   deploy:
-    name: Deploy to AWS EC2
+    name: Build & Deploy Backend
     runs-on: ubuntu-latest
-    needs: docker-push
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Copy docker-compose to EC2
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USER }}
-          key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          source: "Backend/docker-compose.yml"
-          target: "~/phlo-app"
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.0
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
-          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          REDIS_HOST: ${{ secrets.REDIS_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_PORT }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
-          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
-          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-          DOCKER_IMAGE_NAME: phlo-backend
-          DOCKER_FRONTEND_IMAGE_NAME: phlo-frontend
-          GCP_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Backend
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/phlo-backend:latest
 
-        with:
-          host: ${{ secrets.AWS_EC2_HOST }}
-          username: ${{ secrets.AWS_EC2_USER }}
-          key: ${{ secrets.AWS_EC2_SSH_KEY }}
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.AWS_EC2_HOST }}
+        username: ${{ secrets.AWS_EC2_USER }}
+        key: ${{ secrets.AWS_EC2_SSH_KEY }}
+        script: |
+          # Login to Docker Hub on EC2
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-          envs: >-
-            MONGO_URI,REDIS_PASSWORD,REDIS_HOST,REDIS_PORT,
-            JWT_SECRET,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,
-            FRONTEND_URL,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN,
-            DOCKER_IMAGE_NAME,DOCKER_FRONTEND_IMAGE_NAME,GCP_KEY
+          # Create app directory if not exists
+          mkdir -p ~/phlo-app
+          cd ~/phlo-app
+          
+          # Create/Update docker-compose.yml 
+          # Removed mongo service as requested (using MongoDB Atlas)
+          # Keeping Redis local/containerized
+          cat <<EOF > docker-compose.yml
+          version: '3.8'
 
-          script: |
-            cd ~/phlo-app
-            mkdir -p Backend
+          services:
+            server:
+              image: ${{ secrets.DOCKERHUB_USERNAME }}/phlo-backend:latest
+              container_name: phlo-server
+              restart: always
+              ports:
+                - "5000:5000"
+              env_file:
+                - .env
+              depends_on:
+                - redis
+              networks:
+                - app-network
 
-            # Fix GCP JSON safely
-            printf "%s" "$GCP_KEY" > Backend/phlo-483705-7df390b1c765.json
+            redis:
+              image: redis:alpine
+              container_name: redis
+              restart: always
+              ports:
+                - "6379:6379"
+              networks:
+                - app-network
 
-            # Create .env
-            cat <<EOF > .env
-            PORT=5000
-            NODE_ENV=production
-            FRONTEND_URL=${FRONTEND_URL}
+          networks:
+            app-network:
+              driver: bridge
+          EOF
+          
+          # Pull latest images
+          sudo docker compose pull
+          
+          # Clean restart of the stack
+          sudo docker compose down
+          sudo docker compose up -d
+          
+          # Wait 5 seconds for Redis to warm up
+          sleep 5
+          
+          # Show status of all containers
+          sudo docker ps
+          
+          # Clean up old/unused images
+          sudo docker image prune -f
 
-            MONGO_URI=${MONGO_URI}
-
-            REDIS_HOST=${REDIS_HOST}
-            REDIS_PORT=${REDIS_PORT}
-            REDIS_PASSWORD=${REDIS_PASSWORD}
-
-            JWT_SECRET=${JWT_SECRET}
-
-            STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
-            STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
-
-            DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}
-            DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}
-            DOCKER_FRONTEND_IMAGE_NAME=${DOCKER_FRONTEND_IMAGE_NAME}
-
-            GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/phlo-483705-7df390b1c765.json
-            EOF
-
-            echo "✅ .env file created"
-
-            # Docker login (important)
-            echo "${DOCKERHUB_TOKEN}" | sudo docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
-
-            # Pull latest images
-            sudo docker compose pull
-
-            # Restart containers
-            sudo docker compose down
-            sudo docker compose up -d --remove-orphans
-
-            # Debug (optional but useful)
-            sudo docker compose ps
-
-            # Cleanup
-            sudo docker image prune -f
-
-            echo "🚀 Deployment successful"
+          echo "🚀 Backend deployment successful"
