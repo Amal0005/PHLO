@@ -1,6 +1,3 @@
-# PHLO Continuous Integration & Deployment Pipeline
-# Automated workflow for Backend, Frontend, and Dockerized Infrastructure
-
 name: CI/CD Pipeline
 
 on:
@@ -15,9 +12,7 @@ env:
   DOCKER_FRONTEND_IMAGE_NAME: phlo-frontend
 
 jobs:
-  # ============================================
-  # Backend CI: Quality & Build
-  # ============================================
+
   backend-ci:
     name: Backend CI
     runs-on: ubuntu-latest
@@ -41,16 +36,7 @@ jobs:
         working-directory: ./Backend
         run: npm run build
 
-      - name: Upload Backend Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-dist
-          path: Backend/dist
-          retention-days: 7
 
-  # ============================================
-  # Frontend CI: Quality & Build (Local context)
-  # ============================================
   frontend-ci:
     name: Frontend CI
     runs-on: ubuntu-latest
@@ -70,21 +56,13 @@ jobs:
           npm ci
           npm run build
 
-      - name: Upload Frontend Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: Frontend/dist
-          retention-days: 7
 
-  # ============================================
-  # Docker: Build and Push Backend Image
-  # ============================================
   docker-push:
     name: Docker Build & Push
     needs: [backend-ci, frontend-ci]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -103,8 +81,6 @@ jobs:
           context: ./Backend
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Build and Push Frontend
         uses: docker/build-push-action@v5
@@ -112,69 +88,102 @@ jobs:
           context: ./Frontend
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_FRONTEND_IMAGE_NAME }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
-  # ============================================
-  # Deployment: AWS EC2 (Mirroring Friend's Setup)
-  # ============================================
+
   deploy:
-    name: Deploy to Production
-    needs: docker-push
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    name: Deploy to AWS EC2
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    needs: docker-push
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-      - name: Copy Configs to Server
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          source: "docker-compose.yml,Backend/nginx/nginx.conf"
+          source: "docker-compose.yml"
           target: "~/phlo-app"
 
-
-      - name: Execute Remote Deploy
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_IMAGE_NAME: ${{ env.DOCKER_IMAGE_NAME }}
-          DOCKER_FRONTEND_IMAGE_NAME: ${{ env.DOCKER_FRONTEND_IMAGE_NAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKER_IMAGE_NAME: phlo-backend
+          DOCKER_FRONTEND_IMAGE_NAME: phlo-frontend
           GCP_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
         with:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          envs: MONGO_URI,REDIS_PASSWORD,STRIPE_SECRET_KEY,JWT_SECRET,DOCKERHUB_USERNAME,DOCKER_IMAGE_NAME,DOCKER_FRONTEND_IMAGE_NAME,GCP_KEY
+
+          envs: >-
+            MONGO_URI,REDIS_PASSWORD,REDIS_HOST,REDIS_PORT,
+            JWT_SECRET,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,
+            FRONTEND_URL,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN,
+            DOCKER_IMAGE_NAME,DOCKER_FRONTEND_IMAGE_NAME,GCP_KEY
+
           script: |
             cd ~/phlo-app
-            
-            # Ensure Backend directory exists for the key
             mkdir -p Backend
-            echo "$GCP_KEY" > Backend/phlo-483705-7df390b1c765.json
-            
-            # Recreate .env for the Docker container
-            echo "PORT=5000" > .env
-            echo "NODE_ENV=production" >> .env
-            echo "MONGO_URI=${MONGO_URI}" >> .env
-            echo "REDIS_HOST=redis" >> .env
-            echo "REDIS_PORT=6379" >> .env
-            echo "REDIS_PASSWORD=${REDIS_PASSWORD}" >> .env
-            echo "STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}" >> .env
-            echo "JWT_SECRET=${JWT_SECRET}" >> .env
-            echo "DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}" >> .env
-            echo "DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}" >> .env
-            echo "DOCKER_FRONTEND_IMAGE_NAME=${DOCKER_FRONTEND_IMAGE_NAME}" >> .env
-            echo "GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/phlo-483705-7df390b1c765.json" >> .env
-            
-            # Update and Restart
+
+            # Fix GCP JSON safely
+            printf "%s" "$GCP_KEY" > Backend/phlo-483705-7df390b1c765.json
+
+            # Create .env
+            cat <<EOF > .env
+            PORT=5000
+            NODE_ENV=production
+            FRONTEND_URL=${FRONTEND_URL}
+
+            MONGO_URI=${MONGO_URI}
+
+            REDIS_HOST=${REDIS_HOST}
+            REDIS_PORT=${REDIS_PORT}
+            REDIS_PASSWORD=${REDIS_PASSWORD}
+
+            JWT_SECRET=${JWT_SECRET}
+
+            STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+            STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+
+            DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}
+            DOCKER_IMAGE_NAME=${DOCKER_IMAGE_NAME}
+            DOCKER_FRONTEND_IMAGE_NAME=${DOCKER_FRONTEND_IMAGE_NAME}
+
+            GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/phlo-483705-7df390b1c765.json
+            EOF
+
+            echo "✅ .env file created"
+
+            # Docker login (important)
+            echo "${DOCKERHUB_TOKEN}" | sudo docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+
+            # Pull latest images
             sudo docker compose pull
+
+            # Restart containers
             sudo docker compose down
-            sudo docker compose up -d
+            sudo docker compose up -d --remove-orphans
+
+            # Debug (optional but useful)
+            sudo docker compose ps
+
+            # Cleanup
             sudo docker image prune -f
+
+            echo "🚀 Deployment successful"
