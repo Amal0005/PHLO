@@ -106,7 +106,7 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USER }}
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
-          source: "docker-compose.yml"
+          source: "Backend/docker-compose.yml"
           target: "~/phlo-app"
 
       - name: Deploy to EC2
