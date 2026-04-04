@@ -34,6 +34,11 @@ export class App {
     this.app = express();
     this.database = new connectDB();
 
+  this.app.get("/", (req, res) => {
+    res.send("PHLO Backend is Live 🚀");
+  });
+
+
     this.setMiddlewares();
     this.setUserRoutes();
     this.setUploadRouter();
