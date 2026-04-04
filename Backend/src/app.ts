@@ -62,11 +62,16 @@ export class App {
     this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
     // console.log(process.env.FRONTEND_URL);
 
+    this.app.use((req, res, next) => {
+      res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+      next();
+    });
+
     this.app.use(
       cors({
         origin: process.env.FRONTEND_URL,
         credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"],
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
       }),
     );
