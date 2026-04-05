@@ -561,82 +561,88 @@ const PackageDetailPage: React.FC = () => {
 
           {/* Satellite 3D Map */}
           <div className="flex-1 relative">
-            <Map
-              {...viewState}
-              onMove={(evt: { viewState: typeof viewState }) => setViewState(evt.viewState)}
-              mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
-              mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-              style={{ width: "100%", height: "100%" }}
-              antialias={true}
-              onLoad={(evt: { target: MapboxMap }) => {
-                const map = evt.target;
-                // Add Mapbox terrain for true 3D elevation
-                if (!map.getSource('mapbox-dem')) {
-                  map.addSource('mapbox-dem', {
-                    type: 'raster-dem',
-                    url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-                    tileSize: 512,
-                    maxzoom: 14,
-                  });
-                  map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
-                }
-                // Add atmospheric sky layer
-                if (!map.getLayer('sky')) {
-                  map.addLayer({
-                    id: 'sky',
-                    type: 'sky',
-                    paint: {
-                      'sky-type': 'atmosphere',
-                      'sky-atmosphere-sun': [0.0, 90.0],
-                      'sky-atmosphere-sun-intensity': 15,
-                    },
-                  });
-                }
-              }}
-              onClick={async (e: { lngLat: { lat: number; lng: number } }) => {
-                const { lat, lng } = e.lngLat;
-                setMarkerLoc({ lat, lng });
-                // Zoom into clicked spot with steep pitch for Google Earth feel
-                setViewState(prev => ({
-                  ...prev,
-                  latitude: lat,
-                  longitude: lng,
-                  zoom: 16,
-                  pitch: 60,
-                  bearing: prev.bearing,
-                }));
-                try {
-                  const token = import.meta.env.VITE_MAPBOX_TOKEN;
-                  const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
-                  const data = await res.json();
-                  if (data.features?.[0]) {
-                    const placeName = data.features[0].place_name;
-                    setSelectedLocation(placeName);
-                    locationBarRef.current?.setInput(placeName);
+            {import.meta.env.VITE_MAPBOX_TOKEN ? (
+              <Map
+                {...viewState}
+                onMove={(evt: { viewState: typeof viewState }) => setViewState(evt.viewState)}
+                mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
+                mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+                style={{ width: "100%", height: "100%" }}
+                antialias={true}
+                onLoad={(evt: { target: MapboxMap }) => {
+                  const map = evt.target;
+                  // Add Mapbox terrain for true 3D elevation
+                  if (!map.getSource('mapbox-dem')) {
+                    map.addSource('mapbox-dem', {
+                      type: 'raster-dem',
+                      url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                      tileSize: 512,
+                      maxzoom: 14,
+                    });
+                    map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
                   }
-                } catch (error) {
-                  console.error("Reverse geocoding error:", error);
-                }
-              }}
-            >
-              {markerLoc && (
-                <Marker latitude={markerLoc.lat} longitude={markerLoc.lng}>
-                  <div className="flex flex-col items-center" style={{ transform: "translateY(-100%)" }}>
-                    {/* Outer pulse */}
-                    <div className="relative flex items-center justify-center">
-                      <div className="absolute w-12 h-12 rounded-full bg-red-500/20 animate-ping" />
-                      <div className="absolute w-8 h-8 rounded-full bg-red-500/30" />
-                      {/* Pin head */}
-                      <div className="w-5 h-5 rounded-full bg-white border-[3px] border-red-500 shadow-[0_0_16px_rgba(239,68,68,0.9)] relative z-10" />
+                  // Add atmospheric sky layer
+                  if (!map.getLayer('sky')) {
+                    map.addLayer({
+                      id: 'sky',
+                      type: 'sky',
+                      paint: {
+                        'sky-type': 'atmosphere',
+                        'sky-atmosphere-sun': [0.0, 90.0],
+                        'sky-atmosphere-sun-intensity': 15,
+                      },
+                    });
+                  }
+                }}
+                onClick={async (e: { lngLat: { lat: number; lng: number } }) => {
+                  const { lat, lng } = e.lngLat;
+                  setMarkerLoc({ lat, lng });
+                  // Zoom into clicked spot with steep pitch for Google Earth feel
+                  setViewState(prev => ({
+                    ...prev,
+                    latitude: lat,
+                    longitude: lng,
+                    zoom: 16,
+                    pitch: 60,
+                    bearing: prev.bearing,
+                  }));
+                  try {
+                    const token = import.meta.env.VITE_MAPBOX_TOKEN;
+                    const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
+                    const data = await res.json();
+                    if (data.features?.[0]) {
+                      const placeName = data.features[0].place_name;
+                      setSelectedLocation(placeName);
+                      locationBarRef.current?.setInput(placeName);
+                    }
+                  } catch (error) {
+                    console.error("Reverse geocoding error:", error);
+                  }
+                }}
+              >
+                {markerLoc && (
+                  <Marker latitude={markerLoc.lat} longitude={markerLoc.lng}>
+                    <div className="flex flex-col items-center" style={{ transform: "translateY(-100%)" }}>
+                      {/* Outer pulse */}
+                      <div className="relative flex items-center justify-center">
+                        <div className="absolute w-12 h-12 rounded-full bg-red-500/20 animate-ping" />
+                        <div className="absolute w-8 h-8 rounded-full bg-red-500/30" />
+                        {/* Pin head */}
+                        <div className="w-5 h-5 rounded-full bg-white border-[3px] border-red-500 shadow-[0_0_16px_rgba(239,68,68,0.9)] relative z-10" />
+                      </div>
+                      {/* Stem */}
+                      <div className="w-0.5 h-5 bg-gradient-to-b from-red-500 via-red-400 to-transparent" />
+                      {/* Ground shadow */}
+                      <div className="w-4 h-1.5 rounded-full bg-black/50 blur-sm" />
                     </div>
-                    {/* Stem */}
-                    <div className="w-0.5 h-5 bg-gradient-to-b from-red-500 via-red-400 to-transparent" />
-                    {/* Ground shadow */}
-                    <div className="w-4 h-1.5 rounded-full bg-black/50 blur-sm" />
-                  </div>
-                </Marker>
-              )}
-            </Map>
+                  </Marker>
+                )}
+              </Map>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-zinc-900/50 text-white/30 text-[10px] uppercase tracking-widest px-12 text-center">
+                Map Unavailable: Missing API Key
+              </div>
+            )}
 
             {/* Floating confirm card at bottom */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 w-full max-w-md px-6">
