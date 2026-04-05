@@ -20,6 +20,7 @@ services:
     env_file:
       - .env
     environment:
+      - FRONTEND_URL=https://phlo.website
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - NODE_ENV=production
