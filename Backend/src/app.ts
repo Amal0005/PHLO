@@ -49,41 +49,44 @@ export class App {
     this.setNotificationRoutes();
     this.app.use(errorHandler);
   }
-  private setMiddlewares(): void {
-    this.app.use(loggerMiddleware)
-    this.app.use(
-      BACKEND_ROUTES.WEBHOOK,
-      express.raw({ type: "application/json" })
-    );
-    this.app.post(BACKEND_ROUTES.WEBHOOK, (req, res) =>
-      paymentController.handleWebhook(req, res)
-    );
-    this.app.use(express.json({ limit: "50mb" }));
-    this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
-    // console.log(process.env.FRONTEND_URL);
+private setMiddlewares(): void {
+  this.app.use(loggerMiddleware);
 
-    this.app.use((req, res, next) => {
-      res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-      next();
-    });
+  this.app.use(
+    cors({
+      origin: ["https://phlo.website", "http://localhost:5173"],
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
 
-    this.app.use(
-      cors({
-        origin: process.env.FRONTEND_URL,
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-      }),
-    );
-    this.app.use(cookieParser());
-    this.app.use(
-      BACKEND_ROUTES.PUBLIC,
-      express.static(path.join(process.cwd(), "public"))
-    );
+  this.app.options("*", cors());
 
+  this.app.use(
+    BACKEND_ROUTES.WEBHOOK,
+    express.raw({ type: "application/json" })
+  );
 
-  }
-  private setUserRoutes(): void {
+  this.app.post(BACKEND_ROUTES.WEBHOOK, (req, res) =>
+    paymentController.handleWebhook(req, res)
+  );
+
+  this.app.use(express.json({ limit: "50mb" }));
+  this.app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+  this.app.use(cookieParser());
+
+  this.app.use((req, res, next) => {
+    res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+    next();
+  });
+
+  this.app.use(
+    BACKEND_ROUTES.PUBLIC,
+    express.static(path.join(process.cwd(), "public"))
+  );
+}  private setUserRoutes(): void {
     const userRoutes = new UserRoutes();
     this.app.use(BACKEND_ROUTES.BASE, userRoutes.userRouter);
   }
