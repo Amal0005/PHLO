@@ -58,24 +58,17 @@ export class App {
     this.app.post(BACKEND_ROUTES.WEBHOOK, (req, res) =>
       paymentController.handleWebhook(req, res)
     );
-    this.app.use(express.json({ limit: "50mb" }));
-    this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
+    this.app.use(express.json());
     // console.log(process.env.FRONTEND_URL);
-
-    this.app.use((req, res, next) => {
-      res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
-      next();
-    });
 
     this.app.use(
       cors({
         origin: process.env.FRONTEND_URL,
         credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
       }),
     );
-    this.app.options("*", cors());
     this.app.use(cookieParser());
     this.app.use(
       BACKEND_ROUTES.PUBLIC,
