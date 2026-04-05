@@ -22,8 +22,10 @@ import { BACKEND_ROUTES } from "@/constants/backendRoutes";
 import { errorHandler } from "@/adapters/middlewares/errorHandler";
 import { logger } from "@/utils/logger";
 import { paymentController } from "@/framework/depInjection/user/userInjections";
-import { paymentReleaseScheduler, subscriptionScheduler } from "@/framework/depInjection/schedulerInjections";
-
+import {
+  paymentReleaseScheduler,
+  subscriptionScheduler,
+} from "@/framework/depInjection/schedulerInjections";
 
 export class App {
   private app: Express;
@@ -34,10 +36,9 @@ export class App {
     this.app = express();
     this.database = new connectDB();
 
-  this.app.get("/", (req, res) => {
-    res.send("PHLO Backend is Live 🚀");
-  });
-
+    this.app.get("/", (req, res) => {
+      res.send("PHLO Backend is Live 🚀");
+    });
 
     this.setMiddlewares();
     this.setUserRoutes();
@@ -50,32 +51,32 @@ export class App {
     this.app.use(errorHandler);
   }
   private setMiddlewares(): void {
-    this.app.use(loggerMiddleware)
-    this.app.use(
-      BACKEND_ROUTES.WEBHOOK,
-      express.raw({ type: "application/json" })
-    );
-    this.app.post(BACKEND_ROUTES.WEBHOOK, (req, res) =>
-      paymentController.handleWebhook(req, res)
-    );
-    this.app.use(express.json());
-    // console.log(process.env.FRONTEND_URL);
-
+    this.app.use(loggerMiddleware);
     this.app.use(
       cors({
         origin: process.env.FRONTEND_URL,
         credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"],
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
       }),
     );
+    this.app.options("*", cors());
+
+    this.app.use(
+      BACKEND_ROUTES.WEBHOOK,
+      express.raw({ type: "application/json" }),
+    );
+    this.app.post(BACKEND_ROUTES.WEBHOOK, (req, res) =>
+      paymentController.handleWebhook(req, res),
+    );
+    this.app.use(express.json());
+    // console.log(process.env.FRONTEND_URL);
+
     this.app.use(cookieParser());
     this.app.use(
       BACKEND_ROUTES.PUBLIC,
-      express.static(path.join(process.cwd(), "public"))
+      express.static(path.join(process.cwd(), "public")),
     );
-
-
   }
   private setUserRoutes(): void {
     const userRoutes = new UserRoutes();
@@ -83,26 +84,44 @@ export class App {
   }
   private setCreatorRoutes(): void {
     const creatorRoutes = new CreatorRoutes();
-    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.CREATOR.BASE}`, creatorRoutes.creatorRouter);
+    this.app.use(
+      `${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.CREATOR.BASE}`,
+      creatorRoutes.creatorRouter,
+    );
   }
 
   private setUploadRouter() {
-    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.UPLOAD.BASE}`, new UploadRoutes().uploadRouter);
+    this.app.use(
+      `${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.UPLOAD.BASE}`,
+      new UploadRoutes().uploadRouter,
+    );
   }
   private setViewRouter() {
-    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.UPLOAD.BASE}`, new ViewRoutes().viewRoutes);
+    this.app.use(
+      `${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.UPLOAD.BASE}`,
+      new ViewRoutes().viewRoutes,
+    );
   }
   private setAdminRouter() {
     const adminRoutes = new AdminRoutes();
-    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.ADMIN.BASE}`, adminRoutes.adminRouter);
+    this.app.use(
+      `${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.ADMIN.BASE}`,
+      adminRoutes.adminRouter,
+    );
   }
 
   private setChatRoutes() {
-    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.CHAT.BASE}`, chatRouter);
+    this.app.use(
+      `${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.CHAT.BASE}`,
+      chatRouter,
+    );
   }
 
   private setNotificationRoutes() {
-    this.app.use(`${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.NOTIFICATION.BASE}`, notificationRouter);
+    this.app.use(
+      `${BACKEND_ROUTES.BASE}${BACKEND_ROUTES.NOTIFICATION.BASE}`,
+      notificationRouter,
+    );
   }
 
   public async listen(): Promise<void> {
@@ -115,9 +134,7 @@ export class App {
       this.server = http.createServer(this.app);
       new SocketIOHandler(this.server);
 
-      this.server.listen(port, () =>
-        logger.info("server running", port),
-      );
+      this.server.listen(port, () => logger.info("server running", port));
     } catch (error) {
       logger.error("Server failed to start", { error });
     }
