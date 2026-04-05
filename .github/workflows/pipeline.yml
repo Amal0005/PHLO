@@ -97,4 +97,4 @@ jobs:
           # Clean up old/unused images
           sudo docker image prune -f
 
-          echo "🚀 Backend deployment successful"
+          echo "🚀 Backend deployment successful"

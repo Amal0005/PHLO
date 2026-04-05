@@ -204,7 +204,7 @@ const PackageDetailPage: React.FC = () => {
             >
               {/* Decorative Floating Gallery Overlap */}
               <div className="absolute -right-32 top-24 hidden lg:flex flex-col gap-12 z-30">
-                {packageData.images.slice(0, 3).map((img, idx) => (
+                {packageData.images?.slice(0, 3).map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
@@ -224,7 +224,7 @@ const PackageDetailPage: React.FC = () => {
                       color: "rgba(255,255,255,0.45)",
                       border: "1px solid rgba(255,255,255,0.09)"
                     }}>
-                    {typeof packageData.category === "object" ? packageData.category.name : packageData.category}
+                    {packageData.category && typeof packageData.category === "object" ? (packageData.category as any).name : packageData.category}
                   </span>
                 </div>
 
@@ -244,22 +244,22 @@ const PackageDetailPage: React.FC = () => {
                   </div>
                 </div>
 
-                {typeof packageData.creatorId === "object" && (
+                {packageData.creatorId && typeof packageData.creatorId === "object" && (
                   <div className="flex items-center gap-4 mb-5 pb-4"
                     style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                     <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
                       style={{ border: "1.5px solid rgba(255,255,255,0.13)" }}>
-                      {packageData.creatorId.profilePhoto ? (
-                        <S3Media s3Key={packageData.creatorId.profilePhoto} className="w-full h-full object-cover" />
+                      {(packageData.creatorId as any).profilePhoto ? (
+                        <S3Media s3Key={(packageData.creatorId as any).profilePhoto} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-white font-black text-[10px]">
-                          {packageData.creatorId.fullName.charAt(0)}
+                          {(packageData.creatorId as any).fullName?.charAt(0)}
                         </div>
                       )}
                     </div>
                     <div className="flex flex-col justify-center">
                       <div className="text-[14px] font-bold text-white mb-1">
-                        {packageData.creatorId.fullName}
+                        {(packageData.creatorId as any).fullName}
                       </div>
                       {packageData.locations && packageData.locations.length > 0 && (
                         <div className="flex flex-col gap-0.5">
@@ -398,7 +398,7 @@ const PackageDetailPage: React.FC = () => {
             {/* Mobile Strip Only */}
             {totalImages > 1 && (
               <div className="flex lg:hidden items-center gap-2.5 w-full overflow-x-auto pb-4 pt-10 px-4" style={{ scrollbarWidth: "none" }}>
-                {packageData.images.slice(0, 5).map((img, index) => (
+                {packageData.images?.slice(0, 5).map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
