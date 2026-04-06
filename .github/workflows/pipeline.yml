@@ -47,6 +47,10 @@ jobs:
           mkdir -p ~/phlo-app
           cd ~/phlo-app
           
+          # 🔥 CREATE .env FILE (VERY IMPORTANT)
+          printf "GOOGLE_CREDENTIALS_JSON=%s\n" '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > .env
+          printf "REDIS_PASSWORD=%s\n" '${{ secrets.REDIS_PASSWORD }}' >> .env
+                    
           # Create/Update docker-compose.yml 
           # Removed mongo service as requested (using MongoDB Atlas)
           # Keeping Redis local/containerized
