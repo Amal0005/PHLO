@@ -2,8 +2,9 @@ import vision from "@google-cloud/vision";
 import type { IModerationService } from "@/domain/interfaces/service/IModerationService";
 
 export class ModerationService implements IModerationService {
-  private client = new vision.ImageAnnotatorClient();
-
+  private client = new vision.ImageAnnotatorClient({
+    credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string)
+  })
   async checkImage(imageBuffer: Buffer): Promise<"SAFE" | "UNSAFE" | "UNCERTAIN"> {
     try {
       console.log("Moderating image via Google Cloud Vision content detection");
