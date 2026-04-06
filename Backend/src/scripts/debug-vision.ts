@@ -20,9 +20,7 @@ async function debugVision() {
       fs.appendFileSync(logFile, `ERROR: Key file NOT FOUND at ${keyPath}\n`);
     }
 
-    const client = new vision.ImageAnnotatorClient({
-      credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string)
-    })
+    const client = new vision.ImageAnnotatorClient();
     fs.appendFileSync(logFile, "Client initialized.\n");
 
     const testImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
