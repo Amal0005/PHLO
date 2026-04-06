@@ -22,6 +22,7 @@ RUN npm ci --only=production
 # Copy built assets
 COPY --from=builder /usr/src/app/dist ./dist
 COPY --from=builder /usr/src/app/public ./public
+COPY --from=builder /usr/src/app/src/templates ./dist/templates
 
 EXPOSE 5000
 CMD ["node", "dist/app.js"]
