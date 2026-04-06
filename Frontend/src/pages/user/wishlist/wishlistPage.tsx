@@ -262,7 +262,7 @@ const WishlistPage: React.FC = () => {
                   >
                     <div className="relative w-full h-full">
                       <S3Media
-                        s3Key={item.watermarkedUrl || item.imageUrl}
+                        s3Key={item.isPurchased ? item.imageUrl : (item.watermarkedUrl || item.imageUrl)}
                         className="w-full h-full object-cover"
                       />
                       {/* Price + Download badge */}
@@ -416,7 +416,7 @@ const WishlistPage: React.FC = () => {
           >
             <div className="rounded-2xl overflow-hidden border border-white/10">
               <S3Media
-                s3Key={selectedWallpaper.watermarkedUrl || selectedWallpaper.imageUrl}
+                s3Key={selectedWallpaper.isPurchased ? selectedWallpaper.imageUrl : (selectedWallpaper.watermarkedUrl || selectedWallpaper.imageUrl)}
                 className="w-full max-h-[80vh] object-contain bg-zinc-900"
               />
             </div>

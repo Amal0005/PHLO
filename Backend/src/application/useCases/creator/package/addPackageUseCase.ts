@@ -18,7 +18,9 @@ export class AddPackageUseCase implements IAddPackageUseCase {
       !data.price ||
       !data.category ||
       !data.locations ||
-      data.locations.length === 0
+      data.locations.length === 0 ||
+      !data.images ||
+      data.images.length === 0
     ) {
       throw new Error("Missing required fields");
     }

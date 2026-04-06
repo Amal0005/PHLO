@@ -70,21 +70,7 @@ export default function LandingPage() {
         setWallpaperLoading(true);
         const response = await UserWallpaperService.getApprovedWallpapers(1, 4);
         if (response.success && Array.isArray(response.data)) {
-          const wallpapersWithSignedUrls = await Promise.all(
-            response.data.map(async (wp) => {
-              if (wp.imageUrl && !wp.imageUrl.startsWith("http")) {
-                try {
-                  const signedUrl = await S3Service.getViewUrl(wp.imageUrl);
-                  return { ...wp, imageUrl: signedUrl };
-                } catch (err) {
-                  console.error("Error signing wallpaper:", wp.imageUrl, err);
-                  return wp;
-                }
-              }
-              return wp;
-            })
-          );
-          setWallpapers(wallpapersWithSignedUrls);
+          setWallpapers(response.data);
         }
       } catch (error) {
         console.error("Error fetching wallpapers:", error);
@@ -268,7 +254,7 @@ export default function LandingPage() {
                   onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
                 >
                   <S3Media
-                    s3Key={wallpaper.imageUrl}
+                    s3Key={wallpaper.isPurchased ? wallpaper.imageUrl : (wallpaper.watermarkedUrl || wallpaper.imageUrl)}
                     alt={wallpaper.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />

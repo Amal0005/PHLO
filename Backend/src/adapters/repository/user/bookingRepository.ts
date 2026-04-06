@@ -28,13 +28,22 @@ export class BookingRepository
       .exec();
     return doc ? this.mapToEntity(doc) : null;
   }
-  async findByUser(userId: string): Promise<BookingEntity[]> {
-    const docs = await this.model
-      .find({ userId })
-      .populate("packageId")
-      .sort({ createdAt: -1 })
-      .exec();
-    return docs.map((item) => this.mapToEntity(item));
+  async findByUser(userId: string, page: number, limit: number): Promise<{ bookings: BookingEntity[], totalCount: number }> {
+    const skip = (page - 1) * limit;
+    const [docs, totalCount] = await Promise.all([
+      this.model
+        .find({ userId })
+        .populate("packageId")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.model.countDocuments({ userId }).exec()
+    ]);
+    return {
+      bookings: docs.map((item) => this.mapToEntity(item)),
+      totalCount
+    };
   }
 
   async updateStatus(
@@ -58,16 +67,28 @@ export class BookingRepository
     const existing = await this.findExistingBooking(packageId, date);
     return !existing;
   }
-  async findByCreatorId(creatorId: string): Promise<BookingEntity[]> {
+  async findByCreatorId(creatorId: string, page: number, limit: number): Promise<{ bookings: BookingEntity[], totalCount: number }> {
     const packages = await PackageModel.find({ creatorId }).select("_id");
     const packageIds = packages.map(p => p._id.toString());
-    const docs = await this.model
-      .find({ packageId: { $in: packageIds } } as QueryFilter<BookingDocument>)
-      .populate("packageId")
-      .populate("userId")
-      .sort({ bookingDate: 1 })
-      .exec();
-    return docs.map((item) => this.mapToEntity(item));
+    const skip = (page - 1) * limit;
+    const filter = { packageId: { $in: packageIds } } as QueryFilter<BookingDocument>;
+
+    const [docs, totalCount] = await Promise.all([
+      this.model
+        .find(filter)
+        .populate("packageId")
+        .populate("userId")
+        .sort({ bookingDate: 1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.model.countDocuments(filter).exec()
+    ]);
+
+    return {
+      bookings: docs.map((item) => this.mapToEntity(item)),
+      totalCount
+    };
   }
 
   async findBookingsForPaymentRelease(date: Date): Promise<BookingEntity[]> {

@@ -322,7 +322,7 @@ const WallpaperGallery: React.FC = () => {
                   className="bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group aspect-[3/4]"
                 >
                   <div className="relative w-full h-full">
-                    <S3Media s3Key={wp.watermarkedUrl || wp.imageUrl} className="w-full h-full object-cover" />
+                    <S3Media s3Key={wp.isPurchased ? wp.imageUrl : (wp.watermarkedUrl || wp.imageUrl)} className="w-full h-full object-cover" />
                     {/* Price badge */}
                     <div className="absolute top-3 left-3 z-10 flex gap-1.5">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold backdrop-blur-md border ${wp.price > 0 ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-white/10 text-gray-300 border-white/20'}`}>
@@ -414,7 +414,7 @@ const WallpaperGallery: React.FC = () => {
             >
               <div className="rounded-2xl overflow-hidden border border-white/10">
                 <S3Media
-                  s3Key={selectedWallpaper.watermarkedUrl || selectedWallpaper.imageUrl}
+                  s3Key={selectedWallpaper.isPurchased ? selectedWallpaper.imageUrl : (selectedWallpaper.watermarkedUrl || selectedWallpaper.imageUrl)}
                   className="w-full max-h-[80vh] object-contain bg-zinc-900"
                 />
               </div>

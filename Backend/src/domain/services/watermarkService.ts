@@ -25,7 +25,7 @@ export class WatermarkService implements IWatermarkService {
       <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="wm" width="${fontSize * 5}" height="${fontSize * 3.5}" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
-            <text x="${fontSize * 0.5}" y="${fontSize * 2}" font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold" fill="rgba(255,255,255,0.2)" letter-spacing="2">PHLO</text>
+            <text x="${fontSize * 0.5}" y="${fontSize * 2}" font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold" fill="rgba(255,255,255,0.4)" stroke="rgba(0,0,0,0.1)" stroke-width="0.5" letter-spacing="2">PHLO</text>
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#wm)" />

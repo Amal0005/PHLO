@@ -52,15 +52,23 @@ export const S3Media = ({ s3Key, className, alt, type = "image" }: Props) => {
     let isMounted = true;
     setIsSigning(true);
 
+    console.log(`[S3Media] Attempting to sign key: "${actualKey}" (Source: "${s3Key}")`);
     S3Service.getViewUrl(actualKey)
       .then((signedUrl) => {
         if (isMounted) {
-          setUrl(signedUrl);
+          if (!signedUrl) {
+            console.error(`[S3Media] Signed URL returned empty for key: ${actualKey}`);
+            if (!s3Key.startsWith("http")) setHasError(true);
+            else setUrl(s3Key);
+          } else {
+            console.log(`[S3Media] Success sign for ${actualKey}`);
+            setUrl(signedUrl);
+          }
           setIsSigning(false);
         }
       })
       .catch((err) => {
-        console.error("S3Media sign error:", err);
+        console.error(`[S3Media] S3 sign error for ${actualKey}:`, err);
         if (isMounted) {
           setIsSigning(false);
           if (s3Key.startsWith("http")) setUrl(s3Key);

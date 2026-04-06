@@ -5,7 +5,7 @@ export const packageSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   price: z.number().positive("Price must be a positive number"),
   category: z.string().min(1, "Please select a category"),
-  images: z.array(z.string()).optional(),
+  images: z.array(z.string()).min(1, "At least one image is required"),
   locations: z.array(
     z.object({
       type: z.literal("Point"),
@@ -20,7 +20,7 @@ export const editPackageSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters").optional(),
   price: z.number().positive("Price must be a positive number").optional(),
   category: z.string().min(1, "Please select a category").optional(),
-  images: z.array(z.string()).optional(),
+  images: z.array(z.string()).min(1, "At least one image is required"),
   locations: z.array(
     z.object({
       type: z.literal("Point"),

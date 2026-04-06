@@ -135,6 +135,12 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
 
       const allImages = [...existingImages, ...newImageUrls];
 
+      if (allImages.length === 0) {
+        toast.error("Please add at least one image");
+        setLoading(false);
+        return;
+      }
+
       const updateData: Partial<EditPackageFormData> = {};
       if (data.title && data.title !== packageData.title) updateData.title = data.title;
       if (data.description && data.description !== packageData.description)
@@ -376,6 +382,11 @@ export const EditPackageModal: React.FC<EditPackageModalProps> = ({
               accept="image/*"
               className="hidden"
             />
+            {existingImages.length + selectedImages.length === 0 && (
+              <p className="text-red-500 text-xs mt-1">
+                At least one image is required
+              </p>
+            )}
           </div>
 
           <div className="flex justify-end gap-3 pt-6 border-t border-white/5">

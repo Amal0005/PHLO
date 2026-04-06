@@ -66,8 +66,10 @@ export class UserBookingController {
                 res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.BOOKING.UNAUTHORIZED });
                 return;
             }
-            const bookings = await this._listBookingsUseCase.listBookings(userId);
-            res.status(StatusCode.OK).json({ success: true, data: bookings });
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 10;
+            const result = await this._listBookingsUseCase.listBookings(userId, page, limit);
+            res.status(StatusCode.OK).json({ success: true, ...result });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : MESSAGES.ERROR.UNKNOWN_ERROR;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });

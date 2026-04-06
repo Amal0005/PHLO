@@ -100,6 +100,11 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
       return;
     }
 
+    if (selectedImages.length === 0) {
+      toast.error("Please add at least one image");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -333,6 +338,11 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
               accept="image/*"
               className="hidden"
             />
+            {selectedImages.length === 0 && (
+              <p className="text-red-500 text-xs mt-1">
+                At least one image is required
+              </p>
+            )}
           </div>
 
           {/* ACTIONS */}
