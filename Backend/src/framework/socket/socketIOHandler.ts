@@ -7,10 +7,17 @@ export class SocketIOHandler {
   private io: Server;
 
   constructor(server: http.Server) {
-    const origin = process.env.FRONTEND_URL || "http://localhost:5173";
+    const envOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+    const allowedOrigins = [
+      envOrigin, 
+      envOrigin.replace(/\/$/, ""), 
+      "https://phlo.website", 
+      "https://www.phlo.website"
+    ];
+    
     this.io = new Server(server, {
       cors: { 
-        origin: [origin, origin.replace(/\/$/, "")], 
+        origin: allowedOrigins, 
         methods: ["GET", "POST"],
         credentials: true
       }
