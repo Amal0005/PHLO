@@ -24,12 +24,12 @@ services:
       - REDIS_PORT=6379
       - NODE_ENV=production
       - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - GOOGLE_CREDENTIALS_JSON=${GOOGLE_CREDENTIALS_JSON}
+
     depends_on:
       - redis
     networks:
       - phlo_network
-    volumes:
-      - ./phlo-483705-7df390b1c765.json:/usr/src/app/phlo-483705-7df390b1c765.json
 
 volumes:
   redis_data:

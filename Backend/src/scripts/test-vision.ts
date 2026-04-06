@@ -4,8 +4,9 @@ import * as dotenv from "dotenv";
 // Load env from the root directory
 dotenv.config();
 
-const client = new vision.ImageAnnotatorClient();
-
+const client = new vision.ImageAnnotatorClient({
+  credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string)
+});
 async function test() {
   console.log("Testing real image URL with Google Cloud Vision...");
   

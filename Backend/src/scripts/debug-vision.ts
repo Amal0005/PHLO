@@ -10,7 +10,7 @@ async function debugVision() {
   fs.writeFileSync(logFile, "Starting Vision Debug...\n");
   
   try {
-    const keyPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    const keyPath = process.env.GOOGLE_CREDENTIALS_JSON;
     fs.appendFileSync(logFile, `Using credentials from: ${keyPath}\n`);
     
     if (keyPath && fs.existsSync(keyPath)) {
@@ -20,7 +20,9 @@ async function debugVision() {
       fs.appendFileSync(logFile, `ERROR: Key file NOT FOUND at ${keyPath}\n`);
     }
 
-    const client = new vision.ImageAnnotatorClient();
+    const client = new vision.ImageAnnotatorClient({
+      credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string)
+    })
     fs.appendFileSync(logFile, "Client initialized.\n");
 
     const testImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";

@@ -15,10 +15,6 @@ FROM node:20-alpine
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
 
-
-# Copy credentials file into SAME working directory
-COPY phlo-483705-7df390b1c765.json ./
-
 # Only install production dependencies
 COPY package*.json ./
 RUN npm ci --only=production
