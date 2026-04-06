@@ -125,7 +125,7 @@ export default function ForgotPassword() {
 
     try {
       setIsResetting(true);
-      await passwordService.resetPassword(email, passwords.newPassword);
+      await passwordService.resetPassword(email, passwords.newPassword, passwords.confirmPassword);
 
       toast.success(MESSAGES.AUTH.PASSWORD_RESET_SUCCESS);
       navigate(ROUTES.USER.LOGIN)

@@ -12,8 +12,8 @@ export const passwordService = {
     return res.data;
   },
 
-  resetPassword: async (email: string, password: string) => {
-    const res = await api.post(FRONTEND_ROUTES.USER.RESET_PASSWORD, { email, password });
+  resetPassword: async (email: string, password: string, confirmPassword: string) => {
+    const res = await api.post(FRONTEND_ROUTES.USER.RESET_PASSWORD, { email, password, confirmPassword });
     return res.data;
   },
 };
