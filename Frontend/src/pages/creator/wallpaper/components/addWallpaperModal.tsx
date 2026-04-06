@@ -118,22 +118,22 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-zinc-900 w-full max-w-4xl rounded-3xl border border-white/10 overflow-hidden max-h-[90vh] flex flex-col md:flex-row shadow-2xl">
+      <div className="bg-zinc-900 w-full max-w-4xl rounded-3xl border border-white/10 overflow-y-auto md:overflow-hidden max-h-[95vh] md:max-h-[90vh] flex flex-col md:flex-row shadow-2xl">
         
         {showGuidelines ? (
-          <div className="w-full p-10 flex flex-col items-center justify-center text-center space-y-8 min-h-[500px] bg-zinc-900">
-            <div className="w-24 h-24 bg-red-500/10 rounded-[2.5rem] flex items-center justify-center border border-red-500/20 shadow-inner">
-              <AlertTriangle size={48} className="text-red-500" />
+          <div className="w-full p-6 md:p-10 flex flex-col items-center justify-center text-center space-y-6 md:space-y-8 min-h-[400px] md:min-h-[500px] bg-zinc-900">
+            <div className="w-20 h-20 md:w-24 md:h-24 bg-red-500/10 rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center border border-red-500/20 shadow-inner">
+              <AlertTriangle size={40} className="md:size-[48px] text-red-500" />
             </div>
             
             <div className="max-w-md space-y-3">
-              <h2 className="text-3xl font-black text-white tracking-tight">Content Guidelines</h2>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">Content Guidelines</h2>
+              <p className="text-gray-400 text-sm leading-relaxed px-4 md:px-0">
                 To maintain a premium and safe community, we enforce strict content rules.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 w-full max-w-xl px-4 md:px-0">
               <div className="bg-zinc-950/50 border border-white/5 p-5 rounded-3xl flex items-center gap-4 hover:border-white/10 transition-colors">
                 <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center text-red-500 text-xs font-black ring-1 ring-red-500/20">18+</div>
                 <div className="text-left">
@@ -174,25 +174,25 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
         ) : (
           <>
             {/* Left — Image Upload / Preview */}
-            <div className="md:w-[45%] w-full bg-zinc-950 flex items-center justify-center relative min-h-[300px] md:min-h-0">
+            <div className="md:w-[45%] w-full bg-zinc-950 flex items-center justify-center relative min-h-[220px] md:min-h-0 aspect-video md:aspect-auto">
               {preview ? (
                 <>
                   <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                   <button
                     onClick={() => { setFile(null); setPreview(null); }}
-                    className="absolute top-6 right-6 p-2.5 bg-black/60 backdrop-blur-md rounded-full hover:bg-black/80 transition-all text-white shadow-xl"
+                    className="absolute top-4 md:top-6 right-4 md:right-6 p-2 bg-black/60 backdrop-blur-md rounded-full hover:bg-black/80 transition-all text-white shadow-xl"
                   >
-                    <X size={18} />
+                    <X className="w-4 h-4 md:w-[18px] md:h-[18px]" />
                   </button>
-                  <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
+                  <div className="absolute bottom-0 inset-x-0 h-24 md:h-32 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
                 </>
               ) : (
-                <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer group p-12">
-                  <div className="w-24 h-24 rounded-[2rem] bg-white/5 border-2 border-dashed border-white/10 flex items-center justify-center mb-6 group-hover:border-white/30 group-hover:bg-white/10 transition-all duration-500">
-                    <Upload size={32} className="text-gray-500 group-hover:text-white transition-colors" />
+                <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer group p-8 md:p-12">
+                  <div className="w-16 h-16 md:w-24 md:h-24 rounded-[1.5rem] md:rounded-[2rem] bg-white/5 border-2 border-dashed border-white/10 flex items-center justify-center mb-4 md:mb-6 group-hover:border-white/30 group-hover:bg-white/10 transition-all duration-500">
+                    <Upload className="w-6 h-6 md:w-8 md:h-8 text-gray-500 group-hover:text-white transition-colors" />
                   </div>
-                  <span className="text-base text-gray-400 font-bold group-hover:text-white transition-colors">Upload Wallpaper</span>
-                  <span className="text-xs text-gray-600 mt-2">PNG or JPG up to 10MB</span>
+                  <span className="text-sm md:text-base text-gray-400 font-bold group-hover:text-white transition-colors">Select Wallpaper</span>
+                  <span className="text-[10px] md:text-xs text-gray-600 mt-1 md:mt-2">PNG or JPG up to 10MB</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -204,23 +204,23 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
             </div>
 
             {/* Right — Form */}
-            <div className="md:w-[55%] w-full flex flex-col bg-zinc-900">
+            <div className="md:w-[55%] w-full flex flex-col bg-zinc-900 border-t md:border-t-0 border-white/5">
               {/* Header */}
-              <div className="flex items-center justify-between px-8 pt-8 pb-6">
+              <div className="flex items-center justify-between px-6 md:px-8 pt-5 md:pt-8 pb-3 md:pb-6">
                 <div>
-                  <h2 className="text-2xl font-black text-white tracking-tight">Add Details</h2>
-                  <p className="text-xs text-gray-500 mt-1">Configure your wallpaper metadata</p>
+                  <h2 className="text-lg md:text-2xl font-black text-white tracking-tight leading-tight">Details</h2>
+                  <p className="text-[9px] md:text-xs text-gray-500">Configure your wallpaper metadata</p>
                 </div>
                 <button
                   onClick={() => { resetForm(); onClose(); }}
-                  className="p-2.5 hover:bg-white/5 rounded-2xl transition-all text-gray-500 hover:text-white"
+                  className="p-2 md:p-2.5 hover:bg-white/5 rounded-2xl transition-all text-gray-500 hover:text-white"
                 >
-                  <X size={24} />
+                  <X className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               </div>
 
               {/* Form Body */}
-              <div className="px-8 pb-4 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="px-6 md:px-8 pb-4 space-y-5 md:space-y-6 overflow-y-auto flex-1 custom-scrollbar">
                 {/* Title */}
                 <div className="space-y-2">
                   <label className="block text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Title</label>
@@ -301,18 +301,18 @@ export const AddWallpaperModal: React.FC<Props> = ({ isOpen, onClose, onSuccess 
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="flex gap-4 px-8 py-6 bg-zinc-900/50 border-t border-white/5">
+               {/* Footer */}
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 px-6 md:px-8 py-5 md:py-6 bg-zinc-900/50 border-t border-white/5">
                 <button
                   onClick={() => { resetForm(); onClose(); }}
-                  className="flex-1 px-6 py-4 border border-white/10 rounded-2xl text-gray-400 hover:bg-white/5 transition-all font-bold text-sm"
+                  className="w-full sm:flex-1 px-6 py-3.5 md:py-4 border border-white/10 rounded-2xl text-gray-400 hover:bg-white/5 transition-all font-bold text-xs md:text-sm order-2 sm:order-1"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={loading || !title.trim() || !file}
-                  className="flex-[1.5] px-6 py-4 bg-white text-black rounded-2xl font-black hover:bg-zinc-200 transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-3 text-sm"
+                  className="w-full sm:flex-[1.5] px-6 py-3.5 md:py-4 bg-white text-black rounded-2xl font-black hover:bg-zinc-200 transition-all shadow-lg hover:scale-[1.02] active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-3 text-xs md:text-sm order-1 sm:order-2"
                 >
                   {loading ? (
                     <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
