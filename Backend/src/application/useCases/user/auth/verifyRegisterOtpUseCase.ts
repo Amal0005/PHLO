@@ -6,11 +6,15 @@ import type { IPendingUserService } from "@/domain/interfaces/service/IPendingUs
 import type { IVerifyRegisterOtpUseCase } from "@/domain/interfaces/user/auth/IVerifyRegisterOtpUseCase";
 import { MESSAGES } from "@/constants/commonMessages";
 
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
+import { NotificationType } from "@/domain/entities/notificationEntity";
+
 export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {
   constructor(
     private _userRepo: IUserRepository,
     private _otpService: IOTPService,
-    private _pendingUser: IPendingUserService
+    private _pendingUser: IPendingUserService,
+    private _sendNotificationUseCase: ISendNotificationUseCase
   ) {}
   async verifyUser(email: string, otp: string): Promise<UserResponseDto> {
     email = email.trim().toLowerCase();
@@ -22,6 +26,23 @@ export class verifyRegisterOtpUseCase implements IVerifyRegisterOtpUseCase {
     const userData = JSON.parse(pending);
     const createdUser = await this._userRepo.createUser(userData);
     await this._pendingUser.deletePending(email);
+
+    // Notify Admin
+    try {
+      const adminId = await this._userRepo.findAdminId();
+      if (adminId) {
+        await this._sendNotificationUseCase.sendNotification({
+          recipientId: adminId,
+          type: NotificationType.ACCOUNT,
+          title: "New User Registered",
+          message: `A new user ${createdUser.name} (${createdUser.email}) has joined the platform.`,
+          isRead: false
+        });
+      }
+    } catch (error) {
+      console.error("Failed to notify admin about new user registration:", error);
+    }
+
     return UserMapper.toDto(createdUser);
   }
 }

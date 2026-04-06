@@ -102,6 +102,8 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ onTrigger, onClose,
                     navigate(ROUTES.ADMIN.CREATORS);
                 } else if (notification.title.includes("Wallpaper")) {
                     navigate(ROUTES.ADMIN.WALLPAPERS);
+                } else if (notification.title.includes("User")) {
+                    navigate(ROUTES.ADMIN.USERS);
                 }
             } else {
                 navigate(isCreator ? ROUTES.CREATOR.PROFILE : ROUTES.USER.PROFILE);
