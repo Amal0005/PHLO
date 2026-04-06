@@ -26,7 +26,9 @@ export class VerifyCreatorOtpUseCase implements IVerifyCreatorOtpUseCase {
 
         const pending = await this._redisService.getValue(`PENDING_CREATOR_${email}`);
         if (!pending) {
-            throw new Error("Registration data expired. Please start the registration process again.");
+            // If no pending data, we just mark the email as verified so they can complete the rest of the steps
+            await this._redisService.setValue(`VERIFIED_CREATOR_EMAIL_${email}`, "true", 1800); // 30 minutes
+            return { email } as CreatorResponseDto;
         }
 
         const creatorData = JSON.parse(pending);

@@ -13,8 +13,11 @@ export class OtpServices implements IOTPService {
     await this._redisService.setValue(`OTP_${identifier}`, otp, 60);
 
   }
+
   async verifyOtp(identifier: string, otp: string): Promise<"VERIFIED" | "INVALID" | "EXPIRED"> {
     const stored = await this._redisService.getValue(`OTP_${identifier}`)
+    console.log(`Verifying OTP for ${identifier}: Stored=[${stored}], Provided=[${otp}]`);
+    
     if (!stored) return "EXPIRED"
     if (stored !== otp) return "INVALID"
     await this._redisService.deleteValue(`OTP_${identifier}`)

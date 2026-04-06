@@ -6,7 +6,7 @@ import { Review } from "@/interface/user/reviewInterface";
 import ConfirmModal from "@/components/reusable/ConfirmModal";
 
 interface AddReviewFormProps {
-    packageId: string;
+    packageId: string | object;
     bookingId: string;
     onSuccess?: () => void;
 }
@@ -54,6 +54,12 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
 
         try {
             setSubmitting(true);
+            
+            // Ensure packageId is an ID string, even if the prop is a populated object
+            const cleanPackageId = typeof packageId === 'object' 
+                ? (packageId as { _id?: string; id?: string })._id || (packageId as { _id?: string; id?: string }).id 
+                : packageId;
+
             let response;
             if (existingReview) {
                 response = await ReviewService.updateReview(existingReview.id, {
@@ -62,7 +68,7 @@ const AddReviewForm: React.FC<AddReviewFormProps> = ({ packageId, bookingId, onS
                 });
             } else {
                 response = await ReviewService.addReview({
-                    packageId,
+                    packageId: cleanPackageId!,
                     bookingId,
                     rating,
                     comment,

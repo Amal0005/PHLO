@@ -17,7 +17,7 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private _packageRepo: IPackageRepository,
     private _leaveRepo: ILeaveRepository,
     private _stripeService: IStripeService
-  ) { }
+  ) {}
   async createBooking(
     userId: string,
     data: CreateBookingRequestDTO
@@ -29,6 +29,13 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
 
     const bookingDate = new Date(data.bookingDate);
     bookingDate.setUTCHours(0, 0, 0, 0);
+
+    const startOfTomorrow = new Date();
+    startOfTomorrow.setUTCHours(24, 0, 0, 0);
+
+    if (bookingDate < startOfTomorrow) {
+      throw new AppError("Bookings must be scheduled at least 1 day in advance. Same-day bookings are not supported.", StatusCode.BAD_REQUEST);
+    }
 
     const creatorId = typeof pkg.creatorId === "string"
       ? pkg.creatorId

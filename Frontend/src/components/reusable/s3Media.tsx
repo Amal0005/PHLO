@@ -29,12 +29,22 @@ export const S3Media = ({ s3Key, className, alt, type = "image" }: Props) => {
     setIsBrowserLoading(true);
 
     if (s3Key.startsWith("http")) {
+      // If it already has a signature, don't try to re-sign it
+      if (s3Key.includes("X-Amz-Signature") || s3Key.includes("Signature=")) {
+        setUrl(s3Key);
+        setIsSigning(false);
+        setIsBrowserLoading(false);
+        return;
+      }
+
       const s3Match = s3Key.match(/amazonaws\.com\/(.+)$/);
       if (s3Match && s3Match[1]) {
-        actualKey = decodeURIComponent(s3Match[1]);
+        // Strip query params if any were captured
+        actualKey = decodeURIComponent(s3Match[1].split('?')[0]);
       } else {
         setUrl(s3Key);
         setIsSigning(false);
+        setIsBrowserLoading(false);
         return;
       }
     }

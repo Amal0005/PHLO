@@ -16,6 +16,7 @@ export class SocketIOHandler {
     ];
     
     this.io = new Server(server, {
+      path: "/api/socket.io",
       cors: { 
         origin: allowedOrigins, 
         methods: ["GET", "POST"],

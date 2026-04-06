@@ -80,7 +80,7 @@ const stripeService = new StripeService()
 const watermarkService = new WatermarkService()
 const moderationService = new ModerationService();
 
-const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService);
+const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService, sendNotificationUseCase);
 const checkCreatorExistsUseCase = new CheckCreatorExistsUseCase(creatorRepository, userRepository);
 const verifyCreatorOtpUseCase = new VerifyCreatorOtpUseCase(creatorRepository, otpService, redisService, userRepository, sendNotificationUseCase);
 const resendCreatorOtpUseCase = new ResendCreatorOtpUseCase(otpService, mailService);

@@ -297,7 +297,7 @@ const PackageDetailPage: React.FC = () => {
                         }
                         handleDateChange(format(date, "yyyy-MM-dd"));
                       }}
-                      minDate={new Date()}
+                      minDate={new Date(new Date().setHours(24, 0, 0, 0))}
                       placeholder="Select Date"
                       className="w-full"
                     />

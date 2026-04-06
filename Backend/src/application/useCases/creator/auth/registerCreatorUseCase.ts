@@ -9,6 +9,8 @@ import type { IRedisService } from "@/domain/interfaces/service/IRedisServices";
 import { renderTemplate } from "@/utils/renderTemplates";
 import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
 import type { IUserRepository } from "@/domain/interfaces/repository/IUserRepository";
+import type { ISendNotificationUseCase } from "@/domain/interfaces/notification/ISendNotificationUseCase";
+import { NotificationType } from "@/domain/entities/notificationEntity";
 
 export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
   constructor(
@@ -17,7 +19,8 @@ export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
     private _userRepo: IUserRepository,
     private _otpService: IOTPService,
     private _mailService: IMailService,
-    private _redisService: IRedisService
+    private _redisService: IRedisService,
+    private _sendNotificationUseCase: ISendNotificationUseCase
   ) {}
 
   async registerCreator(data: CreatorEntity): Promise<CreatorResponseDto> {
@@ -43,6 +46,19 @@ export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
     if (isPreVerified) {
       const createdCreator = await this._creatorRepo.createCreator(pendingCreator);
       await this._redisService.deleteValue(`VERIFIED_CREATOR_EMAIL_${email}`);
+
+      // Notify Admin
+      const adminId = await this._userRepo.findAdminId();
+      if (adminId) {
+        await this._sendNotificationUseCase.sendNotification({
+          recipientId: adminId,
+          type: NotificationType.ACCOUNT,
+          title: "New Creator Registration",
+          message: `New creator ${createdCreator.fullName} has registered and is pending approval.`,
+          isRead: false
+        });
+      }
+
       return CreatorMapper.toDto(createdCreator);
     }
 

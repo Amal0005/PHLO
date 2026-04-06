@@ -20,6 +20,7 @@ class SocketService {
 
         this.userId = userId;
         this.socket = io(backendUrl, {
+            path: "/api/socket.io",
             withCredentials: true,
             transports: ['websocket', 'polling']
         });

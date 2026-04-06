@@ -11,7 +11,7 @@ import { setUser } from "@/store/slices/user/userSlice";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
 import { AxiosError } from "axios";
-import { removeUser } from "@/store/slices/auth/authSlice";
+import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { MESSAGES } from "@/constants/messages";
 
 interface RegisterForm {
@@ -359,7 +359,8 @@ export default function Register() {
 
                       if (response?.accessToken && response?.user) {
                         dispatch(setUser(response.user));
-                        dispatch(removeUser(response.accessToken));
+                        dispatch(setToken(response.accessToken));
+                        dispatch(setRole("user"));
                         navigate(ROUTES.USER.HOME, { replace: true });
                       } else {
                         console.error("Google Login: Missing token/user", response);
