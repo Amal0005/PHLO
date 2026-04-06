@@ -11,7 +11,6 @@ import {
   Zap,
   Globe,
   ShieldCheck,
-  Search,
   Sparkles
 } from 'lucide-react';
 import logoWhite from "@/assets/images/Logo_white.png";
