@@ -7,8 +7,13 @@ export class SocketIOHandler {
   private io: Server;
 
   constructor(server: http.Server) {
+    const origin = process.env.FRONTEND_URL || "http://localhost:5173";
     this.io = new Server(server, {
-      cors: { origin: process.env.FRONTEND_URL, methods: ["GET", "POST"] }
+      cors: { 
+        origin: [origin, origin.replace(/\/$/, "")], 
+        methods: ["GET", "POST"],
+        credentials: true
+      }
     });
     this.setupListeners();
     SocketIOHandler.instance = this;

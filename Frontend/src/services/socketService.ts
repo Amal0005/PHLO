@@ -11,7 +11,7 @@ class SocketService {
             return;
         }
 
-        const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BASE_URL?.replace('/api', '');
+        const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BASE_URL?.replace(/\/api$/, '');
         console.log("Connecting/Reconnecting to socket at:", backendUrl, "for user:", userId);
 
         if (this.socket) {

@@ -102,45 +102,40 @@ export const useNotifications = () => {
         socketService.connect(currentUserId);
         const socket = socketService.getSocket();
 
-        if (socket) {
-            // Prevent multiple listeners if hook is used multiple times
-            if (socketService.hasListeners("notification")) {
+        const handleNotification = (notification: NotificationEntity) => {
+            dispatch(addNotification(notification));
+
+            // Suppress toast if in chat page and is chat notification
+            const isChatPage = window.location.pathname.includes('/chat');
+            if (isChatPage && notification.type === NotificationType.CHAT) {
                 return;
             }
 
-            const handleNotification = (notification: NotificationEntity) => {
-                dispatch(addNotification(notification));
+            // Show toast
+            toast.info(`${notification.title}: ${notification.message}`, {
+                position: "top-center",
+                autoClose: 2000,
+                className: "bg-black/80 backdrop-blur-3xl text-white rounded-[2rem] border border-white/10 shadow-2xl cursor-pointer",
+                onClick: () => {
+                    const isCreator = window.location.pathname.startsWith('/creator');
 
-                // Suppress toast if in chat page and is chat notification
-                const isChatPage = window.location.pathname.includes('/chat');
-                if (isChatPage && notification.type === NotificationType.CHAT) {
-                    return;
-                }
-
-                // Show toast
-                toast.info(`${notification.title}: ${notification.message}`, {
-                    position: "top-center",
-                    autoClose: 2000,
-                    className: "bg-black/80 backdrop-blur-3xl text-white rounded-[2rem] border border-white/10 shadow-2xl cursor-pointer",
-                    onClick: () => {
-                        const isCreator = window.location.pathname.startsWith('/creator');
-
-                        if (notification.type === NotificationType.CHAT) {
-                            const conversationId = notification.metadata?.conversationId;
-                            const bookingId = notification.metadata?.bookingId;
-                            let chatPath = isCreator ? '/creator/chat' : '/chat';
-                            if (conversationId) chatPath += `?conversationId=${conversationId}`;
-                            else if (bookingId) chatPath += `?bookingId=${bookingId}`;
-                            navigate(chatPath);
-                        } else if (notification.type === NotificationType.BOOKING) {
-                            navigate(isCreator ? '/creator/bookings' : '/bookings');
-                        }
-                        // Mark as read when clicking the toast too
-                        markAsRead(notification.id);
+                    if (notification.type === NotificationType.CHAT) {
+                        const conversationId = notification.metadata?.conversationId;
+                        const bookingId = notification.metadata?.bookingId;
+                        let chatPath = isCreator ? '/creator/chat' : '/chat';
+                        if (conversationId) chatPath += `?conversationId=${conversationId}`;
+                        else if (bookingId) chatPath += `?bookingId=${bookingId}`;
+                        navigate(chatPath);
+                    } else if (notification.type === NotificationType.BOOKING) {
+                        navigate(isCreator ? '/creator/bookings' : '/bookings');
                     }
-                });
-            };
+                    // Mark as read when clicking the toast too
+                    markAsRead(notification.id);
+                }
+            });
+        };
 
+        if (socket) {
             socket.on("notification", handleNotification);
 
             return () => {
