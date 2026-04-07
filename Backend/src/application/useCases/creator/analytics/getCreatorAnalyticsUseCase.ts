@@ -9,7 +9,7 @@ export class GetCreatorAnalyticsUseCase implements IGetCreatorAnalyticsUseCase {
         const creatorObjectId = new Types.ObjectId(creatorId);
 
         // 1. Get all package IDs for this creator
-        const packages = await PackageModel.find({ creatorId: creatorObjectId }).select("_id title");
+        const packages = await PackageModel.find({ creatorId: creatorId }).select("_id title");
         const packageIds = packages.map(p => p._id);
         const packageMap = packages.reduce((map, pkg) => {
             map[pkg._id.toString()] = pkg.title;
@@ -104,16 +104,18 @@ export class GetCreatorAnalyticsUseCase implements IGetCreatorAnalyticsUseCase {
             }
         ]);
 
-        const stats = overall[0] || { totalRevenue: 0, totalBookings: 0 };
+        const stats = overall[0] && typeof overall[0] === 'object' 
+            ? overall[0] 
+            : { totalRevenue: 0, totalBookings: 0 };
 
         return {
-            revenueByMonth: formattedRevenue,
-            bookingStatusDistribution: formattedStatus,
-            popularPackages: formattedPopular,
+            revenueByMonth: formattedRevenue || [],
+            bookingStatusDistribution: formattedStatus || [],
+            popularPackages: formattedPopular || [],
             recentEarningStats: {
-                totalRevenue: stats.totalRevenue,
-                totalBookings: stats.totalBookings,
-                averageOrderValue: stats.totalBookings > 0 ? stats.totalRevenue / stats.totalBookings : 0
+                totalRevenue: stats.totalRevenue || 0,
+                totalBookings: stats.totalBookings || 0,
+                averageOrderValue: stats.totalBookings > 0 ? (stats.totalRevenue / stats.totalBookings) : 0
             }
         };
     }

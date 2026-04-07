@@ -34,15 +34,15 @@ export class PackageRepository
 
   async add(data: Partial<PackageEntity>): Promise<PackageEntity> {
     const newPackage = await this.model.create(
-      data as unknown as Omit<IPackageModel, keyof Document>
+      data
     );
 
-    return this.mapToEntity(newPackage as IPackageModel);
+    return this.mapToEntity(newPackage);
   }
 
   async findByCreatorId(creatorId: string): Promise<PackageEntity[]> {
     const packages = await this.model
-      .find({ creatorId })
+      .find({ creatorId: creatorId })
       .sort({ createdAt: -1 })
       .exec();
 
@@ -197,7 +197,7 @@ export class PackageRepository
       ];
     }
 
-    let sortOption: Record<string, SortOrder> = { createdAt: -1 };
+    let sortOption: Record<string, 1 | -1> = { createdAt: -1 };
     if (filters?.sortBy) {
       const mappedSort = this.getSortOption(filters.sortBy);
       if (Object.keys(mappedSort).length > 0) sortOption = mappedSort;
@@ -224,7 +224,7 @@ export class PackageRepository
     };
   }
 
-  private getSortOption(sortBy: string): Record<string, SortOrder> {
+  private getSortOption(sortBy: string): Record<string, 1 | -1> {
     switch (sortBy) {
       case "price-asc": return { price: 1 };
       case "price-desc": return { price: -1 };

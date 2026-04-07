@@ -48,30 +48,30 @@ const AnalyticsDashboard: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     <KpiCard 
                         title="Total Revenue" 
-                        value={`₹${analytics?.recentEarningStats.totalRevenue.toLocaleString()}`} 
+                        value={`₹${(analytics?.recentEarningStats?.totalRevenue || 0).toLocaleString()}`} 
                         icon={<DollarSign className="w-5 h-5" />}
-                        trend="+12.5%"
+                        trend="+0%"
                         isUp={true}
                     />
                     <KpiCard 
                         title="Total Bookings" 
-                        value={analytics?.recentEarningStats.totalBookings.toString() || "0"} 
+                        value={(analytics?.recentEarningStats?.totalBookings || 0).toString()} 
                         icon={<Package className="w-5 h-5" />}
-                        trend="+8.2%"
+                        trend="+0%"
                         isUp={true}
                     />
                     <KpiCard 
                         title="Avg. Order Value" 
-                        value={`₹${Math.round(analytics?.recentEarningStats.averageOrderValue || 0).toLocaleString()}`} 
+                        value={`₹${Math.round(analytics?.recentEarningStats?.averageOrderValue || 0).toLocaleString()}`} 
                         icon={<TrendingUp className="w-5 h-5" />}
-                        trend="-2.4%"
-                        isUp={false}
+                        trend="0%"
+                        isUp={true}
                     />
                     <KpiCard 
                         title="Active Clients" 
-                        value={analytics?.recentEarningStats.totalBookings.toString() || "0"} 
+                        value={(analytics?.recentEarningStats?.totalBookings || 0).toString()} 
                         icon={<Users className="w-5 h-5" />}
-                        trend="+5.1%"
+                        trend="+0%"
                         isUp={true}
                     />
                 </div>
