@@ -59,6 +59,8 @@ import { GetWalletUseCase } from "@/application/useCases/wallet/getWalletUseCase
 import { CreatorWalletController } from "@/adapters/controllers/creator/creatorWalletController";
 import { storageService } from "@/framework/depInjection/s3Injections";
 import { ModerationService } from "@/domain/services/moderationService";
+import { GetCreatorAnalyticsUseCase } from "@/application/useCases/creator/analytics/getCreatorAnalyticsUseCase";
+import { CreatorAnalyticsController } from "@/adapters/controllers/creator/creatorAnalyticsController";
 
 
 const creatorRepository = new CreatorRepository();
@@ -111,6 +113,7 @@ const getCreatorWallpapaperUseCase = new GetCreatorWallpaperUseCase(wallpaperRep
 const addLeaveUseCase = new AddLeaveUseCase(leaveRepo)
 const getLeaveUseCase = new GetLeavesUseCase(leaveRepo)
 const removeLeaveUseCase = new RemoveLeaveUseCase(leaveRepo)
+const getCreatorAnalyticsUseCase = new GetCreatorAnalyticsUseCase();
 
 
 export const creatorRegisterController = new CreatorRegisterController(creatorRegisterUseCase, checkCreatorExistsUseCase, verifyCreatorOtpUseCase, resendCreatorOtpUseCase);
@@ -124,6 +127,7 @@ export const creatorBookingController = new CreatorBookingController(listCreator
 export const wallpaperController = new WallpaperController(addWallpaperUseCase, deleteWallpaperUseCase, getCreatorWallpapaperUseCase,)
 export const leaveController = new CreatorLeaveController(getLeaveUseCase, addLeaveUseCase, removeLeaveUseCase)
 export const creatorWalletController = new CreatorWalletController(getWalletUseCase);
+export const creatorAnalyticsController = new CreatorAnalyticsController(getCreatorAnalyticsUseCase);
 
 export { creatorSubscriptionWebhookUseCase };
 

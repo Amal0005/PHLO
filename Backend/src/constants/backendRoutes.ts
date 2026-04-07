@@ -70,6 +70,7 @@ export const BACKEND_ROUTES = {
     LEAVE: "/leave",
     LEAVE_DETAIL: "/leave/:date",
     WALLET: "/wallet",
+    ANALYTICS: "/analytics",
   },
   ADMIN: {
     BASE: "/admin",

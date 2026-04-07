@@ -119,26 +119,6 @@ const LandingPage = () => {
             </motion.div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-10">
-              {['Explore', 'Creators', 'Experience'].map((item) => (
-                <motion.a
-                  key={item}
-                  href="#"
-                  whileHover={{ y: -2 }}
-                  className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50 hover:text-white transition-colors"
-                >
-                  {item}
-                </motion.a>
-              ))}
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate(ROUTES.USER.LOGIN)}
-                className="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all"
-              >
-                Sign In
-              </motion.button>
-            </div>
 
             <button className="md:hidden text-white p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}

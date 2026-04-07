@@ -142,21 +142,24 @@ export class PackageRepository
         }
       });
 
+      // Handle Sorting in Aggregation
+      if (filters?.sortBy && filters.sortBy !== "distance") {
+        const mappedSort = this.getSortOption(filters.sortBy);
+        if (Object.keys(mappedSort).length > 0) {
+          pipeline.push({ $sort: mappedSort });
+        }
+      }
 
       const countPipeline = [...pipeline, { $count: "total" }];
       const countResult = await this.model.aggregate(countPipeline);
       const total = countResult[0]?.total || 0;
-
 
       pipeline.push({ $skip: skip }, { $limit: limit });
 
       const packages = await this.model.aggregate(pipeline);
 
       return {
-        data: packages.map((pkg) => {
-          const { _id, ...rest } = pkg;
-          return { ...rest, _id: _id.toString() } as PackageEntity;
-        }),
+        data: packages.map((pkg) => this.mapToEntity(pkg)),
         total,
         page,
         limit,
@@ -195,10 +198,10 @@ export class PackageRepository
     }
 
     let sortOption: Record<string, SortOrder> = { createdAt: -1 };
-
-    if (filters?.sortBy === "price-asc") sortOption = { price: 1 };
-    else if (filters?.sortBy === "price-desc") sortOption = { price: -1 };
-    else if (filters?.sortBy === "oldest") sortOption = { createdAt: 1 };
+    if (filters?.sortBy) {
+      const mappedSort = this.getSortOption(filters.sortBy);
+      if (Object.keys(mappedSort).length > 0) sortOption = mappedSort;
+    }
 
     const [packages, total] = await Promise.all([
       this.model
@@ -221,20 +224,48 @@ export class PackageRepository
     };
   }
 
-  protected mapToEntity(doc: IPackageModel): PackageEntity {
-    const obj = doc.toObject();
+  private getSortOption(sortBy: string): Record<string, SortOrder> {
+    switch (sortBy) {
+      case "price-asc": return { price: 1 };
+      case "price-desc": return { price: -1 };
+      case "newest": return { createdAt: -1 };
+      case "oldest": return { createdAt: 1 };
+      default: return {};
+    }
+  }
 
+  protected mapToEntity(doc: IPackageModel | Record<string, unknown>): PackageEntity {
+    // Check if doc is a Mongoose document
+    if ("toObject" in doc && typeof doc.toObject === "function") {
+      const obj = (doc as IPackageModel).toObject();
+      return {
+        _id: obj._id.toString(),
+        creatorId: obj.creatorId,
+        category: obj.category,
+        title: obj.title,
+        description: obj.description,
+        price: obj.price,
+        images: obj.images,
+        locations: obj.locations,
+        createdAt: obj.createdAt,
+        updatedAt: obj.updatedAt,
+      };
+    }
+
+    // Handle plain objects from aggregation
+    const obj = doc as Record<string, unknown>;
     return {
-      _id: obj._id.toString(),
-      creatorId: obj.creatorId,
-      category: obj.category,
-      title: obj.title,
-      description: obj.description,
-      price: obj.price,
-      images: obj.images,
-      locations: obj.locations,
-      createdAt: obj.createdAt,
-      updatedAt: obj.updatedAt,
+      _id: obj._id?.toString() || "",
+      creatorId: typeof obj.creatorId === "object" ? (obj.creatorId as { _id: string })._id.toString() : (obj.creatorId as string),
+      category: typeof obj.category === "object" ? (obj.category as { _id: string })._id.toString() : (obj.category as string),
+      title: obj.title as string,
+      description: obj.description as string,
+      price: obj.price as number,
+      images: obj.images as string[],
+      locations: obj.locations as PackageEntity["locations"],
+      distance: obj.distance as number | undefined,
+      createdAt: obj.createdAt as Date,
+      updatedAt: obj.updatedAt as Date,
     };
   }
 }

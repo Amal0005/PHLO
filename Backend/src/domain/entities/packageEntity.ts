@@ -15,4 +15,5 @@ export interface PackageEntity {
   }[];
   createdAt?: Date;
   updatedAt?: Date;
+  distance?: number;
 }

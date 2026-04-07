@@ -71,6 +71,7 @@ export const FRONTEND_ROUTES = {
         WALLPAPER: "/creator/wallpaper",
         GET_BOOKINGS: "/creator/bookings",
         WALLET: "/creator/wallet",
+        ANALYTICS: "/creator/analytics",
     },
     UPLOAD: {
         VIEW_URL: "/upload/view-url",

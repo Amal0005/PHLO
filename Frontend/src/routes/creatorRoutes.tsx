@@ -14,6 +14,7 @@ import ViewWallpapersPage from "@/pages/creator/wallpaper/viewWallpapers";
 import BookingsCalendar from "@/pages/creator/bookings/BookingsCalendar";
 import ChatPage from "@/pages/chat/ChatPage";
 import CreatorWalletPage from "@/pages/creator/wallet/CreatorWalletPage";
+import AnalyticsDashboard from "@/pages/creator/analytics/AnalyticsDashboard";
 import { useLocation } from "react-router-dom";
 import NotFoundPage from "@/pages/error/NotFoundPage";
 
@@ -44,6 +45,7 @@ export function CreatorRoutes() {
         <Route path={ROUTES.CREATOR.SUBSCRIPTION_SUCCESS} element={<SubscriptionSuccess />} />
         <Route path={ROUTES.CREATOR.SUBSCRIPTION_CANCEL} element={<SubscriptionCancel />} />
         <Route path={ROUTES.CREATOR.WALLPAPERS} element={<ViewWallpapersPage />} />
+        <Route path={ROUTES.CREATOR.ANALYTICS} element={<AnalyticsDashboard />} />
         <Route path={ROUTES.CREATOR.BOOKINGS} element={<BookingsCalendar />} />
         <Route path={ROUTES.CREATOR.CHAT} element={<ChatPage />} />
         <Route path={ROUTES.CREATOR.WALLET} element={<CreatorWalletPage />} />

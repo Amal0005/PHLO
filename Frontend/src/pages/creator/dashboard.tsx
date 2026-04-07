@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import CreatorNavbar from "@/components/reusable/creatorNavbar";
 import { useState, useEffect } from "react";
-import { Package, Image as ImageIcon, Eye, Plus, Calendar } from "lucide-react";
+import { Package, Image as ImageIcon, Eye, Plus, Calendar, BarChart, TrendingUp } from "lucide-react";
 import { AddPackageModal } from "@/pages/creator/package/components/addPackageModal";
 import { AddWallpaperModal } from "@/pages/creator/wallpaper/components/addWallpaperModal";
 import { useNavigate } from "react-router-dom";
@@ -143,6 +143,26 @@ export default function CreatorDashboard() {
 
             <div className="absolute -bottom-4 -right-4 text-white/5 group-hover:text-white/10 transition-colors">
               <Calendar size={100} />
+            </div>
+          </div>
+
+          <div
+            onClick={() => navigate(ROUTES.CREATOR.ANALYTICS)}
+            className="h-48 bg-white/5 border border-white/10 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-all group relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+            <div className="w-14 h-14 bg-white text-black rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform relative z-10 shadow-xl">
+              <TrendingUp size={28} />
+            </div>
+
+            <div className="text-center relative z-10">
+              <span className="block text-white font-black text-xl tracking-tight">Analytics</span>
+              <span className="text-gray-500 text-sm font-medium">Sales & Performance Reports</span>
+            </div>
+
+            <div className="absolute -bottom-4 -right-4 text-white/5 group-hover:text-white/10 transition-colors">
+              <BarChart size={100} />
             </div>
           </div>
         </div>

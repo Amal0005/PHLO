@@ -34,7 +34,7 @@ const PackageListing: React.FC = () => {
     min: 0,
     max: 100000,
   });
-  const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "newest" | "oldest">(saved?.sort || "newest");
+  const [sortBy, setSortBy] = useState<"price-asc" | "price-desc" | "newest" | "oldest" | "distance">(saved?.sort || "newest");
   const [allCategories, setAllCategories] = useState<Array<{ _id: string; name: string }>>([]);
   const [locationFilter, setLocationFilter] = useState<{ lat: number; lng: number } | null>(saved?.location || null);
   const [isLocating, setIsLocating] = useState(false);
@@ -213,10 +213,11 @@ const PackageListing: React.FC = () => {
 
             <FilterSelect
               value={sortBy}
-              onChange={(val) => { setSortBy(val as "newest" | "oldest" | "price-asc" | "price-desc"); setPage(1); }}
+              onChange={(val) => { setSortBy(val as "newest" | "oldest" | "price-asc" | "price-desc" | "distance"); setPage(1); }}
               placeholder="Sort By"
               className="w-[200px]"
               options={[
+                { value: "distance", label: "Nearest First" },
                 { value: "newest", label: "Newest First" },
                 { value: "oldest", label: "Oldest First" },
                 { value: "price-asc", label: "Price: Low to High" },
@@ -229,12 +230,14 @@ const PackageListing: React.FC = () => {
                 if (locationFilter) {
                   setLocationFilter(null);
                   setCurrentLocationName("");
+                  if (sortBy === "distance") setSortBy("newest");
                 } else {
                   setIsLocating(true);
                   navigator.geolocation.getCurrentPosition(
                     async (pos) => {
                       const { latitude: lat, longitude: lng } = pos.coords;
                       setLocationFilter({ lat, lng });
+                      setSortBy("distance");
                       try {
                         const token = import.meta.env.VITE_MAPBOX_TOKEN;
                         const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
@@ -337,10 +340,15 @@ const PackageListing: React.FC = () => {
                     {(pkg.locations && pkg.locations.length > 0) && (
                       <div className="flex items-center gap-2 text-gray-400 text-sm mb-4">
                         <MapPin size={16} className="flex-shrink-0" />
-                        <span className="line-clamp-1">
+                        <span className="line-clamp-1 flex-grow">
                           {pkg.locations[0].placeName}
                           {pkg.locations.length > 1 && ` (+${pkg.locations.length - 1} more)`}
                         </span>
+                        {pkg.distance !== undefined && (
+                          <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest whitespace-nowrap bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                            {(pkg.distance / 1000).toFixed(1)} km
+                          </span>
+                        )}
                       </div>
                     )}
 

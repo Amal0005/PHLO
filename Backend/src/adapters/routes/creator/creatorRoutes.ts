@@ -12,6 +12,7 @@ import {
   creatorBookingController,
   leaveController,
   creatorWalletController,
+  creatorAnalyticsController,
 } from "@/framework/depInjection/creator/creatorInjections";
 import {
   registerCreatorSchema,
@@ -203,6 +204,12 @@ export class CreatorRoutes {
       BACKEND_ROUTES.CREATOR.WALLET,
       (req: Request, res: Response) => {
         creatorWalletController.getWallet(req, res)
+      }
+    );
+    this.creatorRouter.get(
+      BACKEND_ROUTES.CREATOR.ANALYTICS,
+      (req: Request, res: Response) => {
+        creatorAnalyticsController.getAnalytics(req, res)
       }
     );
   }

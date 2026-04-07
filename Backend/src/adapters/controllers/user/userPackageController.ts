@@ -20,7 +20,7 @@ export class UserPackageController {
         maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
         creatorId: creatorId as string | undefined,
         search: search as string | undefined,
-        sortBy: sortBy as "price-asc" | "price-desc" | "newest" | undefined,
+        sortBy: sortBy as "price-asc" | "price-desc" | "newest" | "oldest" | "distance" | undefined,
         lat: lat ? parseFloat(lat as string) : undefined,
         lng: lng ? parseFloat(lng as string) : undefined,
         radiusInKm: radiusInKm ? parseFloat(radiusInKm as string) : undefined,

@@ -22,6 +22,7 @@ export interface UserPackage {
   }[];
   createdAt: string;
   updatedAt: string;
+  distance?: number;
 }
 
 
@@ -31,7 +32,7 @@ export interface PackageFilters {
   maxPrice?: number;
   creatorId?: string;
   search?: string;
-  sortBy?: "price-asc" | "price-desc" | "newest" | "oldest";
+  sortBy?: "price-asc" | "price-desc" | "newest" | "oldest" | "distance";
   lat?: number;
   lng?: number;
   radiusInKm?: number;
