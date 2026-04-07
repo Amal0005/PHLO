@@ -343,10 +343,10 @@ export default function LandingPage() {
                   </div>
 
                   <button 
-                    onClick={() => navigate(`${ROUTES.USER.PACKAGES}?creatorId=${creator._id}`)}
+                    onClick={() => navigate(ROUTES.USER.CREATOR_DETAIL.replace(":id", creator._id))}
                     className="w-full py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors"
                   >
-                    View Packages
+                    View Profile
                   </button>
                 </div>
               </div>
@@ -356,6 +356,16 @@ export default function LandingPage() {
               No creators found.
             </div>
           )}
+          </div>
+
+          <div className="text-center mt-12">
+            <button
+              onClick={() => navigate(ROUTES.USER.CREATORS)}
+              className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg font-semibold hover:bg-white/20 transition-all inline-flex items-center gap-2"
+            >
+              View All Creators
+              <ArrowRight size={20} />
+            </button>
           </div>
         </div>
       </section>
@@ -432,10 +442,18 @@ export default function LandingPage() {
                 </li>
                 <li>
                   <button
-                    onClick={() => navigate("/")}
+                    onClick={() => navigate(ROUTES.USER.CREATORS)}
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Creators
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => navigate(ROUTES.USER.ABOUT)}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    About PHLO
                   </button>
                 </li>
               </ul>

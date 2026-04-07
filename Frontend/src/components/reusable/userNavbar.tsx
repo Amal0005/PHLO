@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { Menu, X, ChevronDown, User, LogOut, Bookmark, MessageCircle, Wallet, Image as ImageIcon, BookOpen } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Bookmark, MessageCircle, Wallet, Image as ImageIcon, BookOpen, Camera } from "lucide-react";
 import { useRef } from "react";
 import LogoWhite from "../../../public/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
@@ -77,14 +77,23 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileMenuOpen]);
+
   const handleLogout = async () => {
     await UserAuthService.logout();
     dispatch(removeUser());
     dispatch(clearUser());
     navigate(ROUTES.USER.LOGIN, { replace: true });
   };
-
-
 
   return (
     <nav
@@ -117,6 +126,12 @@ export default function Navbar() {
               className="text-gray-300 hover:text-white transition-colors cursor-pointer"
             >
               Wallpapers
+            </button>
+            <button
+              onClick={() => navigate(ROUTES.USER.CREATORS)}
+              className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+            >
+              Creators
             </button>
             <button
               onClick={() => navigate(ROUTES.USER.WISHLIST)}
@@ -210,7 +225,7 @@ export default function Navbar() {
       {/* Mobile Menu Overlay */}
       <div className={`fixed inset-0 z-[60] bg-black/40 backdrop-blur-3xl transition-all duration-700 md:hidden ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         {/* Animated Slide-in Sidebar */}
-        <div className={`absolute top-0 right-0 w-[85%] h-full bg-black/90 backdrop-blur-2xl border-l border-white/5 flex flex-col p-6 space-y-10 transition-transform duration-500 ease-out shadow-[-20px_0_100px_rgba(0,0,0,0.5)] ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className={`absolute top-0 right-0 w-[85%] h-full bg-black/90 backdrop-blur-2xl border-l border-white/5 flex flex-col p-6 space-y-8 transition-transform duration-500 ease-out shadow-[-20px_0_100px_rgba(0,0,0,0.5)] ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
           <style dangerouslySetInnerHTML={{
             __html: `
             @keyframes slideInItem {
@@ -224,7 +239,7 @@ export default function Navbar() {
           `}} />
 
           {/* Menu Header with Brand Glow */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-shrink-0">
             <div className="relative group">
               <div className="absolute inset-0 blur-xl opacity-20 group-hover:opacity-40 transition-opacity bg-gradient-to-r from-blue-500 to-white -z-10" />
               <img src={LogoWhite} alt="PHLO" className="h-8 object-contain" />
@@ -237,101 +252,116 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* User Profile Card (Premium Glass) */}
-          {user ? (
-            <div
-              onClick={() => { navigate(ROUTES.USER.PROFILE); setMobileMenuOpen(false); }}
-              className="p-5 rounded-[2rem] bg-white/[0.03] border border-white/10 flex items-center gap-4 group cursor-pointer transition-all hover:bg-white/[0.05] active:scale-[0.98] menu-item-animate"
-              style={{ animationDelay: '100ms' }}
-            >
-              <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/20 bg-zinc-800 flex items-center justify-center p-0.5 group-hover:border-white/40 transition-all">
-                {signedImageUrl ? (
-                  <img src={signedImageUrl} alt={user.name} className="w-full h-full object-cover rounded-xl" />
-                ) : (
-                  <span className="text-white text-lg font-black">{getInitials(user.name || "U")}</span>
-                )}
+          {/* Scrollable Content Container */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar -mx-6 px-6 space-y-8 pt-4 pb-12">
+            {/* User Profile Card (Premium Glass) */}
+            {user ? (
+              <div
+                onClick={() => { navigate(ROUTES.USER.PROFILE); setMobileMenuOpen(false); }}
+                className="p-5 rounded-[2rem] bg-white/[0.03] border border-white/10 flex items-center gap-4 group cursor-pointer transition-all hover:bg-white/[0.05] active:scale-[0.98] menu-item-animate"
+                style={{ animationDelay: '100ms' }}
+              >
+                <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/20 bg-zinc-800 flex items-center justify-center p-0.5 group-hover:border-white/40 transition-all">
+                  {signedImageUrl ? (
+                    <img src={signedImageUrl} alt={user.name} className="w-full h-full object-cover rounded-xl" />
+                  ) : (
+                    <span className="text-white text-lg font-black">{getInitials(user.name || "U")}</span>
+                  )}
+                </div>
+                <div className="flex flex-col flex-1 truncate">
+                  <span className="text-white font-bold leading-tight flex items-center gap-2">
+                    {user.name || "User"}
+                    <ChevronDown size={12} className="-rotate-90 text-gray-600" />
+                  </span>
+                  <span className="text-gray-500 text-[10px] uppercase font-black tracking-widest truncate">{user.email}</span>
+                </div>
               </div>
-              <div className="flex flex-col flex-1 truncate">
-                <span className="text-white font-bold leading-tight flex items-center gap-2">
-                  {user.name || "User"}
-                  <ChevronDown size={12} className="-rotate-90 text-gray-600" />
-                </span>
-                <span className="text-gray-500 text-[10px] uppercase font-black tracking-widest truncate">{user.email}</span>
-              </div>
+            ) : (
+              <button
+                onClick={() => navigate(ROUTES.USER.LOGIN)}
+                className="w-full py-5 rounded-[2rem] bg-white text-black font-black text-xs uppercase tracking-widest hover:bg-gray-100 transition-all active:scale-95 menu-item-animate"
+                style={{ animationDelay: '100ms' }}
+              >
+                Access Account
+              </button>
+            )}
+
+            {/* Visual Navigation Cards */}
+            <div className="grid grid-cols-2 gap-4 menu-item-animate" style={{ animationDelay: '200ms' }}>
+              <button
+                onClick={() => { navigate(ROUTES.USER.PACKAGES); setMobileMenuOpen(false); }}
+                className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left w-full"
+              >
+                <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                  <BookOpen size={20} />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Service</span>
+                  <p className="text-sm font-black text-white tracking-tight uppercase">Packages</p>
+                </div>
+              </button>
+              <button
+                onClick={() => { navigate(ROUTES.USER.WALLPAPERS); setMobileMenuOpen(false); }}
+                className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left w-full"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:-rotate-6 transition-all">
+                  <ImageIcon size={20} />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Media</span>
+                  <p className="text-sm font-black text-white tracking-tight uppercase">Wallpapers</p>
+                </div>
+              </button>
+              <button
+                onClick={() => { navigate(ROUTES.USER.CREATORS); setMobileMenuOpen(false); }}
+                className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left w-full col-span-2"
+              >
+                <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 group-hover:scale-110 group-hover:rotate-6 transition-all">
+                  <Camera size={20} />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Network</span>
+                  <p className="text-sm font-black text-white tracking-tight uppercase">Creators</p>
+                </div>
+              </button>
             </div>
-          ) : (
-            <button
-              onClick={() => navigate(ROUTES.USER.LOGIN)}
-              className="w-full py-5 rounded-[2rem] bg-white text-black font-black text-xs uppercase tracking-widest hover:bg-gray-100 transition-all active:scale-95 menu-item-animate"
-              style={{ animationDelay: '100ms' }}
-            >
-              Access Account
-            </button>
-          )}
 
-          {/* Visual Navigation Cards */}
-          <div className="grid grid-cols-2 gap-4 menu-item-animate" style={{ animationDelay: '200ms' }}>
-            <button
-              onClick={() => { navigate(ROUTES.USER.PACKAGES); setMobileMenuOpen(false); }}
-              className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left w-full"
-            >
-              <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:rotate-6 transition-all">
-                <BookOpen size={20} />
-              </div>
-              <div className="space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Service</span>
-                <p className="text-sm font-black text-white tracking-tight uppercase">Packages</p>
-              </div>
-            </button>
-            <button
-              onClick={() => { navigate(ROUTES.USER.WALLPAPERS); setMobileMenuOpen(false); }}
-              className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left w-full"
-            >
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 group-hover:-rotate-6 transition-all">
-                <ImageIcon size={20} />
-              </div>
-              <div className="space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Media</span>
-                <p className="text-sm font-black text-white tracking-tight uppercase">Wallpapers</p>
-              </div>
-            </button>
+            {/* Secondary Utility Icons (Grid Style) */}
+            <div className="grid grid-cols-2 gap-4 menu-item-animate" style={{ animationDelay: '400ms' }}>
+              <button
+                onClick={() => { navigate(ROUTES.USER.WISHLIST); setMobileMenuOpen(false); }}
+                className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all flex flex-col gap-3 group items-center"
+              >
+                <Bookmark size={20} className="text-zinc-600 group-hover:text-white group-hover:scale-110 transition-all" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white">Wishlist</span>
+              </button>
+              <button
+                onClick={() => { navigate(ROUTES.USER.CHAT); setMobileMenuOpen(false); }}
+                className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all flex flex-col gap-3 group items-center"
+              >
+                <MessageCircle size={20} className="text-zinc-600 group-hover:text-white group-hover:scale-110 transition-all" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white">Chat</span>
+              </button>
+              <button
+                onClick={() => { navigate(ROUTES.USER.WALLET); setMobileMenuOpen(false); }}
+                className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all flex flex-col gap-3 group items-center"
+              >
+                <Wallet size={20} className="text-zinc-600 group-hover:text-white group-hover:scale-110 transition-all" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white">Wallet</span>
+              </button>
+              <button
+                onClick={() => setShowMobileNotifications(true)}
+                className="p-5 rounded-3xl bg-white/5 border border-white/5 flex flex-col gap-3 group items-center transition-all hover:bg-white/10 active:scale-95"
+              >
+                <NotificationBell onTrigger={() => setShowMobileNotifications(true)} />
+                <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white">Alerts</span>
+              </button>
+            </div>
           </div>
 
-          {/* Secondary Utility Icons (Grid Style) */}
-          <div className="grid grid-cols-2 gap-4 menu-item-animate" style={{ animationDelay: '400ms' }}>
-            <button
-              onClick={() => { navigate(ROUTES.USER.WISHLIST); setMobileMenuOpen(false); }}
-              className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all flex flex-col gap-3 group items-center"
-            >
-              <Bookmark size={20} className="text-zinc-600 group-hover:text-white group-hover:scale-110 transition-all" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white">Wishlist</span>
-            </button>
-            <button
-              onClick={() => { navigate(ROUTES.USER.CHAT); setMobileMenuOpen(false); }}
-              className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all flex flex-col gap-3 group items-center"
-            >
-              <MessageCircle size={20} className="text-zinc-600 group-hover:text-white group-hover:scale-110 transition-all" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white">Chat</span>
-            </button>
-            <button
-              onClick={() => { navigate(ROUTES.USER.WALLET); setMobileMenuOpen(false); }}
-              className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all flex flex-col gap-3 group items-center"
-            >
-              <Wallet size={20} className="text-zinc-600 group-hover:text-white group-hover:scale-110 transition-all" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white">Wallet</span>
-            </button>
-            <button
-              onClick={() => setShowMobileNotifications(true)}
-              className="p-5 rounded-3xl bg-white/5 border border-white/5 flex flex-col gap-3 group items-center transition-all hover:bg-white/10 active:scale-95"
-            >
-              <NotificationBell onTrigger={() => setShowMobileNotifications(true)} />
-              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 group-hover:text-white">Alerts</span>
-            </button>
-          </div>
-
-          {/* Logout Section at Bottom */}
+          {/* Logout Section at Bottom - Fixed Position */}
           {user && (
-            <div className="mt-auto menu-item-animate" style={{ animationDelay: '500ms' }}>
+            <div className="flex-shrink-0 pt-4 pb-8 menu-item-animate" style={{ animationDelay: '500ms' }}>
               <button
                 onClick={() => { setShowLogoutModal(true); setMobileMenuOpen(false); }}
                 className="w-full flex items-center justify-center gap-3 py-4 text-xs font-black uppercase tracking-[0.2em] text-rose-500 hover:text-white hover:bg-rose-500 rounded-2xl border border-rose-500/20 transition-all active:scale-95"
@@ -343,6 +373,7 @@ export default function Navbar() {
           )}
         </div>
       </div>
+
       <ConfirmModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}

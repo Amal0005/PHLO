@@ -13,6 +13,7 @@ import { UserAuthService } from "@/services/user/UserAuthService";
 import { AxiosError } from "axios";
 import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { MESSAGES } from "@/constants/messages";
+import PoliciesModal from "@/components/reusable/PoliciesModal";
 
 interface RegisterForm {
   name: string;
@@ -35,12 +36,50 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [focusedField, setFocusedField] = useState<string>("");
 
+  const [policyModal, setPolicyModal] = useState<{ isOpen: boolean; title: string; content: React.ReactNode }>({
+    isOpen: false,
+    title: "",
+    content: null
+  });
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
+
+  const openTerms = () => setPolicyModal({
+    isOpen: true,
+    title: "Terms of Service",
+    content: (
+      <div className="space-y-4">
+        <p>Welcome to PHLO. By using our platform, you agree to the following terms:</p>
+        <h4 className="text-white font-bold">1. Booking & Payments</h4>
+        <p>All sessions must be booked through our secure platform. Payments are processed via encrypted gateways.</p>
+        <h4 className="text-white font-bold">2. Digital Goods</h4>
+        <p>Wallpapers and digital assets are for personal use only. Commercial redistribution is strictly prohibited.</p>
+        <h4 className="text-white font-bold">3. Conduct</h4>
+        <p>Users must maintain professional conduct during photography sessions booked via PHLO.</p>
+      </div>
+    )
+  });
+
+  const openPrivacy = () => setPolicyModal({
+    isOpen: true,
+    title: "Privacy Policy",
+    content: (
+      <div className="space-y-4">
+        <p>Your privacy is paramount at PHLO.</p>
+        <h4 className="text-white font-bold">1. Data Collection</h4>
+        <p>We collect only necessary information to facilitate bookings and account security.</p>
+        <h4 className="text-white font-bold">2. Protection</h4>
+        <p>We use industry-standard encryption to protect your personal data and gallery assets.</p>
+        <h4 className="text-white font-bold">3. Third Parties</h4>
+        <p>We never sell your data to third parties. Data sharing occurs only with essential service providers like payment processors.</p>
+      </div>
+    )
+  });
 
   async function handleSignup(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -312,11 +351,17 @@ export default function Register() {
                     className="text-xs sm:text-sm text-gray-400 cursor-pointer leading-relaxed"
                   >
                     I agree to the{" "}
-                    <span className="text-white hover:underline cursor-pointer">
+                    <span 
+                      onClick={openTerms}
+                      className="text-white hover:underline cursor-pointer"
+                    >
                       Terms of Service
                     </span>{" "}
                     and{" "}
-                    <span className="text-white hover:underline cursor-pointer">
+                    <span 
+                      onClick={openPrivacy}
+                      className="text-white hover:underline cursor-pointer"
+                    >
                       Privacy Policy
                     </span>
                   </label>
@@ -391,6 +436,13 @@ export default function Register() {
           </div>
         </div>
       </div>
+
+      <PoliciesModal 
+        isOpen={policyModal.isOpen} 
+        onClose={() => setPolicyModal(prev => ({ ...prev, isOpen: false }))}
+        title={policyModal.title}
+        content={policyModal.content}
+      />
     </div>
   );
 }

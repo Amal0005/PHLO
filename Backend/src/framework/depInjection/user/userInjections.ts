@@ -85,6 +85,7 @@ import { GetWalletUseCase } from "@/application/useCases/wallet/getWalletUseCase
 import { WalletRepository } from "@/adapters/repository/walletRepository";
 import { UserCreatorController } from "@/adapters/controllers/user/userCreatorController";
 import { AdminCreatorListingUseCase } from "@/application/useCases/admin/adminCreatorListingUseCase";
+import { GetCreatorProfileUseCase } from "@/application/useCases/creator/profile/getCreatorProfileUseCase";
 
 
 
@@ -162,6 +163,7 @@ const retryPaymentUseCase = new RetryPaymentUseCase(bookingRepo, packageReposito
 const handleStripeWebhookUseCase = new HandleStripeWebhookUseCase(stripeService, bookingWebhookUseCase, creatorSubscriptionWebhookUseCase, wallpaperWebhookUseCase);
 const getWalletUseCase = new GetWalletUseCase(walletRepo);
 const adminCreatorListingUseCase = new AdminCreatorListingUseCase(creatorRepository);
+const getCreatorProfileUseCase = new GetCreatorProfileUseCase(creatorRepository);
 
 export const registerController = new userRegisterController(registerUseCase, verifyOtpUseCase, resendOtpUsecase);
 export const loginController = new userLoginController(loginUseCase);
@@ -181,5 +183,5 @@ export const userWallpaperController = new UserWallpaperController(getApprovedWa
 export const wishlistController = new WishlistController(toggleWishlistUseCase, getWishlistUseCase, getWishlistIdsUseCase)
 export const reviewController = new ReviewController(addReviewUseCase, deleteReviewUseCase, getReviewUseCase, getReviewByBookingUseCase, editReviewUseCase)
 export const userWalletController = new UserWalletController(getWalletUseCase);
-export const userCreatorController = new UserCreatorController(adminCreatorListingUseCase);
+export const userCreatorController = new UserCreatorController(adminCreatorListingUseCase, getCreatorProfileUseCase);
 export const authMiddleware = jwtAuthMiddleware(jwtService, tokenBlacklistService, userRepo, creatorRepository);

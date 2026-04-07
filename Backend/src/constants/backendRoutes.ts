@@ -21,6 +21,7 @@ export const BACKEND_ROUTES = {
     CHECK_EMAIL: "/check-email",
     CATEGORY: "/category",
     CREATORS: "/creators",
+    CREATOR_DETAIL: "/creators/:id",
     WALLPAPERS: "/wallpapers",
     WALLPAPER_DOWNLOAD: "/wallpapers/:id/download",
     WISHLIST: "/wishlist",

@@ -18,7 +18,10 @@ export const ROUTES = {
     BOOKING_DETAIL: "/bookings/:sessionId",
     CHAT: "/chat",
     WALLET: "/wallet",
+    CREATORS: "/creators",
+    CREATOR_DETAIL: "/creators/:id",
 
+    ABOUT: "/about",
     NOT_FOUND: "*",
   },
 

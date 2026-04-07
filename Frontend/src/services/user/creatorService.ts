@@ -12,5 +12,14 @@ export const CreatorService = {
       console.error("Error fetching creators:", error);
       throw error;
     }
+  },
+  getCreatorProfile: async (id: string) => {
+    try {
+      const response = await api.get(FRONTEND_ROUTES.USER.CREATOR_DETAIL.replace(":id", id));
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching creator profile:", error);
+      throw error;
+    }
   }
 };
