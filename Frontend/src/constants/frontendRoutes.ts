@@ -18,6 +18,7 @@ export const FRONTEND_ROUTES = {
         CATEGORY: "/category",
         CREATE_BOOKING: "/bookings/create",
         WALLPAPERS: "/wallpapers",
+        CREATORS: "/creators",
         WALLPAPER_DOWNLOAD: "/wallpapers/:id/download",
         WISHLIST: "/wishlist",
         WISHLIST_TOGGLE: "/wishlist/toggle",

@@ -20,6 +20,7 @@ export const BACKEND_ROUTES = {
     VERIFY_EMAIL_OTP: "/verify-email-otp",
     CHECK_EMAIL: "/check-email",
     CATEGORY: "/category",
+    CREATORS: "/creators",
     WALLPAPERS: "/wallpapers",
     WALLPAPER_DOWNLOAD: "/wallpapers/:id/download",
     WISHLIST: "/wishlist",

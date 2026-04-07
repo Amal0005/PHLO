@@ -26,6 +26,7 @@ import {
   userProfileController,
   userBookingController,
   userWalletController,
+  userCreatorController,
   authMiddleware,
   userWallpaperController,
   wishlistController,
@@ -146,6 +147,11 @@ export class UserRoutes {
         getCategoryController.getCategory(req, res),
     );
 
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.CREATORS,
+      (req: Request, res: Response) =>
+        userCreatorController.listCreators(req, res),
+    );
     this.userRouter.post(
       BACKEND_ROUTES.USER.CHECK_EMAIL,
       authMiddleware,

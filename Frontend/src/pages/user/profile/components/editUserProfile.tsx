@@ -9,6 +9,7 @@ interface EditUserProfileProps {
     handleSubmit: (e: FormEvent) => void;
     isSaving: boolean;
     errors?: Record<string, string[] | undefined>;
+    isGoogleUser?: boolean;
 }
 
 export const EditUserProfile = ({
@@ -19,6 +20,7 @@ export const EditUserProfile = ({
     handleSubmit,
     isSaving,
     errors,
+    isGoogleUser,
 }: EditUserProfileProps) => {
     if (!isOpen) return null;
 
@@ -82,14 +84,20 @@ export const EditUserProfile = ({
                             <label className="block text-sm text-gray-500 uppercase tracking-wider">
                                 Email
                             </label>
-                            <input
+                             <input
                                 type="email"
                                 name="email"
                                 value={form.email}
                                 onChange={handleChange}
+                                disabled={isGoogleUser}
                                 placeholder="Email Address"
-                                className={`w-full bg-transparent border-b ${errors?.email ? "border-red-500" : "border-white/20"} text-white text-center text-lg font-light py-3 px-4 outline-none focus:border-white transition-colors placeholder:text-gray-600`}
+                                className={`w-full bg-transparent border-b ${errors?.email ? "border-red-500" : "border-white/20"} text-white text-center text-lg font-light py-3 px-4 outline-none focus:border-white transition-colors placeholder:text-gray-600 ${isGoogleUser ? "opacity-50 cursor-not-allowed" : ""}`}
                             />
+                            {isGoogleUser && (
+                                <p className="text-gray-500 text-[10px] mt-2 uppercase tracking-widest font-medium">
+                                    Google accounts cannot change email
+                                </p>
+                            )}
                             {errors?.email && <p className="text-red-500 text-sm mt-1">{errors.email[0]}</p>}
                         </div>
 

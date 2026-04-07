@@ -23,6 +23,8 @@ import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
 import LogoLoading from "@/components/reusable/LogoLoading";
 import { S3Media } from "@/components/reusable/s3Media";
 import logo from "@/assets/images/Logo_white.png";
+import { CreatorService } from "@/services/user/creatorService";
+import { CreatorProfileResponse } from "@/interface/creator/creatorProfileInterface";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -84,32 +86,25 @@ export default function LandingPage() {
   }, []);
 
 
-  const creators = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      specialty: "Portrait Photography",
-      avatar: "https://i.pravatar.cc/150?img=1",
-      rating: 4.9,
-      projects: 150,
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      specialty: "Landscape Photography",
-      avatar: "https://i.pravatar.cc/150?img=2",
-      rating: 4.8,
-      projects: 200,
-    },
-    {
-      id: 3,
-      name: "Emma Davis",
-      specialty: "Wedding Photography",
-      avatar: "https://i.pravatar.cc/150?img=3",
-      rating: 5.0,
-      projects: 180,
-    },
-  ];
+  const [creators, setCreators] = useState<CreatorProfileResponse[]>([]);
+  const [creatorsLoading, setCreatorsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCreators = async () => {
+      try {
+        setCreatorsLoading(true);
+        const response = await CreatorService.listCreators(1, 3);
+        if (response.success && Array.isArray(response.data)) {
+          setCreators(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching creators:", error);
+      } finally {
+        setCreatorsLoading(false);
+      }
+    };
+    fetchCreators();
+  }, []);
 
 
 
@@ -308,20 +303,27 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {creators.map((creator) => (
+            {creatorsLoading ? (
+               <div className="col-span-full">
+               <LogoLoading />
+             </div>
+            ) : creators.length > 0 ? (
+              creators.map((creator) => (
               <div
-                key={creator.id}
+                key={creator._id}
                 className="bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105"
               >
                 <div className="flex flex-col items-center text-center">
-                  <img
-                    src={creator.avatar}
-                    alt={creator.name}
-                    className="w-24 h-24 rounded-full mb-4 border-4 border-white/20"
+                  <div className="w-24 h-24 rounded-full mb-4 border-4 border-white/20 overflow-hidden">
+                  <S3Media
+                    s3Key={creator.profilePhoto || ""}
+                    alt={creator.fullName}
+                    className="w-full h-full object-cover"
                   />
-                  <h3 className="text-xl font-bold mb-1">{creator.name}</h3>
+                  </div>
+                  <h3 className="text-xl font-bold mb-1">{creator.fullName}</h3>
                   <p className="text-gray-400 text-sm mb-4">
-                    {creator.specialty}
+                    {creator.specialties?.[0] || "Professional Creator"}
                   </p>
 
                   <div className="flex items-center gap-4 mb-6">
@@ -330,22 +332,30 @@ export default function LandingPage() {
                         size={16}
                         className="text-yellow-400 fill-yellow-400"
                       />
-                      <span className="font-semibold">{creator.rating}</span>
+                      <span className="font-semibold">5.0</span>
                     </div>
                     <div className="flex items-center gap-1 text-gray-400">
                       <Award size={16} />
                       <span className="text-sm">
-                        {creator.projects} projects
+                        {creator.yearsOfExperience}+ years exp
                       </span>
                     </div>
                   </div>
 
-                  <button className="w-full py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors">
-                    View Profile
+                  <button 
+                    onClick={() => navigate(`${ROUTES.USER.PACKAGES}?creatorId=${creator._id}`)}
+                    className="w-full py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                  >
+                    View Packages
                   </button>
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="col-span-full text-center text-gray-500 py-10">
+              No creators found.
+            </div>
+          )}
           </div>
         </div>
       </section>

@@ -221,7 +221,7 @@ const LandingPage = () => {
               onClick={() => navigate(ROUTES.USER.REGISTER)}
               className="group relative px-10 py-5 bg-white text-black rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] overflow-hidden transition-all hover:pr-14 active:scale-95"
             >
-              <span className="relative z-10">Start Project</span>
+              <span className="relative z-10">Start as a User</span>
               <ArrowRight className="absolute right-6 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" size={20} />
             </button>
 

@@ -492,6 +492,7 @@ export default function UserProfile() {
         handleSubmit={handleSubmit}
         isSaving={isSaving}
         errors={editProfileErrors}
+        isGoogleUser={profileData?.googleVerified}
       />
 
       {/* EMAIL CHANGE OTP MODAL */}
