@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { Menu, X, ChevronDown, User, LogOut, Bookmark, MessageCircle, Wallet, Image as ImageIcon, BookOpen, Camera } from "lucide-react";
+import { Menu, X, ChevronDown, User, LogOut, Bookmark, MessageCircle, Wallet, Image as ImageIcon, BookOpen } from "lucide-react";
 import { useRef } from "react";
 import LogoWhite from "../../../public/Logo_white.png";
 import type { AppDispatch } from "@/store/store";
@@ -126,12 +126,6 @@ export default function Navbar() {
               className="text-gray-300 hover:text-white transition-colors cursor-pointer"
             >
               Wallpapers
-            </button>
-            <button
-              onClick={() => navigate(ROUTES.USER.CREATORS)}
-              className="text-gray-300 hover:text-white transition-colors cursor-pointer"
-            >
-              Creators
             </button>
             <button
               onClick={() => navigate(ROUTES.USER.WISHLIST)}
@@ -310,18 +304,6 @@ export default function Navbar() {
                 <div className="space-y-1">
                   <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Media</span>
                   <p className="text-sm font-black text-white tracking-tight uppercase">Wallpapers</p>
-                </div>
-              </button>
-              <button
-                onClick={() => { navigate(ROUTES.USER.CREATORS); setMobileMenuOpen(false); }}
-                className="p-6 rounded-[2rem] bg-white/[0.03] border border-white/10 flex flex-col items-start gap-4 group transition-all hover:bg-white/[0.05] active:scale-95 text-left w-full col-span-2"
-              >
-                <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400 group-hover:scale-110 group-hover:rotate-6 transition-all">
-                  <Camera size={20} />
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Network</span>
-                  <p className="text-sm font-black text-white tracking-tight uppercase">Creators</p>
                 </div>
               </button>
             </div>

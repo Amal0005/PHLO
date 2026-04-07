@@ -21,6 +21,7 @@ export class UserWallpaperController {
       const hashtag = req.query.hashtag as string;
       const minPrice = req.query.minPrice ? parseFloat(req.query.minPrice as string) : undefined;
       const maxPrice = req.query.maxPrice ? parseFloat(req.query.maxPrice as string) : undefined;
+      const creatorId = req.query.creatorId as string | undefined;
       const userId = req.user?.userId;
       const ids = req.query.ids ? (req.query.ids as string).split(",") : undefined;
 
@@ -31,6 +32,7 @@ export class UserWallpaperController {
         hashtag,
         !isNaN(minPrice!) ? minPrice : undefined,
         !isNaN(maxPrice!) ? maxPrice : undefined,
+        creatorId,
         userId,
         ids
       );

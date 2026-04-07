@@ -86,8 +86,9 @@ export class WallpaperRepository
     minPrice?: number,
     maxPrice?: number,
     ids?: string[],
+    creatorId?: string,
   ): Promise<PaginatedResult<WallpaperEntity>> {
-    return await this.findAllWallpapers(page, limit, "approved", search, hashtag, minPrice, maxPrice, ids);
+    return await this.findAllWallpapers(page, limit, "approved", search, hashtag, minPrice, maxPrice, ids, creatorId);
   }
   async updateStatus(
     id: string,
@@ -115,10 +116,14 @@ export class WallpaperRepository
     minPrice?: number,
     maxPrice?: number,
     ids?: string[],
+    creatorId?: string,
   ): Promise<PaginatedResult<WallpaperEntity>> {
     const query: QueryFilter<IWallpaperModel> = {};
     if (status) {
       query.status = status;
+    }
+    if (creatorId) {
+      query.creatorId = creatorId;
     }
     if (ids && ids.length > 0) {
       query._id = { $in: ids };

@@ -152,6 +152,11 @@ export class UserRoutes {
       (req: Request, res: Response) =>
         userCreatorController.listCreators(req, res),
     );
+    this.userRouter.get(
+      BACKEND_ROUTES.USER.CREATOR_DETAIL,
+      (req: Request, res: Response) =>
+        userCreatorController.getCreatorById(req, res),
+    );
     this.userRouter.post(
       BACKEND_ROUTES.USER.CHECK_EMAIL,
       authMiddleware,

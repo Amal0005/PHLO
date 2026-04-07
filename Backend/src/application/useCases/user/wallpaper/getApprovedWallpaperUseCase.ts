@@ -17,10 +17,11 @@ export class GetApprovedWallpaperUseCase implements IGetApprovedWallpapersUseCas
         hashtag?: string,
         minPrice?: number,
         maxPrice?: number,
+        creatorId?: string,
         userId?: string,
         ids?: string[]
     ): Promise<PaginatedResult<WallpaperResponseDto>> {
-        const result = await this._wallpaperRepo.findApproved(page, limit, search, hashtag, minPrice, maxPrice, ids);
+        const result = await this._wallpaperRepo.findApproved(page, limit, search, hashtag, minPrice, maxPrice, ids, creatorId);
 
         const enrichedData = await Promise.all(result.data.map(async (wp) => {
             const isPurchased = userId ? (wp.price === 0 || await this._wallpaperDownloadRepo.hasPurchased(wp._id!, userId)) : false;
