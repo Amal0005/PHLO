@@ -26,4 +26,5 @@ export interface UserBooking {
 export interface BookingListResponse {
   success: boolean;
   data: UserBooking[];
+  totalCount: number;
 }

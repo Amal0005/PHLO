@@ -69,7 +69,7 @@ export class UserBookingController {
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 10;
             const result = await this._listBookingsUseCase.listBookings(userId, page, limit);
-            res.status(StatusCode.OK).json({ success: true, ...result });
+            res.status(StatusCode.OK).json({ success: true, data: result.bookings, totalCount: result.totalCount });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : MESSAGES.ERROR.UNKNOWN_ERROR;
             res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message });

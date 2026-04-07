@@ -69,7 +69,7 @@ const BookingsPage: React.FC = () => {
                             <div key={i} className="h-40 bg-zinc-900/50 rounded-3xl animate-pulse border border-zinc-800" />
                         ))}
                     </div>
-                ) : !bookings? (
+                ) : bookings.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-32 text-center bg-zinc-900/30 rounded-[3rem] border border-zinc-800/50 backdrop-blur-sm">
                         <div className="w-20 h-20 bg-zinc-800 rounded-full flex items-center justify-center mb-6">
                             <Package className="w-8 h-8 text-zinc-600" />
