@@ -5,19 +5,24 @@ import { BookingService } from "@/services/user/bookingService";
 import { UserBooking } from "@/interface/user/userBookingInterface";
 import { S3Media } from "@/components/reusable/s3Media";
 import UserNavbar from "@/components/reusable/userNavbar";
+import Pagination from "@/components/reusable/pagination";
 import { ROUTES } from "@/constants/routes";
 
 const BookingsPage: React.FC = () => {
     const [bookings, setBookings] = useState<UserBooking[]>([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 5;
     const navigate = useNavigate();
 
     const fetchBookings = async () => {
         try {
             setLoading(true);
-            const response = await BookingService.getUserBookings();
+            const response = await BookingService.getUserBookings(page, limit);
             if (response.success) {
                 setBookings(response.data);
+                setTotalPages(Math.ceil(response.totalCount / limit));
             }
         } catch (error) {
             console.error("Failed to fetch bookings:", error);
@@ -28,7 +33,7 @@ const BookingsPage: React.FC = () => {
 
     useEffect(() => {
         fetchBookings();
-    }, []);
+    }, [page]);
 
     const getStatusStyles = (status: UserBooking['status'], bookingDate?: string) => {
         const isDatePassed = bookingDate ? new Date(bookingDate) < new Date(new Date().setHours(0, 0, 0, 0)) : false;
@@ -162,6 +167,16 @@ const BookingsPage: React.FC = () => {
                                 )}
                             </div>
                         ))}
+                    </div>
+                )}
+
+                {!loading && bookings.length > 0 && (
+                    <div className="mt-12">
+                        <Pagination 
+                            page={page} 
+                            totalPages={totalPages} 
+                            onPageChange={setPage} 
+                        />
                     </div>
                 )}
 

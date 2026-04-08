@@ -14,8 +14,8 @@ export const BookingService = {
     });
     return res.data;
   },
-  getUserBookings: async (): Promise<BookingListResponse> => {
-    const res = await api.get(FRONTEND_ROUTES.USER.GET_BOOKINGS);
+  getUserBookings: async (page = 1, limit = 5): Promise<BookingListResponse> => {
+    const res = await api.get(`${FRONTEND_ROUTES.USER.GET_BOOKINGS}?page=${page}&limit=${limit}`);
     return res.data;
   },
   checkAvailability: async (packageId: string, date: string): Promise<{ success: boolean; isAvailable: boolean }> => {
