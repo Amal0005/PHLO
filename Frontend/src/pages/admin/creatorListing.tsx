@@ -256,7 +256,7 @@ export default function CreatorListingPage() {
       )}
 
       {showRejectModal && selectedCreator && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[110] p-4">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[1100] p-4">
           <div className="bg-zinc-900 w-full max-w-md rounded-xl p-6 border border-red-400/20 relative">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">

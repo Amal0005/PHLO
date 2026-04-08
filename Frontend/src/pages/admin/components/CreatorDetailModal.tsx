@@ -335,7 +335,7 @@ export const CreatorDetailModal = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/95 backdrop-blur-3xl flex items-center justify-center z-[100] p-4 sm:p-20"
+            className="fixed inset-0 bg-black/95 backdrop-blur-3xl flex items-center justify-center z-[1200] p-4 sm:p-20"
             onClick={() => setPreview(null)}
           >
             <motion.div
