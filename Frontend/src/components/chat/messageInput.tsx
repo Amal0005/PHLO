@@ -85,9 +85,9 @@ const MessageInput: React.FC<Props> = ({ onSendMessage, onImageSelect }) => {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     onKeyDown={handleKeyPress}
-                    placeholder="COMPOSE MESSAGE..."
+                    placeholder="Compose message..."
                     rows={1}
-                    className="w-full bg-zinc-900/50 backdrop-blur-xl text-zinc-200 text-[11px] font-black tracking-widest py-5 pl-8 pr-24 rounded-[2rem] border border-white/5 focus:outline-none focus:border-white/10 focus:bg-zinc-900/80 transition-all placeholder:text-zinc-700 shadow-2xl resize-none min-h-[64px] custom-scrollbar overflow-hidden uppercase"
+                    className="w-full bg-zinc-900/50 backdrop-blur-xl text-zinc-200 text-[13px] font-medium tracking-wide py-5 pl-8 pr-24 rounded-[2rem] border border-white/5 focus:outline-none focus:border-white/10 focus:bg-zinc-900/80 transition-all placeholder:text-zinc-700 shadow-2xl resize-none min-h-[64px] custom-scrollbar overflow-hidden"
                 />
 
                 <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-4 text-zinc-600">

@@ -20,7 +20,8 @@ import NotFoundPage from "@/pages/error/NotFoundPage";
 
 const ConditionalNotFound = () => {
   const { pathname } = useLocation();
-  if (!pathname.startsWith("/creator")) return null;
+  const isCreatorPath = pathname === "/creator" || pathname.startsWith("/creator/");
+  if (!isCreatorPath) return null;
   return <NotFoundPage />;
 };
 

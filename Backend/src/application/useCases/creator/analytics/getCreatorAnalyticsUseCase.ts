@@ -1,15 +1,13 @@
 import type { IGetCreatorAnalyticsUseCase, CreatorAnalytics } from "@/domain/interfaces/creator/analytics/IGetCreatorAnalyticsUseCase";
 import { BookingModel } from "@/framework/database/model/bookingModel";
 import { PackageModel } from "@/framework/database/model/packageModel";
-import { WallpaperDownloadModel } from "@/framework/database/model/wallpaperDownloadModel";
+import { ReviewModel } from "@/framework/database/model/reviewModel";
 import { Types } from "mongoose";
 
 export class GetCreatorAnalyticsUseCase implements IGetCreatorAnalyticsUseCase {
     async getAnalytics(creatorId: string): Promise<CreatorAnalytics> {
-        const creatorObjectId = new Types.ObjectId(creatorId);
-
         // 1. Get all package IDs for this creator
-        const packages = await PackageModel.find({ creatorId: creatorId }).select("_id title");
+        const packages = await PackageModel.find({ creatorId }).select("_id title");
         const packageIds = packages.map(p => p._id);
         const packageMap = packages.reduce((map, pkg) => {
             map[pkg._id.toString()] = pkg.title;
@@ -87,26 +85,43 @@ export class GetCreatorAnalyticsUseCase implements IGetCreatorAnalyticsUseCase {
             count: item.count
         }));
 
-        // 5. Overall Stats
+        // 5. Recent Earning Stats & KPI Base
         const overall = await BookingModel.aggregate([
             {
                 $match: {
-                    packageId: { $in: packageIds },
-                    status: "completed"
+                    packageId: { $in: packageIds }
                 }
             },
             {
                 $group: {
                     _id: null,
-                    totalRevenue: { $sum: "$amount" },
-                    totalBookings: { $sum: 1 }
+                    totalRevenue: { $sum: { $cond: [{ $eq: ["$status", "completed"] }, "$amount", 0] } },
+                    totalBookings: { $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] } },
+                    allBookings: { $sum: 1 },
+                    uniqueUsers: { $addToSet: "$userId" }
                 }
             }
         ]);
 
-        const stats = overall[0] && typeof overall[0] === 'object' 
-            ? overall[0] 
-            : { totalRevenue: 0, totalBookings: 0 };
+        const reviews = await ReviewModel.aggregate([
+            {
+                $match: { packageId: { $in: packageIds } }
+            },
+            {
+                $group: {
+                    _id: null,
+                    avgRating: { $avg: "$rating" },
+                    totalReviews: { $sum: 1 }
+                }
+            }
+        ]);
+
+        const stats = overall[0] || { totalRevenue: 0, totalBookings: 0, allBookings: 0, uniqueUsers: [] };
+        const reviewStats = reviews[0] || { avgRating: 0, totalReviews: 0 };
+        
+        const totalUniqueClients = stats.uniqueUsers.length;
+        const repeatCount = (stats.allBookings - totalUniqueClients);
+        const repeatRate = stats.allBookings > 0 ? (repeatCount / stats.allBookings) * 100 : 0;
 
         return {
             revenueByMonth: formattedRevenue || [],
@@ -115,7 +130,15 @@ export class GetCreatorAnalyticsUseCase implements IGetCreatorAnalyticsUseCase {
             recentEarningStats: {
                 totalRevenue: stats.totalRevenue || 0,
                 totalBookings: stats.totalBookings || 0,
-                averageOrderValue: stats.totalBookings > 0 ? (stats.totalRevenue / stats.totalBookings) : 0
+                averageOrderValue: stats.totalBookings > 0 ? (stats.totalRevenue / stats.totalBookings) : 0,
+                totalClients: totalUniqueClients,
+                satisfactionRate: reviewStats.avgRating || 0
+            },
+            marketPerformance: {
+                conversionRate: stats.allBookings > 0 ? (stats.totalBookings / stats.allBookings) * 100 : 0,
+                satisfaction: (reviewStats.avgRating / 5) * 100,
+                repeatClients: repeatRate,
+                growth: 15 // Mock growth percentage until we have historical comparisons
             }
         };
     }

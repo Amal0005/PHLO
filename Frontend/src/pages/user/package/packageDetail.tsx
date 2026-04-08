@@ -8,6 +8,7 @@ import {
 import { format } from "date-fns";
 import { UserPackageService } from "@/services/user/userPackageService";
 import { UserPackage } from "@/interface/user/userPackageInterface";
+import { ROUTES } from "@/constants/routes";
 import { S3Media } from "@/components/reusable/s3Media";
 import UserNavbar from "@/components/reusable/userNavbar";
 import { BookingService } from "@/services/user/bookingService";
@@ -245,9 +246,12 @@ const PackageDetailPage: React.FC = () => {
                 </div>
 
                 {packageData.creatorId && typeof packageData.creatorId === "object" && (
-                  <div className="flex items-center gap-4 mb-5 pb-4"
-                    style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-                    <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+                  <div 
+                    onClick={() => navigate(ROUTES.USER.CREATOR_DETAIL.replace(':id', (packageData.creatorId as any)._id))}
+                    className="flex items-center gap-4 mb-5 pb-4 cursor-pointer group/creator"
+                    style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+                  >
+                    <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 transition-transform group-hover/creator:scale-110"
                       style={{ border: "1.5px solid rgba(255,255,255,0.13)" }}>
                       {(packageData.creatorId as any).profilePhoto ? (
                         <S3Media s3Key={(packageData.creatorId as any).profilePhoto} className="w-full h-full object-cover" />
@@ -258,7 +262,7 @@ const PackageDetailPage: React.FC = () => {
                       )}
                     </div>
                     <div className="flex flex-col justify-center">
-                      <div className="text-[14px] font-bold text-white mb-1">
+                      <div className="text-[14px] font-bold text-white mb-1 group-hover/creator:text-[#E2B354] transition-colors">
                         {(packageData.creatorId as any).fullName}
                       </div>
                       {packageData.locations && packageData.locations.length > 0 && (

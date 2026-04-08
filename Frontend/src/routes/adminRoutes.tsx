@@ -16,7 +16,8 @@ import NotFoundPage from "@/pages/error/NotFoundPage";
 
 const ConditionalNotFound = () => {
   const { pathname } = useLocation();
-  if (!pathname.startsWith("/admin")) return null;
+  const isAdminPath = pathname === "/admin" || pathname.startsWith("/admin/");
+  if (!isAdminPath) return null;
   return <NotFoundPage />;
 };
 

@@ -294,16 +294,6 @@ const LandingPage = () => {
             <span className="bg-white text-black px-4 ml-[-1rem] md:ml-[-2rem] leading-tight">DEFINE REALITY?</span>
           </h2>
           
-          <div className="flex flex-col md:flex-row gap-6 justify-center mt-12">
-            <button 
-              onClick={() => navigate(ROUTES.USER.REGISTER)}
-              className="px-12 py-5 bg-white text-black rounded-full font-black uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all flex items-center justify-center gap-4"
-            >
-              Launch Now
-              <Zap size={20} fill="currentColor" />
-            </button>
-          </div>
-          
           <p className="mt-12 text-[10px] font-black uppercase tracking-[0.5em] text-white/20">The industry standard for high-end photography</p>
         </motion.div>
       </section>

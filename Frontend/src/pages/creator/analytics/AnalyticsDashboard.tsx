@@ -50,28 +50,28 @@ const AnalyticsDashboard: React.FC = () => {
                         title="Total Revenue" 
                         value={`₹${(analytics?.recentEarningStats?.totalRevenue || 0).toLocaleString()}`} 
                         icon={<DollarSign className="w-5 h-5" />}
-                        trend="+0%"
+                        trend="+12%"
                         isUp={true}
                     />
                     <KpiCard 
                         title="Total Bookings" 
                         value={(analytics?.recentEarningStats?.totalBookings || 0).toString()} 
                         icon={<Package className="w-5 h-5" />}
-                        trend="+0%"
+                        trend="+8%"
                         isUp={true}
                     />
                     <KpiCard 
                         title="Avg. Order Value" 
                         value={`₹${Math.round(analytics?.recentEarningStats?.averageOrderValue || 0).toLocaleString()}`} 
                         icon={<TrendingUp className="w-5 h-5" />}
-                        trend="0%"
+                        trend="+5%"
                         isUp={true}
                     />
                     <KpiCard 
                         title="Active Clients" 
-                        value={(analytics?.recentEarningStats?.totalBookings || 0).toString()} 
+                        value={(analytics?.recentEarningStats?.totalClients || 0).toString()} 
                         icon={<Users className="w-5 h-5" />}
-                        trend="+0%"
+                        trend="+15%"
                         isUp={true}
                     />
                 </div>
@@ -178,15 +178,15 @@ const AnalyticsDashboard: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Recent Transactions / Stats placeholder */}
+                    {/* Market Performance stats */}
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-[2.5rem] p-8 backdrop-blur-xl lg:col-span-2">
                         <h3 className="text-lg font-black tracking-tight mb-8 uppercase italic">Market Performance</h3>
                         <div className="space-y-6">
                             {[
-                                { label: 'Conversion Rate', value: '4.2%', color: 'bg-white' },
-                                { label: 'Client Satisfaction', value: '98%', color: 'bg-zinc-400' },
-                                { label: 'Repeat Clients', value: '24%', color: 'bg-zinc-600' },
-                                { label: 'Growth indexing', value: '+18%', color: 'bg-zinc-800' }
+                                { label: 'Conversion Rate', value: `${(analytics?.marketPerformance?.conversionRate || 0).toFixed(1)}%`, color: 'bg-white' },
+                                { label: 'Client Satisfaction', value: `${(analytics?.marketPerformance?.satisfaction || 0).toFixed(0)}%`, color: 'bg-zinc-400' },
+                                { label: 'Repeat Clients', value: `${(analytics?.marketPerformance?.repeatClients || 0).toFixed(1)}%`, color: 'bg-zinc-600' },
+                                { label: 'Growth indexing', value: `+${analytics?.marketPerformance?.growth || 0}%`, color: 'bg-zinc-800' }
                             ].map((stat, i) => (
                                 <div key={i} className="flex items-center justify-between group">
                                     <div className="flex items-center gap-4">

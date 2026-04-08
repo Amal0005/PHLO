@@ -5,6 +5,14 @@ export interface CreatorAnalytics {
         totalRevenue: number;
         totalBookings: number;
         averageOrderValue: number;
+        totalClients: number;
+        satisfactionRate: number;
+    };
+    marketPerformance: {
+        conversionRate: number;
+        satisfaction: number;
+        repeatClients: number;
+        growth: number;
     };
     popularPackages: { name: string; count: number }[];
 }

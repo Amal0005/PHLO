@@ -25,7 +25,9 @@ import About from "@/pages/user/about";
 
 const ConditionalNotFound = () => {
   const { pathname } = useLocation();
-  if (pathname.startsWith('/admin') || pathname.startsWith('/creator')) return null;
+  const isAdminPath = pathname === "/admin" || pathname.startsWith("/admin/");
+  const isCreatorPath = pathname === "/creator" || pathname.startsWith("/creator/");
+  if (isAdminPath || isCreatorPath) return null;
   return <NotFoundPage />;
 };
 
