@@ -340,11 +340,6 @@ const PackageListing: React.FC = () => {
                           {pkg.locations[0].placeName}
                           {pkg.locations.length > 1 && ` (+${pkg.locations.length - 1} more)`}
                         </span>
-                        {pkg.distance !== undefined && (
-                          <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest whitespace-nowrap bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                            {(pkg.distance / 1000).toFixed(1)} km
-                          </span>
-                        )}
                       </div>
                     )}
 
