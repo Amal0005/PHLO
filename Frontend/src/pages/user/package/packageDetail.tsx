@@ -72,19 +72,29 @@ const PackageDetailPage: React.FC = () => {
   }, [packageId]);
 
   const validateLocation = (lat: number, lng: number): boolean => {
-    if (!packageData?.locations?.length) return true;
+    if (!packageData?.locations || packageData.locations.length === 0) return true;
+    
+    // Enforce stricter numerical checks and Math.abs to secure the Haversine formula
     for (const loc of packageData.locations) {
-      const pkgLng = loc.coordinates[0];
-      const pkgLat = loc.coordinates[1];
-      const R = 6371;
+      if (!loc.coordinates || loc.coordinates.length < 2) continue;
+      
+      const pkgLng = Number(loc.coordinates[0]);
+      const pkgLat = Number(loc.coordinates[1]);
+      
+      if (isNaN(pkgLng) || isNaN(pkgLat)) continue;
+      
+      const R = 6371; // Earth radiues in km
       const dLat = (pkgLat - lat) * (Math.PI / 180);
       const dLon = (pkgLng - lng) * (Math.PI / 180);
       const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(lat * (Math.PI / 180)) * Math.cos(pkgLat * (Math.PI / 180)) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      if (R * c <= 10) return true;
+      const c = 2 * Math.atan2(Math.sqrt(Math.abs(a)), Math.sqrt(Math.abs(1 - a)));
+      const dist = R * c;
+      
+      if (dist <= 10) return true;
     }
+    
     return false;
   };
 
@@ -358,22 +368,30 @@ const PackageDetailPage: React.FC = () => {
                       <LocationSearchBar
                         ref={locationBarRef}
                         onChange={(location: { placeName?: string; latitude?: number; longitude?: number }) => {
-                          if (location.latitude && location.longitude) {
+                          if (location.latitude !== undefined && location.longitude !== undefined) {
                             if (!validateLocation(location.latitude, location.longitude)) {
                               toast.warning("Location must be within 10km of the package's service areas.");
+                              // Explicitly reverse the selection on failure
+                              locationBarRef.current?.setInput("");
+                              setSelectedLocation("");
+                              setMarkerLoc(null);
                               return;
                             }
                             setSelectedLocation(location.placeName || "");
                             setViewState(prev => ({
                               ...prev,
-                              latitude: location.latitude || prev.latitude,
-                              longitude: location.longitude || prev.longitude,
+                              latitude: location.latitude!,
+                              longitude: location.longitude!,
                               zoom: 13,
                             }));
 
-                            setMarkerLoc({ lat: location.latitude || 0, lng: location.longitude || 0 });
+                            setMarkerLoc({ lat: location.latitude, lng: location.longitude });
                           } else {
-                            setSelectedLocation(location.placeName || "");
+                            // If geocoder returns no valid coordinates, don't allow it either.
+                            toast.warning("Invalid location picked. Please try finding it on the map.");
+                            locationBarRef.current?.setInput("");
+                            setSelectedLocation("");
+                            setMarkerLoc(null);
                           }
                         }}
                       />
