@@ -19,11 +19,11 @@ export const categorySchema = z.object({
 });
 
 export const subscriptionSchema = z.object({
-    planName: z.string().min(3).max(50),
+    name: z.string().trim().min(3).max(50),
     price: z.number().min(0),
-    durationInMonths: z.number().min(1).max(24),
-    features: z.array(z.string()).min(1),
-    isListed: z.boolean().optional().default(true),
+    duration: z.number().int().min(1).max(24),
+    features: z.array(z.string().trim().min(2)).min(1),
+    isActive: z.boolean().optional().default(true),
 });
 
 export const walletCreditSchema = z.object({
