@@ -14,7 +14,12 @@ export class EditCategoryUseCase implements IEditCategoryUseCase {
         if (!categoryId) throw new AppError(MESSAGES.ADMIN.CATEGORY_ID_REQUIRED, StatusCode.BAD_REQUEST);
         if (!name) throw new AppError(MESSAGES.ADMIN.CATEGORY_NAME_REQUIRED, StatusCode.BAD_REQUEST);
         const existing = await this._categoryRepo.findByName(name)
-        if (existing && existing.id !== categoryId) throw new AppError(MESSAGES.ADMIN.CATEGORY_ALREADY_EXISTS, StatusCode.BAD_REQUEST);
+        if (existing) {
+            const existingId = existing.categoryId || existing.id || existing._id?.toString();
+            if (existingId !== categoryId) {
+                throw new AppError(MESSAGES.ADMIN.CATEGORY_ALREADY_EXISTS, StatusCode.BAD_REQUEST);
+            }
+        }
         const updated = await this._categoryRepo.update(categoryId, { name, description });
         return updated ? CategoryMapper.toDto(updated) : null;
     }
