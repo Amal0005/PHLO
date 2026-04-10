@@ -19,7 +19,6 @@ export class ReviewController {
     async addReview(req: AuthRequest, res: Response): Promise<void> {
         const userId = req.user!.userId
         const data = req.body
-        console.log(data, userId, "Data from review controller")
         await this._addReviewUseCase.addReview(userId, data)
         res.status(StatusCode.CREATED).json({ success: true, message: MESSAGES.REVIEW.ADDED });
 

@@ -36,7 +36,6 @@ export class StripeService implements IStripeService {
     data: CreateCheckoutSessionDTO,
   ): Promise<CheckoutSessionResponseDTO> {
     try {
-      console.log("StripeService: Creating checkout session with data:", JSON.stringify(data, null, 2));
       const session = await this.stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         mode: "payment",
@@ -62,10 +61,8 @@ export class StripeService implements IStripeService {
           creatorId: data.creatorId,
         },
       });
-      console.log("StripeService: Session created successfully:", session.id);
       return { id: session.id, url: session.url };
     } catch (error) {
-      console.error("StripeService: Error creating checkout session:", error);
       throw error;
     }
   }

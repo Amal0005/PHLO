@@ -8,14 +8,10 @@ const client = new vision.ImageAnnotatorClient({
   credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string)
 });
 async function test() {
-  console.log("Testing real image URL with Google Cloud Vision...");
-  
   const imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Fronalpstock_big.jpg/800px-Fronalpstock_big.jpg";
   
   try {
     const [result] = await client.safeSearchDetection(imageUrl);
-    console.log("Safe Search Result:");
-    console.log(result.safeSearchAnnotation);
   } catch (error: unknown) {
     console.error("Vision API Error:", (error as Error).message);
   }

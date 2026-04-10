@@ -6,6 +6,8 @@ import type { ILeaveRepository } from "@/domain/interfaces/repository/ILeaveRepo
 import type { IPackageRepository } from "@/domain/interfaces/repository/IPackageRepository";
 import type { IStripeService } from "@/domain/interfaces/service/IStripeService";
 import type { ICreateBookingUseCase } from "@/domain/interfaces/user/booking/ICreateBookingUseCase";
+import type { ICreatorRepository } from "@/domain/interfaces/repository/ICreatorRepository";
+import type { IMailService } from "@/domain/interfaces/service/IMailServices";
 import { BookingStatus } from "@/constants/bookingStatus";
 import { StatusCode } from "@/constants/statusCodes";
 import type { CreatorEntity } from "@/domain/entities/creatorEntities";
@@ -16,7 +18,9 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
     private _bookingRepo: IBookingRepository,
     private _packageRepo: IPackageRepository,
     private _leaveRepo: ILeaveRepository,
-    private _stripeService: IStripeService
+    private _stripeService: IStripeService,
+    private _creatorRepo: ICreatorRepository,
+    private _mailService: IMailService
   ) {}
   async createBooking(
     userId: string,
@@ -78,6 +82,13 @@ export class CreateBookingUseCase implements ICreateBookingUseCase {
       stripeSessionId: session.id,
     });
 
-    return session;
+            // Send email notification to creator
+        const creator = await this._creatorRepo.findById(creatorId);
+        if (creator && creator.email) {
+          const subject = "New Booking Received";
+          const html = `<p>Hello ${creator.fullName || ''},</p><p>A new booking has been made for your package <strong>${pkg.title || ''}</strong> on ${bookingDate.toDateString()}.</p>`;
+          await this._mailService.sendMail(creator.email, subject, html);
+        }
+        return session;
   }
 }

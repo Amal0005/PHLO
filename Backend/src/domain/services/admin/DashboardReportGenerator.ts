@@ -17,8 +17,6 @@ export class DashboardReportGenerator implements IDashboardReportGenerator {
           reject(err);
         });
 
-        console.log("Generating dashboard report for timeframe:", timeframe);
-
         // Header Background
         doc.rect(0, 0, doc.page.width, 140).fill("#050505");
 

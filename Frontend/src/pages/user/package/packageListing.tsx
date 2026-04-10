@@ -47,7 +47,6 @@ const PackageListing: React.FC = () => {
   useEffect(() => {
     setPage(1);
   }, [debouncedSearch, selectedCategory, sortBy, locationFilter]);
-  console.log(packages, "pack")
   useEffect(() => {
     const filtersToSave = {
       search: searchQuery,
@@ -302,9 +301,6 @@ const PackageListing: React.FC = () => {
                 <div
                   key={pkg._id}
                   onClick={() => {
-                    console.log("FULL PKG:", pkg);
-                    console.log("TYPE OF _id:", typeof pkg._id);
-                    console.log("VALUE OF _id:", pkg._id);
                     navigate(`/packages/${pkg._id}`);
                   }}
 

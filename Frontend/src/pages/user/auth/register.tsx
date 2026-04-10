@@ -413,7 +413,6 @@ export default function Register() {
                       }
                     } catch (err) {
                       toast.error(MESSAGES.AUTH.GOOGLE_LOGIN_FAILED);
-                      console.log(err);
                     }
                   }}
                 />

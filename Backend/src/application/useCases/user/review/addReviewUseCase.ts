@@ -12,7 +12,6 @@ export class AddReviewUseCase implements IAddReviewUseCase {
     ) {}
     async addReview(userId: string, data: reviewRequestDTO): Promise<void> {
         const booking = await this._bookingRepo.findById(data.bookingId)
-        console.log("booooo", booking)
         if (!booking) throw new AppError("Booking not found", StatusCode.NOT_FOUND)
         const bookingUserId = typeof booking.userId === "object" ? booking.userId._id?.toString() : booking.userId;
         if (bookingUserId !== userId) throw new AppError("Unauthorized", StatusCode.UNAUTHORIZED);

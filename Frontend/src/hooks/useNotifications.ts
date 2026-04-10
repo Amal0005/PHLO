@@ -109,7 +109,10 @@ export const useNotifications = () => {
 
         fetchNotifications();
 
-        socketService.connect(currentUserId);
+        // Connect only if a socket does not already exist for this user
+        if (!socketService.getSocket()) {
+            socketService.connect(currentUserId);
+        }
         const socket = socketService.getSocket();
 
         const handleNotification = (notification: NotificationEntity) => {
@@ -146,8 +149,10 @@ export const useNotifications = () => {
         };
 
         if (socket) {
-            socket.on("notification", handleNotification);
-
+            // Add listener only if not already registered to avoid duplicate toasts
+            if (!socket.hasListeners("notification")) {
+                socket.on("notification", handleNotification);
+            }
             return () => {
                 socket.off("notification", handleNotification);
             };

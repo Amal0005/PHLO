@@ -13,7 +13,6 @@ export class ResendCreatorOtpUseCase implements IResendCreatorOtpUseCase {
         email = email.trim().toLowerCase();
 
         const otp = await this._otpService.generateOtp(email);
-        console.log("CreatorOTP:", otp);
 
         const htmlTemplate = renderTemplate("user/otp.html", {
             TITLE: "Verify Your Email",

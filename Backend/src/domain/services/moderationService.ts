@@ -7,7 +7,6 @@ export class ModerationService implements IModerationService {
   })
   async checkImage(imageBuffer: Buffer): Promise<"SAFE" | "UNSAFE" | "UNCERTAIN"> {
     try {
-      console.log("Moderating image via Google Cloud Vision content detection");
       
       const [result] = await this.client.safeSearchDetection({
         image: { content: imageBuffer }
@@ -16,14 +15,9 @@ export class ModerationService implements IModerationService {
       const detections = result.safeSearchAnnotation;
       
       if (!detections) {
-        console.warn("No safeSearchAnnotation results from Google Vision");
         return "UNCERTAIN";
       }
 
-      console.log("SafeSearch Detections:", detections);
-
-      // Define what counts as UNSAFE. 
-      // Typically LIKELY or VERY_LIKELY for adult, violence, or racy content.
       const unsafeLevels = ["LIKELY", "VERY_LIKELY"];
       
       const isUnsafe = 
@@ -33,7 +27,6 @@ export class ModerationService implements IModerationService {
         unsafeLevels.includes(String(detections.medical));
 
       if (isUnsafe) {
-        console.log("Content flagged as UNSAFE by Google Vision");
         return "UNSAFE";
       }
 

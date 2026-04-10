@@ -22,7 +22,6 @@ export class BuySubscriptionUseCase implements IBuySubscriptionUseCase {
         if (!plan) {
             throw new AppError("Subscription plan is not found", StatusCode.NOT_FOUND)
         }
-        console.log("BuySubscriptionUseCase: Found plan:", plan.name, "Price:", plan.price);
 
         return await this._stripeService.createCheckoutSession({
             subscriptionId,

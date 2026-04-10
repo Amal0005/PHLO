@@ -65,7 +65,6 @@ export class RegisterCreatorUseCase implements IRegisterCreatorUseCase {
     await this._redisService.setValue(`PENDING_CREATOR_${email}`, JSON.stringify(pendingCreator), 300);
 
     const otp = await this._otpService.generateOtp(email);
-    console.log("Creator OTP:", otp);
 
     const htmlTemplate = renderTemplate("user/otp.html", {
       TITLE: "Verify Your Email",

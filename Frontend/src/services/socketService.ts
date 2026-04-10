@@ -6,13 +6,11 @@ class SocketService {
 
     connect(userId: string) {
         if (this.socket?.connected && this.userId === userId) {
-            console.log("Already connected for user:", userId, ". Re-emitting join just in case.");
             this.socket.emit("join", userId);
             return;
         }
 
         const backendUrl = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_BASE_URL?.replace(/\/api$/, '');
-        console.log("Connecting/Reconnecting to socket at:", backendUrl, "for user:", userId);
 
         if (this.socket) {
             this.socket.disconnect();
@@ -26,7 +24,6 @@ class SocketService {
         });
 
         this.socket.on("connect", () => {
-            console.log("Socket connected successfully with ID:", this.socket?.id);
             this.socket?.emit("join", userId);
         });
 

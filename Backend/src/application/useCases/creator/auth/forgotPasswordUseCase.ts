@@ -20,7 +20,6 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
         if (!creator) throw new Error(MESSAGES.CREATOR.NOT_FOUND);
 
         const otp = await this._otpService.generateOtp(`FP_CREATOR_${email}`);
-        console.log(otp);
 
         const htmlTemplate = renderTemplate("user/otp.html", {
             TITLE: "Password Reset OTP",

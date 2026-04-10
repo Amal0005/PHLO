@@ -52,8 +52,6 @@ export default function AdminLogin() {
       dispatch(setRole("admin"));
 
 
-      console.log("skdlf", data);
-
       toast.success("Admin login successful");
       navigate(ROUTES.ADMIN.DASHBOARD, { replace: true });
     } catch (error) {

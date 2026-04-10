@@ -8,10 +8,8 @@ export class DeleteWallpaperUseCase implements IDeleteWallpaperUseCase {
         private _wallpaperRepo: IWallpaperRepository,
     ) {}
     async deleteWallpaper(wallpaperId: string, creatorId: string): Promise<void> {
-        console.log("jvhjk", wallpaperId, creatorId)
         if (!creatorId) throw new Error("Creator Id is Required")
         const wallpaper = await this._wallpaperRepo.findById(wallpaperId)
-        console.log("wallll", wallpaper)
         if (!wallpaper) throw new Error(MESSAGES.WALLPAPER.NOT_FOUND);
         const { _id: id } = wallpaper.creatorId as CreatorEntity;
 

@@ -42,15 +42,12 @@ export default function CreatorDashboard() {
   }, []);
 
   const handleSelectView = () => {
-    console.log("View Packages selected");
   };
 
   const handleAddSuccess = () => {
-    console.log("Package added successfully");
   };
 
   const handleWallpaperAddSuccess = () => {
-    console.log("Wallpaper added successfully");
   };
 
   return (

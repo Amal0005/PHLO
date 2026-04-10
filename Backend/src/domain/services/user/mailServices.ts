@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import type { IMailService } from "@/domain/interfaces/service/IMailServices";
 
 export class MailService implements IMailService {
-private transporter: nodemailer.Transporter;
+  private transporter: nodemailer.Transporter;
 
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -13,26 +13,24 @@ private transporter: nodemailer.Transporter;
       }
     });
   }
-
-  
-async sendMail(
-  to: string,
-  subject: string,
-  html: string,
-  attachments?: {
-    filename: string;
-    path: string;
-    cid?: string;
-  }[]
-): Promise<void> {
-  await this.transporter.sendMail({
-    from: `"PHLO" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html,
-    attachments,
-  });
-}
+  async sendMail(
+    to: string,
+    subject: string,
+    html: string,
+    attachments?: {
+      filename: string;
+      path: string;
+      cid?: string;
+    }[]
+  ): Promise<void> {
+    await this.transporter.sendMail({
+      from: `"PHLO" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+      attachments,
+    });
+  }
 
 
 }

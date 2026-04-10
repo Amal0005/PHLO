@@ -19,10 +19,8 @@ export class GetBookingDetailUseCase implements IGetBookingDetailUseCase {
         if (booking.status === BookingStatus.PENDING) {
             const session = await this._stripeService.retrieveCheckoutSession(sessionId);
             if (session) {
-                console.log(`Booking ${booking.id} is pending. Stripe status: ${session.payment_status}`);
                 if (session.payment_status !== 'paid') {
                     dto.checkoutUrl = session.url || undefined;
-                    console.log(`Providing checkout URL for booking ${booking.id}: ${dto.checkoutUrl ? 'Yes' : 'No'}`);
                 }
             }
         }

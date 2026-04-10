@@ -15,7 +15,6 @@ const GoogleLoginButton = ({ onSuccess }: Props) => {
             onSuccess(idToken);
           }}
           onError={() => {
-            console.log("Google Login Failed");
           }}
           useOneTap={false}
         />

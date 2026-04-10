@@ -15,7 +15,6 @@ export class ResendOtpUseCase implements IResendOtpUseCase {
     email = email.trim().toLowerCase();
 
     const otp = await this._otpService.generateOtp(email);
-    console.log(otp);
 
     const htmlTemplate = renderTemplate("user/otp.html", {
       TITLE: "Verification Code",

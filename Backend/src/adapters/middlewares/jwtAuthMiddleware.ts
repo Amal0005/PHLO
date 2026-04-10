@@ -28,7 +28,6 @@ export const jwtAuthMiddleware =
         }
 
         const token = authHeader.split(" ")[1];
-        console.log(token)
         const isBlacklisted = await blacklistService.isTokenBlacklisted(token);
         if (isBlacklisted) {
           return res

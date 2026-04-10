@@ -48,7 +48,6 @@ export class userRegisterUseCase implements IUserRegisterUseCase {
       300,
     );
     const otp = await this._otpService.generateOtp(email);
-    console.log("OTP: ", otp);
 
     const htmlTemplate = renderTemplate("user/otp.html", {
       TITLE: "Verify Your Email",

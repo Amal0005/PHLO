@@ -17,7 +17,6 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
     const user = await this._userRepo.findByEmail(email);
     if (!user) throw new Error("This user does not exists");
     const otp = await this._otpService.generateOtp(`FP_${email}`)
-    console.log(otp);
 
     const htmlTemplate = renderTemplate("user/otp.html", {
       TITLE: "Password Reset OTP",

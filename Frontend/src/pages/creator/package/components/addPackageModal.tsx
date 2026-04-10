@@ -53,7 +53,6 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
   const locationsValue = watch("locations");
 
   useEffect(() => {
-    console.log('Current locations in form', locationsValue);
   }, [locationsValue]);
 
   useEffect(() => {
@@ -118,8 +117,6 @@ export const AddPackageModal: React.FC<AddPackageModalProps> = ({
         ...data,
         images: imageUrls,
       };
-
-      console.log('Location details:', packageData.locations);
 
       await CreatorPackageService.addPackage(packageData);
 

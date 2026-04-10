@@ -156,19 +156,20 @@ const ChatPage = () => {
 
     useEffect(() => {
         if (!currentUserId) return;
-        socketService.connect(currentUserId);
+
+        if (!socketService.getSocket()) {
+            socketService.connect(currentUserId);
+        }
         fetchConversations();
     }, [currentUserId, fetchConversations]);
 
     useEffect(() => {
         const socket = socketService.getSocket();
         if (!socket) {
-            console.log("No socket available for ChatPage listener");
             return;
         }
 
         const handleReceive = (newMessage: MessageEntity) => {
-            console.log("ChatPage: Received new message via socket:", newMessage);
             const selectedId = (selectedChat?.id || (selectedChat as unknown as { _id?: string })?._id)?.toString();
             const messageConvId = newMessage.conversationId?.toString();
 

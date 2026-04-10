@@ -100,8 +100,6 @@ export class WallpaperController {
     try {
       const creatorId = req.user?.userId;
       const { wallpaperId } = req.params;
-      console.log("A", creatorId);
-      console.log("B", wallpaperId);
       if (!creatorId) {
         return res
           .status(StatusCode.UNAUTHORIZED)
