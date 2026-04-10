@@ -350,9 +350,9 @@ const BookingDetailPage: React.FC = () => {
                                 </button>
                             )}
 
-                            <p className="text-[10px] text-center text-zinc-600 font-medium px-4 leading-relaxed">
-                                Cancellation terms apply. Confirmed bookings can be cancelled before the scheduled date. Issue reporting is only available on the day of the booking.
-                            </p>
+                            <p className="text-sm text-center text-zinc-600 font-medium px-4 leading-relaxed">
+    Cancellation terms apply. Confirmed bookings can be cancelled before the scheduled date. Issue reporting is only available on the day of the booking.
+</p>
                         </div>
 
                         {/* Complaint Status Section */}

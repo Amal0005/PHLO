@@ -10,7 +10,7 @@ export class OtpServices implements IOTPService {
   }
   async saveOtp(identifier: string, otp: string): Promise<void> {
     
-    await this._redisService.setValue(`OTP_${identifier}`, otp, 60);
+    await this._redisService.setValue(`OTP_${identifier}`, otp, 300);
 
   }
 

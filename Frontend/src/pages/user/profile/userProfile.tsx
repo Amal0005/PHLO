@@ -3,7 +3,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { Shield, Edit2, Camera, Lock, Package } from "lucide-react";
+import { Shield, Edit2, Camera, Lock, Package, Trash } from "lucide-react";
 import { AppDispatch } from "@/store/store";
 import { updateUserProfile } from "@/store/slices/user/userSlice";
 import { ROUTES } from "@/constants/routes";
@@ -94,6 +94,22 @@ export default function UserProfile() {
     } finally {
       setIsLoading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handleImageDelete = async () => {
+    try {
+      setIsLoading(true);
+      const response = await UserProfileService.editProfile({ image: '' });
+      if (response.success && response.user) {
+        setProfileData({ ...response.user, image: undefined });
+        dispatch(updateUserProfile({ image: '' }));
+        toast.success(MESSAGES.PROFILE.PHOTO_DELETED);
+      }
+    } catch (error) {
+      toast.error(MESSAGES.PROFILE.PHOTO_FAILED);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -388,16 +404,26 @@ export default function UserProfile() {
                       <div
                         className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center pointer-events-none"
                       >
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            fileInputRef.current?.click();
-                          }}
-                          className="pointer-events-auto p-6 rounded-full hover:bg-white/10 transition-colors group/cam"
-                          title="Change Profile Photo"
-                        >
-                          <Camera className="w-12 h-12 text-white/50 group-hover/cam:text-white transition-colors" />
-                        </button>
+                         <button
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             fileInputRef.current?.click();
+                           }}
+                           className="pointer-events-auto p-6 rounded-full hover:bg-white/10 transition-colors group/cam"
+                           title="Change Profile Photo"
+                         >
+                           <Camera className="w-12 h-12 text-white/50 group-hover/cam:text-white transition-colors" />
+                         </button>
+                         <button
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             handleImageDelete();
+                           }}
+                           className="pointer-events-auto p-6 rounded-full hover:bg-red-500/10 transition-colors ml-2"
+                           title="Delete Profile Photo"
+                         >
+                           <Trash className="w-12 h-12 text-red-500/50 hover:text-red-500" />
+                         </button>
                         {/* Hidden Input */}
                         <input
                           type="file"

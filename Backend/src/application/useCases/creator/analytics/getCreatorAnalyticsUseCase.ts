@@ -32,7 +32,7 @@ export class GetCreatorAnalyticsUseCase implements IGetCreatorAnalyticsUseCase {
                         month: { $month: "$createdAt" },
                         year: { $year: "$createdAt" }
                     },
-                    totalAmount: { $sum: "$amount" }
+                    totalAmount: { $sum: { $multiply: ["$amount", 0.8] } }
                 }
             },
             { $sort: { "_id.year": 1, "_id.month": 1 } }
@@ -95,7 +95,7 @@ export class GetCreatorAnalyticsUseCase implements IGetCreatorAnalyticsUseCase {
             {
                 $group: {
                     _id: null,
-                    totalRevenue: { $sum: { $cond: [{ $eq: ["$status", "completed"] }, "$amount", 0] } },
+                    totalRevenue: { $sum: { $cond: [{ $eq: ["$status", "completed"] }, { $multiply: ["$amount", 0.8] }, 0] } },
                     totalBookings: { $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] } },
                     allBookings: { $sum: 1 },
                     uniqueUsers: { $addToSet: "$userId" }

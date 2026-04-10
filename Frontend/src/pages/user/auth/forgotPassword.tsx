@@ -83,6 +83,21 @@ export default function ForgotPassword() {
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (!pastedData) return;
+
+    const newOtp = [...otp];
+    for (let i = 0; i < 6; i++) {
+        newOtp[i] = pastedData[i] || "";
+    }
+    setOtp(newOtp);
+
+    const focusIndex = Math.min(pastedData.length, 5);
+    document.getElementById(`otp-${focusIndex}`)?.focus();
+  };
+
   const handleVerifyOtp = async () => {
     const otpValue = otp.join("");
     if (otpValue.length !== 6) return;
@@ -403,6 +418,7 @@ export default function ForgotPassword() {
                     onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
                       handleOtpKeyDown(index, e)
                     }
+                    onPaste={handlePaste}
                     className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-bold rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
                   />
                 ))}
@@ -424,7 +440,6 @@ export default function ForgotPassword() {
               </button>
 
               <p className="text-center text-gray-400 text-xs sm:text-sm mt-4">
-                Didn't receive the code?{" "}
                 Didn't receive the code?{" "}
                 {canResend ? (
                   <button

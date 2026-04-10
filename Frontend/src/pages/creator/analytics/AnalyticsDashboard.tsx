@@ -47,7 +47,7 @@ const AnalyticsDashboard: React.FC = () => {
                 {/* KPI Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                     <KpiCard 
-                        title="Total Revenue" 
+                        title="Net Earnings" 
                         value={`₹${(analytics?.recentEarningStats?.totalRevenue || 0).toLocaleString()}`} 
                         icon={<DollarSign className="w-5 h-5" />}
                         trend="+12%"
@@ -61,7 +61,7 @@ const AnalyticsDashboard: React.FC = () => {
                         isUp={true}
                     />
                     <KpiCard 
-                        title="Avg. Order Value" 
+                        title="Avg. Earning" 
                         value={`₹${Math.round(analytics?.recentEarningStats?.averageOrderValue || 0).toLocaleString()}`} 
                         icon={<TrendingUp className="w-5 h-5" />}
                         trend="+5%"
@@ -79,7 +79,7 @@ const AnalyticsDashboard: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Revenue Area Chart */}
                     <div className="bg-zinc-900/50 border border-zinc-800 rounded-[2.5rem] p-8 backdrop-blur-xl">
-                        <h3 className="text-lg font-black tracking-tight mb-8 uppercase italic">Revenue Growth</h3>
+                        <h3 className="text-lg font-black tracking-tight mb-8 uppercase italic">Earnings Growth</h3>
                         <div className="h-[300px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={analytics?.revenueByMonth}>

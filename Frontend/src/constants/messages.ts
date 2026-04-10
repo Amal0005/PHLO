@@ -57,9 +57,10 @@ export const MESSAGES = {
         PHOTO_UPDATED: "Profile photo updated!",
         PHOTO_FAILED: "Failed to upload image",
         PASSWORD_UPDATED: "Password updated successfully!",
-        FILE_SIZE_ERROR: "File size must be less than 5MB",
+        PHOTO_DELETED: "Profile photo deleted successfully!",
         IMAGE_REQUIRED: "Please select an image file",
         LOAD_PROFILE_FAILED: "Failed to load profile",
+        FILE_SIZE_ERROR: "File size must be less than 5MB",
     },
     PACKAGE: {
         ADDED_SUCCESS: "Package added successfully!",
