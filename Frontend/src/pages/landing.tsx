@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import {
-  Camera,
-  Star,
   ArrowRight,
   Menu,
   X,
-  CheckCircle,
-  Award,
   Zap,
   Globe,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Camera
 } from 'lucide-react';
 import logoWhite from "@/assets/images/Logo_white.png";
 import { useNavigate } from 'react-router-dom';
@@ -24,13 +21,6 @@ const heroImages = [
   'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1920&q=80',
   'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1920&q=80',
   'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1920&q=80'
-];
-
-const stats = [
-  { number: '10K+', label: 'Photographers', icon: Camera, delay: 0.1 },
-  { number: '250K+', label: 'Sessions', icon: CheckCircle, delay: 0.2 },
-  { number: '4.9★', label: 'Average Rating', icon: Star, delay: 0.3 },
-  { number: '150+', label: 'Cities', icon: Award, delay: 0.4 }
 ];
 
 const features = [
@@ -214,27 +204,6 @@ const LandingPage = () => {
             </button>
           </motion.div>
 
-          {/* Stats Hub */}
-          <motion.div 
-            variants={containerVariants}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 mt-24 pt-12 border-t border-white/5"
-          >
-            {stats.map((stat, idx) => (
-              <motion.div 
-                key={idx}
-                variants={itemVariants}
-                className="group p-6 rounded-3xl hover:bg-white/[0.02] transition-colors border border-transparent hover:border-white/5"
-              >
-                <div className="flex flex-col items-center">
-                  <div className="p-3 bg-white/5 rounded-2xl mb-4 group-hover:scale-110 transition-transform">
-                    <stat.icon size={20} className="text-white/40" />
-                  </div>
-                  <h3 className="text-3xl font-black mb-1">{stat.number}</h3>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">{stat.label}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
         </motion.div>
 
         {/* Scroll Indicator */}
@@ -302,11 +271,6 @@ const LandingPage = () => {
       <footer className="py-20 border-t border-white/5 px-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
           <img src={logoWhite} alt="PHLO" className="h-10 opacity-30 grayscale" />
-          <div className="flex gap-8">
-            {['Instagram', 'Dribbble', 'LinkedIn'].map(p => (
-              <a key={p} href="#" className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 hover:text-white transition-colors">{p}</a>
-            ))}
-          </div>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">© 2026 PHLO STUDIOS. ALL RIGHTS RESERVED.</p>
         </div>
       </footer>
