@@ -71,6 +71,23 @@ const PackageDetailPage: React.FC = () => {
     if (packageId) fetchPackageDetail();
   }, [packageId]);
 
+  const validateLocation = (lat: number, lng: number): boolean => {
+    if (!packageData?.locations?.length) return true;
+    for (const loc of packageData.locations) {
+      const pkgLng = loc.coordinates[0];
+      const pkgLat = loc.coordinates[1];
+      const R = 6371;
+      const dLat = (pkgLat - lat) * (Math.PI / 180);
+      const dLon = (pkgLng - lng) * (Math.PI / 180);
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat * (Math.PI / 180)) * Math.cos(pkgLat * (Math.PI / 180)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      if (R * c <= 10) return true;
+    }
+    return false;
+  };
+
   const handleBooking = async () => {
     if (!selectedDate) {
       toast.warning("Please select a booking date first.");
@@ -341,8 +358,12 @@ const PackageDetailPage: React.FC = () => {
                       <LocationSearchBar
                         ref={locationBarRef}
                         onChange={(location: { placeName?: string; latitude?: number; longitude?: number }) => {
-                          setSelectedLocation(location.placeName || "");
                           if (location.latitude && location.longitude) {
+                            if (!validateLocation(location.latitude, location.longitude)) {
+                              toast.warning("Location must be within 10km of the package's service areas.");
+                              return;
+                            }
+                            setSelectedLocation(location.placeName || "");
                             setViewState(prev => ({
                               ...prev,
                               latitude: location.latitude || prev.latitude,
@@ -351,6 +372,8 @@ const PackageDetailPage: React.FC = () => {
                             }));
 
                             setMarkerLoc({ lat: location.latitude || 0, lng: location.longitude || 0 });
+                          } else {
+                            setSelectedLocation(location.placeName || "");
                           }
                         }}
                       />
@@ -600,6 +623,12 @@ const PackageDetailPage: React.FC = () => {
                 }}
                 onClick={async (e: { lngLat: { lat: number; lng: number } }) => {
                   const { lat, lng } = e.lngLat;
+
+                  if (!validateLocation(lat, lng)) {
+                     toast.warning("Location must be within 10km of the package's service areas.");
+                     return;
+                  }
+
                   setMarkerLoc({ lat, lng });
                   // Zoom into clicked spot with steep pitch for Google Earth feel
                   setViewState(prev => ({
