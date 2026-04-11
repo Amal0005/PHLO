@@ -56,6 +56,7 @@ export const reviewSchema = z.object({
 });
 
 export const complaintSchema = z.object({
+  creatorId: z.string().min(1, "Creator ID is required"),
   bookingId: z.string().min(1, "Booking ID is required"),
   reason: z.string().min(3, "Reason must be at least 3 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
