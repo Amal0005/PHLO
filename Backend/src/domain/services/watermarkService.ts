@@ -18,21 +18,29 @@ export class WatermarkService implements IWatermarkService {
     }
 
     async generateWatermark(originalBuffer: Buffer, originalKey: string): Promise<string> {
-        const { width = 800, height = 600 } = await sharp(originalBuffer).metadata();
-
+        const { width = 800 } = await sharp(originalBuffer).metadata();
+        
+        // Dynamically scale font size and tile size based on image width
         const fontSize = Math.max(Math.floor(width / 25), 14);
-        const svg = `
-      <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="wm" width="${fontSize * 5}" height="${fontSize * 3.5}" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)">
-            <text x="${fontSize * 0.5}" y="${fontSize * 2}" font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold" fill="rgba(255,255,255,0.4)" stroke="rgba(0,0,0,0.1)" stroke-width="0.5" letter-spacing="2">PHLO</text>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#wm)" />
-      </svg>`;
+        const tileWidth = fontSize * 5;
+        const tileHeight = fontSize * 3.5;
+        
+        // Use native sharp `tile: true` instead of SVG <pattern> for reliable replication
+        // Replace `rgba(...)` with `fill="white" fill-opacity="0.4"` because librsvg might drop rgba on some OS
+        const tileSvg = `
+          <svg width="${tileWidth}" height="${tileHeight}" xmlns="http://www.w3.org/2000/svg">
+            <g transform="rotate(-30, ${tileWidth/2}, ${tileHeight/2})">
+              <text x="50%" y="50%" text-anchor="middle" font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold" fill="white" fill-opacity="0.4" stroke="black" stroke-opacity="0.1" stroke-width="0.5" letter-spacing="2">PHLO</text>
+            </g>
+          </svg>`;
 
         const watermarkedBuffer = await sharp(originalBuffer)
-            .composite([{ input: Buffer.from(svg), top: 0, left: 0 }])
+            .composite([{ 
+                input: Buffer.from(tileSvg), 
+                tile: true,
+                top: 0, 
+                left: 0 
+            }])
             .jpeg({ quality: 85 })
             .toBuffer();
         const parts = originalKey.split("/");

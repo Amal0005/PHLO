@@ -3,24 +3,39 @@ import { z } from "zod";
 export const creatorStep1Schema = z.object({
   fullName: z
     .string()
+    .trim()
     .min(1, "Please enter your full name")
     .min(3, "Full name must be at least 3 characters")
-    .regex(/^[a-zA-Z\s]+$/, "Full name can only contain letters"),
+    .max(50, "Full name must not exceed 50 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Full name can only contain letters and spaces"),
   
   email: z
     .string()
+    .trim()
     .min(1, "Please enter your email address")
     .email("Please enter a valid email address"),
   
   phone: z
     .string()
+    .trim()
     .min(1, "Please enter your phone number")
-    .regex(/^[0-9]{10}$/, "Please enter a valid 10-digit phone number"),
+    .regex(/^[1-9][0-9]{9}$/, "Phone number must be exactly 10 digits and cannot start with 0"),
   
   password: z
     .string()
-    .min(1, "Please enter a password")
-    .min(6, "Password must be at least 6 characters long"),
+    .min(8, "Password must be at least 8 characters")
+    .max(32, "Password must not exceed 32 characters")
+    .refine(
+      (val) =>
+        /[a-z]/.test(val) &&
+        /[A-Z]/.test(val) &&
+        /[0-9]/.test(val) &&
+        /[^A-Za-z0-9]/.test(val),
+      {
+        message:
+          "Password must include uppercase, lowercase, number, and special character",
+      }
+    ),
   
   confirmPassword: z
     .string()
@@ -74,10 +89,19 @@ export const creatorStep4Schema = z.object({
 });
 
 export const creatorRegistrationSchema = z.object({
-  fullName: z.string().min(3).regex(/^[a-zA-Z\s]+$/),
-  email: z.string().email(),
-  phone: z.string().regex(/^[0-9]{10}$/),
-  password: z.string().min(6),
+  fullName: z.string().trim().min(3).max(50).regex(/^[a-zA-Z\s]+$/),
+  email: z.string().trim().email(),
+  phone: z.string().trim().regex(/^[1-9][0-9]{9}$/),
+  password: z
+    .string()
+    .min(8)
+    .max(32)
+    .refine((val) =>
+      /[a-z]/.test(val) &&
+      /[A-Z]/.test(val) &&
+      /[0-9]/.test(val) &&
+      /[^A-Za-z0-9]/.test(val)
+    ),
   confirmPassword: z.string(),
   city: z.string().min(1),
   yearsOfExperience: z.string(),
