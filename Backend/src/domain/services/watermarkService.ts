@@ -18,19 +18,32 @@ export class WatermarkService implements IWatermarkService {
     }
 
     async generateWatermark(originalBuffer: Buffer, originalKey: string): Promise<string> {
-        const { width = 800 } = await sharp(originalBuffer).metadata();
+        const { width = 1200, height = 1200 } = await sharp(originalBuffer).metadata();
         
-        // Dynamically scale font size and tile size based on image width
-        const fontSize = Math.max(Math.floor(width / 20), 24);
-        const tileWidth = fontSize * 10;
-        const tileHeight = fontSize * 6;
+        // Optimizing font size and tile density for a high-end look
+        const fontSize = Math.max(Math.floor(width / 22), 26);
+        const tileWidth = Math.floor(fontSize * 6.5);
+        const tileHeight = Math.floor(fontSize * 4.5);
         
-        // Using standard <text> rendering mapped to 'sans-serif' default OS font
-        // Ensures clean and extremely legible watermarks universally.
+        // Multi-line professional pattern with balanced opacity
+        const strokeWidth = (fontSize / 25).toFixed(1);
         const tileSvg = `
-          <svg width="${tileWidth}" height="${tileHeight}" xmlns="http://www.w3.org/2000/svg">
+          <svg width="${tileWidth}" height="${tileHeight}" viewBox="0 0 ${tileWidth} ${tileHeight}" xmlns="http://www.w3.org/2000/svg">
             <g transform="rotate(-30, ${tileWidth/2}, ${tileHeight/2})">
-              <text x="50%" y="50%" text-anchor="middle" font-family="sans-serif" font-size="${fontSize}" font-weight="900" fill="white" fill-opacity="0.3" stroke="black" stroke-opacity="0.1" stroke-width="2" letter-spacing="8">PHLO</text>
+              <text 
+                x="50%" y="30%" 
+                font-family="sans-serif" font-weight="900" font-size="${fontSize}" 
+                text-anchor="middle" dominant-baseline="middle"
+                fill="white" fill-opacity="0.45" 
+                stroke="black" stroke-opacity="0.15" stroke-width="${strokeWidth}"
+              >PHLO</text>
+              <text 
+                x="50%" y="75%" 
+                font-family="sans-serif" font-weight="900" font-size="${Math.floor(fontSize * 0.75)}" 
+                text-anchor="middle" dominant-baseline="middle"
+                fill="white" fill-opacity="0.35" 
+                stroke="black" stroke-opacity="0.1" stroke-width="${(Number(strokeWidth)/1.5).toFixed(1)}"
+              >PHLO</text>
             </g>
           </svg>`;
 
@@ -41,11 +54,15 @@ export class WatermarkService implements IWatermarkService {
                 top: 0, 
                 left: 0 
             }])
-            .jpeg({ quality: 85 })
+            .jpeg({ quality: 82, progressive: true })
             .toBuffer();
+
         const parts = originalKey.split("/");
-        const fileName = parts.pop()!;
-        const watermarkedKey = `${parts.join("/")}/watermarked/${fileName}`;
+        const originalFileName = parts.pop()!;
+        const baseFileName = originalFileName.substring(0, originalFileName.lastIndexOf('.')) || originalFileName;
+        
+        // Use a strictly clean filename and forced jpg extension for the public watermark preview
+        const watermarkedKey = `${parts.join("/")}/watermarked/${baseFileName}.jpg`;
 
         await this._s3.send(
             new PutObjectCommand({
@@ -53,6 +70,7 @@ export class WatermarkService implements IWatermarkService {
                 Key: watermarkedKey,
                 Body: watermarkedBuffer,
                 ContentType: "image/jpeg",
+                CacheControl: "public, max-age=31536000, immutable"
             })
         );
 
