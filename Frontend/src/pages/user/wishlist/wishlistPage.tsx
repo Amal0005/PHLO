@@ -262,7 +262,7 @@ const WishlistPage: React.FC = () => {
                   >
                     <div className="relative w-full h-full">
                       <S3Media
-                        s3Key={item.isPurchased ? item.imageUrl : (item.watermarkedUrl || item.imageUrl)}
+                        s3Key={item.watermarkedUrl || item.imageUrl}
                         className="w-full h-full object-cover"
                       />
                       {/* Price + Download badge */}

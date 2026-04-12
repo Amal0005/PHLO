@@ -249,7 +249,7 @@ export default function LandingPage() {
                   onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
                 >
                   <S3Media
-                    s3Key={wallpaper.isPurchased ? wallpaper.imageUrl : (wallpaper.watermarkedUrl || wallpaper.imageUrl)}
+                    s3Key={wallpaper.watermarkedUrl || wallpaper.imageUrl}
                     alt={wallpaper.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />

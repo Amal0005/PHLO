@@ -1,48 +1,38 @@
 import sharp from "sharp";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import type { IWatermarkService } from "@/domain/interfaces/service/IWatermarkService";
+import type { IStorageService } from "@/domain/interfaces/service/IS3Services";
 
 export class WatermarkService implements IWatermarkService {
-    private _s3: S3Client;
-    private _bucket: string;
-
-    constructor() {
-        this._s3 = new S3Client({
-            region: process.env.AWS_REGION!,
-            credentials: {
-                accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-            },
-        });
-        this._bucket = process.env.AWS_S3_BUCKET_NAME!;
-    }
+    constructor(private _storageService: IStorageService) {}
 
     async generateWatermark(originalBuffer: Buffer, originalKey: string): Promise<string> {
-        const { width = 1200, height = 1200 } = await sharp(originalBuffer).metadata();
+        const { width = 1200 } = await sharp(originalBuffer).metadata();
         
-        // Optimizing font size and tile density for a high-end look
-        const fontSize = Math.max(Math.floor(width / 22), 26);
-        const tileWidth = Math.floor(fontSize * 6.5);
-        const tileHeight = Math.floor(fontSize * 4.5);
+        // Optimizing density and visibility
+        const fontSize = Math.max(Math.floor(width / 20), 28);
+        const tileWidth = fontSize * 5;
+        const tileHeight = fontSize * 4;
         
-        // Multi-line professional pattern with balanced opacity
-        const strokeWidth = (fontSize / 25).toFixed(1);
+        // Multi-line blocky pattern for maximum coverage and visibility
+        const strokeWidth = (fontSize / 20).toFixed(1);
         const tileSvg = `
           <svg width="${tileWidth}" height="${tileHeight}" viewBox="0 0 ${tileWidth} ${tileHeight}" xmlns="http://www.w3.org/2000/svg">
             <g transform="rotate(-30, ${tileWidth/2}, ${tileHeight/2})">
               <text 
                 x="50%" y="30%" 
-                font-family="sans-serif" font-weight="900" font-size="${fontSize}" 
+                font-family="sans-serif" font-weight="950" font-size="${fontSize}" 
                 text-anchor="middle" dominant-baseline="middle"
-                fill="white" fill-opacity="0.45" 
-                stroke="black" stroke-opacity="0.15" stroke-width="${strokeWidth}"
+                fill="white" fill-opacity="0.5" 
+                stroke="black" stroke-opacity="0.2" stroke-width="${strokeWidth}"
+                letter-spacing="2"
               >PHLO</text>
               <text 
-                x="50%" y="75%" 
-                font-family="sans-serif" font-weight="900" font-size="${Math.floor(fontSize * 0.75)}" 
+                x="50%" y="80%" 
+                font-family="sans-serif" font-weight="950" font-size="${fontSize * 0.8}" 
                 text-anchor="middle" dominant-baseline="middle"
-                fill="white" fill-opacity="0.35" 
-                stroke="black" stroke-opacity="0.1" stroke-width="${(Number(strokeWidth)/1.5).toFixed(1)}"
+                fill="white" fill-opacity="0.4" 
+                stroke="black" stroke-opacity="0.15" stroke-width="${(Number(strokeWidth)/1.2).toFixed(1)}"
+                letter-spacing="1"
               >PHLO</text>
             </g>
           </svg>`;
@@ -54,25 +44,19 @@ export class WatermarkService implements IWatermarkService {
                 top: 0, 
                 left: 0 
             }])
-            .jpeg({ quality: 82, progressive: true })
+            .jpeg({ quality: 85, progressive: true })
             .toBuffer();
 
         const parts = originalKey.split("/");
-        const originalFileName = parts.pop()!;
-        const baseFileName = originalFileName.substring(0, originalFileName.lastIndexOf('.')) || originalFileName;
+        const originalFileName = parts.pop() || "wallpaper.jpg";
+        const baseFileName = originalFileName.includes('.') 
+            ? originalFileName.substring(0, originalFileName.lastIndexOf('.')) 
+            : originalFileName;
         
-        // Use a strictly clean filename and forced jpg extension for the public watermark preview
         const watermarkedKey = `${parts.join("/")}/watermarked/${baseFileName}.jpg`;
 
-        await this._s3.send(
-            new PutObjectCommand({
-                Bucket: this._bucket,
-                Key: watermarkedKey,
-                Body: watermarkedBuffer,
-                ContentType: "image/jpeg",
-                CacheControl: "public, max-age=31536000, immutable"
-            })
-        );
+        // Using shared storage service for consistency
+        await this._storageService.uploadFile(watermarkedBuffer, watermarkedKey, "image/jpeg");
 
         return watermarkedKey;
     }

@@ -79,7 +79,7 @@ const redisService = new RedisService();
 const otpService = new OtpServices(redisService);
 const mailService = new MailService();
 const stripeService = new StripeService()
-const watermarkService = new WatermarkService()
+const watermarkService = new WatermarkService(storageService)
 const moderationService = new ModerationService();
 
 const creatorRegisterUseCase = new RegisterCreatorUseCase(creatorRepository, passwordService, userRepository, otpService, mailService, redisService, sendNotificationUseCase);
