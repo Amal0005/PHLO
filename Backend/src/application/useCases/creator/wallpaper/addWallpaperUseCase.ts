@@ -39,6 +39,13 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
       throw new Error("subscription required to add wallpapers.");
     }
 
+    // Perform moderation check on the original image buffer FIRST
+    const moderationResult = await this._moderationService.checkImage(imageBuffer);
+
+    if (moderationResult.status === "UNSAFE") {
+      throw new Error(moderationResult.reason || "Image content violates community guidelines.");
+    }
+
     // Generate path and upload original
     const extension = contentType.split("/")[1];
     const originalKey = `wallpapers/${crypto.randomUUID()}.${extension}`;
@@ -47,19 +54,18 @@ export class AddWallpaperUseCase implements IAddWallpaperUseCase {
     // Generate watermarked image
     const watermarkedUrl = await this._watermarkService.generateWatermark(imageBuffer, originalKey);
 
-    // Perform moderation check on the original image buffer
-    const moderationResult = await this._moderationService.checkImage(imageBuffer);
     let status: "approved" | "pending" | "rejected" = "pending";
     let rejectionReason: string | undefined;
-    if (moderationResult === "SAFE") {
+
+
+    if (moderationResult.status === "SAFE") {
       status = "approved";
-    } else if (moderationResult === "UNSAFE") {
-      status = "rejected";
-      rejectionReason = "Image content violates community guidelines.";
     } else {
+      // For UNCERTAIN (errors, etc.), we mark as rejected with a specific message
       status = "rejected";
-      rejectionReason = "Moderation service currently unavailable (possible billing/propagation delay). Please try again in 5-10 minutes.";
+      rejectionReason = "Moderation service currently unavailable (possible billing issue). Please contact support if this persists.";
     }
+
 
     const newWallpaper: WallpaperEntity = {
       creatorId: data.creatorId!,
