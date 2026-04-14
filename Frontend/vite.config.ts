@@ -10,6 +10,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["PHLO_LOGO.png"],
       manifest: {
+        id: "/",
+        scope: "/",
         name: "PHLO",
         short_name: "PHLO",
         description: "PHLO - where trust meets quality",
@@ -19,22 +21,31 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "/PHLO_LOGO.png",
+            src: "PHLO_LOGO.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "/PHLO_LOGO.png",
+            src: "PHLO_LOGO.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any maskable",
+            purpose: "any",
+          },
+          {
+            src: "PHLO_LOGO.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
           },
         ],
       },
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         globPatterns: ["**/*.{js,css,html,ico,png,svg,json,woff2}"],
+      },
+      devOptions: {
+        enabled: true,
       },
     }),
   ],
