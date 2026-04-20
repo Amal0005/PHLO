@@ -81,6 +81,20 @@ const LandingPage = () => {
     }
   };
 
+  const navLinks = [
+    { label: "Explore", href: "#hero" },
+    { label: "Features", href: "#features" },
+    { label: "Contact", href: "#contact" },
+  ];
+
+  const handleNavClick = (href: string) => {
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    setMobileMenuOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-white selection:text-black overflow-x-hidden font-sans">
       
@@ -97,7 +111,7 @@ const LandingPage = () => {
           : 'bg-transparent py-8'
       }`}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-4">
             
             <motion.div 
               initial={{ x: -20, opacity: 0 }}
@@ -109,6 +123,32 @@ const LandingPage = () => {
             </motion.div>
 
             {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-black/30 backdrop-blur-xl px-2 py-2">
+              {navLinks.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => handleNavClick(item.href)}
+                  className="px-4 py-2 text-xs lg:text-sm font-bold uppercase tracking-[0.16em] text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="hidden md:flex items-center gap-3">
+              <button
+                onClick={() => navigate(ROUTES.USER.LOGIN)}
+                className="px-6 py-2.5 border border-white/15 rounded-full text-xs font-black uppercase tracking-[0.2em] text-white hover:bg-white/10 transition-all"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate(ROUTES.USER.REGISTER)}
+                className="px-6 py-2.5 bg-white text-black rounded-full text-xs font-black uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all"
+              >
+                Get Started
+              </button>
+            </div>
 
             <button className="md:hidden text-white p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -125,21 +165,33 @@ const LandingPage = () => {
             exit={{ opacity: 0, y: -20 }}
             className="fixed inset-0 z-[55] bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center gap-8 md:hidden"
           >
-            {['Explore', 'Creators', 'Experience'].map((item) => (
-              <a key={item} href="#" className="text-2xl font-black uppercase tracking-[0.3em]" onClick={() => setMobileMenuOpen(false)}>{item}</a>
+            {navLinks.map((item) => (
+              <button
+                key={item.label}
+                className="text-2xl font-black uppercase tracking-[0.3em]"
+                onClick={() => handleNavClick(item.href)}
+              >
+                {item.label}
+              </button>
             ))}
             <button 
               onClick={() => navigate(ROUTES.USER.LOGIN)}
               className="px-12 py-4 bg-white text-black rounded-full font-black uppercase tracking-[0.3em]"
             >
-              Start Journey
+              Login
+            </button>
+            <button
+              onClick={() => navigate(ROUTES.USER.REGISTER)}
+              className="px-12 py-4 border border-white/20 text-white rounded-full font-black uppercase tracking-[0.2em]"
+            >
+              Register
             </button>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* HERO SECTION */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
         
         {/* Background Slider */}
         <div className="absolute inset-0 z-0">
@@ -217,7 +269,7 @@ const LandingPage = () => {
       </section>
 
       {/* FEATURES SECTION */}
-      <section className="relative py-32 px-6 overflow-hidden">
+      <section id="features" className="relative py-32 px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-24">
             <h2 className="text-[10px] font-black uppercase tracking-[1em] text-white/30 mb-6">Capabilities</h2>
@@ -250,7 +302,7 @@ const LandingPage = () => {
       </section>
 
       {/* FOOTER CALL-BACK */}
-      <section className="py-32 px-6">
+      <section id="contact" className="py-32 px-6">
         <motion.div 
           initial={{ scale: 0.95, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}

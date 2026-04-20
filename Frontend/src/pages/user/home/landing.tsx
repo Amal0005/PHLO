@@ -311,7 +311,16 @@ export default function LandingPage() {
               creators.map((creator) => (
               <div
                 key={creator._id}
-                className="bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105"
+                onClick={() => navigate(ROUTES.USER.CREATOR_DETAIL.replace(":id", creator._id))}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    navigate(ROUTES.USER.CREATOR_DETAIL.replace(":id", creator._id));
+                  }
+                }}
+                className="bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30"
               >
                 <div className="flex flex-col items-center text-center">
                   <div className="w-24 h-24 rounded-full mb-4 border-4 border-white/20 overflow-hidden">
@@ -342,12 +351,9 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  <button 
-                    onClick={() => navigate(ROUTES.USER.CREATOR_DETAIL.replace(":id", creator._id))}
-                    className="w-full py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors"
-                  >
-                    View Profile
-                  </button>
+                  <p className="text-xs text-gray-400 font-medium">
+                    Tap anywhere on card to view profile
+                  </p>
                 </div>
               </div>
             ))

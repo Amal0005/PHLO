@@ -184,29 +184,31 @@ export default function Login() {
                   />
                 </div>
 
-                <div className="relative">
+                <div>
                   <label className="block text-sm text-gray-400 mb-1">
                     password
                   </label>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    placeholder="Password"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
-                    value={form.password}
-                    onChange={handleChange}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
-                  >
-                    {showPassword ? (
-                      <CameraOff className="w-5 h-5" />
-                    ) : (
-                      <Camera className="w-5 h-5" />
-                    )}
-                  </button>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      placeholder="Password"
+                      className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
+                      value={form.password}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-white transition-colors"
+                    >
+                      {showPassword ? (
+                        <CameraOff className="w-5 h-5" />
+                      ) : (
+                        <Camera className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="flex justify-end">

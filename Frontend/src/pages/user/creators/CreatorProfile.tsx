@@ -52,7 +52,7 @@ const CreatorProfile: React.FC = () => {
   if (!creator) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#070b14] via-[#090f1f] to-[#05070e] text-white">
       <Navbar />
 
       <main className="pt-32 pb-24 px-4 max-w-7xl mx-auto">
@@ -61,22 +61,22 @@ const CreatorProfile: React.FC = () => {
           
           {/* Left: Sticky Image & Quick Stats */}
           <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-8">
-            <div className="aspect-[4/5] rounded-[3rem] overflow-hidden border border-white/10 relative group">
+            <div className="aspect-[4/5] rounded-[3rem] overflow-hidden border border-white/20 relative group bg-white/5 shadow-[0_20px_80px_rgba(15,23,42,0.35)]">
               <S3Media
                 s3Key={creator.profilePhoto || ""}
                 alt={creator.fullName}
-                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b1220]/80 via-transparent to-transparent opacity-70" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-zinc-900/50 border border-white/5 p-6 rounded-[2rem] text-center space-y-1">
-                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Experience</p>
+              <div className="bg-white/5 border border-white/10 p-6 rounded-[2rem] text-center space-y-1 backdrop-blur-sm">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">Experience</p>
                 <p className="text-2xl font-black">{creator.yearsOfExperience}+ Yrs</p>
               </div>
-              <div className="bg-zinc-900/50 border border-white/5 p-6 rounded-[2rem] text-center space-y-1">
-                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">City</p>
+              <div className="bg-white/5 border border-white/10 p-6 rounded-[2rem] text-center space-y-1 backdrop-blur-sm">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-300">City</p>
                 <p className="text-2xl font-black truncate">{creator.city}</p>
               </div>
             </div>
@@ -85,16 +85,16 @@ const CreatorProfile: React.FC = () => {
           {/* Right: Detailed Info */}
           <div className="lg:col-span-7 space-y-12">
             <div className="space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-400/30">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Available for Hire</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-200">Available for Hire</span>
               </div>
-              <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-none italic">
+              <h1 className="text-5xl md:text-7xl font-black tracking-tight uppercase leading-none">
                 {creator.fullName}
               </h1>
               <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
                 {creator.specialties?.map((s, i) => (
-                  <span key={i} className="px-5 py-2 rounded-full bg-zinc-900 border border-white/5 text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                  <span key={i} className="px-5 py-2 rounded-full bg-slate-800/70 border border-slate-500/30 text-[10px] font-black uppercase tracking-widest text-slate-200">
                     {s}
                   </span>
                 ))}
@@ -103,8 +103,8 @@ const CreatorProfile: React.FC = () => {
 
             {/* Bio Section */}
             <div className="space-y-4">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">The Narrative</h3>
-              <p className="text-xl md:text-2xl font-light leading-relaxed text-zinc-300">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">About Creator</h3>
+              <p className="text-lg md:text-xl font-light leading-relaxed text-slate-100/90">
                 {creator.bio || "Crafting moments into cinematic memories. Professional vision meets contemporary aesthetic."}
               </p>
             </div>
@@ -116,7 +116,7 @@ const CreatorProfile: React.FC = () => {
                   href={creator.portfolioLink} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex-1 px-8 py-5 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-zinc-200 transition-all"
+                  className="flex-1 px-8 py-5 rounded-2xl bg-white text-black font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-slate-200 transition-all"
                 >
                   <Globe className="w-4 h-4" />
                   View Portfolio
@@ -124,7 +124,7 @@ const CreatorProfile: React.FC = () => {
               )}
               <button 
                 onClick={() => toast.info("Messaging system coming soon!")}
-                className="flex-1 px-8 py-5 rounded-2xl border border-white/10 text-white font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-white/5 transition-all"
+                className="flex-1 px-8 py-5 rounded-2xl border border-slate-400/30 bg-slate-800/40 text-white font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-slate-700/50 transition-all"
               >
                 <MessageCircle className="w-4 h-4" />
                 Direct Inquiry
@@ -135,17 +135,17 @@ const CreatorProfile: React.FC = () => {
 
         {/* Dynamic Content Tabs */}
         <div className="space-y-12">
-          <div className="flex items-center justify-between border-b border-white/5 pb-8">
+          <div className="flex items-center justify-between border-b border-slate-500/20 pb-8">
             <div className="flex gap-12">
               <button 
                 onClick={() => setActiveTab("packages")}
-                className={`text-xl font-black uppercase tracking-tighter transition-all ${activeTab === "packages" ? "text-white underline decoration-2 underline-offset-8" : "text-zinc-600 hover:text-zinc-400"}`}
+                className={`text-xl font-black uppercase tracking-tighter transition-all ${activeTab === "packages" ? "text-white underline decoration-2 underline-offset-8" : "text-slate-400 hover:text-slate-200"}`}
               >
                 Packages ({packages.length})
               </button>
               <button 
                 onClick={() => setActiveTab("wallpapers")}
-                className={`text-xl font-black uppercase tracking-tighter transition-all ${activeTab === "wallpapers" ? "text-white underline decoration-2 underline-offset-8" : "text-zinc-600 hover:text-zinc-400"}`}
+                className={`text-xl font-black uppercase tracking-tighter transition-all ${activeTab === "wallpapers" ? "text-white underline decoration-2 underline-offset-8" : "text-slate-400 hover:text-slate-200"}`}
               >
                 Wallpapers ({wallpapers.length})
               </button>
@@ -165,14 +165,14 @@ const CreatorProfile: React.FC = () => {
                     <div 
                       key={pkg._id}
                       onClick={() => navigate(ROUTES.USER.PACKAGE_DETAIL.replace(":packageId", pkg._id))}
-                      className="group p-8 rounded-[2rem] bg-zinc-900/50 border border-white/5 hover:border-white/10 transition-all cursor-pointer space-y-6"
+                      className="group p-8 rounded-[2rem] bg-slate-900/40 border border-slate-500/20 hover:border-slate-300/40 transition-all cursor-pointer space-y-6"
                     >
                       <div className="aspect-video rounded-2xl overflow-hidden border border-white/5">
-                        <S3Media s3Key={pkg.images[0]} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                        <S3Media s3Key={pkg.images[0]} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" />
                       </div>
                       <div className="space-y-2">
                         <h4 className="text-xl font-black uppercase tracking-tighter">{pkg.title}</h4>
-                        <p className="text-sm text-zinc-500 line-clamp-2">{pkg.description}</p>
+                        <p className="text-sm text-slate-300/70 line-clamp-2">{pkg.description}</p>
                       </div>
                       <div className="flex items-center justify-between pt-4 border-t border-white/5">
                         <p className="text-2xl font-black italic">₹{pkg.price.toLocaleString()}</p>
