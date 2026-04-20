@@ -60,7 +60,7 @@ const CreatorProfile: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-24">
           
           {/* Left: Sticky Image & Quick Stats */}
-          <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-8">
+          <div className="lg:col-span-5 lg:sticky lg:top-32">
             <div className="aspect-[4/5] rounded-[2.5rem] overflow-hidden border border-white/15 relative group bg-zinc-950">
               <S3Media
                 s3Key={creator.profilePhoto || ""}
@@ -69,17 +69,6 @@ const CreatorProfile: React.FC = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-70" />
               <div className="absolute inset-y-0 right-6 w-px bg-white/20" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-zinc-950 border border-white/10 p-6 rounded-[1.75rem] text-center space-y-1">
-                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Experience</p>
-                <p className="text-2xl font-black">{creator.yearsOfExperience}+ Yrs</p>
-              </div>
-              <div className="bg-zinc-950 border border-white/10 p-6 rounded-[1.75rem] text-center space-y-1">
-                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">City</p>
-                <p className="text-2xl font-black truncate">{creator.city}</p>
-              </div>
             </div>
           </div>
 
@@ -99,18 +88,11 @@ const CreatorProfile: React.FC = () => {
             </div>
 
             {/* Bio Section */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="md:col-span-3 bg-zinc-950 border border-white/10 rounded-[1.75rem] p-6 md:p-8">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-4">About Creator</h3>
-                <p className="text-lg md:text-xl leading-relaxed text-zinc-200">
-                  {creator.bio || "Crafting moments into cinematic memories. Professional vision meets contemporary aesthetic."}
-                </p>
-              </div>
-              <div className="md:col-span-2 bg-white text-black rounded-[1.75rem] p-6 md:p-8 flex items-end">
-                <p className="text-sm md:text-base font-bold uppercase tracking-[0.2em] leading-relaxed">
-                  Visual stories, timeless frames.
-                </p>
-              </div>
+            <div className="bg-zinc-950 border border-white/10 rounded-2xl p-4 md:p-5">
+              <h3 className="text-[9px] font-black uppercase tracking-[0.25em] text-zinc-500 mb-2">About Creator</h3>
+              <p className="text-sm md:text-base leading-relaxed text-zinc-200 line-clamp-2">
+                {creator.bio || "Crafting moments into cinematic memories."}
+              </p>
             </div>
 
             {/* Links & CTA */}
@@ -133,6 +115,17 @@ const CreatorProfile: React.FC = () => {
                 <MessageCircle className="w-4 h-4" />
                 Direct Inquiry
               </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-zinc-950 border border-white/10 p-5 rounded-2xl text-center space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Experience</p>
+                <p className="text-xl md:text-2xl font-black">{creator.yearsOfExperience}+ Yrs</p>
+              </div>
+              <div className="bg-zinc-950 border border-white/10 p-5 rounded-2xl text-center space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">City</p>
+                <p className="text-xl md:text-2xl font-black truncate">{creator.city}</p>
+              </div>
             </div>
           </div>
         </div>
