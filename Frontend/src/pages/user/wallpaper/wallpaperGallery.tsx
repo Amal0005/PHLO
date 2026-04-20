@@ -11,10 +11,13 @@ import { FilterSearch } from "@/components/reusable/FilterComponents";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/useDebounce";
 import logo from "@/assets/images/Logo_white.png";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/constants/routes";
 
 
 
 const WallpaperGallery: React.FC = () => {
+  const navigate = useNavigate();
   type Orientation = "vertical" | "horizontal" | "square";
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
   const [orientationMap, setOrientationMap] = useState<Record<string, Orientation>>({});
@@ -262,6 +265,14 @@ const WallpaperGallery: React.FC = () => {
           <p className="text-gray-500 font-medium max-w-md mx-auto">
             Browse stunning wallpapers created by our talented creators
           </p>
+          <div className="mt-5">
+            <button
+              onClick={() => navigate(ROUTES.USER.MY_WALLPAPERS)}
+              className="px-5 py-2.5 rounded-full bg-white text-black text-sm font-bold hover:bg-zinc-200 transition-all"
+            >
+              My Wallpapers
+            </button>
+          </div>
         </div>
 
         {/* Search */}
