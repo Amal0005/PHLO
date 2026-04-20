@@ -15,7 +15,9 @@ import logo from "@/assets/images/Logo_white.png";
 
 
 const WallpaperGallery: React.FC = () => {
+  type Orientation = "portrait" | "landscape" | "square";
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
+  const [orientationMap, setOrientationMap] = useState<Record<string, Orientation>>({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 500);
@@ -123,6 +125,54 @@ const WallpaperGallery: React.FC = () => {
     };
     fetchWishlistIds();
   }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const loadOrientations = async () => {
+      const unresolved = wallpapers.filter((wp) => !orientationMap[wp._id]);
+      if (unresolved.length === 0) return;
+
+      const results = await Promise.all(
+        unresolved.map(async (wp) => {
+          try {
+            const mediaKey = wp.watermarkedUrl || wp.imageUrl;
+            const url = await S3Service.getViewUrl(mediaKey);
+            const orientation = await new Promise<Orientation>((resolve) => {
+              const img = new Image();
+              img.onload = () => {
+                if (img.naturalWidth > img.naturalHeight) resolve("landscape");
+                else if (img.naturalWidth < img.naturalHeight) resolve("portrait");
+                else resolve("square");
+              };
+              img.onerror = () => resolve("portrait");
+              img.src = url;
+            });
+
+            return { id: wp._id, orientation };
+          } catch {
+            return { id: wp._id, orientation: "portrait" as Orientation };
+          }
+        })
+      );
+
+      if (isCancelled || results.length === 0) return;
+
+      setOrientationMap((prev) => {
+        const next = { ...prev };
+        results.forEach(({ id, orientation }) => {
+          if (!next[id]) next[id] = orientation;
+        });
+        return next;
+      });
+    };
+
+    loadOrientations();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [wallpapers, orientationMap]);
 
   const handleToggleWishlist = async (e: React.MouseEvent, wallpaperId: string) => {
     e.stopPropagation();
@@ -315,11 +365,20 @@ const WallpaperGallery: React.FC = () => {
         ) : (
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {wallpapers.map((wp) => (
+              {wallpapers.map((wp) => {
+                const orientation = orientationMap[wp._id];
+                const aspectClass =
+                  orientation === "landscape"
+                    ? "aspect-[4/3]"
+                    : orientation === "square"
+                      ? "aspect-square"
+                      : "aspect-[3/4]";
+
+                return (
                 <div
                   key={wp._id}
                   onClick={() => setSelectedWallpaper(wp)}
-                  className="bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group aspect-[3/4]"
+                  className={`bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group ${aspectClass}`}
                 >
                   <div className="relative w-full h-full">
                     <S3Media s3Key={wp.watermarkedUrl || wp.imageUrl} className="w-full h-full object-cover" />
@@ -379,7 +438,8 @@ const WallpaperGallery: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Loading Indicator for Infinite Scroll */}
