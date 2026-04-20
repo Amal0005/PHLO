@@ -15,9 +15,7 @@ import logo from "@/assets/images/Logo_white.png";
 
 
 const WallpaperGallery: React.FC = () => {
-  type Orientation = "portrait" | "landscape" | "square";
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
-  const [orientationMap, setOrientationMap] = useState<Record<string, Orientation>>({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 500);
@@ -125,54 +123,6 @@ const WallpaperGallery: React.FC = () => {
     };
     fetchWishlistIds();
   }, []);
-
-  useEffect(() => {
-    let isCancelled = false;
-
-    const loadOrientations = async () => {
-      const unresolved = wallpapers.filter((wp) => !orientationMap[wp._id]);
-      if (unresolved.length === 0) return;
-
-      const results = await Promise.all(
-        unresolved.map(async (wp) => {
-          try {
-            const mediaKey = wp.watermarkedUrl || wp.imageUrl;
-            const url = await S3Service.getViewUrl(mediaKey);
-            const orientation = await new Promise<Orientation>((resolve) => {
-              const img = new Image();
-              img.onload = () => {
-                if (img.naturalWidth > img.naturalHeight) resolve("landscape");
-                else if (img.naturalWidth < img.naturalHeight) resolve("portrait");
-                else resolve("square");
-              };
-              img.onerror = () => resolve("portrait");
-              img.src = url;
-            });
-
-            return { id: wp._id, orientation };
-          } catch {
-            return { id: wp._id, orientation: "portrait" as Orientation };
-          }
-        })
-      );
-
-      if (isCancelled || results.length === 0) return;
-
-      setOrientationMap((prev) => {
-        const next = { ...prev };
-        results.forEach(({ id, orientation }) => {
-          if (!next[id]) next[id] = orientation;
-        });
-        return next;
-      });
-    };
-
-    loadOrientations();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [wallpapers, orientationMap]);
 
   const handleToggleWishlist = async (e: React.MouseEvent, wallpaperId: string) => {
     e.stopPropagation();
@@ -364,24 +314,16 @@ const WallpaperGallery: React.FC = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">
               {wallpapers.map((wp) => {
-                const orientation = orientationMap[wp._id];
-                const aspectClass =
-                  orientation === "landscape"
-                    ? "aspect-[4/3]"
-                    : orientation === "square"
-                      ? "aspect-square"
-                      : "aspect-[3/4]";
-
                 return (
                 <div
                   key={wp._id}
                   onClick={() => setSelectedWallpaper(wp)}
-                  className={`bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group ${aspectClass}`}
+                  className="mb-4 inline-block w-full break-inside-avoid bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group"
                 >
-                  <div className="relative w-full h-full">
-                    <S3Media s3Key={wp.watermarkedUrl || wp.imageUrl} className="w-full h-full object-cover" />
+                  <div className="relative w-full">
+                    <S3Media s3Key={wp.watermarkedUrl || wp.imageUrl} className="w-full h-auto object-cover block" />
                     {/* Price badge */}
                     <div className="absolute top-3 left-3 z-10 flex gap-1.5">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold backdrop-blur-md border ${wp.price > 0 ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-white/10 text-gray-300 border-white/20'}`}>
