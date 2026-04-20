@@ -11,6 +11,7 @@ export interface IGetApprovedWallpapersUseCase {
     maxPrice?: number,
     creatorId?: string,
     userId?: string,
-    ids?: string[]
+    ids?: string[],
+    purchasedOnly?: boolean
   ): Promise<PaginatedResult<WallpaperResponseDto>>;
 }

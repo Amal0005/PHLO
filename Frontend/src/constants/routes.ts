@@ -12,6 +12,7 @@ export const ROUTES = {
     PAYMENT_SUCCESS: "/payment-success",
     PAYMENT_CANCEL: "/payment-cancel",
     WALLPAPERS: "/wallpapers",
+    MY_WALLPAPERS: "/my-wallpapers",
     WALLPAPER_SUCCESS: "/wallpaper-success",
     WISHLIST: "/wishlist",
     BOOKINGS: "/bookings",

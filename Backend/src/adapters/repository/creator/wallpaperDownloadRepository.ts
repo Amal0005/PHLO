@@ -30,4 +30,12 @@ export class WallpaperDownloadRepository implements IWallpaperDownloadRepository
     const exists = await WallpaperDownloadModel.exists({ wallpaperId, userId });
     return !!exists;
   }
+
+  async getPurchasedWallpaperIds(userId: string): Promise<string[]> {
+    const rows = await WallpaperDownloadModel.find({ userId })
+      .select("wallpaperId -_id")
+      .lean();
+
+    return rows.map((row) => String(row.wallpaperId));
+  }
 }

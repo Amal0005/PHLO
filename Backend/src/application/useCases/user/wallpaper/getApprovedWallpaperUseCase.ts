@@ -19,9 +19,49 @@ export class GetApprovedWallpaperUseCase implements IGetApprovedWallpapersUseCas
         maxPrice?: number,
         creatorId?: string,
         userId?: string,
-        ids?: string[]
+        ids?: string[],
+        purchasedOnly?: boolean
     ): Promise<PaginatedResult<WallpaperResponseDto>> {
-        const result = await this._wallpaperRepo.findApproved(page, limit, search, hashtag, minPrice, maxPrice, ids, creatorId);
+        let effectiveIds = ids;
+
+        if (purchasedOnly) {
+            if (!userId) {
+                return {
+                    data: [],
+                    total: 0,
+                    page,
+                    limit,
+                    totalPages: 0,
+                };
+            }
+
+            const purchasedIds = await this._wallpaperDownloadRepo.getPurchasedWallpaperIds(userId);
+            if (purchasedIds.length === 0) {
+                return {
+                    data: [],
+                    total: 0,
+                    page,
+                    limit,
+                    totalPages: 0,
+                };
+            }
+
+            effectiveIds = effectiveIds?.length
+                ? effectiveIds.filter((id) => purchasedIds.includes(id))
+                : purchasedIds;
+
+            if (!effectiveIds.length) {
+                return {
+                    data: [],
+                    total: 0,
+                    page,
+                    limit,
+                    totalPages: 0,
+                };
+            }
+        }
+
+        const result = await this._wallpaperRepo.findApproved(page, limit, search, hashtag, minPrice, maxPrice, effectiveIds, creatorId);
 
         const enrichedData = await Promise.all(result.data.map(async (wp) => {
             const isPurchased = userId ? (wp.price === 0 || await this._wallpaperDownloadRepo.hasPurchased(wp._id!, userId)) : false;

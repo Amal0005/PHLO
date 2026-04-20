@@ -23,4 +23,16 @@ export const UserWallpaperService = {
     });
     return res.data;
   },
+
+  getPurchasedWallpapers: async (page?: number, limit?: number): Promise<PaginatedResponse<WallpaperData>> => {
+    const res = await api.get(FRONTEND_ROUTES.USER.WALLPAPERS, {
+      params: {
+        page,
+        limit,
+        purchasedOnly: true,
+        paidOnly: true,
+      },
+    });
+    return res.data;
+  },
 };

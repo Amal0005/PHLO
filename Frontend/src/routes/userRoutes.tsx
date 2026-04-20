@@ -15,6 +15,7 @@ import PaymentCancel from "@/pages/user/payment/paymentCancel";
 import BookingsPage from "@/pages/user/booking/bookings";
 import BookingDetailPage from "@/pages/user/booking/BookingDetailPage";
 import WallpaperGallery from "@/pages/user/wallpaper/wallpaperGallery";
+import MyWallpapers from "@/pages/user/wallpaper/myWallpapers";
 import WishlistPage from "@/pages/user/wishlist/wishlistPage";
 import ChatPage from "@/pages/chat/ChatPage";
 import UserWalletPage from "@/pages/user/wallet/UserWalletPage";
@@ -61,6 +62,7 @@ export function UserRoutes() {
         <Route path={ROUTES.USER.BOOKINGS} element={<BookingsPage />} />
         <Route path={ROUTES.USER.BOOKING_DETAIL} element={<BookingDetailPage />} />
         <Route path={ROUTES.USER.WALLPAPERS} element={<WallpaperGallery />} />
+        <Route path={ROUTES.USER.MY_WALLPAPERS} element={<MyWallpapers />} />
         <Route path={ROUTES.USER.WISHLIST} element={<WishlistPage />} />
         <Route path={ROUTES.USER.CHAT} element={<ChatPage />} />
         <Route path={ROUTES.USER.WALLET} element={<UserWalletPage />} />

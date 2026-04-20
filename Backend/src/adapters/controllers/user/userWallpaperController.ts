@@ -24,17 +24,21 @@ export class UserWallpaperController {
       const creatorId = req.query.creatorId as string | undefined;
       const userId = req.user?.userId;
       const ids = req.query.ids ? (req.query.ids as string).split(",") : undefined;
+      const purchasedOnly = req.query.purchasedOnly === "true";
+      const paidOnly = req.query.paidOnly === "true";
+      const effectiveMinPrice = paidOnly ? Math.max(minPrice ?? 0, 1) : minPrice;
 
       const result = await this._getApprovedWallpaperUseCase.getApprovedWallpapers(
         page,
         limit,
         search,
         hashtag,
-        !isNaN(minPrice!) ? minPrice : undefined,
+        !isNaN(effectiveMinPrice!) ? effectiveMinPrice : undefined,
         !isNaN(maxPrice!) ? maxPrice : undefined,
         creatorId,
         userId,
-        ids
+        ids,
+        purchasedOnly
       );
 
       return res.status(StatusCode.OK).json({

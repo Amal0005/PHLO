@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Image as ImageIcon, Download, X, Bookmark } from "lucide-react";
 
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
@@ -15,7 +15,10 @@ import logo from "@/assets/images/Logo_white.png";
 
 
 const WallpaperGallery: React.FC = () => {
+  type Orientation = "vertical" | "horizontal" | "square";
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
+  const [orientationMap, setOrientationMap] = useState<Record<string, Orientation>>({});
+  const [selectedOrientation, setSelectedOrientation] = useState<"all" | "vertical" | "horizontal">("all");
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 500);
@@ -123,6 +126,58 @@ const WallpaperGallery: React.FC = () => {
     };
     fetchWishlistIds();
   }, []);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const detectOrientation = async () => {
+      const unresolved = wallpapers.filter((wp) => !orientationMap[wp._id]);
+      if (!unresolved.length) return;
+
+      const results = await Promise.all(
+        unresolved.map(async (wp) => {
+          try {
+            const mediaKey = wp.watermarkedUrl || wp.imageUrl;
+            const url = await S3Service.getViewUrl(mediaKey);
+            const orientation = await new Promise<Orientation>((resolve) => {
+              const img = new Image();
+              img.onload = () => {
+                if (img.naturalHeight > img.naturalWidth) resolve("vertical");
+                else if (img.naturalWidth > img.naturalHeight) resolve("horizontal");
+                else resolve("square");
+              };
+              img.onerror = () => resolve("vertical");
+              img.src = url;
+            });
+            return { id: wp._id, orientation };
+          } catch {
+            return { id: wp._id, orientation: "vertical" as Orientation };
+          }
+        }),
+      );
+
+      if (isCancelled) return;
+
+      setOrientationMap((prev) => {
+        const next = { ...prev };
+        results.forEach(({ id, orientation }) => {
+          next[id] = orientation;
+        });
+        return next;
+      });
+    };
+
+    detectOrientation();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [wallpapers, orientationMap]);
+
+  const filteredWallpapers = useMemo(() => {
+    if (selectedOrientation === "all") return wallpapers;
+    return wallpapers.filter((wp) => orientationMap[wp._id] === selectedOrientation);
+  }, [wallpapers, orientationMap, selectedOrientation]);
 
   const handleToggleWishlist = async (e: React.MouseEvent, wallpaperId: string) => {
     e.stopPropagation();
@@ -298,6 +353,25 @@ const WallpaperGallery: React.FC = () => {
           </div>
         </div>
 
+        {/* Orientation Filter */}
+        <div className="mb-8 flex justify-center">
+          <div className="inline-flex gap-2 bg-zinc-900 border border-white/10 rounded-full p-1">
+            {(["all", "vertical", "horizontal"] as const).map((type) => (
+              <button
+                key={type}
+                onClick={() => setSelectedOrientation(type)}
+                className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition-all ${
+                  selectedOrientation === type
+                    ? "bg-white text-black"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
@@ -312,10 +386,16 @@ const WallpaperGallery: React.FC = () => {
             <ImageIcon size={48} className="text-gray-600 mb-4" />
             <h3 className="text-2xl font-black mb-2">No Wallpapers Found</h3>
           </div>
+        ) : filteredWallpapers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-[50vh] text-center">
+            <ImageIcon size={48} className="text-gray-600 mb-4" />
+            <h3 className="text-2xl font-black mb-2">No {selectedOrientation} wallpapers found</h3>
+            <p className="text-gray-500">Try switching to another orientation.</p>
+          </div>
         ) : (
           <>
             <div className="columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">
-              {wallpapers.map((wp) => {
+              {filteredWallpapers.map((wp) => {
                 return (
                 <div
                   key={wp._id}
