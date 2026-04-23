@@ -8,7 +8,9 @@ import {
   Globe,
   ShieldCheck,
   Sparkles,
-  Camera
+  Camera,
+  UserRound,
+  BadgeCheck
 } from 'lucide-react';
 import logoWhite from "@/assets/images/Logo_white.png";
 import { useNavigate } from 'react-router-dom';
@@ -81,11 +83,7 @@ const LandingPage = () => {
     }
   };
 
-  const navLinks = [
-    { label: "Explore", href: "#hero" },
-    { label: "Features", href: "#features" },
-    { label: "Contact", href: "#contact" },
-  ];
+  const navLinks = [{ label: "Features", href: "#features" }, { label: "Contact", href: "#contact" }];
 
   const handleNavClick = (href: string) => {
     const target = document.querySelector(href);
@@ -146,7 +144,13 @@ const LandingPage = () => {
                 onClick={() => navigate(ROUTES.USER.REGISTER)}
                 className="px-6 py-2.5 bg-white text-black rounded-full text-xs font-black uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all"
               >
-                Get Started
+                User Signup
+              </button>
+              <button
+                onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
+                className="px-6 py-2.5 border border-white/25 rounded-full text-xs font-black uppercase tracking-[0.15em] text-white hover:bg-white/10 transition-all"
+              >
+                Creator Signup
               </button>
             </div>
 
@@ -165,27 +169,32 @@ const LandingPage = () => {
             exit={{ opacity: 0, y: -20 }}
             className="fixed inset-0 z-[55] bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center gap-8 md:hidden"
           >
-            {navLinks.map((item) => (
-              <button
-                key={item.label}
-                className="text-2xl font-black uppercase tracking-[0.3em]"
-                onClick={() => handleNavClick(item.href)}
-              >
-                {item.label}
-              </button>
-            ))}
-            <button 
+            <div className="w-full max-w-xs px-6 flex flex-col gap-4">
+              <button 
               onClick={() => navigate(ROUTES.USER.LOGIN)}
-              className="px-12 py-4 bg-white text-black rounded-full font-black uppercase tracking-[0.3em]"
+                className="w-full px-8 py-4 bg-white text-black rounded-full font-black uppercase tracking-[0.25em]"
             >
               Login
-            </button>
-            <button
-              onClick={() => navigate(ROUTES.USER.REGISTER)}
-              className="px-12 py-4 border border-white/20 text-white rounded-full font-black uppercase tracking-[0.2em]"
-            >
-              Register
-            </button>
+              </button>
+              <button
+                onClick={() => navigate(ROUTES.USER.REGISTER)}
+                className="w-full px-8 py-4 border border-white/20 text-white rounded-full font-black uppercase tracking-[0.15em]"
+              >
+                User Signup
+              </button>
+              <button
+                onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
+                className="w-full px-8 py-4 border border-white/20 text-white rounded-full font-black uppercase tracking-[0.15em]"
+              >
+                Creator Signup
+              </button>
+              <button
+                className="w-full pt-3 text-xs font-black uppercase tracking-[0.25em] text-white/60"
+                onClick={() => handleNavClick("#features")}
+              >
+                View Features
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -216,16 +225,16 @@ const LandingPage = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 px-6 max-w-6xl mx-auto text-center pt-20"
+          className="relative z-10 px-6 max-w-6xl mx-auto text-center pt-24 pb-12"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6">
             <Sparkles size={14} className="text-yellow-500" />
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">The Future of Photography</span>
           </motion.div>
 
           <motion.h1 
             variants={itemVariants}
-            className="text-5xl md:text-8xl lg:text-9xl font-black leading-[0.9] tracking-tighter mb-8"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-[0.95] tracking-tighter mb-6"
           >
             CAPTURING THE <br/>
             <span className="bg-gradient-to-r from-white via-white/50 to-white/10 bg-clip-text text-transparent italic">EXTRAORDINARY</span>
@@ -233,15 +242,15 @@ const LandingPage = () => {
 
           <motion.p 
             variants={itemVariants}
-            className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-12 font-medium leading-relaxed tracking-wide"
+            className="text-base sm:text-lg md:text-xl text-white/65 max-w-2xl mx-auto mb-10 font-medium leading-relaxed tracking-wide"
           >
             PHLO bridges the gap between visionaries and pixel-perfect creators. A luxury eco-system designed for elite visual storytelling.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
             <button
               onClick={() => navigate(ROUTES.USER.REGISTER)}
-              className="group relative px-10 py-5 bg-white text-black rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] overflow-hidden transition-all hover:pr-14 active:scale-95"
+              className="group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-white text-black rounded-[2rem] font-black text-sm uppercase tracking-[0.18em] overflow-hidden transition-all hover:pr-14 active:scale-95"
             >
               <span className="relative z-10">Start as a User</span>
               <ArrowRight className="absolute right-6 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" size={20} />
@@ -249,10 +258,36 @@ const LandingPage = () => {
 
             <button
               onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
-              className="px-10 py-5 bg-white/5 border border-white/10 backdrop-blur-xl rounded-[2rem] font-black text-sm uppercase tracking-[0.1em] hover:bg-white/10 transition-all flex items-center gap-3 active:scale-95 border-b-4 border-white/5"
+              className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-white/5 border border-white/10 backdrop-blur-xl rounded-[2rem] font-black text-sm uppercase tracking-[0.1em] hover:bg-white/10 transition-all flex items-center justify-center gap-3 active:scale-95 border-b-4 border-white/5"
             >
               <Camera size={18} className="text-white/50" />
               Join Creator Network
+            </button>
+          </motion.div>
+
+          <motion.div
+            variants={itemVariants}
+            className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto"
+          >
+            <button
+              onClick={() => navigate(ROUTES.USER.REGISTER)}
+              className="flex items-center justify-between px-5 py-4 rounded-2xl border border-white/10 bg-black/40 hover:bg-black/60 transition-all text-left"
+            >
+              <span>
+                <span className="block text-[10px] uppercase tracking-[0.3em] text-white/40">Navigator</span>
+                <span className="block font-black text-base mt-1">User Signup</span>
+              </span>
+              <UserRound className="text-white/70" size={20} />
+            </button>
+            <button
+              onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
+              className="flex items-center justify-between px-5 py-4 rounded-2xl border border-white/10 bg-black/40 hover:bg-black/60 transition-all text-left"
+            >
+              <span>
+                <span className="block text-[10px] uppercase tracking-[0.3em] text-white/40">Navigator</span>
+                <span className="block font-black text-base mt-1">Creator Signup</span>
+              </span>
+              <BadgeCheck className="text-white/70" size={20} />
             </button>
           </motion.div>
 
