@@ -1,366 +1,106 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
-import {
-  ArrowRight,
-  Menu,
-  X,
-  Zap,
-  Globe,
-  ShieldCheck,
-  Sparkles,
-  Camera,
-  UserRound,
-  BadgeCheck
-} from 'lucide-react';
+import { motion, Variants } from 'framer-motion';
+import { ArrowRight, Camera } from 'lucide-react';
 import logoWhite from "@/assets/images/Logo_white.png";
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from "@/constants/routes";
 
-const heroImages = [
-  'https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=1920&q=80',
-  'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=1920&q=80',
-  'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1920&q=80',
-  'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1920&q=80',
-  'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1920&q=80',
-  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1920&q=80'
-];
-
-const features = [
-  { 
-    title: "Global Search", 
-    desc: "Discover lens masters in every corner of the world.", 
-    icon: Globe,
-    color: "from-blue-500/20 to-cyan-500/20"
-  },
-  { 
-    title: "Verified Talent", 
-    desc: "Only elite, background-checked professionals.", 
-    icon: ShieldCheck ,
-    color: "from-purple-500/20 to-pink-500/20"
-  },
-  { 
-    title: "Instant Booking", 
-    desc: "Seamless synchronization with your personal schedule.", 
-    icon: Zap ,
-    color: "from-orange-500/20 to-red-500/20"
-  }
-];
-
 const LandingPage = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex(prev => (prev + 1) % heroImages.length);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, []);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.3 }
+      transition: { staggerChildren: 0.12, delayChildren: 0.15 }
     }
   };
 
   const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
-      transition: { duration: 0.8, ease: "easeOut" }
+      transition: { duration: 0.45, ease: "easeOut" }
     }
-  };
-
-  const navLinks = [{ label: "Features", href: "#features" }, { label: "Contact", href: "#contact" }];
-
-  const handleNavClick = (href: string) => {
-    const target = document.querySelector(href);
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-    setMobileMenuOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-white selection:text-black overflow-x-hidden font-sans">
-      
-      {/* Dynamic Background Atmospheric Effects */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-900/10 rounded-full blur-[150px] animate-pulse" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[150px] animate-pulse" />
+    <div className="min-h-screen bg-[#060606] text-white selection:bg-white selection:text-black overflow-x-hidden font-sans relative">
+      <div className="pointer-events-none absolute inset-0">
+        <motion.div
+          animate={{ opacity: [0.2, 0.35, 0.2] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-8rem] left-1/2 -translate-x-1/2 w-[24rem] h-[24rem] rounded-full bg-white/10 blur-[120px]"
+        />
+        <motion.div
+          animate={{ opacity: [0.15, 0.3, 0.15] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+          className="absolute bottom-[-10rem] right-[-6rem] w-[22rem] h-[22rem] rounded-full bg-zinc-500/20 blur-[120px]"
+        />
       </div>
 
-      {/* NAVBAR */}
-      <nav className={`fixed w-full z-[60] transition-all duration-700 ${
-        isScrolled
-          ? 'bg-black/50 backdrop-blur-2xl border-b border-white/5 py-4'
-          : 'bg-transparent py-8'
-      }`}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-          <div className="flex justify-between items-center gap-4">
-            
-            <motion.div 
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              className="relative group cursor-pointer"
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            >
-              <img src={logoWhite} alt="PHLO" className="h-10 md:h-14 object-contain brightness-110 drop-shadow-2xl transition-transform group-hover:scale-105" />
-            </motion.div>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-black/30 backdrop-blur-xl px-2 py-2">
-              {navLinks.map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => handleNavClick(item.href)}
-                  className="px-4 py-2 text-xs lg:text-sm font-bold uppercase tracking-[0.16em] text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="hidden md:flex items-center gap-3">
-              <button
-                onClick={() => navigate(ROUTES.USER.LOGIN)}
-                className="px-6 py-2.5 border border-white/15 rounded-full text-xs font-black uppercase tracking-[0.2em] text-white hover:bg-white/10 transition-all"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => navigate(ROUTES.USER.REGISTER)}
-                className="px-6 py-2.5 bg-white text-black rounded-full text-xs font-black uppercase tracking-[0.2em] hover:bg-zinc-200 transition-all"
-              >
-                User Signup
-              </button>
-              <button
-                onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
-                className="px-6 py-2.5 border border-white/25 rounded-full text-xs font-black uppercase tracking-[0.15em] text-white hover:bg-white/10 transition-all"
-              >
-                Creator Signup
-              </button>
-            </div>
-
-            <button className="md:hidden text-white p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-[55] bg-black/95 backdrop-blur-3xl flex flex-col items-center justify-center gap-8 md:hidden"
-          >
-            <div className="w-full max-w-xs px-6 flex flex-col gap-4">
-              <button 
-              onClick={() => navigate(ROUTES.USER.LOGIN)}
-                className="w-full px-8 py-4 bg-white text-black rounded-full font-black uppercase tracking-[0.25em]"
-            >
-              Login
-              </button>
-              <button
-                onClick={() => navigate(ROUTES.USER.REGISTER)}
-                className="w-full px-8 py-4 border border-white/20 text-white rounded-full font-black uppercase tracking-[0.15em]"
-              >
-                User Signup
-              </button>
-              <button
-                onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
-                className="w-full px-8 py-4 border border-white/20 text-white rounded-full font-black uppercase tracking-[0.15em]"
-              >
-                Creator Signup
-              </button>
-              <button
-                className="w-full pt-3 text-xs font-black uppercase tracking-[0.25em] text-white/60"
-                onClick={() => handleNavClick("#features")}
-              >
-                View Features
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* HERO SECTION */}
-      <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        
-        {/* Background Slider */}
-        <div className="absolute inset-0 z-0">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentImageIndex}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 2, ease: "easeInOut" }}
-              className="absolute inset-0"
-            >
-              <img src={heroImages[currentImageIndex]} alt="Hero" className="w-full h-full object-cover grayscale-[20%] contrast-[1.1]" />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#050505]" />
-              <div className="absolute inset-0 bg-black/30" />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Content */}
-        <motion.div 
+      <main className="relative z-10 min-h-screen flex items-center justify-center px-5 sm:px-8">
+        <motion.section
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 px-6 max-w-6xl mx-auto text-center pt-24 pb-12"
+          className="w-full max-w-3xl text-center py-14 sm:py-20"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6">
-            <Sparkles size={14} className="text-yellow-500" />
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80">The Future of Photography</span>
-          </motion.div>
-
-          <motion.h1 
+          <motion.img
             variants={itemVariants}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-[0.95] tracking-tighter mb-6"
+            src={logoWhite}
+            alt="PHLO"
+            className="h-10 sm:h-12 w-auto mx-auto mb-8 opacity-95"
+          />
+
+          <motion.h1
+            variants={itemVariants}
+            className="text-3xl sm:text-5xl font-black leading-tight tracking-tight mb-4"
           >
-            CAPTURING THE <br/>
-            <span className="bg-gradient-to-r from-white via-white/50 to-white/10 bg-clip-text text-transparent italic">EXTRAORDINARY</span>
+            Welcome to PHLO
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             variants={itemVariants}
-            className="text-base sm:text-lg md:text-xl text-white/65 max-w-2xl mx-auto mb-10 font-medium leading-relaxed tracking-wide"
+            className="text-sm sm:text-base text-white/70 max-w-xl mx-auto mb-8 leading-relaxed"
           >
-            PHLO bridges the gap between visionaries and pixel-perfect creators. A luxury eco-system designed for elite visual storytelling.
+            Simple, fast access for both users and creators.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center"
+          >
             <button
               onClick={() => navigate(ROUTES.USER.REGISTER)}
-              className="group relative w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-white text-black rounded-[2rem] font-black text-sm uppercase tracking-[0.18em] overflow-hidden transition-all hover:pr-14 active:scale-95"
+              className="group w-full sm:w-auto min-w-[220px] px-7 py-3.5 bg-white text-black rounded-full font-bold text-sm uppercase tracking-[0.12em] transition-transform hover:scale-[1.02] active:scale-95 inline-flex items-center justify-center gap-2"
             >
-              <span className="relative z-10">Start as a User</span>
-              <ArrowRight className="absolute right-6 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0" size={20} />
+              User Signup
+              <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </button>
 
             <button
               onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
-              className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-white/5 border border-white/10 backdrop-blur-xl rounded-[2rem] font-black text-sm uppercase tracking-[0.1em] hover:bg-white/10 transition-all flex items-center justify-center gap-3 active:scale-95 border-b-4 border-white/5"
+              className="w-full sm:w-auto min-w-[220px] px-7 py-3.5 border border-white/20 rounded-full font-bold text-sm uppercase tracking-[0.12em] hover:bg-white/10 transition-transform hover:scale-[1.02] active:scale-95 inline-flex items-center justify-center gap-2"
             >
-              <Camera size={18} className="text-white/50" />
-              Join Creator Network
+              <Camera size={16} />
+              Creator Signup
             </button>
           </motion.div>
 
           <motion.div
             variants={itemVariants}
-            className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto"
+            className="mt-5"
           >
             <button
-              onClick={() => navigate(ROUTES.USER.REGISTER)}
-              className="flex items-center justify-between px-5 py-4 rounded-2xl border border-white/10 bg-black/40 hover:bg-black/60 transition-all text-left"
+              onClick={() => navigate(ROUTES.USER.LOGIN)}
+              className="text-xs uppercase tracking-[0.14em] text-white/70 hover:text-white transition-colors"
             >
-              <span>
-                <span className="block text-[10px] uppercase tracking-[0.3em] text-white/40">Navigator</span>
-                <span className="block font-black text-base mt-1">User Signup</span>
-              </span>
-              <UserRound className="text-white/70" size={20} />
-            </button>
-            <button
-              onClick={() => navigate(ROUTES.CREATOR.REGISTER)}
-              className="flex items-center justify-between px-5 py-4 rounded-2xl border border-white/10 bg-black/40 hover:bg-black/60 transition-all text-left"
-            >
-              <span>
-                <span className="block text-[10px] uppercase tracking-[0.3em] text-white/40">Navigator</span>
-                <span className="block font-black text-base mt-1">Creator Signup</span>
-              </span>
-              <BadgeCheck className="text-white/70" size={20} />
+              Login
             </button>
           </motion.div>
-
-        </motion.div>
-
-        {/* Scroll Indicator */}
-        <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-20"
-        >
-          <div className="w-[1px] h-20 bg-gradient-to-b from-white to-transparent" />
-        </motion.div>
-      </section>
-
-      {/* FEATURES SECTION */}
-      <section id="features" className="relative py-32 px-6 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-24">
-            <h2 className="text-[10px] font-black uppercase tracking-[1em] text-white/30 mb-6">Capabilities</h2>
-            <h3 className="text-4xl md:text-6xl font-black tracking-tight">ELEVATED WORKFLOW</h3>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {features.map((f, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.8 }}
-                className="relative group p-10 bg-white/[0.01] border border-white/5 rounded-[3rem] hover:bg-white/[0.03] hover:border-white/10 transition-all overflow-hidden"
-              >
-                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${f.color} blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity`} />
-                
-                <div className="relative z-10">
-                  <div className="w-16 h-16 bg-white/5 rounded-[1.5rem] flex items-center justify-center mb-8 border border-white/10 group-hover:bg-white group-hover:text-black transition-all">
-                    <f.icon size={28} />
-                  </div>
-                  <h4 className="text-2xl font-black mb-4 uppercase tracking-tighter">{f.title}</h4>
-                  <p className="text-white/40 leading-relaxed font-medium">{f.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER CALL-BACK */}
-      <section id="contact" className="py-32 px-6">
-        <motion.div 
-          initial={{ scale: 0.95, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          className="max-w-6xl mx-auto p-16 md:p-32 bg-gradient-to-br from-white/5 to-transparent border border-white/10 rounded-[4rem] text-center relative overflow-hidden group"
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.05),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-          
-          <h2 className="text-4xl md:text-7xl font-black mb-10 tracking-tight leading-none">
-            READY TO <br/>
-            <span className="bg-white text-black px-4 ml-[-1rem] md:ml-[-2rem] leading-tight">DEFINE REALITY?</span>
-          </h2>
-          
-          <p className="mt-12 text-[10px] font-black uppercase tracking-[0.5em] text-white/20">The industry standard for high-end photography</p>
-        </motion.div>
-      </section>
-
-      {/* FOOTER LINKS */}
-      <footer className="py-20 border-t border-white/5 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
-          <img src={logoWhite} alt="PHLO" className="h-10 opacity-30 grayscale" />
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">© 2026 PHLO STUDIOS. ALL RIGHTS RESERVED.</p>
-        </div>
-      </footer>
+        </motion.section>
+      </main>
     </div>
   );
 };
