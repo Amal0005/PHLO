@@ -242,7 +242,7 @@ const WishlistPage: React.FC = () => {
               <ImageIcon size={48} className="text-gray-600 mb-4" />
               <h3 className="text-2xl font-black mb-2">No Saved Wallpapers</h3>
               <p className="text-gray-500 mb-6">
-                Browse wallpapers and tap the heart icon to save them here
+                Browse wallpapers and tap the bookmark icon to save them here
               </p>
               <button
                 onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
@@ -327,7 +327,7 @@ const WishlistPage: React.FC = () => {
             <PackageIcon size={48} className="text-gray-600 mb-4" />
             <h3 className="text-2xl font-black mb-2">No Saved Packages</h3>
             <p className="text-gray-500 mb-6">
-              Browse packages and tap the heart icon to save them here
+              Browse packages and tap the bookmark icon to save them here
             </p>
             <button
               onClick={() => navigate(ROUTES.USER.PACKAGES)}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package as PackageIcon, MapPin, X, Heart } from "lucide-react";
+import { Package as PackageIcon, MapPin, X, Bookmark, Image as ImageIcon, ArrowRight } from "lucide-react";
 
 import { UserPackageService } from "@/services/user/userPackageService";
 import { WishlistService } from "@/services/user/wishlistService";
@@ -42,6 +42,7 @@ const PackageListing: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
   const [currentLocationName, setCurrentLocationName] = useState<string>("");
+  const [showFilters, setShowFilters] = useState(false);
   const limit = 9;
 
   useEffect(() => {
@@ -182,106 +183,138 @@ const PackageListing: React.FC = () => {
       <UserNavbar />
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
-        <div className="mb-12 text-center">
-          <h1 className="text-5xl font-black mb-4">Explore Packages</h1>
-          <p className="text-gray-400 text-lg">
-            Discover amazing photography packages from talented creators
-          </p>
-        </div>
+        {/* Cinematic Header Area */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-16">
+          <div className="text-left">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-2 leading-none">Experiences</h1>
+            <p className="text-zinc-500 text-xs font-bold uppercase tracking-[0.3em]">Bespoke Photography Packages</p>
+          </div>
+          
+          <div className="flex flex-1 items-center justify-end gap-3 w-full max-w-3xl">
+            <div className="relative flex-1 group">
+              <FilterSearch
+                value={searchQuery}
+                onChange={(val) => { setSearchQuery(val); setPage(1); }}
+                placeholder="Search vision..."
+                className="w-full !bg-zinc-900/50 !border-white/5 focus:!border-white/20 transition-all rounded-2xl pl-12"
+              />
+            </div>
 
-        {/* FILTER BAR */}
-        <div className="mb-10 space-y-6">
-          <FilterSearch
-            value={searchQuery}
-            onChange={(val) => { setSearchQuery(val); setPage(1); }}
-            placeholder="Search by package name, creator, or style..."
-            className="w-full"
-          />
-
-          <div className="flex flex-wrap items-center gap-3">
+            {/* Reusable Category Dropdown */}
             <FilterSelect
               value={selectedCategory}
               onChange={(val) => { setSelectedCategory(val); setPage(1); }}
-              placeholder="All Categories"
-              className="w-[200px]"
+              placeholder="All Perspectives"
+              className="min-w-[220px]"
               options={[
-                { value: "", label: "All Categories" },
+                { value: "", label: "All Perspectives" },
                 ...allCategories.map(cat => ({ value: cat._id, label: cat.name }))
               ]}
             />
-
-            <FilterSelect
-              value={sortBy}
-              onChange={(val) => { setSortBy(val as "newest" | "oldest" | "price-asc" | "price-desc" | "distance"); setPage(1); }}
-              placeholder="Sort By"
-              className="w-[200px]"
-              options={[
-                { value: "distance", label: "Nearest First" },
-                { value: "newest", label: "Newest First" },
-                { value: "oldest", label: "Oldest First" },
-                { value: "price-asc", label: "Price: Low to High" },
-                { value: "price-desc", label: "Price: High to Low" },
-              ]}
-            />
-
-            <FilterButton
-              onClick={() => {
-                if (locationFilter) {
-                  setLocationFilter(null);
-                  setCurrentLocationName("");
-                  if (sortBy === "distance") setSortBy("newest");
-                } else {
-                  setIsLocating(true);
-                  navigator.geolocation.getCurrentPosition(
-                    async (pos) => {
-                      const { latitude: lat, longitude: lng } = pos.coords;
-                      setLocationFilter({ lat, lng });
-                      setSortBy("distance");
-                      try {
-                        const token = import.meta.env.VITE_MAPBOX_TOKEN;
-                        const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
-                        const data = await res.json();
-                        if (data.features?.[0]) {
-                          setCurrentLocationName(data.features[0].text || data.features[0].place_name);
-                        }
-                      } catch (error) { console.error(error); }
-                      setIsLocating(false);
-                      setPage(1);
-                    },
-                    (err: GeolocationPositionError) => {
-                      console.error(err);
-                      setIsLocating(false);
-                      toast.error("Failed to get location.");
-                    }
-                  );
-                }
-              }}
-              active={!!locationFilter}
-              loading={isLocating}
-              icon={<MapPin size={16} />}
-              className="max-w-[280px]"
+            
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-4 rounded-2xl border transition-all flex items-center gap-2 ${
+                showFilters 
+                ? "bg-white text-black border-white" 
+                : "bg-zinc-900/50 text-white border-white/5 hover:border-white/20"
+              }`}
             >
-              {currentLocationName && locationFilter ? currentLocationName : "Near Me"}
-            </FilterButton>
-
-            {/* Clear Filters */}
-            {(searchQuery || selectedCategory || locationFilter || sortBy !== "newest") && (
-              <FilterButton
-                onClick={clearFilters}
-                variant="danger"
-                icon={<X size={16} />}
-              >
-                Clear
-              </FilterButton>
-            )}
-
-            {/* Results Count */}
-            <div className="ml-auto hidden sm:flex items-center gap-2.5 px-4 py-2 bg-white/[0.03] border border-white/5 rounded-2xl">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600">Results</span>
-              <span className="text-xs font-black text-white">{totalPackages}</span>
-            </div>
+              <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Refine</span>
+              <ImageIcon size={18} />
+            </button>
           </div>
         </div>
+
+        {/* Removed Categories Pill Bar */}
+
+        {/* Expandable Refine Panel */}
+        {showFilters && (
+          <div className="mb-12 p-8 bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Sorting */}
+              <div className="space-y-4">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Sort Order</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { value: "newest", label: "Newest" },
+                    { value: "price-asc", label: "Price Low" },
+                    { value: "price-desc", label: "Price High" },
+                    { value: "distance", label: "Distance" }
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setSortBy(opt.value as any)}
+                      className={`py-3 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${
+                        sortBy === opt.value
+                          ? "bg-white/10 text-white border-white/40 shadow-lg shadow-white/5"
+                          : "bg-black/20 text-white/30 border-white/5 hover:border-white/10"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="space-y-4">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Location Intelligence</h3>
+                <button
+                  onClick={() => {
+                    if (locationFilter) {
+                      setLocationFilter(null);
+                      setCurrentLocationName("");
+                    } else {
+                      setIsLocating(true);
+                      navigator.geolocation.getCurrentPosition(
+                        async (pos) => {
+                          const { latitude: lat, longitude: lng } = pos.coords;
+                          setLocationFilter({ lat, lng });
+                          setSortBy("distance");
+                          try {
+                            const token = import.meta.env.VITE_MAPBOX_TOKEN;
+                            const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
+                            const data = await res.json();
+                            if (data.features?.[0]) setCurrentLocationName(data.features[0].text || data.features[0].place_name);
+                          } catch (error) { console.error(error); }
+                          setIsLocating(false);
+                        },
+                        () => { setIsLocating(false); toast.error("Failed to get location."); }
+                      );
+                    }
+                  }}
+                  className={`w-full py-4 rounded-xl border transition-all flex items-center justify-center gap-3 ${
+                    locationFilter 
+                    ? "bg-blue-500/10 text-blue-400 border-blue-500/30" 
+                    : "bg-black/20 text-white/30 border-white/5"
+                  }`}
+                >
+                  {isLocating ? (
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <MapPin size={14} />
+                      <span className="text-[9px] font-black uppercase tracking-widest">
+                        {currentLocationName || "Detect My Area"}
+                      </span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Reset */}
+              <div className="flex flex-col justify-end">
+                <button
+                  onClick={clearFilters}
+                  className="w-full py-4 rounded-xl bg-red-500/5 text-red-500/60 border border-red-500/10 text-[9px] font-black uppercase tracking-widest hover:bg-red-500/10 hover:text-red-500 transition-all"
+                >
+                  Reset All Refinements
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
 
         {loading ? (
@@ -296,58 +329,64 @@ const PackageListing: React.FC = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {packages.map((pkg) => (
                 <div
                   key={pkg._id}
-                  onClick={() => {
-                    navigate(`/packages/${pkg._id}`);
-                  }}
-
-                  className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group"
+                  onClick={() => navigate(`/packages/${pkg._id}`)}
+                  className="group bg-zinc-950 border border-white/5 rounded-[2.5rem] overflow-hidden hover:border-white/15 transition-all duration-500 cursor-pointer flex flex-col h-full"
                 >
-                  <div className="h-56 bg-zinc-800 relative overflow-hidden">
+                  <div className="aspect-[4/3] relative overflow-hidden bg-zinc-900">
                     {pkg.images?.length > 0 ? (
-                      <S3Media s3Key={pkg.images[0]} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <S3Media s3Key={pkg.images[0]} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-700">
+                      <div className="w-full h-full flex items-center justify-center text-zinc-800">
                         <PackageIcon size={40} />
                       </div>
                     )}
-                    <div className="absolute top-4 left-4">
+                    
+                    {/* Badge Overlay */}
+                    <div className="absolute top-6 left-6 right-6 flex justify-between items-start">
+                      <div className="px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-[9px] font-black uppercase tracking-[0.2em] text-white">
+                        {pkg.locations?.[0]?.placeName || "In Studio"}
+                      </div>
                       <button
                         onClick={(e) => handleToggleWishlist(e, pkg._id)}
-                        className={`p-2.5 backdrop-blur-md border rounded-2xl hover:scale-110 transition-all duration-300 active:scale-95 ${wishlistedIds.has(pkg._id)
-                          ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
-                          : "bg-black/30 border-white/20 text-white hover:bg-white hover:text-black"
-                          }`}
-                        title="Wishlist"
+                        className={`p-3 backdrop-blur-md border rounded-2xl transition-all duration-300 ${
+                          wishlistedIds.has(pkg._id)
+                          ? "bg-red-500/20 border-red-500/30 text-red-400"
+                          : "bg-black/20 border-white/10 text-white hover:bg-white hover:text-black"
+                        }`}
                       >
-                        <Heart size={16} fill={wishlistedIds.has(pkg._id) ? "currentColor" : "none"} />
+                        <Bookmark size={14} fill={wishlistedIds.has(pkg._id) ? "currentColor" : "none"} />
                       </button>
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h4 className="font-black text-xl mb-2 line-clamp-1">{pkg.title}</h4>
 
-                    <p className="text-gray-500 text-sm line-clamp-2 mb-4">{pkg.description}</p>
+                  <div className="p-8 flex flex-col flex-1">
+                    <div className="flex-1 space-y-3">
+                      <h4 className="text-2xl font-black uppercase tracking-tighter group-hover:text-zinc-200 transition-colors">
+                        {pkg.title}
+                      </h4>
+                      <p className="text-zinc-500 text-sm leading-relaxed line-clamp-2">
+                        {pkg.description}
+                      </p>
+                    </div>
 
-                    {/* Location Display */}
-                    {(pkg.locations && pkg.locations.length > 0) && (
-                      <div className="flex items-center gap-2 text-gray-400 text-sm mb-4">
-                        <MapPin size={16} className="flex-shrink-0" />
-                        <span className="line-clamp-1 flex-grow">
-                          {pkg.locations[0].placeName}
-                          {pkg.locations.length > 1 && ` (+${pkg.locations.length - 1} more)`}
-                        </span>
+                    <div className="mt-8 pt-8 border-t border-white/5 flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-zinc-600">Starting At</p>
+                        <p className="text-2xl font-black italic">₹{pkg.price.toLocaleString()}</p>
                       </div>
-                    )}
-
-                    <div className="text-2xl font-black">₹ {pkg.price.toLocaleString()}</div>
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                        <ArrowRight className="w-5 h-5 -rotate-45 group-hover:rotate-0 transition-all" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
+
             <Pagination
               page={page}
               totalPages={totalPages}

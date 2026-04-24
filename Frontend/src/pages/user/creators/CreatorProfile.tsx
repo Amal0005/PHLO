@@ -190,7 +190,7 @@ const CreatorProfile: React.FC = () => {
                   {wallpapers.map((wall) => (
                     <div 
                       key={wall._id}
-                      onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
+                      onClick={() => navigate(ROUTES.USER.WALLPAPER_DETAIL.replace(":id", wall._id))}
                       className="group aspect-[9/16] rounded-3xl overflow-hidden border border-white/5 relative cursor-pointer"
                     >
                       <S3Media s3Key={wall.imageUrl} className="w-full h-full object-cover blur-[2px] hover:blur-0 transition-all duration-700" />

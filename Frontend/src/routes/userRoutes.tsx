@@ -62,6 +62,7 @@ export function UserRoutes() {
         <Route path={ROUTES.USER.BOOKINGS} element={<BookingsPage />} />
         <Route path={ROUTES.USER.BOOKING_DETAIL} element={<BookingDetailPage />} />
         <Route path={ROUTES.USER.WALLPAPERS} element={<WallpaperGallery />} />
+        <Route path={ROUTES.USER.WALLPAPER_DETAIL} element={<WallpaperGallery />} />
         <Route path={ROUTES.USER.MY_WALLPAPERS} element={<MyWallpapers />} />
         <Route path={ROUTES.USER.WISHLIST} element={<WishlistPage />} />
         <Route path={ROUTES.USER.CHAT} element={<ChatPage />} />

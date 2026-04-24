@@ -160,217 +160,202 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Photography Packages */}
-      <section id="packages" className="py-20 bg-zinc-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-              Photography Packages
-            </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Choose the perfect package for your needs
-            </p>
+      {/* Photography Packages - Cinematic Spotlight Grid */}
+      <section id="packages" className="py-24 bg-black relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-white/5 rounded-full blur-[100px]" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-white/5 rounded-full blur-[120px]" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div className="max-w-2xl text-left">
+              <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter uppercase leading-[0.9]">
+                Professional <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40">
+                  Packages
+                </span>
+              </h2>
+              <p className="text-gray-500 text-lg font-medium border-l-2 border-white/20 pl-6">
+                Tailored photography experiences crafted for those who demand excellence.
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {loading ? (
-              <div className="col-span-full">
-                <LogoLoading />
-              </div>
+              [1, 2, 3].map((i) => (
+                <div key={i} className="aspect-[4/5] bg-zinc-900/50 animate-pulse rounded-[2.5rem]" />
+              ))
             ) : packages.length > 0 ? (
-              packages.map((pkg) => (
+              packages.map((pkg, idx) => (
                 <div
                   key={pkg._id}
-                  className="relative bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border border-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+                  onClick={() => navigate(`${ROUTES.USER.PACKAGES}/${pkg._id}`)}
+                  className={`group relative bg-zinc-900/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-white/5 hover:border-white/20 transition-all duration-500 cursor-pointer overflow-hidden ${
+                    idx === 1 ? "md:translate-y-8" : ""
+                  }`}
                 >
-                  <img
-                    src={(pkg.images && pkg.images.length > 0) ? pkg.images[0] : "https://images.unsplash.com/photo-1519741497674-611481863552?w=800"}
-                    alt={pkg.title}
-                    className="w-full h-48 object-cover rounded-xl mb-6"
-                  />
-
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold mb-2 line-clamp-1">{pkg.title}</h3>
-                    <div className="text-4xl font-bold mb-2">₹{pkg.price}</div>
-                    <p className="text-gray-400 capitalize">
-                      {pkg.category && typeof pkg.category === 'object' ? pkg.category.name : pkg.category}
-                    </p>
-                  </div>
-
-                  <div className="mb-6">
-                    <div className="flex items-center justify-center gap-2 text-gray-300 mb-4">
-                      <Camera size={20} />
-                      <span className="text-sm line-clamp-2">{pkg.description}</span>
+                  <div className="relative h-64 mb-8 overflow-hidden rounded-3xl">
+                    <img
+                      src={(pkg.images && pkg.images.length > 0) ? pkg.images[0] : "https://images.unsplash.com/photo-1519741497674-611481863552?w=800"}
+                      alt={pkg.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                    />
+                    <div className="absolute top-4 right-4 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/10">
+                      <span className="text-xs font-black tracking-widest uppercase text-white">₹{pkg.price}</span>
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => navigate(`${ROUTES.USER.PACKAGES}/${pkg._id}`)}
-                    className="w-full py-3 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-all"
-                  >
-                    View Details
-                  </button>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center text-gray-500 py-10">
-                No packages available at the moment.
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Wallpapers Section */}
-      <section id="wallpapers" className="py-20 bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-              Premium Wallpapers
-            </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Download stunning high-resolution wallpapers
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {wallpaperLoading ? (
-              [1, 2, 3, 4].map((i) => (
-                <div key={i} className="aspect-[3/4] bg-zinc-950 flex items-center justify-center animate-pulse rounded-2xl border border-white/5 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent w-full h-full phlo-image-shimmer" />
-                  <img src={logo} alt="PHLO" className="w-14 h-auto opacity-10 grayscale brightness-200" />
-                </div>
-              ))
-            ) : wallpapers.length > 0 ? (
-              wallpapers.map((wallpaper) => (
-                <div
-                  key={wallpaper._id}
-                  className="group relative aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
-                  onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
-                >
-                  <S3Media
-                    s3Key={wallpaper.watermarkedUrl || wallpaper.imageUrl}
-                    alt={wallpaper.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <h3 className="text-xl font-bold mb-2">
-                        {wallpaper.title}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-300 flex items-center gap-2">
-                          <Download size={16} />
-                          Featured
-                        </span>
-                        <button className="px-4 py-2 bg-white text-black rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors">
-                          View
-                        </button>
-                      </div>
+                  <h3 className="text-2xl font-bold mb-3 tracking-tight">{pkg.title}</h3>
+                  <p className="text-gray-500 text-sm mb-6 line-clamp-2 leading-relaxed">
+                    {pkg.description}
+                  </p>
+                  
+                  <div className="flex items-center justify-between pt-6 border-t border-white/5">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">
+                      {pkg.category && typeof pkg.category === 'object' ? (pkg.category as any).name : pkg.category}
+                    </span>
+                    <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-white group-hover:text-black transition-all">
+                      <ArrowRight size={18} />
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="col-span-full text-center text-gray-500 py-10">
-                No wallpapers available at the moment.
-              </div>
+              <div className="col-span-full text-center text-gray-500 py-20">No packages found.</div>
             )}
           </div>
 
-          <div className="text-center mt-12">
+          <div className="mt-20 text-center">
             <button
-              onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
-              className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg font-semibold hover:bg-white/20 transition-all inline-flex items-center gap-2"
+              onClick={() => navigate(ROUTES.USER.PACKAGES)}
+              className="px-10 py-5 bg-white text-black rounded-2xl font-black uppercase tracking-widest hover:bg-gray-200 transition-all hover:scale-105 shadow-[0_0_50px_rgba(255,255,255,0.1)] flex items-center justify-center gap-3 mx-auto"
             >
-              View All Wallpapers
+              View All Packages
               <ArrowRight size={20} />
             </button>
           </div>
         </div>
       </section>
 
-      {/* Top Creators */}
-      <section id="creators" className="py-20 bg-zinc-950">
+      {/* Wallpapers Section - Magazine Masonry */}
+      <section id="wallpapers" className="py-24 bg-zinc-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-              Top Creators
+          <div className="flex flex-col md:flex-row items-center justify-between mb-16 text-center md:text-left gap-8">
+            <div>
+              <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tighter uppercase">
+                Premium Wallpapers
+              </h2>
+              <p className="text-gray-400 font-medium">Stunning 8K resolution assets for your vision.</p>
+            </div>
+            <button 
+              onClick={() => navigate(ROUTES.USER.WALLPAPERS)}
+              className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] hover:text-white/60 transition-colors"
+            >
+              Explore Collection
+              <div className="w-12 h-[1px] bg-white" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 items-start">
+            {wallpaperLoading ? (
+              [1, 2, 3, 4].map((i) => (
+                <div key={i} className="aspect-[3/4] bg-zinc-900 animate-pulse rounded-3xl" />
+              ))
+            ) : wallpapers.length > 0 ? (
+              wallpapers.map((wallpaper, idx) => (
+                <div
+                  key={wallpaper._id}
+                  className={`group relative overflow-hidden rounded-3xl cursor-pointer ${
+                    idx % 2 === 1 ? "md:mt-12" : ""
+                  }`}
+                  onClick={() => navigate(ROUTES.USER.WALLPAPER_DETAIL.replace(":id", wallpaper._id))}
+                >
+                  <div className="aspect-[3/4] w-full">
+                    <S3Media
+                      s3Key={wallpaper.watermarkedUrl || wallpaper.imageUrl}
+                      alt={wallpaper.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <h3 className="text-sm font-bold tracking-widest uppercase mb-1">{wallpaper.title}</h3>
+                      <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/50">
+                        <Download size={12} /> 8K Asset
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : null}
+          </div>
+        </div>
+      </section>
+
+      {/* Top Creators - Glassmorphic Pods */}
+      <section id="creators" className="py-24 bg-black relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tighter uppercase">
+              Elite Creators
             </h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Meet our talented photography professionals
+            <p className="text-gray-500 font-medium max-w-xl mx-auto">
+              Connecting you with the top 1% of photography professionals worldwide.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-8 pb-8 no-scrollbar scroll-smooth">
             {creatorsLoading ? (
-               <div className="col-span-full">
-               <LogoLoading />
-             </div>
+              [1, 2, 3].map((i) => (
+                <div key={i} className="min-w-[300px] aspect-square bg-zinc-900 animate-pulse rounded-[3rem]" />
+              ))
             ) : creators.length > 0 ? (
               creators.map((creator) => (
-              <div
-                key={creator._id}
-                onClick={() => navigate(ROUTES.USER.CREATOR_DETAIL.replace(":id", creator._id))}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    navigate(ROUTES.USER.CREATOR_DETAIL.replace(":id", creator._id));
-                  }
-                }}
-                className="bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30"
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-24 h-24 rounded-full mb-4 border-4 border-white/20 overflow-hidden">
-                  <S3Media
-                    s3Key={creator.profilePhoto || ""}
-                    alt={creator.fullName}
-                    className="w-full h-full object-cover"
-                  />
-                  </div>
-                  <h3 className="text-xl font-bold mb-1">{creator.fullName}</h3>
-                  <p className="text-gray-400 text-sm mb-4">
-                    {creator.specialties?.[0] || "Professional Creator"}
-                  </p>
-
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="flex items-center gap-1">
-                      <Star
-                        size={16}
-                        className="text-yellow-400 fill-yellow-400"
+                <div
+                  key={creator._id}
+                  onClick={() => navigate(ROUTES.USER.CREATOR_DETAIL.replace(":id", creator._id))}
+                  className="min-w-[300px] md:min-w-0 group relative bg-zinc-900/30 backdrop-blur-xl border border-white/5 rounded-[3rem] p-10 flex flex-col items-center text-center hover:bg-zinc-800/50 transition-all cursor-pointer"
+                >
+                  <div className="relative w-32 h-32 mb-8">
+                    <div className="absolute inset-0 bg-white/20 rounded-full blur-2xl group-hover:bg-white/40 transition-all opacity-0 group-hover:opacity-100" />
+                    <div className="relative w-full h-full rounded-full border-4 border-white/10 overflow-hidden group-hover:border-white transition-colors duration-500">
+                      <S3Media
+                        s3Key={creator.profilePhoto || ""}
+                        alt={creator.fullName}
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
                       />
-                      <span className="font-semibold">5.0</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-gray-400">
-                      <Award size={16} />
-                      <span className="text-sm">
-                        {creator.yearsOfExperience}+ years exp
-                      </span>
                     </div>
                   </div>
-
-                  <p className="text-xs text-gray-400 font-medium">
-                    Tap anywhere on card to view profile
+                  
+                  <h3 className="text-2xl font-black mb-2 tracking-tight">{creator.fullName}</h3>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-6">
+                    {creator.specialties?.[0] || "Professional"}
                   </p>
+
+                  <div className="flex items-center gap-6 py-4 px-6 bg-white/5 rounded-2xl border border-white/5">
+                    <div className="flex items-center gap-2">
+                      <Star size={14} className="text-white fill-white" />
+                      <span className="text-sm font-black">5.0</span>
+                    </div>
+                    <div className="w-[1px] h-4 bg-white/10" />
+                    <div className="flex items-center gap-2 text-white/40">
+                      <Award size={14} />
+                      <span className="text-[10px] font-black uppercase">{creator.yearsOfExperience}+ YRS</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center text-gray-500 py-10">
-              No creators found.
-            </div>
-          )}
+              ))
+            ) : null}
           </div>
 
-          <div className="text-center mt-12">
+          <div className="mt-16 text-center">
             <button
               onClick={() => navigate(ROUTES.USER.CREATORS)}
-              className="px-8 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg font-semibold hover:bg-white/20 transition-all inline-flex items-center gap-2"
+              className="px-8 py-3 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all"
             >
               View All Creators
-              <ArrowRight size={20} />
             </button>
           </div>
         </div>

@@ -35,4 +35,14 @@ export const UserWallpaperService = {
     });
     return res.data;
   },
+
+  getWallpaperById: async (id: string): Promise<WallpaperData | null> => {
+    const res = await api.get(FRONTEND_ROUTES.USER.WALLPAPERS, {
+      params: { ids: id }
+    });
+    if (res.data.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+      return res.data.data[0];
+    }
+    return null;
+  },
 };

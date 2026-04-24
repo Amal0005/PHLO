@@ -73,28 +73,28 @@ const PackageDetailPage: React.FC = () => {
 
   const validateLocation = (lat: number, lng: number): boolean => {
     if (!packageData?.locations || packageData.locations.length === 0) return true;
-    
+
     // Enforce stricter numerical checks and Math.abs to secure the Haversine formula
     for (const loc of packageData.locations) {
       if (!loc.coordinates || loc.coordinates.length < 2) continue;
-      
+
       const pkgLng = Number(loc.coordinates[0]);
       const pkgLat = Number(loc.coordinates[1]);
-      
+
       if (isNaN(pkgLng) || isNaN(pkgLat)) continue;
-      
+
       const R = 6371; // Earth radiues in km
       const dLat = (pkgLat - lat) * (Math.PI / 180);
       const dLon = (pkgLng - lng) * (Math.PI / 180);
       const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat * (Math.PI / 180)) * Math.cos(pkgLat * (Math.PI / 180)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        Math.cos(lat * (Math.PI / 180)) * Math.cos(pkgLat * (Math.PI / 180)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(Math.abs(a)), Math.sqrt(Math.abs(1 - a)));
       const dist = R * c;
-      
+
       if (dist <= 10) return true;
     }
-    
+
     return false;
   };
 
@@ -273,7 +273,7 @@ const PackageDetailPage: React.FC = () => {
                 </div>
 
                 {packageData.creatorId && typeof packageData.creatorId === "object" && (
-                  <div 
+                  <div
                     onClick={() => navigate(ROUTES.USER.CREATOR_DETAIL.replace(':id', (packageData.creatorId as any)._id))}
                     className="flex items-center gap-4 mb-5 pb-4 cursor-pointer group/creator"
                     style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
@@ -513,61 +513,84 @@ const PackageDetailPage: React.FC = () => {
           </div>
         </div>
 
-        {/* ── FULL SCREEN IMAGE VIEWER MODAL ── */}
+        {/* ── PRO CINEMATIC VIEW MODAL ── */}
         {selectedImageModal !== null && (
-          <div className="fixed inset-0 z-[100] flex flex-col bg-black/95 backdrop-blur-2xl animate-in fade-in zoom-in duration-300">
-            {/* Modal Header/Controls */}
-            <div className="absolute top-0 inset-x-0 h-24 flex items-center justify-between px-8 lg:px-16 z-20">
-              <div className="flex flex-col">
-                <span className="text-[#E2B354] text-[8px] font-black uppercase tracking-[0.4em]">Cinematic View</span>
-                <span className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Image {selectedImageModal + 1} of {totalImages}</span>
+          <div className="fixed inset-0 z-[100] flex flex-col bg-black/95 backdrop-blur-3xl animate-in fade-in duration-500 overflow-hidden">
+            
+            {/* Ambient Background Layer */}
+            <div className="absolute inset-0 z-0 opacity-40 scale-110 blur-[80px] grayscale-[0.5]">
+               <S3Media
+                s3Key={packageData.images[selectedImageModal]}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Modal Header */}
+            <div className="absolute top-0 inset-x-0 h-32 flex items-center justify-between px-10 lg:px-20 z-50">
+              <div className="flex flex-col gap-1">
+                <span className="text-[#E2B354] text-[10px] font-black uppercase tracking-[0.6em]">Visionary View</span>
+                <div className="flex items-center gap-4">
+                  <div className="h-0.5 w-10 bg-[#E2B354] rounded-full" />
+                  <span className="text-white/40 text-[11px] font-bold uppercase tracking-[0.3em]">
+                    Composition {selectedImageModal + 1} <span className="mx-2 opacity-20">/</span> {totalImages}
+                  </span>
+                </div>
               </div>
               <button
                 onClick={() => setSelectedImageModal(null)}
-                className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-black transition-all"
+                className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all group active:scale-90"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6 transition-transform group-hover:rotate-90" />
               </button>
             </div>
 
-            {/* Main Image View */}
-            <div className="flex-1 flex items-center justify-center p-4 lg:p-24">
+            {/* Main Stage */}
+            <div className="flex-1 flex items-center justify-center p-6 lg:p-24 relative z-10">
               <div className="relative w-full h-full flex items-center justify-center group">
-                <S3Media
-                  s3Key={packageData.images[selectedImageModal]}
-                  className="max-w-full max-h-full object-contain rounded-2xl shadow-[0_50px_100px_rgba(0,0,0,0.9)]"
-                />
-
-                {/* Navigation Arrows */}
+                
+                {/* Previous Action */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedImageModal(prev => (prev! > 0 ? prev! - 1 : totalImages - 1));
                   }}
-                  className="absolute left-4 lg:left-12 w-16 h-16 rounded-full bg-black/20 backdrop-blur-md border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:bg-[#E2B354]/20 hover:border-[#E2B354]/30 transition-all opacity-0 group-hover:opacity-100"
+                  className="absolute left-0 lg:-left-20 w-20 h-20 rounded-full flex items-center justify-center text-white/20 hover:text-[#E2B354] transition-all z-50 group/btn"
                 >
-                  <ArrowLeft className="w-6 h-6" />
+                  <ArrowLeft className="w-8 h-8 transition-transform group-hover/btn:-translate-x-2" />
                 </button>
 
+                {/* Sharp Foreground Image */}
+                <S3Media
+                  s3Key={packageData.images[selectedImageModal]}
+                  className="max-w-full max-h-[85vh] lg:max-h-[80vh] object-contain rounded-xl shadow-[0_50px_150px_rgba(0,0,0,0.9)] border border-white/5 transition-all duration-700"
+                />
+
+                {/* Next Action */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedImageModal(prev => (prev! < totalImages - 1 ? prev! + 1 : 0));
                   }}
-                  className="absolute right-4 lg:right-12 w-16 h-16 rounded-full bg-black/20 backdrop-blur-md border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:bg-[#E2B354]/20 hover:border-[#E2B354]/30 transition-all opacity-0 group-hover:opacity-100"
+                  className="absolute right-0 lg:-right-20 w-20 h-20 rounded-full flex items-center justify-center text-white/20 hover:text-[#E2B354] transition-all z-50 group/btn"
                 >
-                  <div className="rotate-180"><ArrowLeft className="w-6 h-6" /></div>
+                  <div className="rotate-180">
+                    <ArrowLeft className="w-8 h-8 transition-transform group-hover/btn:-translate-x-2" />
+                  </div>
                 </button>
               </div>
             </div>
 
-            {/* Bottom Preview Strip */}
-            <div className="h-32 bg-black/40 border-t border-white/5 flex items-center justify-center gap-3 px-8">
+            {/* Bottom Interaction Strip */}
+            <div className="h-32 bg-black/60 border-t border-white/5 backdrop-blur-2xl flex items-center justify-center gap-3 px-8 relative z-20">
               {packageData.images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImageModal(idx)}
-                  className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300 ${selectedImageModal === idx ? 'border-[#E2B354] scale-110 shadow-lg shadow-[#E2B354]/20' : 'border-transparent opacity-30 hover:opacity-60'}`}
+                  className={`w-20 h-14 rounded-xl overflow-hidden border-2 transition-all duration-500 ${
+                    selectedImageModal === idx 
+                    ? 'border-[#E2B354] scale-110 shadow-[0_0_30px_rgba(226,179,84,0.3)]' 
+                    : 'border-transparent opacity-30 hover:opacity-100 grayscale hover:grayscale-0'
+                  }`}
                 >
                   <S3Media s3Key={img} className="w-full h-full object-cover" />
                 </button>
@@ -643,8 +666,8 @@ const PackageDetailPage: React.FC = () => {
                   const { lat, lng } = e.lngLat;
 
                   if (!validateLocation(lat, lng)) {
-                     toast.warning("Location must be within 10km of the package's service areas.");
-                     return;
+                    toast.warning("Location must be within 10km of the package's service areas.");
+                    return;
                   }
 
                   setMarkerLoc({ lat, lng });
@@ -747,4 +770,3 @@ const PackageDetailPage: React.FC = () => {
 };
 
 export default PackageDetailPage;
-

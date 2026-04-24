@@ -11,14 +11,90 @@ import { FilterSearch } from "@/components/reusable/FilterComponents";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/useDebounce";
 import logo from "@/assets/images/Logo_white.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
+
+// Memoized Card for performance
+const WallpaperCard = React.memo(({ 
+  wp, 
+  orientation, 
+  wishlisted, 
+  onSelect, 
+  onBuy, 
+  onDownload, 
+  onToggleWishlist 
+}: { 
+  wp: WallpaperData; 
+  orientation?: string; 
+  wishlisted: boolean;
+  onSelect: (wp: WallpaperData) => void;
+  onBuy: (wp: WallpaperData) => void;
+  onDownload: (wp: WallpaperData) => void;
+  onToggleWishlist: (e: React.MouseEvent, id: string) => void;
+}) => (
+  <div
+    onClick={() => onSelect(wp)}
+    className="mb-4 inline-block w-full break-inside-avoid bg-zinc-900 border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 cursor-pointer group"
+  >
+    <div className="relative w-full aspect-auto overflow-hidden bg-zinc-950">
+      <S3Media 
+        s3Key={wp.watermarkedUrl || wp.imageUrl} 
+        className="w-full h-auto object-cover block transition-transform duration-700 group-hover:scale-105" 
+      />
+      
+      {/* Badges */}
+      <div className="absolute top-3 left-3 z-10 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md border ${wp.price > 0 ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-white/10 text-gray-300 border-white/20'}`}>
+          {wp.price > 0 ? `₹${wp.price}` : 'FREE'}
+        </span>
+      </div>
+
+      {/* Hover Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
+        <div className="absolute top-3 right-3 flex gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (wp.price > 0 && !wp.isPurchased) onBuy(wp);
+              else onDownload(wp);
+            }}
+            className="p-2.5 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl hover:bg-white hover:text-black transition-all"
+          >
+            <Download size={14} />
+          </button>
+          <button
+            onClick={(e) => onToggleWishlist(e, wp._id)}
+            className={`p-2.5 backdrop-blur-md border rounded-xl transition-all ${
+              wishlisted ? "bg-red-500/20 border-red-500/30 text-red-400" : "bg-white/10 border-white/10 text-white"
+            }`}
+          >
+            <Bookmark size={14} fill={wishlisted ? "currentColor" : "none"} />
+          </button>
+        </div>
+        
+        <div className="absolute bottom-4 left-4 right-4">
+          <p className="text-white font-black text-xs uppercase tracking-widest mb-1 line-clamp-1">{wp.title}</p>
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] font-bold text-white/50 uppercase tracking-tighter">
+              {typeof wp.creatorId === "object" ? (wp.creatorId as any).fullName : "Artist"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+));
 
 
 
 const WallpaperGallery: React.FC = () => {
   const navigate = useNavigate();
+  const { id: urlId } = useParams();
   type Orientation = "vertical" | "horizontal" | "square";
+
+
+  // Handle Deep Linking moved to after state initializations
+
   const [wallpapers, setWallpapers] = useState<WallpaperData[]>([]);
   const [orientationMap, setOrientationMap] = useState<Record<string, Orientation>>({});
   const [selectedOrientation, setSelectedOrientation] = useState<"all" | "vertical" | "horizontal">("all");
@@ -37,7 +113,32 @@ const WallpaperGallery: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [purchasedId, setPurchasedId] = useState<string | null>(null);
   const [wishlistedIds, setWishlistedIds] = useState<Set<string>>(new Set());
+  const [showFilters, setShowFilters] = useState(false);
   const limit = 12;
+
+  // Handle Deep Linking
+  useEffect(() => {
+    const checkUrlId = async () => {
+      if (urlId) {
+        // First check if it's already in the wallpapers list
+        const existing = wallpapers.find(wp => wp._id === urlId);
+        if (existing) {
+          setSelectedWallpaper(existing);
+        } else {
+          // If not in current list (maybe on another page), fetch it specifically
+          try {
+            const wallpaper = await UserWallpaperService.getWallpaperById(urlId);
+            if (wallpaper) {
+              setSelectedWallpaper(wallpaper);
+            }
+          } catch (error) {
+            console.error("Failed to fetch wallpaper for deep link", error);
+          }
+        }
+      }
+    };
+    checkUrlId();
+  }, [urlId, wallpapers]);
 
   // Reset feed when filters change
   useEffect(() => {
@@ -130,52 +231,58 @@ const WallpaperGallery: React.FC = () => {
     fetchWishlistIds();
   }, []);
 
+  // Optimized Orientation Detection
   useEffect(() => {
     let isCancelled = false;
 
     const detectOrientation = async () => {
+      // Only detect for unresolved wallpapers
       const unresolved = wallpapers.filter((wp) => !orientationMap[wp._id]);
       if (!unresolved.length) return;
 
-      const results = await Promise.all(
-        unresolved.map(async (wp) => {
-          try {
-            const mediaKey = wp.watermarkedUrl || wp.imageUrl;
-            const url = await S3Service.getViewUrl(mediaKey);
-            const orientation = await new Promise<Orientation>((resolve) => {
-              const img = new Image();
-              img.onload = () => {
-                if (img.naturalHeight > img.naturalWidth) resolve("vertical");
-                else if (img.naturalWidth > img.naturalHeight) resolve("horizontal");
-                else resolve("square");
-              };
-              img.onerror = () => resolve("vertical");
-              img.src = url;
-            });
-            return { id: wp._id, orientation };
-          } catch {
-            return { id: wp._id, orientation: "vertical" as Orientation };
-          }
-        }),
-      );
+      // Process in smaller batches to avoid UI freezing
+      const batchSize = 4;
+      for (let i = 0; i < unresolved.length; i += batchSize) {
+        if (isCancelled) break;
+        const batch = unresolved.slice(i, i + batchSize);
+        
+        const results = await Promise.all(
+          batch.map(async (wp) => {
+            try {
+              const mediaKey = wp.watermarkedUrl || wp.imageUrl;
+              const url = await S3Service.getViewUrl(mediaKey);
+              return new Promise<{id: string, orientation: Orientation}>((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                  const orientation = img.naturalHeight > img.naturalWidth ? "vertical" : 
+                                     img.naturalWidth > img.naturalHeight ? "horizontal" : "square";
+                  resolve({ id: wp._id, orientation });
+                };
+                img.onerror = () => resolve({ id: wp._id, orientation: "vertical" });
+                img.src = url;
+              });
+            } catch {
+              return { id: wp._id, orientation: "vertical" as Orientation };
+            }
+          })
+        );
 
-      if (isCancelled) return;
-
-      setOrientationMap((prev) => {
-        const next = { ...prev };
-        results.forEach(({ id, orientation }) => {
-          next[id] = orientation;
-        });
-        return next;
-      });
+        if (!isCancelled) {
+          setOrientationMap(prev => {
+            const next = { ...prev };
+            results.forEach(res => { next[res.id] = res.orientation; });
+            return next;
+          });
+        }
+        
+        // Small delay between batches to let the UI breathe
+        await new Promise(r => setTimeout(r, 100));
+      }
     };
 
     detectOrientation();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [wallpapers, orientationMap]);
+    return () => { isCancelled = true; };
+  }, [wallpapers]);
 
   const filteredWallpapers = useMemo(() => {
     if (selectedOrientation === "all") return wallpapers;
@@ -260,128 +367,123 @@ const WallpaperGallery: React.FC = () => {
       <UserNavbar />
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-black mb-3">Wallpapers</h1>
-          <p className="text-gray-500 font-medium max-w-md mx-auto">
-            Browse stunning wallpapers created by our talented creators
-          </p>
-          <div className="mt-5">
+        {/* Compact Header Area */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+          <div className="text-left">
+            <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-2">Wallpapers</h1>
+            <p className="text-zinc-500 text-xs font-bold uppercase tracking-[0.3em]">Premium 8K Collection</p>
+          </div>
+          
+          <div className="flex flex-1 items-center justify-end gap-3 w-full max-w-2xl">
+            <div className="relative flex-1 group">
+              <FilterSearch
+                value={searchQuery}
+                onChange={(val) => setSearchQuery(val)}
+                placeholder="Search vision..."
+                className="w-full !bg-zinc-900/50 !border-white/5 focus:!border-white/20 transition-all rounded-2xl pl-12"
+              />
+            </div>
+            
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-4 rounded-2xl border transition-all flex items-center gap-2 ${
+                showFilters 
+                ? "bg-white text-black border-white" 
+                : "bg-zinc-900/50 text-white border-white/5 hover:border-white/20"
+              }`}
+            >
+              <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Filters</span>
+              <ImageIcon size={18} />
+            </button>
+
             <button
               onClick={() => navigate(ROUTES.USER.MY_WALLPAPERS)}
-              className="px-5 py-2.5 rounded-full bg-white text-black text-sm font-bold hover:bg-zinc-200 transition-all"
+              className="px-6 py-4 rounded-2xl bg-zinc-900/50 text-white border border-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
             >
-              My Wallpapers
+              My Collection
             </button>
           </div>
         </div>
 
-        {/* Search */}
-        <div className="mb-8 flex justify-center">
-          <FilterSearch
-            value={searchQuery}
-            onChange={(val) => setSearchQuery(val)}
-            placeholder="Search wallpapers by title, tags..."
-            className="w-full max-w-lg"
-          />
-        </div>
+        {/* Expandable Filter Panel */}
+        {showFilters && (
+          <div className="mb-12 p-8 bg-zinc-900/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+              {/* Orientation */}
+              <div className="space-y-4">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Orientation</h3>
+                <div className="flex gap-2">
+                  {(["all", "vertical", "horizontal"] as const).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setSelectedOrientation(type)}
+                      className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+                        selectedOrientation === type
+                          ? "bg-white text-black border-white"
+                          : "bg-black/20 text-white/40 border-white/5 hover:border-white/10"
+                      }`}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-
-        {/* Price Range Slider */}
-        <div className="mb-4 flex justify-center">
-          <div className="w-full max-w-md">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-500 font-medium">Price Range</span>
-              <span className="text-xs text-gray-400 font-semibold">
-                ₹{priceRange[0]} — ₹{priceRange[1]}{priceRange[1] >= MAX_PRICE ? "+" : ""}
-              </span>
+              {/* Price Range */}
+              <div className="space-y-4 lg:col-span-2">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">Price Threshold</h3>
+                  <span className="text-[10px] font-black text-white/80">
+                    ₹{priceRange[0]} — ₹{priceRange[1]}{priceRange[1] >= MAX_PRICE ? "+" : ""}
+                  </span>
+                </div>
+                <div className="relative h-6 pt-2">
+                  <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-white/10 rounded-full" />
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 h-[2px] bg-white rounded-full"
+                    style={{
+                      left: `${(priceRange[0] / MAX_PRICE) * 100}%`,
+                      right: `${100 - (priceRange[1] / MAX_PRICE) * 100}%`,
+                    }}
+                  />
+                  <input
+                    type="range" min={MIN_PRICE} max={MAX_PRICE} step={10} value={priceRange[0]}
+                    onChange={(e) => setPriceRange([Math.min(Number(e.target.value), priceRange[1] - 10), priceRange[1]])}
+                    className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:cursor-pointer"
+                  />
+                  <input
+                    type="range" min={MIN_PRICE} max={MAX_PRICE} step={10} value={priceRange[1]}
+                    onChange={(e) => setPriceRange([priceRange[0], Math.max(Number(e.target.value), priceRange[0] + 10)])}
+                    className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:cursor-pointer"
+                  />
+                </div>
+              </div>
             </div>
-            <div className="relative h-6">
-              {/* Track background */}
-              <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 rounded-full bg-zinc-800" />
-              {/* Active track */}
-              <div
-                className="absolute top-1/2 -translate-y-1/2 h-1 rounded-full bg-gradient-to-r from-cyan-400 to-green-400"
-                style={{
-                  left: `${(priceRange[0] / MAX_PRICE) * 100}%`,
-                  right: `${100 - (priceRange[1] / MAX_PRICE) * 100}%`,
-                }}
-              />
-              {/* Min handle */}
-              <input
-                type="range"
-                min={MIN_PRICE}
-                max={MAX_PRICE}
-                step={10}
-                value={priceRange[0]}
-                onChange={(e) => {
-                  const val = Math.min(Number(e.target.value), priceRange[1] - 10);
-                  setPriceRange([val, priceRange[1]]);
-                }}
-                className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-cyan-400 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:hover:scale-125 [&::-webkit-slider-thumb]:transition-transform"
-              />
-              {/* Max handle */}
-              <input
-                type="range"
-                min={MIN_PRICE}
-                max={MAX_PRICE}
-                step={10}
-                value={priceRange[1]}
-                onChange={(e) => {
-                  const val = Math.max(Number(e.target.value), priceRange[0] + 10);
-                  setPriceRange([priceRange[0], val]);
-                }}
-                className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-green-400 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:hover:scale-125 [&::-webkit-slider-thumb]:transition-transform"
-              />
+
+            {/* Hashtags */}
+            <div className="mt-12 pt-8 border-t border-white/5">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 mb-6">Popular Aesthetics</h3>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "Nature", "Dark", "Minimal", "Urban", "Aesthetic", "Moody", "Travel", "Sunset", "Ocean", "Mountain",
+                  "Forest", "Night", "Light", "Shadow", "Abstract", "Creative", "Art", "Design"
+                ].map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setSelectedTag(selectedTag === tag ? "" : tag)}
+                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+                      selectedTag === tag
+                      ? "bg-white text-black border-white"
+                      : "bg-black/20 text-white/40 border-white/5 hover:border-white/20 hover:text-white"
+                    }`}
+                  >
+                    #{tag}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Hashtag Filters */}
-        <div className="mb-10 flex justify-center">
-          <div className="flex flex-wrap justify-center gap-2 max-w-3xl">
-            {[
-              "Nature", "Dark", "Minimal", "Urban", "Aesthetic",
-              "Moody", "Travel", "Sunset", "Ocean", "Mountain",
-              "Forest", "Night", "Light", "Shadow", "Abstract",
-              "Creative", "Art", "Design", "Wallpaper", "HD",
-              "4K", "Portrait", "City", "Vintage", "Modern",
-              "Luxury", "Calm", "Focus", "Dreamy", "Epic",
-            ].map((tag) => (
-              <button
-                key={tag}
-                onClick={() => {
-                  setSelectedTag(selectedTag === tag ? "" : tag);
-                  setPage(1);
-                }}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${selectedTag === tag
-                  ? "bg-white text-black border-white"
-                  : "bg-zinc-900 text-gray-400 border-white/10 hover:border-white/25 hover:text-white"
-                  }`}
-              >
-                #{tag}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Orientation Filter */}
-        <div className="mb-8 flex justify-center">
-          <div className="inline-flex gap-2 bg-zinc-900 border border-white/10 rounded-full p-1">
-            {(["all", "vertical", "horizontal"] as const).map((type) => (
-              <button
-                key={type}
-                onClick={() => setSelectedOrientation(type)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition-all ${
-                  selectedOrientation === type
-                    ? "bg-white text-black"
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-        </div>
+        )}
 
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -406,73 +508,18 @@ const WallpaperGallery: React.FC = () => {
         ) : (
           <>
             <div className="columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">
-              {filteredWallpapers.map((wp) => {
-                return (
-                <div
+              {filteredWallpapers.map((wp) => (
+                <WallpaperCard
                   key={wp._id}
-                  onClick={() => setSelectedWallpaper(wp)}
-                  className="mb-4 inline-block w-full break-inside-avoid bg-zinc-900 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all cursor-pointer group"
-                >
-                  <div className="relative w-full">
-                    <S3Media s3Key={wp.watermarkedUrl || wp.imageUrl} className="w-full h-auto object-cover block" />
-                    {/* Price badge */}
-                    <div className="absolute top-3 left-3 z-10 flex gap-1.5">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold backdrop-blur-md border ${wp.price > 0 ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-white/10 text-gray-300 border-white/20'}`}>
-                        {wp.price > 0 ? `₹${wp.price}` : 'FREE'}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full text-xs font-bold backdrop-blur-md border bg-white/10 text-gray-300 border-white/20 flex items-center gap-1">
-                        <Download size={10} />
-                        {wp.downloadCount ?? 0}
-                      </span>
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (wp.price > 0 && !wp.isPurchased) {
-                            handleBuy(wp);
-                          } else {
-                            handleDownload(wp);
-                          }
-                        }}
-                        className="absolute top-3 right-3 p-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white hover:text-black hover:scale-110 hover:shadow-lg hover:shadow-white/20 text-white transition-all duration-300 active:scale-95"
-                        title={wp.price > 0 && !wp.isPurchased ? "Buy" : "Download"}
-                      >
-                        <Download size={16} className={wp.price > 0 && !wp.isPurchased ? "text-green-400" : "text-white"} />
-                      </button>
-                      <button
-                        onClick={(e) => handleToggleWishlist(e, wp._id)}
-                        className={`absolute top-3 right-16 p-2.5 backdrop-blur-md border rounded-2xl hover:scale-110 transition-all duration-300 active:scale-95 ${wishlistedIds.has(wp._id)
-                          ? "bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30"
-                          : "bg-white/10 border-white/20 text-white hover:bg-white hover:text-black"
-                          }`}
-                        title="Wishlist"
-                      >
-                        <Bookmark size={16} fill={wishlistedIds.has(wp._id) ? "currentColor" : "none"} />
-                      </button>
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <p className="text-white font-bold text-sm line-clamp-1">{wp.title}</p>
-                        <p className="text-gray-300 text-xs">
-                          {typeof wp.creatorId === "object" ? wp.creatorId.fullName : ""}
-                        </p>
-                        {wp.hashtags && wp.hashtags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {wp.hashtags.slice(0, 2).map((tag, i) => (
-                              <span key={i} className="text-[10px] text-blue-300/90 bg-blue-500/20 px-1.5 py-0.5 rounded-full">
-                                #{tag}
-                              </span>
-                            ))}
-                            {wp.hashtags.length > 2 && (
-                              <span className="text-[10px] text-gray-400">+{wp.hashtags.length - 2}</span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                );
-              })}
+                  wp={wp}
+                  orientation={orientationMap[wp._id]}
+                  wishlisted={wishlistedIds.has(wp._id)}
+                  onSelect={setSelectedWallpaper}
+                  onBuy={handleBuy}
+                  onDownload={handleDownload}
+                  onToggleWishlist={handleToggleWishlist}
+                />
+              ))}
             </div>
 
             {/* Loading Indicator for Infinite Scroll */}
@@ -561,7 +608,10 @@ const WallpaperGallery: React.FC = () => {
                     <Bookmark size={20} fill={wishlistedIds.has(selectedWallpaper._id) ? "currentColor" : "none"} />
                   </button>
                   <button
-                    onClick={() => setSelectedWallpaper(null)}
+                    onClick={() => {
+                      setSelectedWallpaper(null);
+                      if (urlId) navigate(ROUTES.USER.WALLPAPERS);
+                    }}
                     className="p-3 bg-white/10 rounded-xl hover:bg-white/20 transition-colors"
                   >
                     <X size={20} />

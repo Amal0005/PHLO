@@ -8,10 +8,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["PHLO_LOGO.png", "pwa-192x192.png", "pwa-512x512.png"],
+      includeAssets: ["PHLO_LOGO.png"],
       manifest: {
-        id: "/",
-        scope: "/",
         name: "PHLO",
         short_name: "PHLO",
         description: "PHLO - where trust meets quality",
@@ -21,19 +19,19 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "pwa-192x192.png",
+            src: "PHLO_LOGO.png",
             sizes: "192x192",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "pwa-512x512.png",
+            src: "PHLO_LOGO.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "any",
           },
           {
-            src: "pwa-512x512.png",
+            src: "PHLO_LOGO.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",
