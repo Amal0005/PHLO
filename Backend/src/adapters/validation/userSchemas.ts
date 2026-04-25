@@ -62,7 +62,13 @@ export const resetPasswordSchema = z.object({
 });
 
 export const reviewSchema = z.object({
+  packageId: z.string().min(1, "Package ID is required"),
   bookingId: z.string().min(1, "Booking ID is required"),
+  rating: z.number().min(1).max(5),
+  comment: z.string().min(1, "Comment is required"),
+});
+
+export const updateReviewSchema = z.object({
   rating: z.number().min(1).max(5),
   comment: z.string().min(1, "Comment is required"),
 });

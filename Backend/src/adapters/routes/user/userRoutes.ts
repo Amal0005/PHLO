@@ -7,6 +7,7 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
   reviewSchema,
+  updateReviewSchema,
   complaintSchema,
   loginUserSchema,
   changePasswordSchema,
@@ -284,7 +285,7 @@ export class UserRoutes {
       BACKEND_ROUTES.USER.UPDATE_REVIEW,
       authMiddleware,
       authorizeRoles("user"),
-      validate(reviewSchema),
+      validate(updateReviewSchema),
       (req: AuthRequest, res: Response) =>
         reviewController.updateReview(req, res),
     )
