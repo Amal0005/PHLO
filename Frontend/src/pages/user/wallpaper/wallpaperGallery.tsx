@@ -17,7 +17,6 @@ import { ROUTES } from "@/constants/routes";
 // Memoized Card for performance
 const WallpaperCard = React.memo(({ 
   wp, 
-  orientation, 
   wishlisted, 
   onSelect, 
   onBuy, 

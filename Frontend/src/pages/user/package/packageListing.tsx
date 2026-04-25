@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package as PackageIcon, MapPin, X, Bookmark, Image as ImageIcon, ArrowRight } from "lucide-react";
+import { Package as PackageIcon, MapPin, Bookmark, Image as ImageIcon, ArrowRight } from "lucide-react";
 
 import { UserPackageService } from "@/services/user/userPackageService";
 import { WishlistService } from "@/services/user/wishlistService";
@@ -8,7 +8,7 @@ import { UserPackage, PackageFilters } from "@/interface/user/userPackageInterfa
 import { S3Media } from "@/components/reusable/s3Media";
 import UserNavbar from "@/components/reusable/userNavbar";
 import Pagination from "@/components/reusable/pagination";
-import { FilterSearch, FilterSelect, FilterButton } from "@/components/reusable/FilterComponents";
+import { FilterSearch, FilterSelect } from "@/components/reusable/FilterComponents";
 import { toast } from "react-toastify";
 import { useDebounce } from "@/hooks/useDebounce";
 import LogoLoading from "@/components/reusable/LogoLoading";
@@ -25,7 +25,7 @@ const PackageListing: React.FC = () => {
   const saved = getSavedFilters();
 
   const [packages, setPackages] = useState<UserPackage[]>([]);
-  const [totalPackages, setTotalPackages] = useState(0);
+  const [, setTotalPackages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(saved?.search || "");
   const debouncedSearch = useDebounce(searchQuery, 500);

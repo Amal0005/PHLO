@@ -1,14 +1,13 @@
 import {
-  Camera,
   ChevronRight,
   Star,
   Download,
   Award,
-
   Instagram,
   Twitter,
   Facebook,
-  Mail, ArrowRight,
+  Mail,
+  ArrowRight,
 } from "lucide-react";
 import LogoWhite from "@/assets/images/Logo_white.png";
 import UserNavbar from "@/components/reusable/userNavbar";
@@ -20,9 +19,7 @@ import { ROUTES } from "@/constants/routes";
 import { S3Service } from "@/services/s3Service";
 import { UserWallpaperService } from "@/services/user/userWallpaperService";
 import { WallpaperData } from "@/interface/creator/creatorWallpaperInterface";
-import LogoLoading from "@/components/reusable/LogoLoading";
 import { S3Media } from "@/components/reusable/s3Media";
-import logo from "@/assets/images/Logo_white.png";
 import { CreatorService } from "@/services/user/creatorService";
 import { CreatorProfileResponse } from "@/interface/creator/creatorProfileInterface";
 
