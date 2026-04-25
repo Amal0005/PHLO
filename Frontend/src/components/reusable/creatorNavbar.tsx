@@ -230,7 +230,7 @@ export default function CreatorNavbar() {
 
               {/* Navigation Grid */}
               <div className="grid grid-cols-2 gap-4 menu-item-animate" style={{ animationDelay: '200ms' }}>
-                {navLinks.map((link, idx) => (
+                {navLinks.map((link) => (
                   <button
                     key={link.path}
                     onClick={() => { navigate(link.path); setMobileMenuOpen(false); }}
