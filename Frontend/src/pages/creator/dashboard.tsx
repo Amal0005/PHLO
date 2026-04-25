@@ -64,23 +64,23 @@ export default function CreatorDashboard() {
 
       <div className="relative z-10">
         <CreatorNavbar />
-        <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
-        <div className="bg-zinc-900/40 border border-white/10 rounded-3xl p-8 lg:p-12 mb-8 shadow-2xl">
+        <main className="max-w-7xl mx-auto px-4 pt-28 sm:pt-32 pb-20">
+        <div className="bg-zinc-900/40 border border-white/10 rounded-[2.5rem] p-8 sm:p-10 lg:p-12 mb-8 shadow-2xl backdrop-blur-xl">
           <div className="max-w-3xl">
-            <h2 className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4">
+            <h2 className="text-[10px] uppercase tracking-[0.4em] text-gray-500 font-black mb-4">
               Creator Dashboard
             </h2>
-            <h1 className="text-4xl lg:text-6xl font-black mb-6 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 tracking-tighter leading-[1.1]">
               Welcome back, <br />
               <span className="text-gray-400">{creator?.fullName || "Creator"}</span>
             </h1>
-            <p className="text-gray-400 text-lg lg:text-xl font-light leading-relaxed mb-8">
-              Manage your profile, view your analytics, and create stunning content for your audience.
+            <p className="text-gray-400 text-base sm:text-lg lg:text-xl font-medium leading-relaxed mb-8 opacity-60">
+              Manage your profile, view analytics, and create stunning content for your audience.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <div
             onClick={() => setIsOptionModalOpen(true)}
             className="h-48 bg-white/5 border border-white/10 rounded-3xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-all group relative overflow-hidden"

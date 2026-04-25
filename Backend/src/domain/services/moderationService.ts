@@ -1,17 +1,20 @@
 import vision from "@google-cloud/vision";
 import type { IModerationService, ModerationResult } from "@/domain/interfaces/service/IModerationService";
+import fs from "fs";
+import path from "path";
 
 export class ModerationService implements IModerationService {
-  // private client = new vision.ImageAnnotatorClient({
-  // credentials: JSON.parse(
-  //   fs.readFileSync(
-  //     path.resolve(process.env.GOOGLE_CREDENTIALS_JSON as string),
-  //     "utf-8"
-  //   )
-  // )  })
   private client = new vision.ImageAnnotatorClient({
-    credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string)
+    credentials: JSON.parse(
+      fs.readFileSync(
+        path.resolve(process.env.GOOGLE_CREDENTIALS_JSON as string),
+        "utf-8"
+      )
+    )
   })
+  // private client = new vision.ImageAnnotatorClient({
+  //   credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string)
+  // })
   async checkImage(imageBuffer: Buffer): Promise<ModerationResult> {
     try {
       const [result] = await this.client.safeSearchDetection({

@@ -221,7 +221,7 @@ const PackageDetailPage: React.FC = () => {
 
             {/* ── LEFT GLASS PANEL ── */}
             <div
-              className="flex flex-col w-full lg:w-[760px] flex-shrink-0 rounded-[56px] relative"
+              className="flex flex-col w-full lg:w-[760px] flex-shrink-0 rounded-[32px] sm:rounded-[56px] relative"
               style={{
                 background: "rgba(10, 10, 10, 0.45)",
                 backdropFilter: "blur(50px) saturate(2)",
@@ -317,7 +317,12 @@ const PackageDetailPage: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mb-4 items-stretch">
+                <div className="flex flex-col gap-1 mb-6">
+                  <h3 className="text-white font-black text-xl uppercase tracking-tight leading-none mb-1">Select Date</h3>
+                  <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-zinc-600">Choose your visionary window</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 items-stretch">
                   <div className="relative flex flex-col justify-center">
                     <CustomCalendar
                       selectedDate={selectedDate ? new Date(selectedDate) : undefined}
@@ -363,8 +368,8 @@ const PackageDetailPage: React.FC = () => {
                   <p className="text-[8px] font-bold tracking-[0.3em] uppercase mb-2 ml-1" style={{ color: "rgba(255,255,255,0.2)" }}>
                     Event Location
                   </p>
-                  <div className="flex items-stretch gap-3">
-                    <div className="w-full max-w-[320px] relative">
+                  <div className="flex flex-col sm:flex-row items-stretch gap-3">
+                    <div className="w-full sm:max-w-[320px] relative">
                       <LocationSearchBar
                         ref={locationBarRef}
                         onChange={(location: { placeName?: string; latitude?: number; longitude?: number }) => {
@@ -398,14 +403,14 @@ const PackageDetailPage: React.FC = () => {
                     </div>
                     <button
                       onClick={() => setShowMap(true)}
-                      className="px-6 rounded-2xl flex items-center justify-center gap-2 text-[10px] font-black tracking-[0.2em] uppercase transition-all hover:bg-[#E2B354]/10 hover:border-[#E2B354]/40 hover:text-[#E2B354] active:scale-95 flex-shrink-0"
+                      className="px-6 h-[54px] rounded-2xl flex items-center justify-center gap-2 text-[11px] font-black tracking-[0.2em] uppercase transition-all hover:bg-white hover:text-black active:scale-95 flex-shrink-0"
                       style={{
                         background: "rgba(255,255,255,0.06)",
                         border: "1px solid rgba(255,255,255,0.12)",
-                        color: "rgba(255,255,255,0.5)",
+                        color: "white",
                       }}
                     >
-                      <MapPin className="w-3.5 h-3.5" />
+                      <MapPin className="w-4 h-4" />
                       <span>{selectedLocation ? "Map" : "Map"}</span>
                     </button>
                   </div>
@@ -481,7 +486,7 @@ const PackageDetailPage: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setSelectedImageModal(index)}
-                    className={`group relative aspect-[16/10] rounded-[48px] overflow-hidden border-2 transition-all duration-700 hover:scale-[1.03] shadow-2xl ${selectedImage === index ? 'border-[#E2B354] ring-8 ring-[#E2B354]/10' : 'border-white/5 opacity-80 hover:opacity-100'}`}
+                    className={`group relative aspect-[16/10] rounded-[32px] sm:rounded-[48px] overflow-hidden border-2 transition-all duration-700 hover:scale-[1.03] shadow-2xl ${selectedImage === index ? 'border-[#E2B354] ring-8 ring-[#E2B354]/10' : 'border-white/5 opacity-80 hover:opacity-100'}`}
                   >
                     <S3Media s3Key={img} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
@@ -499,7 +504,7 @@ const PackageDetailPage: React.FC = () => {
           {/* ── REVIEWS SECTION ── */}
           <div className="flex flex-col px-4 sm:px-10 lg:px-16 pb-20 pt-10">
             <div
-              className="w-full max-w-4xl mx-auto p-10 rounded-[3rem]"
+              className="w-full max-w-4xl mx-auto p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem]"
               style={{
                 background: "rgba(20, 20, 20, 0.4)",
                 backdropFilter: "blur(40px) saturate(2)",
@@ -754,9 +759,9 @@ const PackageDetailPage: React.FC = () => {
       {/* Floating Gallery Button - Bottom Right */}
       <button
         onClick={() => galleryRef.current?.scrollIntoView({ behavior: 'smooth' })}
-        className="fixed bottom-10 right-10 z-[60] w-24 h-24 rounded-full bg-black/40 backdrop-blur-3xl border border-white/10 flex flex-col items-center justify-center gap-1.5 hover:bg-[#E2B354] hover:text-black transition-all shadow-[0_30px_100px_rgba(0,0,0,0.8)] group active:scale-95"
+        className="fixed bottom-6 right-6 sm:bottom-10 sm:right-10 z-[60] w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#E2B354] text-black border border-[#E2B354]/20 flex flex-col items-center justify-center gap-1 sm:gap-1.5 hover:scale-110 hover:rotate-6 transition-all shadow-[0_30px_100px_rgba(226,179,84,0.3)] group active:scale-95"
       >
-        <div className="absolute inset-0 rounded-full bg-[#E2B354]/10 animate-ping group-hover:hidden" />
+        <div className="absolute inset-0 rounded-full bg-[#E2B354]/40 animate-ping group-hover:hidden" />
         <ImageIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
         <span className="text-[9px] font-black uppercase tracking-widest">Gallery</span>
       </button>

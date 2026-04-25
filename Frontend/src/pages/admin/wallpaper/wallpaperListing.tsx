@@ -9,6 +9,7 @@ import { S3Media } from "@/components/reusable/s3Media";
 
 import { FilterSearch, FilterSelect } from "@/components/reusable/FilterComponents";
 import { useDebounce } from "@/hooks/useDebounce";
+import { toast } from "react-toastify";
 
 
 type StatusFilter = "all" | "approved" | "rejected" | "blocked";
@@ -222,14 +223,17 @@ export default function WallpaperListingPage() {
     try {
       if (confirmModal.mode === 'block') {
         await AdminWallpaperService.blockWallpaper(confirmModal.targetId);
+        toast.success("WALLPAPER BLOCKED");
       } else {
         await AdminWallpaperService.unblockWallpaper(confirmModal.targetId);
+        toast.success("WALLPAPER AUTHORIZED");
       }
       await loadWallpapers();
       setPreviewWallpaper(null);
       setConfirmModal({ isOpen: false, mode: null, targetId: null });
     } catch (err) {
       console.error(`${confirmModal.mode} failed:`, err);
+      toast.error(`ACTION FAILED: ${confirmModal.mode.toUpperCase()}`);
     } finally {
       setIsProcessing(false);
     }

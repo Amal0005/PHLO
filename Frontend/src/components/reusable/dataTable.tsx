@@ -32,14 +32,15 @@ export default function DataTable<T>({
         {/* Top Shine */}
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
         
-        <div className="overflow-x-auto no-scrollbar">
+        {/* Desktop Table View */}
+        <div className="hidden sm:block overflow-x-auto no-scrollbar">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-white/[0.02] border-b border-white/[0.05]">
                 {columns.map((column) => (
                   <th
                     key={column.key}
-                    className={`px-8 py-6 text-[11px] font-black italic uppercase tracking-[0.4em] text-gray-500 select-none ${
+                    className={`px-4 sm:px-8 py-6 text-[10px] sm:text-[11px] font-black italic uppercase tracking-[0.4em] text-gray-500 select-none ${
                       column.align === "right"
                         ? "text-right"
                         : column.align === "center"
@@ -60,8 +61,8 @@ export default function DataTable<T>({
                 Array.from({ length: 5 }).map((_, idx) => (
                   <tr key={`loading-${idx}`} className="animate-pulse">
                     {columns.map((_, colIdx) => (
-                      <td key={`loading-cell-${colIdx}`} className="px-8 py-7">
-                        <div className="h-3.5 bg-white/5 rounded-full w-24"></div>
+                      <td key={`loading-cell-${colIdx}`} className="px-4 sm:px-8 py-7">
+                        <div className="h-3.5 bg-white/5 rounded-full w-16 sm:w-24"></div>
                       </td>
                     ))}
                   </tr>
@@ -89,7 +90,7 @@ export default function DataTable<T>({
                     {columns.map((column) => (
                       <td
                         key={`${keyExtractor(item)}-${column.key}`}
-                        className={`px-8 py-7 text-sm text-gray-400 font-medium transition-colors duration-300 group-hover/row:text-gray-100 ${
+                        className={`px-4 sm:px-8 py-6 sm:py-7 text-xs sm:text-sm text-gray-400 font-medium transition-colors duration-300 group-hover/row:text-gray-100 ${
                           column.align === "right"
                             ? "text-right"
                             : column.align === "center"
@@ -107,6 +108,50 @@ export default function DataTable<T>({
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="block sm:hidden divide-y divide-white/[0.05]">
+          {loading ? (
+             Array.from({ length: 3 }).map((_, idx) => (
+              <div key={`m-loading-${idx}`} className="p-6 space-y-4 animate-pulse">
+                <div className="h-4 bg-white/5 rounded-full w-1/2"></div>
+                <div className="h-3 bg-white/5 rounded-full w-1/3"></div>
+                <div className="h-3 bg-white/5 rounded-full w-1/4"></div>
+              </div>
+            ))
+          ) : !data || data.length === 0 ? (
+            <div className="px-8 py-20 text-center">
+               <p className="text-xs font-black tracking-[0.2em] uppercase italic text-gray-600">{emptyMessage}</p>
+            </div>
+          ) : (
+            data.map((item) => (
+              <div key={keyExtractor(item)} className="p-6 space-y-4 hover:bg-white/[0.02] transition-colors group/m-row">
+                {columns.map((column, idx) => (
+                  <div key={column.key} className={`flex items-center justify-between gap-4 ${idx === 0 ? "mb-2" : ""}`}>
+                    {idx === 0 ? (
+                      <div className="flex-1 text-base font-black italic uppercase tracking-tighter text-white">
+                        {column.render ? column.render(item) : (item[column.key as keyof T] as ReactNode) || "-"}
+                      </div>
+                    ) : column.key === 'actions' ? (
+                      <div className="w-full flex items-center justify-end pt-2">
+                         {column.render ? column.render(item) : (item[column.key as keyof T] as ReactNode) || "-"}
+                      </div>
+                    ) : (
+                      <>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-gray-600 shrink-0">
+                          {column.header}
+                        </span>
+                        <div className="text-xs font-bold text-gray-300">
+                           {column.render ? column.render(item) : (item[column.key as keyof T] as ReactNode) || "-"}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

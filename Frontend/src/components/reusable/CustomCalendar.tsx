@@ -180,26 +180,31 @@ export const CustomCalendar: React.FC<CustomCalendarProps> = ({
                 {isOpen && (
                     <>
                         <div
-                            className="fixed inset-0 z-40 bg-transparent"
+                            className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm md:bg-transparent"
                             onClick={() => setIsOpen(false)}
                         />
                         <motion.div
-                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                            animate={{ opacity: 1, y: -5, scale: 1 }}
-                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                            transition={{ duration: 0.2, ease: "easeOut" }}
-                            className="absolute bottom-full left-0 right-0 z-50 mb-2 bg-[#121212] border border-white/10 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-xl"
+                            initial={window.innerWidth < 768 ? { y: "100%" } : { opacity: 0, y: -10, scale: 0.95 }}
+                            animate={window.innerWidth < 768 ? { y: 0 } : { opacity: 1, y: -5, scale: 1 }}
+                            exit={window.innerWidth < 768 ? { y: "100%" } : { opacity: 0, y: -10, scale: 0.95 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed md:absolute bottom-0 md:bottom-full left-0 right-0 z-[110] md:mb-2 bg-[#121212] border-t md:border border-white/10 rounded-t-[2.5rem] md:rounded-3xl overflow-hidden shadow-2xl backdrop-blur-3xl"
                             style={{
-                                background: "rgba(0, 0, 0, 0.85)",
-                                backdropFilter: "blur(32px) saturate(1.8)",
-                                boxShadow: "0 -20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05)"
+                                background: "rgba(10, 10, 10, 0.95)",
+                                backdropFilter: "blur(40px) saturate(2)",
+                                maxHeight: "90vh"
                             }}
                         >
+                            {/* Mobile Handle */}
+                            <div className="md:hidden flex justify-center pt-4 pb-2">
+                                <div className="w-12 h-1.5 bg-white/10 rounded-full" />
+                            </div>
+
                             {renderHeader()}
                             <div className="relative pt-2 overflow-hidden">
                                 {/* Logo Watermark */}
                                 <div
-                                    className="absolute inset-0 pointer-events-none opacity-[0.25] flex items-center justify-center p-8"
+                                    className="absolute inset-0 pointer-events-none opacity-[0.15] flex items-center justify-center p-8"
                                     style={{
                                         backgroundImage: `url("/Logo_white.png")`,
                                         backgroundPosition: "center",
@@ -208,17 +213,19 @@ export const CustomCalendar: React.FC<CustomCalendarProps> = ({
                                         filter: "grayscale(1) brightness(2.5)"
                                     }}
                                 />
-                                {renderDays()}
-                                {renderCells()}
+                                <div className="max-h-[60vh] overflow-y-auto">
+                                    {renderDays()}
+                                    {renderCells()}
+                                </div>
                             </div>
-                            <div className="flex items-center justify-between px-4 py-3 border-t border-white/5 pb-5">
+                            <div className="flex items-center justify-between px-6 py-5 border-t border-white/5 pb-10 md:pb-6">
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onChange(undefined as unknown as Date);
                                         setIsOpen(false);
                                     }}
-                                    className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest hover:text-white transition-colors"
+                                    className="px-6 py-3 rounded-xl bg-white/5 text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:text-white transition-colors"
                                 >
                                     Clear
                                 </button>
@@ -229,7 +236,7 @@ export const CustomCalendar: React.FC<CustomCalendarProps> = ({
                                         onChange(today);
                                         setIsOpen(false);
                                     }}
-                                    className="text-[10px] font-bold text-white uppercase tracking-widest hover:opacity-80 transition-opacity"
+                                    className="px-8 py-3 rounded-xl bg-white text-black text-[10px] font-black uppercase tracking-widest hover:opacity-80 transition-opacity"
                                 >
                                     Today
                                 </button>

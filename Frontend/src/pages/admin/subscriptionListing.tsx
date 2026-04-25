@@ -124,32 +124,40 @@ export default function SubscriptionListingPage() {
   ];
 
   return (
-    <div className="p-4 lg:p-8 space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-6xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent">
-          Subscriptions
-        </h1>
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <FilterSearch
-            value={search}
-            onChange={(val) => { setSearch(val); setPage(1); }}
-            placeholder="Search plans..."
-            className="sm:w-64"
-          />
-          <FilterSelect
-            value={filterStatus}
-            onChange={(val) => handleFilterChange(val as "all" | "active" | "inactive")}
-            placeholder="Filter Status"
-            className="sm:w-48"
-            options={[
-              { value: "all", label: "All Status" },
-              { value: "active", label: "Active" },
-              { value: "inactive", label: "Inactive" },
-            ]}
-          />
+    <div className="p-4 sm:p-6 lg:p-10 space-y-8 min-h-screen">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8">
+        <div className="space-y-2">
+          <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black italic uppercase tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent leading-none">
+            Subscriptions
+          </h1>
+          <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.4em] ml-1">
+            Plan & Tier Management Console
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full xl:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 flex-1">
+            <FilterSearch
+              value={search}
+              onChange={(val) => { setSearch(val); setPage(1); }}
+              placeholder="Search plans..."
+              className="w-full sm:w-64"
+            />
+            <FilterSelect
+              value={filterStatus}
+              onChange={(val) => handleFilterChange(val as "all" | "active" | "inactive")}
+              placeholder="Filter Status"
+              className="w-full sm:w-48"
+              options={[
+                { value: "all", label: "All Status" },
+                { value: "active", label: "Active" },
+                { value: "inactive", label: "Inactive" },
+              ]}
+            />
+          </div>
           <FilterButton
             onClick={handleAdd}
             icon={<Plus className="w-5 h-5" />}
+            className="w-full sm:w-auto"
           >
             Add Plan
           </FilterButton>
@@ -165,11 +173,13 @@ export default function SubscriptionListingPage() {
         emptyMessage={`No subscriptions found with status "${filterStatus}".`}
       />
 
-      <Pagination
-        page={page}
-        totalPages={totalPages}
-        onPageChange={(newPage) => setPage(newPage)}
-      />
+      <div className="pt-8 border-t border-white/5">
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+      </div>
 
       <AddEditSubscriptionModal
         isOpen={isModalOpen}

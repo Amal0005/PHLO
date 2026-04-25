@@ -35,7 +35,7 @@ export const CreatorDetailModal = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden">
+      <div className="fixed inset-0 z-[200] flex items-center justify-center overflow-hidden">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -55,13 +55,13 @@ export const CreatorDetailModal = ({
             damping: 30,
             mass: 0.8,
           }}
-          className="relative bg-[#0a0a0a] rounded-[2.5rem] max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,1)] border border-white/10 z-[101] m-4"
+          className="relative bg-[#0a0a0a] rounded-b-none sm:rounded-[2.5rem] max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto custom-scrollbar shadow-[0_0_100px_rgba(0,0,0,1)] border-x border-t sm:border border-white/10 z-[101] mt-auto sm:my-4"
         >
-          <div className="h-full overflow-y-auto custom-scrollbar">
+          <div className="relative h-full">
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 z-20 text-white/50 hover:text-white 
-                       bg-white/5 border border-white/10 rounded-full p-2.5 
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 text-white/50 hover:text-white 
+                       bg-black/40 backdrop-blur-md border border-white/10 rounded-full p-2.5 
                        transition-all active:scale-90 hover:bg-white/10"
             >
               <X size={20} />
@@ -69,8 +69,8 @@ export const CreatorDetailModal = ({
 
             <div className="grid md:grid-cols-3 gap-0">
               {/* Sidebar */}
-              <div className="bg-zinc-900/50 p-8 border-r border-white/5">
-                <div className="text-center mb-10">
+              <div className="bg-zinc-900/50 p-6 sm:p-8 border-b md:border-b-0 md:border-r border-white/5">
+                <div className="text-center mb-8 sm:mb-10 pt-20 md:pt-0">
                   <div
                     className="cursor-pointer inline-block group relative mb-6"
                     onClick={() =>
@@ -80,54 +80,57 @@ export const CreatorDetailModal = ({
                       })
                     }
                   >
-                    <S3Media
-                      s3Key={creator.profilePhoto || ""}
-                      alt={creator.fullName}
-                      className="w-32 h-32 rounded-3xl object-cover mx-auto shadow-2xl 
-                               ring-4 ring-white/5 group-hover:ring-blue-500/20 transition-all duration-300"
-                    />
-                    <div
-                      className="absolute inset-0 rounded-3xl bg-black/0 group-hover:bg-blue-500/20 
-                                 transition-all duration-300 flex items-center justify-center"
-                    >
-                      <span className="text-white opacity-0 group-hover:opacity-100 text-[10px] font-black tracking-[0.3em]">
-                        VIEW
-                      </span>
+                    <div className="relative">
+                      <S3Media
+                        s3Key={creator.profilePhoto || ""}
+                        alt={creator.fullName}
+                        className="w-40 h-40 rounded-[2.5rem] object-cover mx-auto shadow-2xl 
+                                 ring-1 ring-white/10 group-hover:ring-blue-500/40 transition-all duration-500"
+                      />
+                      <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-4">
+                        <span className="text-white text-[10px] font-black tracking-[0.3em]">
+                          ENLARGE
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <h3 className="text-2xl font-black text-white mb-2 italic tracking-tight">
+                  <h3 className="text-3xl font-black text-white mb-2 italic tracking-tighter">
                     {creator.fullName.toUpperCase()}
                   </h3>
-                  <div className="flex items-center justify-center gap-1.5 text-gray-400 text-xs font-bold tracking-tight">
+                  <div className="flex items-center justify-center gap-2 text-gray-500 text-[10px] font-black uppercase tracking-widest">
                     <Mail size={12} className="text-blue-500" />
-                    <p className="truncate opacity-70">{creator.email}</p>
+                    <p className="truncate opacity-60">{creator.email}</p>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/5 shadow-inner">
-                    <div className="flex items-center gap-2 text-gray-500 mb-2">
-                      <Briefcase size={14} className="text-blue-500" />
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-white/[0.03] backdrop-blur-md rounded-3xl p-6 border border-white/5 group hover:bg-white/[0.05] transition-all">
+                    <div className="flex items-center gap-3 text-gray-500 mb-4">
+                      <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500">
+                        <Briefcase size={16} />
+                      </div>
                       <span className="text-[10px] font-black uppercase tracking-[0.2em]">
                         Expertise
                       </span>
                     </div>
-                    <p className="text-white font-black text-2xl italic">
+                    <p className="text-white font-black text-3xl italic tracking-tighter">
                       {creator.yearsOfExperience
                         ? `${creator.yearsOfExperience}YRS`
                         : "N/A"}
                     </p>
                   </div>
 
-                  <div className="bg-white/[0.03] rounded-2xl p-5 border border-white/5 shadow-inner">
-                    <div className="flex items-center gap-2 text-gray-500 mb-2">
-                      <Award size={14} className="text-purple-500" />
+                  <div className="bg-white/[0.03] backdrop-blur-md rounded-3xl p-6 border border-white/5 group hover:bg-white/[0.05] transition-all">
+                    <div className="flex items-center gap-3 text-gray-500 mb-4">
+                      <div className="p-2.5 rounded-xl bg-purple-500/10 text-purple-500">
+                        <Award size={16} />
+                      </div>
                       <span className="text-[10px] font-black uppercase tracking-[0.2em]">
                         Assets
                       </span>
                     </div>
-                    <p className="text-white font-black text-2xl italic">
+                    <p className="text-white font-black text-3xl italic tracking-tighter">
                       {creator.specialties?.length || 0}
                     </p>
                   </div>
@@ -136,13 +139,13 @@ export const CreatorDetailModal = ({
 
               {/* Main Content */}
               <div className="md:col-span-2 bg-[#0a0a0a]">
-                <div className="p-8">
+                <div className="p-6 sm:p-8">
                   <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] mb-8 pb-3 border-b border-white/5 flex items-center gap-3">
                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-                    Creator Dossier / PHLO-ID: {creator._id.slice(-8).toUpperCase()}
+                    Creator Dossier / ID: {creator._id.slice(-8).toUpperCase()}
                   </h4>
 
-                  <div className="space-y-8 max-h-[55vh] overflow-y-auto pr-4 custom-scrollbar">
+                  <div className="space-y-8 pr-0">
                     <section className="space-y-3">
                       <h5 className="text-[10px] font-black text-gray-600 uppercase tracking-widest">
                         Biography
@@ -275,7 +278,7 @@ export const CreatorDetailModal = ({
                   </div>
                 </div>
 
-                <div className="border-t border-white/5 p-8 bg-white/[0.01]">
+                <div className="border-t border-white/5 p-6 sm:p-8 bg-white/[0.01]">
                   {creator.status === "pending" ? (
                     <div className="flex gap-4">
                       <button

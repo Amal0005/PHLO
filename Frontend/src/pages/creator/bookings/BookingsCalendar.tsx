@@ -136,7 +136,7 @@ const BookingsCalendar: React.FC = () => {
                 days.push(
                     <div
                         key={day.toString()}
-                        className={`relative h-24 sm:h-32 border border-white/5 p-2 transition-all cursor-pointer ${!isSameMonth(day, monthStart) ? "opacity-20 pointer-events-none" : "hover:bg-white/[0.02]"
+                        className={`relative h-20 sm:h-32 border border-white/5 p-1 sm:p-2 transition-all cursor-pointer ${!isSameMonth(day, monthStart) ? "opacity-20 pointer-events-none" : "hover:bg-white/[0.02]"
                             } ${isSameDay(day, selectedDate) ? "bg-white/[0.05] border-white/20" : ""} ${isLeaveDay ? "bg-rose-950/20" : ""}`}
                         onClick={() => setSelectedDate(cloneDay)}
                     >
@@ -149,23 +149,35 @@ const BookingsCalendar: React.FC = () => {
                             </div>
                         )}
                         {hasBookings && !isLeaveDay && (
-                            <div className="mt-2 space-y-1">
-                                {dayBookings.slice(0, 2).map((booking, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={`px-2 py-1 rounded-md text-[9px] font-black truncate uppercase tracking-tight ${booking.status === 'cancelled'
-                                            ? "bg-rose-500/20 text-rose-500 border border-rose-500/30"
-                                            : "bg-white text-black"
-                                            }`}
-                                    >
-                                        {booking.packageDetails?.title || "Booking"}
-                                    </div>
-                                ))}
-                                {dayBookings.length > 2 && (
-                                    <div className="text-[8px] font-bold text-zinc-500 pl-1">
-                                        + {dayBookings.length - 2} more
-                                    </div>
-                                )}
+                            <div className="mt-1 sm:mt-2 space-y-1">
+                                {/* Desktop Labels */}
+                                <div className="hidden sm:block space-y-1">
+                                    {dayBookings.slice(0, 2).map((booking, idx) => (
+                                        <div
+                                            key={idx}
+                                            className={`px-2 py-1 rounded-md text-[9px] font-black truncate uppercase tracking-tight ${booking.status === 'cancelled'
+                                                ? "bg-rose-500/20 text-rose-500 border border-rose-500/30"
+                                                : "bg-white text-black"
+                                                }`}
+                                        >
+                                            {booking.packageDetails?.title || "Booking"}
+                                        </div>
+                                    ))}
+                                    {dayBookings.length > 2 && (
+                                        <div className="text-[8px] font-bold text-zinc-500 pl-1">
+                                            + {dayBookings.length - 2} more
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Mobile Dots */}
+                                <div className="flex sm:hidden justify-center gap-1 mt-1">
+                                    {dayBookings.slice(0, 3).map((_, idx) => (
+                                        <div key={idx} className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_5px_rgba(255,255,255,0.5)]" />
+                                    ))}
+                                    {dayBookings.length > 3 && (
+                                        <div className="w-1 h-1 rounded-full bg-zinc-600" />
+                                    )}
+                                </div>
                             </div>
                         )}
                         {isSameDay(day, new Date()) && (
@@ -208,15 +220,15 @@ const BookingsCalendar: React.FC = () => {
                         <button
                             onClick={handleToggleLeave}
                             disabled={actionLoading || (hasBookingsOnDate && !isLeaveDate)}
-                            className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${actionLoading ? "opacity-50 cursor-not-allowed" : ""
+                            className={`w-full sm:w-auto px-6 py-4 sm:py-2 text-[10px] font-black uppercase tracking-widest rounded-2xl sm:rounded-xl transition-all ${actionLoading ? "opacity-50 cursor-not-allowed" : ""
                                 } ${isLeaveDate
-                                    ? "bg-white/10 hover:bg-white/20 text-white"
+                                    ? "bg-white/10 hover:bg-white/20 text-white border border-white/10"
                                     : hasBookingsOnDate
                                         ? "bg-zinc-800 text-zinc-500 cursor-not-allowed"
-                                        : "bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20"
+                                        : "bg-rose-500 text-white shadow-xl shadow-rose-500/10"
                                 }`}
                         >
-                            {actionLoading ? "Processing..." : isLeaveDate ? "Unblock Date" : "Mark as Leave"}
+                            {actionLoading ? "Processing..." : isLeaveDate ? "Unblock Date" : "Block this Date"}
                         </button>
                     )}
                 </div>
@@ -338,7 +350,7 @@ const BookingsCalendar: React.FC = () => {
     return (
         <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black">
             <CreatorNavbar />
-            <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-20">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-40 gap-4">
                         <div className="flex items-center gap-2">

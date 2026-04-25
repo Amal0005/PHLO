@@ -282,21 +282,21 @@ export default function AdminDashboard() {
       <div className="relative z-10 space-y-12 max-w-[1800px] mx-auto">
         <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
           <div>
-            <h1 className="text-6xl font-black tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent italic uppercase">Analytics Dash</h1>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter bg-gradient-to-r from-white via-white to-white/20 bg-clip-text text-transparent italic uppercase leading-none">Analytics Dash</h1>
             <p className="text-gray-500 font-black mt-3 flex items-center gap-3 uppercase text-[10px] tracking-[0.5em]">
               <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]" />
               System Status: Optimal / {timeframe} Analysis
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3">
             {/* Timeframe Selector */}
-            <div className="relative">
+            <div className="relative flex-1 sm:flex-none">
               <button 
                 onClick={() => setShowTimeframeDropdown(!showTimeframeDropdown)}
-                className="flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
+                className="w-full flex items-center justify-between sm:justify-start gap-3 px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
               >
-                {timeframe} Report <ChevronDown className={`w-3 h-3 transition-transform ${showTimeframeDropdown ? 'rotate-180' : ''}`} />
+                {timeframe} <ChevronDown className={`w-3 h-3 transition-transform ${showTimeframeDropdown ? 'rotate-180' : ''}`} />
               </button>
               
               <AnimatePresence>
@@ -328,7 +328,7 @@ export default function AdminDashboard() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleDownloadReport}
-              className="flex items-center gap-4 px-8 py-4 bg-blue-600/10 border border-blue-500/20 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-blue-600/20 transition-all italic"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-4 bg-blue-600/10 border border-blue-500/20 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-blue-600/20 transition-all italic"
             >
               <FileDown className="w-4 h-4" />
               Export
@@ -339,7 +339,7 @@ export default function AdminDashboard() {
               whileTap={{ scale: 0.98 }}
                onClick={() => fetchStats(false, timeframe)}
               disabled={refreshing}
-              className="flex items-center gap-4 px-10 py-5 bg-white text-black rounded-full text-xs font-black shadow-[0_10px_40px_rgba(255,255,255,0.1)] disabled:opacity-50 transition-all uppercase tracking-widest"
+              className="w-full sm:w-auto flex items-center justify-center gap-4 px-10 py-5 bg-white text-black rounded-full text-xs font-black shadow-[0_10px_40px_rgba(255,255,255,0.1)] disabled:opacity-50 transition-all uppercase tracking-widest order-first sm:order-last"
             >
               <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
               Sync
@@ -362,9 +362,9 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.4em] mb-3">{stat.label}</p>
-                <div className="text-5xl font-black tracking-tighter flex items-baseline gap-2 italic">
+                <div className="text-3xl sm:text-5xl font-black tracking-tighter flex items-baseline gap-2 italic">
                   <AnimatedNumber value={stat.value} prefix={stat.prefix} />
-                  <span className="text-xs font-black text-gray-700 uppercase tracking-widest not-italic">TOTAL</span>
+                  <span className="text-[10px] font-black text-gray-700 uppercase tracking-widest not-italic">TOTAL</span>
                 </div>
               </div>
               <div className="mt-8 h-1 w-full bg-white/[0.02] rounded-full overflow-hidden">
@@ -575,7 +575,7 @@ export default function AdminDashboard() {
         {/* Activity Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <GlassCard title="Latest Personnel Onboarding" className="p-0 overflow-hidden">
-            <div className="p-10 space-y-8">
+            <div className="p-6 sm:p-10 space-y-8">
               {stats?.recentCreators.map((creator) => (
                 <div key={creator.id} className="flex items-center justify-between group border-b border-white/[0.02] pb-6 last:border-0 last:pb-0">
                   <div className="flex items-center gap-6">
@@ -630,18 +630,18 @@ export default function AdminDashboard() {
                 <tbody>
                   {stats?.recentTransactions?.map((tx) => (
                     <tr key={tx.id} className="border-b border-white/[0.02] hover:bg-white/[0.03] transition-colors group">
-                      <td className="px-10 py-6">
+                      <td className="px-6 sm:px-10 py-6">
                         <span className="text-[10px] font-black text-blue-400/80 bg-blue-500/5 px-4 py-2 rounded-full uppercase tracking-widest border border-blue-500/10">
                           {tx.source}
                         </span>
                       </td>
-                      <td className="px-10 py-6">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{tx.description}</p>
+                      <td className="px-6 sm:px-10 py-6">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 truncate max-w-[150px] sm:max-w-none">{tx.description}</p>
                         <span className="text-[8px] font-black text-gray-700 uppercase tracking-[0.2em] italic">
                           {format(new Date(tx.timestamp), 'MMM dd, HH:mm:ss')}
                         </span>
                       </td>
-                      <td className="px-10 py-6 text-right">
+                      <td className="px-6 sm:px-10 py-6 text-right">
                         <span className={`text-sm font-black italic tracking-tighter ${
                           tx.type === 'credit' ? 'text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.2)]' : 'text-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.2)]'
                         }`}>

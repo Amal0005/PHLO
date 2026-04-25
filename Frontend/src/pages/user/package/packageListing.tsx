@@ -184,14 +184,14 @@ const PackageListing: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 pt-32 pb-20">
         {/* Cinematic Header Area */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-16">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16 px-2">
           <div className="text-left">
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-2 leading-none">Experiences</h1>
-            <p className="text-zinc-500 text-xs font-bold uppercase tracking-[0.3em]">Bespoke Photography Packages</p>
+            <p className="text-zinc-500 text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em]">Bespoke Photography Packages</p>
           </div>
           
-          <div className="flex flex-1 items-center justify-end gap-3 w-full max-w-3xl">
-            <div className="relative flex-1 group">
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:max-w-3xl">
+            <div className="relative w-full group">
               <FilterSearch
                 value={searchQuery}
                 onChange={(val) => { setSearchQuery(val); setPage(1); }}
@@ -200,29 +200,30 @@ const PackageListing: React.FC = () => {
               />
             </div>
 
-            {/* Reusable Category Dropdown */}
-            <FilterSelect
-              value={selectedCategory}
-              onChange={(val) => { setSelectedCategory(val); setPage(1); }}
-              placeholder="All Perspectives"
-              className="min-w-[220px]"
-              options={[
-                { value: "", label: "All Perspectives" },
-                ...allCategories.map(cat => ({ value: cat._id, label: cat.name }))
-              ]}
-            />
-            
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`p-4 rounded-2xl border transition-all flex items-center gap-2 ${
-                showFilters 
-                ? "bg-white text-black border-white" 
-                : "bg-zinc-900/50 text-white border-white/5 hover:border-white/20"
-              }`}
-            >
-              <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Refine</span>
-              <ImageIcon size={18} />
-            </button>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <FilterSelect
+                value={selectedCategory}
+                onChange={(val) => { setSelectedCategory(val); setPage(1); }}
+                placeholder="All Perspectives"
+                className="flex-1 sm:min-w-[220px]"
+                options={[
+                  { value: "", label: "All Perspectives" },
+                  ...allCategories.map(cat => ({ value: cat._id, label: cat.name }))
+                ]}
+              />
+              
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`p-4 rounded-2xl border transition-all flex items-center gap-2 flex-shrink-0 ${
+                  showFilters 
+                  ? "bg-white text-black border-white" 
+                  : "bg-zinc-900/50 text-white border-white/5 hover:border-white/20"
+                }`}
+              >
+                <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Refine</span>
+                <ImageIcon size={18} />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -363,7 +364,7 @@ const PackageListing: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="p-8 flex flex-col flex-1">
+                  <div className="p-6 sm:p-8 flex flex-col flex-1">
                     <div className="flex-1 space-y-3">
                       <h4 className="text-2xl font-black uppercase tracking-tighter group-hover:text-zinc-200 transition-colors">
                         {pkg.title}
