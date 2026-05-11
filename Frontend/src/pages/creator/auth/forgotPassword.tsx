@@ -5,7 +5,7 @@ import { passwordService } from "@/services/creator/passwordService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState<string>("");
