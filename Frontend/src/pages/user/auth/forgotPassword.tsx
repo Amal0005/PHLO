@@ -38,8 +38,8 @@ export default function ForgotPassword() {
     }
   }, [timer, showOtpModal]);
   const navigate = useNavigate();
-  const handleSendOtp = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSendOtp = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) e.preventDefault();
     if (!email) return;
 
     try {
@@ -463,7 +463,7 @@ export default function ForgotPassword() {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={handleVerifyOtp}
+                  onClick={() => handleVerifyOtp()}
                   disabled={isVerifying || otp.join("").length !== 6}
                   className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 >
