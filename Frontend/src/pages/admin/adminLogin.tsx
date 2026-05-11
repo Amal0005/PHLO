@@ -11,6 +11,7 @@ import { AdminAuthService } from "@/services/admin/adminAuthService";
 import { setAdmin } from "@/store/slices/admin/adminSlice";
 import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { ROUTES } from "@/constants/routes";
+import { motion } from "framer-motion";
 
 interface loginForm {
   email: string;
@@ -77,7 +78,12 @@ export default function AdminLogin() {
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-sm">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="w-full max-w-sm"
+        >
           <div className="flex justify-center mb-4">
             <img
               src={LogoWhite}
@@ -142,11 +148,13 @@ export default function AdminLogin() {
               </div>
 
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 type="button"
                 onClick={handleLogin}
                 disabled={isLoading || !form.email || !form.password}
-                className="w-full bg-white hover:bg-gray-200 text-black py-2.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full bg-white hover:bg-gray-200 text-black py-2.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -156,7 +164,7 @@ export default function AdminLogin() {
                 ) : (
                   "Sign In"
                 )}
-              </button>
+              </motion.button>
             </div>
 
             {/* Security Notice */}
@@ -172,7 +180,7 @@ export default function AdminLogin() {
           <p className="text-center text-gray-600 text-xs mt-4">
             Unauthorized access is prohibited and will be logged
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

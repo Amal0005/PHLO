@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
-import { Mail, ArrowLeft, X } from "lucide-react";
+import { Mail, ArrowLeft, X, Camera, CameraOff } from "lucide-react";
 import { passwordService } from "@/services/creator/passwordService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState<string>("");
@@ -160,24 +161,34 @@ export default function ForgotPassword() {
         </div>
 
         <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-          <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-light mb-2 lg:mb-4 leading-relaxed text-white">
-              Create a new password.
-              <br />
-              Keep it secure.
-              <br />
-              <span className="text-gray-400">Keep it memorable.</span>
-            </h2>
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24"
+        >
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light mb-4 lg:mb-6 leading-tight text-white">
+            Create a <span className="font-bold">new password.</span>
+            <br />
+            Keep it <span className="text-gray-400">secure.</span>
+            <br />
+            Keep it <span className="font-bold">memorable.</span>
+          </h2>
 
-            <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
-              Your password should be at least 8 characters long and contain a
-              mix of letters and numbers.
-            </p>
-          </div>
+          <p className="text-base sm:text-lg lg:text-xl text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
+            Your password should be at least 8 characters long and contain a
+            mix of letters and numbers.
+          </p>
+        </motion.div>
 
           <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="w-full max-w-md">
-              <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="w-full max-w-md"
+            >
+              <div className="bg-zinc-950/40 backdrop-blur-2xl rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/10">
                 <div className="text-center mb-6 sm:mb-8">
                   <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
                     Reset Password
@@ -192,7 +203,7 @@ export default function ForgotPassword() {
                     <input
                       type={showNewPassword ? "text" : "password"}
                       placeholder="New Password"
-                      className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
+                      className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
                       value={passwords.newPassword}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setPasswords({
@@ -206,7 +217,7 @@ export default function ForgotPassword() {
                       onClick={() => setShowNewPassword(!showNewPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                     >
-                      {showNewPassword ? "👁️" : "👁️‍🗨️"}
+                      {showNewPassword ? <CameraOff className="w-5 h-5" /> : <Camera className="w-5 h-5" />}
                     </button>
                   </div>
 
@@ -214,7 +225,7 @@ export default function ForgotPassword() {
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder="Confirm Password"
-                      className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
+                      className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300 pr-12"
                       value={passwords.confirmPassword}
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         setPasswords({
@@ -230,7 +241,7 @@ export default function ForgotPassword() {
                       }
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
                     >
-                      {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                      {showConfirmPassword ? <CameraOff className="w-5 h-5" /> : <Camera className="w-5 h-5" />}
                     </button>
                   </div>
 
@@ -267,7 +278,7 @@ export default function ForgotPassword() {
                   </span>
                 </p>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -290,8 +301,13 @@ export default function ForgotPassword() {
 
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-md">
-            <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-md"
+          >
+            <div className="bg-zinc-950/40 backdrop-blur-2xl rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/10">
               <button onClick={() => navigate(ROUTES.CREATOR.LOGIN)} className="mb-4 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm cursor-pointer">
                 <ArrowLeft className="w-4 h-4" />
                 Back to Login
@@ -314,7 +330,7 @@ export default function ForgotPassword() {
                   <input
                     type="email"
                     placeholder="Email"
-                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-zinc-800/50 border border-zinc-700 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    className="w-full p-3.5 text-sm sm:text-base rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
                     value={email}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       setEmail(e.target.value)
@@ -352,22 +368,27 @@ export default function ForgotPassword() {
             <p className="text-center text-gray-600 text-xs mt-6 px-4">
               We'll send a 6-digit verification code to your email
             </p>
+            </motion.div>
           </div>
-        </div>
-        <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
-          <h2 className="text-lg sm:text-xl lg:text-2xl font-light mb-2 lg:mb-4 leading-relaxed text-white">
-            Forgot your password?
+        <motion.div 
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24"
+        >
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light mb-4 lg:mb-6 leading-tight text-white">
+            Forgot your <span className="font-bold">password?</span>
             <br />
-            Don't worry.
+            Don't <span className="text-gray-400">worry.</span>
             <br />
-            <span className="text-gray-400">We've got you covered.</span>
+            <span className="font-bold text-white">We've got you covered.</span>
           </h2>
 
-          <p className="text-sm sm:text-base lg:text-lg text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-400 mb-8 lg:mb-12 leading-relaxed max-w-md">
             Enter your email address and we'll send you a verification code to
             reset your password securely.
           </p>
-        </div>
+        </motion.div>
 
 
       </div>
@@ -377,7 +398,13 @@ export default function ForgotPassword() {
           <div className="hidden lg:block w-full lg:w-1/2"></div>
 
           <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="bg-zinc-900/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10 w-full max-w-md relative">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-zinc-950/90 backdrop-blur-2xl rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/10 w-full max-w-md relative overflow-hidden"
+            >
+              {/* Subtle inner glow */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none" />
               <button
                 onClick={() => setShowOtpModal(false)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -397,21 +424,21 @@ export default function ForgotPassword() {
 
               <div className="flex gap-2 justify-center mb-6">
                 {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    id={`otp-${index}`}
-                    type="text"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleOtpChange(index, e.target.value)
-                    }
-                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
-                      handleOtpKeyDown(index, e)
-                    }
-                    onPaste={handlePaste}
-                    className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-bold rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
-                  />
+                    <input
+                      key={index}
+                      id={`otp-${index}`}
+                      type="text"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        handleOtpChange(index, e.target.value)
+                      }
+                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                        handleOtpKeyDown(index, e)
+                      }
+                      onPaste={handlePaste}
+                      className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-bold rounded-lg bg-white/5 border border-white/10 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    />
                 ))}
               </div>
 
@@ -446,7 +473,7 @@ export default function ForgotPassword() {
                   </span>
                 )}
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       )}

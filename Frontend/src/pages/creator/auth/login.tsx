@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { AxiosError } from "axios";
-import { Camera, Mail, Lock, Eye, EyeOff, Sparkles, Image as ImageIcon, Wallet } from "lucide-react";
+import { Camera, Mail, Lock, CameraOff, Sparkles, Image as ImageIcon, Wallet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/store/store";
@@ -121,7 +121,7 @@ export default function CreatorLogin() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="w-full max-w-md"
           >
-            <div className="bg-zinc-900/30 backdrop-blur-[0px] border border-white/5 rounded-[2.5rem] p-10 lg:p-12 shadow-[0_32px_120px_-15px_rgba(0,0,0,0.8)] relative group">
+            <div className="bg-zinc-950/40 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-10 lg:p-12 shadow-[0_32px_120px_-15px_rgba(0,0,0,0.8)] relative group">
               {/* Subtle outer glow on card */}
               <div className="absolute -inset-0.5 bg-gradient-to-tr from-white/5 to-white/0 rounded-[2.5rem] blur opacity-0 group-hover:opacity-100 transition duration-1000" />
               
@@ -189,7 +189,7 @@ export default function CreatorLogin() {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors duration-300"
                       >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        {showPassword ? <CameraOff size={18} /> : <Camera size={18} />}
                       </button>
                     </div>
                   </div>

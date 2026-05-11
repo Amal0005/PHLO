@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/constants/routes";
 import { MESSAGES } from "@/constants/messages";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState<string>("");
@@ -170,7 +171,12 @@ export default function ForgotPassword() {
         </div>
 
         <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-          <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24"
+          >
             <h2 className="text-lg sm:text-xl lg:text-2xl font-light mb-2 lg:mb-4 leading-relaxed text-white">
               Create a new password.
               <br />
@@ -183,10 +189,15 @@ export default function ForgotPassword() {
               Your password should be at least 8 characters long and contain a
               mix of letters and numbers.
             </p>
-          </div>
+          </motion.div>
 
           <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="w-full max-w-md">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="w-full max-w-md"
+            >
               <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
                 <div className="text-center mb-6 sm:mb-8">
                   <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
@@ -245,7 +256,9 @@ export default function ForgotPassword() {
                   </div>
 
                   <div className="pt-2">
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={handleResetPassword}
                       disabled={
@@ -253,7 +266,7 @@ export default function ForgotPassword() {
                         !passwords.newPassword ||
                         !passwords.confirmPassword
                       }
-                      className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
+                      className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                     >
                       {isResetting ? (
                         <span className="flex items-center justify-center gap-2">
@@ -263,7 +276,7 @@ export default function ForgotPassword() {
                       ) : (
                         "Reset Password"
                       )}
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
 
@@ -277,7 +290,7 @@ export default function ForgotPassword() {
                   </span>
                 </p>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -299,7 +312,12 @@ export default function ForgotPassword() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-        <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24"
+        >
           <h2 className="text-lg sm:text-xl lg:text-2xl font-light mb-2 lg:mb-4 leading-relaxed text-white">
             Forgot your password?
             <br />
@@ -312,10 +330,15 @@ export default function ForgotPassword() {
             Enter your email address and we'll send you a verification code to
             reset your password securely.
           </p>
-        </div>
+        </motion.div>
 
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-md">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-md"
+          >
             <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
               <button onClick={() => navigate(ROUTES.USER.LOGIN)} className="mb-4 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm cursor-pointer">
                 <ArrowLeft className="w-4 h-4" />
@@ -348,11 +371,13 @@ export default function ForgotPassword() {
                 </div>
 
                 <div>
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={handleSendOtp}
                     disabled={isLoading || !email}
-                    className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -362,7 +387,7 @@ export default function ForgotPassword() {
                     ) : (
                       "Send Verification Code"
                     )}
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
@@ -377,88 +402,102 @@ export default function ForgotPassword() {
             <p className="text-center text-gray-600 text-xs mt-6 px-4">
               We'll send a 6-digit verification code to your email
             </p>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {showOtpModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex flex-col lg:flex-row z-50">
-          <div className="hidden lg:block w-full lg:w-1/2"></div>
+      <AnimatePresence>
+        {showOtpModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex flex-col lg:flex-row z-50"
+          >
+            <div className="hidden lg:block w-full lg:w-1/2"></div>
 
-          <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="bg-zinc-900/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10 w-full max-w-md relative">
-              <button
-                onClick={() => setShowOtpModal(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="bg-zinc-900/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10 w-full max-w-md relative"
               >
-                <X className="w-5 h-5" />
-              </button>
+                <button
+                  onClick={() => setShowOtpModal(false)}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
 
-              <div className="text-center mb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
-                  Verify Code
-                </h3>
-                <p className="text-sm text-gray-400">
-                  Enter the 6-digit code sent to
+                <div className="text-center mb-6">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">
+                    Verify Code
+                  </h3>
+                  <p className="text-sm text-gray-400">
+                    Enter the 6-digit code sent to
+                  </p>
+                  <p className="text-sm text-white font-medium mt-1">{email}</p>
+                </div>
+
+                <div className="flex gap-2 justify-center mb-6">
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      id={`otp-${index}`}
+                      type="text"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        handleOtpChange(index, e.target.value)
+                      }
+                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                        handleOtpKeyDown(index, e)
+                      }
+                      onPaste={handlePaste}
+                      className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-bold rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
+                    />
+                  ))}
+                </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleVerifyOtp}
+                  disabled={isVerifying || otp.join("").length !== 6}
+                  className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                >
+                  {isVerifying ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      Verifying...
+                    </span>
+                  ) : (
+                    "Verify Code"
+                  )}
+                </motion.button>
+
+                <p className="text-center text-gray-400 text-xs sm:text-sm mt-4">
+                  Didn't receive the code?{" "}
+                  {canResend ? (
+                    <button
+                      onClick={() => handleSendOtp()}
+                      disabled={isLoading}
+                      className="text-white hover:underline font-medium disabled:opacity-50 disabled:no-underline"
+                    >
+                      {isLoading ? "Resending..." : "Resend"}
+                    </button>
+                  ) : (
+                    <span>
+                      Resend in <span className="text-white font-mono">{timer}s</span>
+                    </span>
+                  )}
                 </p>
-                <p className="text-sm text-white font-medium mt-1">{email}</p>
-              </div>
-
-              <div className="flex gap-2 justify-center mb-6">
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    id={`otp-${index}`}
-                    type="text"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      handleOtpChange(index, e.target.value)
-                    }
-                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
-                      handleOtpKeyDown(index, e)
-                    }
-                    onPaste={handlePaste}
-                    className="w-12 h-12 sm:w-14 sm:h-14 text-center text-xl font-bold rounded-lg bg-zinc-800/50 border border-zinc-700 text-white outline-none focus:border-white focus:ring-1 focus:ring-white transition-all duration-300"
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={handleVerifyOtp}
-                disabled={isVerifying || otp.join("").length !== 6}
-                className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {isVerifying ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-                    Verifying...
-                  </span>
-                ) : (
-                  "Verify Code"
-                )}
-              </button>
-
-              <p className="text-center text-gray-400 text-xs sm:text-sm mt-4">
-                Didn't receive the code?{" "}
-                {canResend ? (
-                  <button
-                    onClick={handleSendOtp}
-                    disabled={isLoading}
-                    className="text-white hover:underline font-medium disabled:opacity-50 disabled:no-underline"
-                  >
-                    {isLoading ? "Resending..." : "Resend"}
-                  </button>
-                ) : (
-                  <span>
-                    Resend in <span className="text-white font-mono">{timer}s</span>
-                  </span>
-                )}
-              </p>
+              </motion.div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

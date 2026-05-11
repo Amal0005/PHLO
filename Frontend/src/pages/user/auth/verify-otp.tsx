@@ -8,6 +8,7 @@ import LogoWhite from "@/assets/images/Logo_white.png";
 import { ROUTES } from "@/constants/routes";
 import { UserAuthService } from "@/services/user/UserAuthService";
 import { MESSAGES } from "@/constants/messages";
+import { motion } from "framer-motion";
 
 export default function VerifyOtp() {
   const location = useLocation();
@@ -48,7 +49,6 @@ export default function VerifyOtp() {
     } catch (error) {
       console.error("Verification error:", error);
       const axiosError = error as AxiosError<{ message: string }>;
-      // Handle both Axios errors (with response) and thrown errors (with message)
       const errorMessage = axiosError.response?.data?.message || (error instanceof Error ? error.message : "Invalid OTP. Please try again.");
       toast.error(errorMessage);
     } finally {
@@ -97,7 +97,12 @@ export default function VerifyOtp() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24"
+        >
           <div className="flex items-center gap-3 mb-6 lg:mb-15">
             <img
               src={LogoWhite}
@@ -162,13 +167,16 @@ export default function VerifyOtp() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right Side - Verify OTP Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-md">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            className="w-full max-w-md"
+          >
             <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
-              {/* Back Button */}
               <button
                 type="button"
                 onClick={handleBackToRegister}
@@ -179,7 +187,6 @@ export default function VerifyOtp() {
               </button>
 
               <div className="text-center mb-6 sm:mb-8">
-                {/* Icon */}
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-4">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
@@ -192,7 +199,6 @@ export default function VerifyOtp() {
                 </p>
               </div>
 
-              {/* Email Display */}
               <div className="flex items-center justify-center gap-2 mb-6 p-3 rounded-lg bg-white/5 border border-white/10">
                 <Mail className="w-4 h-4 text-gray-400" />
                 <span className="text-sm sm:text-base text-white font-medium">
@@ -201,7 +207,6 @@ export default function VerifyOtp() {
               </div>
 
               <div className="space-y-4">
-                {/* OTP Input */}
                 <div>
                   <input
                     type="text"
@@ -222,13 +227,14 @@ export default function VerifyOtp() {
                   </p>
                 </div>
 
-                {/* Verify Button */}
                 <div>
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={handleVerify}
                     disabled={isLoading || otp.length !== 6}
-                    className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -238,10 +244,9 @@ export default function VerifyOtp() {
                     ) : (
                       "Verify Email"
                     )}
-                  </button>
+                  </motion.button>
                 </div>
 
-                {/* Resend OTP */}
                 <div className="text-center pt-2">
                   {canResend ? (
                     <button
@@ -260,7 +265,6 @@ export default function VerifyOtp() {
                   )}
                 </div>
 
-                {/* Help Text */}
                 <div className="pt-4 border-t border-white/10">
                   <p className="text-xs text-gray-500 text-center leading-relaxed">
                     Didn't receive the code? Check your spam folder or click
@@ -270,11 +274,10 @@ export default function VerifyOtp() {
               </div>
             </div>
 
-            {/* Footer */}
             <p className="text-center text-gray-600 text-xs mt-6 px-4">
               This helps us keep your account secure
             </p>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

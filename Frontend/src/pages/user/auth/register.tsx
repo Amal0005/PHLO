@@ -14,6 +14,7 @@ import { AxiosError } from "axios";
 import { setToken, setRole } from "@/store/slices/auth/authSlice";
 import { MESSAGES } from "@/constants/messages";
 import PoliciesModal from "@/components/reusable/PoliciesModal";
+import { motion } from "framer-motion";
 
 interface RegisterForm {
   name: string;
@@ -142,7 +143,12 @@ export default function Register() {
       </div>
 
       <div className="relative z-10 min-h-screen flex flex-col lg:flex-row">
-        <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24">
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24"
+        >
           <div className="flex items-center gap-3 mb-6 lg:mb-15">
             <img
               src={LogoWhite}
@@ -165,52 +171,41 @@ export default function Register() {
           </p>
 
           <div className="hidden sm:flex flex-col gap-4 lg:gap-6">
-            <div className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
-              <div className="w-12 h-12 rounded-full bg-zinc-800/80 backdrop-blur-sm border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-300">
-                <Calendar className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base lg:text-lg text-white">
-                  Easy Booking
-                </h3>
-                <p className="text-xs lg:text-sm text-gray-400">
-                  Schedule photography sessions instantly
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
-              <div className="w-12 h-12 rounded-full bg-zinc-800/80 backdrop-blur-sm border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-300">
-                <Image className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base lg:text-lg text-white">
-                  Premium Wallpapers
-                </h3>
-                <p className="text-xs lg:text-sm text-gray-400">
-                  Download high-quality images for free
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300">
-              <div className="w-12 h-12 rounded-full bg-zinc-800/80 backdrop-blur-sm border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-300">
-                <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base lg:text-lg text-white">
-                  AI Enhancement
-                </h3>
-                <p className="text-xs lg:text-sm text-gray-400">
-                  Enhance your photos with AI magic
-                </p>
-              </div>
-            </div>
+            {[
+              { icon: <Calendar className="w-5 h-5 lg:w-6 lg:h-6 text-white" />, title: "Easy Booking", desc: "Schedule photography sessions instantly" },
+              { icon: <Image className="w-5 h-5 lg:w-6 lg:h-6 text-white" />, title: "Premium Wallpapers", desc: "Download high-quality images for free" },
+              { icon: <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-white" />, title: "AI Enhancement", desc: "Enhance your photos with AI magic" },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
+                className="flex items-center gap-4 group hover:translate-x-2 transition-transform duration-300"
+              >
+                <div className="w-12 h-12 rounded-full bg-zinc-800/80 backdrop-blur-sm border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors duration-300">
+                  {item.icon}
+                </div>
+                <div>
+                  <h3 className="font-semibold text-base lg:text-lg text-white">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs lg:text-sm text-gray-400">
+                    {item.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </div>
+        </motion.div>
 
         <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-          <div className="w-full max-w-md">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            className="w-full max-w-md"
+          >
             <div className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/10">
               <div className="text-center mb-6 sm:mb-8">
                 <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
@@ -351,14 +346,14 @@ export default function Register() {
                     className="text-xs sm:text-sm text-gray-400 cursor-pointer leading-relaxed"
                   >
                     I agree to the{" "}
-                    <span 
+                    <span
                       onClick={openTerms}
                       className="text-white hover:underline cursor-pointer"
                     >
                       Terms of Service
                     </span>{" "}
                     and{" "}
-                    <span 
+                    <span
                       onClick={openPrivacy}
                       className="text-white hover:underline cursor-pointer"
                     >
@@ -368,11 +363,13 @@ export default function Register() {
                 </div>
 
                 <div>
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     type="button"
                     onClick={handleSignup}
                     disabled={!acceptedTerms || isLoading}
-                    className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full bg-white hover:bg-gray-200 text-black py-3.5 rounded-lg font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center gap-2">
@@ -382,7 +379,7 @@ export default function Register() {
                     ) : (
                       "Register"
                     )}
-                  </button>
+                  </motion.button>
                 </div>
 
                 <div className="relative py-2">
@@ -432,12 +429,12 @@ export default function Register() {
             <p className="text-center text-gray-600 text-xs mt-6 px-4">
               By creating an account, you agree to our terms and privacy policy
             </p>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      <PoliciesModal 
-        isOpen={policyModal.isOpen} 
+      <PoliciesModal
+        isOpen={policyModal.isOpen}
         onClose={() => setPolicyModal(prev => ({ ...prev, isOpen: false }))}
         title={policyModal.title}
         content={policyModal.content}
@@ -445,4 +442,3 @@ export default function Register() {
     </div>
   );
 }
-
