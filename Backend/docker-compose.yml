@@ -25,7 +25,8 @@ services:
       - NODE_ENV=production
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - GOOGLE_CREDENTIALS_JSON=${GOOGLE_CREDENTIALS_JSON}
-
+    volumes:
+      - ./phlo-483705-7df390b1c765.json:/usr/src/app/phlo-483705-7df390b1c765.json:ro
     depends_on:
       - redis
     networks:
