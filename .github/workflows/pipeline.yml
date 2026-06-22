@@ -49,7 +49,7 @@ jobs:
           
           # 🔥 UPDATE .env FILE (APPENDING INSTEAD OF OVERWRITING)
           touch .env
-          printf "GOOGLE_CREDENTIALS_JSON=%s\n" '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' >> .env
+          printf "GOOGLE_CREDENTIALS_JSON='%s'\n" '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' >> .env
           printf "REDIS_PASSWORD=%s\n" '${{ secrets.REDIS_PASSWORD }}' >> .env
                     
           # Create/Update docker-compose.yml 
