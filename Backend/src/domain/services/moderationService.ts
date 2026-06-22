@@ -9,9 +9,11 @@ export class ModerationService implements IModerationService {
   //     "utf-8"
   //   )
   // )  })
-  private client = new vision.ImageAnnotatorClient({
-    credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string)
-  })
+  private client = new vision.ImageAnnotatorClient(
+    (process.env.GOOGLE_CREDENTIALS_JSON || '').startsWith('{')
+      ? { credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON as string) }
+      : { keyFilename: process.env.GOOGLE_CREDENTIALS_JSON }
+  )
   async checkImage(imageBuffer: Buffer): Promise<ModerationResult> {
     try {
       const [result] = await this.client.safeSearchDetection({
