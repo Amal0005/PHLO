@@ -12,7 +12,7 @@ services:
       - phlo_network
 
   backend:
-    build: .
+    image: amal0005/phlo-backend:latest
     container_name: phlo_backend
     restart: always
     ports:
