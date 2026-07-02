@@ -7,13 +7,10 @@ export class SocketIOHandler {
   private io: Server;
 
   constructor(server: http.Server) {
-    const envOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
-    const allowedOrigins = [
-      envOrigin, 
-      envOrigin.replace(/\/$/, ""), 
-      "https://phlo.website", 
-      "https://www.phlo.website"
-    ];
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+      .split(",")
+      .map((o) => o.trim())
+      .filter(Boolean);
     
     this.io = new Server(server, {
       path: "/api/socket.io",

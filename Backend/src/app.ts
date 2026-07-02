@@ -51,8 +51,13 @@ export class App {
   }
   private setMiddlewares(): void {
 
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   this.app.use(cors({
-    origin: ["https://phlo.website", "http://localhost:5173"],
+    origin: allowedOrigins,
     credentials: true
   }));
 

@@ -6,22 +6,18 @@ export class WatermarkService implements IWatermarkService {
     constructor(private _storageService: IStorageService) {}
 
     async generateWatermark(originalBuffer: Buffer, originalKey: string): Promise<string> {
-        // Load image, fix orientation, normalize colorspace, and flatten alpha (crucial for PNGs)
         const image = sharp(originalBuffer)
             .rotate()
             .toColorspace('srgb')
-            .flatten({ background: { r: 0, g: 0, b: 0 } }); // Ensure no transparency in preview
+            .flatten({ background: { r: 0, g: 0, b: 0 } });
             
         const { width = 1200 } = await image.metadata();
         
-        // Dynamic scaling
         const scale = Math.max(width / 1200, 0.5);
         const tileWidth = Math.floor(400 * scale);
         const tileHeight = Math.floor(250 * scale);
         
-        // FONT-INDEPENDENT VECTOR WATERMARK
-        // This uses SVG paths to draw 'PHLO' so it works even if no fonts are installed on the server.
-        // It's robust, professional, and dense.
+
         const tileSvg = `
           <svg width="${tileWidth}" height="${tileHeight}" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
             <g transform="rotate(-30 200 125)" fill="white" fill-opacity="0.4" stroke="black" stroke-opacity="0.1" stroke-width="2">

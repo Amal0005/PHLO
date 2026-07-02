@@ -687,7 +687,8 @@ const PackageDetailPage: React.FC = () => {
                   }));
                   try {
                     const token = import.meta.env.VITE_MAPBOX_TOKEN;
-                    const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
+                    const mapboxBase = import.meta.env.VITE_MAPBOX_BASE_URL;
+                    const res = await fetch(`${mapboxBase}/mapbox.places/${lng},${lat}.json?access_token=${token}&types=place,address&limit=1`);
                     const data = await res.json();
                     if (data.features?.[0]) {
                       const placeName = data.features[0].place_name;
